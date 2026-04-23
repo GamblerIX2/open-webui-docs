@@ -3,199 +3,194 @@ sidebar_position: 3
 title: "RAG"
 ---
 
-Retrieval-Augmented Generation (RAG) enables language models to reason over external content—documents, knowledge bases, and more—by retrieving relevant info and feeding it into the model. When things don't work as expected (e.g., the model "hallucinates" or misses relevant info), it's often not the model's fault—it's a context issue.
+Retrieval-Augmented Generation（RAG）让语言模型能够围绕外部内容——文档、知识库等——进行推理：先检索相关信息，再把它送入模型上下文。当结果不符合预期（例如模型“幻觉”或遗漏关键信息）时，问题往往并不在模型本身，而在上下文链路。
 
-This page covers the most common RAG problems and their solutions.
+本页汇总了最常见的 RAG 问题及其处理方法。
 
-## Common RAG Issues and How to Fix Them
+## 常见 RAG 问题与修复方法
 
-### 1. The Model "Can't See" Your Content
+### 1. 模型“看不到”你的内容
 
-This is the most common problem—and it's typically caused by issues during content ingestion. The model doesn't hallucinate because it's wrong; it hallucinates because it was never given the right content in the first place.
+这是最常见的问题，通常发生在内容导入阶段。模型并不是故意胡编，而是它根本没有拿到正确的内容。
 
-**Solution:** Check your content extraction settings.
+**解决方法：** 检查内容提取设置。
 
-- Navigate to: **Admin Settings > Documents**.
-- Make sure you're using a robust content extraction engine such as:
+- 前往：**Admin Settings > Documents**
+- 确认你使用了可靠的内容提取引擎，例如：
   - Apache Tika
   - Docling
-  - Custom extractors (depending on your document types)
+  - 自定义提取器（视你的文档类型而定）
 
 :::tip
-
-Try uploading a document and preview the extracted content. If it's blank or missing key sections, you need to adjust your extractor settings or use a different engine.
-
+尝试上传一个文档并预览提取结果。如果内容为空，或缺少关键段落，就需要调整提取器设置，或改用其他引擎。
 :::
 
 ---
 
-### 2. Only a Small Part of the Document is Being Used
+### 2. 只用了文档中的一小部分内容
 
-Open WebUI is designed to work with models that have limited context windows by default. For instance, many local models (e.g., Ollama's default models) are limited to 2048 tokens. Because of this, Open WebUI aggressively trims down the retrieved content to fit within the assumed available space.
+Open WebUI 默认假设模型上下文窗口有限。例如很多本地模型（包括 Ollama 默认模型）只有 2048 token。正因如此，Open WebUI 会积极裁剪检索到的内容，以便把它塞进可用窗口中。
 
-**Solutions:**
+**解决方法：**
 
-- Go to **Admin Settings > Documents**
-- Either:
-  - **Enable "Bypass Embedding and Retrieval"** — sends full content directly without applying retrieval filters.
-  - **Toggle on "Full Context Mode"** — injects more comprehensive content into the model prompt.
+- 前往 **Admin Settings > Documents**
+- 然后任选其一：
+  - **启用 “Bypass Embedding and Retrieval”**——直接发送完整内容，不走检索过滤
+  - **打开 “Full Context Mode”**——把更完整的内容注入模型提示词
 
 :::warning
-
-Be mindful of context limits—if your model can't handle more tokens, content will still be truncated.
-
+请留意上下文上限——如果模型本身无法处理更多 token，内容仍然会被截断。
 :::
 
 ---
 
-### 3. Token Limit is Too Short
+### 3. Token 上限太小
 
-Even if retrieval works, your model might still not process all the content it receives—because it simply can't.
+即使检索正常，你的模型也可能无法真正处理收到的全部内容——因为它的上下文窗口根本装不下。
 
-By default, many models (especially Ollama-hosted LLMs) are limited to a 2048-token context window. That means only a fraction of your retrieved data will actually be used.
+默认情况下，很多模型（尤其是由 Ollama 托管的 LLM）只有 2048 token 上下文。这意味着检索到的数据只有一部分会真正被利用。
 
-**Why Web Search Especially Needs Larger Context Windows:**
-Web pages are particularly challenging for small context windows because they contain far more content than typical documents. A single web page often includes:
-- Main content (the actual information you want)
-- Navigation menus, headers, and footers
-- Sidebar content and advertisements
-- Comments sections and related links
-- Metadata and embedded scripts
+**为什么 Web Search 尤其需要更大的上下文窗口：**
+网页内容对小上下文模型尤其不友好，因为网页通常比普通文档长得多，常见内容包括：
+- 主体内容（你真正想要的信息）
+- 导航菜单、页眉、页脚
+- 侧边栏与广告
+- 评论区和相关链接
+- 元数据与嵌入脚本
 
-Even after content extraction and cleaning, web pages easily consume 4,000-8,000+ tokens of context. With a 2048-token limit, you're getting less than half the content, often missing the most relevant information that appears later in the page. Even 4096 tokens is frequently insufficient for comprehensive web content analysis.
+即使经过提取和清洗，网页也很容易占用 4,000-8,000+ token。若上下文只有 2048 token，通常连一半都装不下，更别说页面后半部分经常还包含更关键的信息。即使 4096 token，对完整分析网页内容来说也往往不够。
 
-**Solutions:**
+**解决方法：**
 
-- **For Ollama Models**: Extend the model's context length:
-  - Navigate to: **Admin Panel > Models > Settings** (of the model you want to edit)
-  - Go to **Advanced Parameters**
-  - Modify the context length (e.g., increase to 8192+ or ideally beyond 16000 tokens if supported by your model)
+- **对于 Ollama 模型**：扩大模型上下文长度：
+  - 前往：**Admin Panel > Models > Settings**（选择你要编辑的模型）
+  - 进入 **Advanced Parameters**
+  - 调整 context length（例如提高到 8192+，如果模型支持，最好 16000 token 以上）
 
-- **For OpenAI and Other Integrated Models**: These models typically have their own context limits that cannot be modified through Open WebUI settings. Ensure you're using a model with sufficient context length.
+- **对于 OpenAI 和其他集成模型**：这类模型通常有自己的上下文上限，无法通过 Open WebUI 直接改动。请确认你选择的是上下文足够大的模型。
 
-The 2048-token default is a significant limiter for web search. For better RAG results with web content, use at least 8192 tokens, with 16384+ being ideal for complex web pages.
+对 Web Search 而言，2048 token 是非常明显的瓶颈。想获得更好的网页 RAG 效果，至少建议 8192 token，复杂网页则最好 16384+。
 
-**Alternative:** Use an external LLM with larger context capacity (e.g., GPT-4o, Claude, Gemini with 8k+ context). Comparing results with a large-context model is a good way to isolate whether token limits are the bottleneck.
+**替代方案：** 使用上下文更大的外部 LLM（例如 GPT-4o、Claude、Gemini 8k+ 版本）。如果你想确认瓶颈是否来自上下文窗口，最好的办法之一就是拿一个大上下文模型做对照。
 
 :::tip
-
-For web search and complex document analysis, stick with models that support 8192+ token contexts in production use cases.
-
+在生产场景中做 Web Search 和复杂文档分析时，尽量使用支持 8192+ token 上下文的模型。
 :::
 
 ---
 
-### 4. Embedding Model is Low-Quality or Mismatched
+### 4. 嵌入模型质量差或不匹配
 
-Bad embeddings = bad retrieval. If the vector representation of your content is poor, the retriever won't pull the right content—no matter how powerful your LLM is.
+嵌入差 = 检索差。如果你的向量表示质量不够，retriever 就拿不到正确内容——无论后面的 LLM 多强都没用。
 
-**Solution:**
+**解决方法：**
 
-- Change to a high-quality embedding model (e.g., all-MiniLM-L6-v2, Instructor X, or OpenAI embeddings)
-- Go to: **Admin Settings > Documents**
-- After changing the model, be sure to:
-After changing the model, **reindex all existing documents** so the new embeddings take effect. Embedding quality directly affects what content is retrieved.
+- 切换到更高质量的嵌入模型（例如 all-MiniLM-L6-v2、Instructor X，或 OpenAI embeddings）
+- 前往：**Admin Settings > Documents**
+- 更换模型后，请务必：
+  - **重新索引全部现有文档**，让新的 embeddings 生效
 
 ---
 
-### 5. 400: 'NoneType' object has no attribute 'encode'
+<span id="5-400-nonetype-object-has-no-attribute-encode"></span>
+### 5. 400: 'NoneType' object has no attribute 'encode' {#5-400-nonetype-object-has-no-attribute-encode}
 
-This error indicates a misconfigured or missing embedding model. When Open WebUI tries to create embeddings but doesn't have a valid model loaded, it can't process the text—and the result is this cryptic error.
+这个错误通常表示嵌入模型未正确配置或根本没有可用模型。当 Open WebUI 试图创建 embedding，却没有有效模型可用时，它无法处理文本，于是就会出现这个看似晦涩的错误。
 
-**Cause:**
-- Your embedding model isn't set up properly.
-- It might not have downloaded completely.
-- Or if you're using an external embedding model, it may not be accessible.
+**原因：**
+- 嵌入模型没有正确配置
+- 模型可能没有下载完整
+- 如果你使用的是外部嵌入模型，它可能当前不可访问
 
-**Solution:**
+**解决方法：**
 
-- Go to: **Admin Settings > Documents > Embedding Model**
-- Save the embedding model again—even if it's already selected. This forces a recheck/download.
-- If you're using a remote/external embedding tool, make sure it's running and accessible to Open WebUI.
+- 前往：**Admin Settings > Documents > Embedding Model**
+- 即使该模型看起来已经选中，也请再保存一次，以强制重新检查/下载
+- 如果你使用的是远程/外部嵌入服务，请确认它正在运行，并且 Open WebUI 能访问它
 
 :::tip
-
-After fixing the configuration, try re-embedding a document and verify no error is shown in the logs.
-
+修复配置后，请重新对某个文档执行嵌入，并确认日志中不再出现该错误。
 :::
 
 ---
 
-### 6. Upload Limits and Restrictions
+### 6. 上传限制与约束
 
-Open WebUI implements various limits to ensure system stability and prevent abuse. It is important to understand how these limits apply to different upload methods:
+Open WebUI 提供了多种上传限制，用于保证系统稳定与防止滥用。不同上传方式受限方式不同：
 
-*   **Chat Uploads:** Subject to global file size and count limits.
-    *   **Max File Size:** Controlled by `RAG_FILE_MAX_SIZE` (default: Unlimited). Configurable in **Admin Panel > Settings > Documents > General > Max Upload Size**.
-    *   **Max File Count:** Controlled by `RAG_FILE_MAX_COUNT` (default: Unlimited). Configurable in **Admin Panel > Settings > Documents > General > Max Upload Count**.
-    *   **Allowed File Extensions:** Controlled by `RAG_ALLOWED_FILE_EXTENSIONS` (default: All). Configurable in **Admin Panel > Settings > Documents > General > Allowed File Extensions**.
-*   **Folder Uploads:** Subject to the `FOLDER_MAX_FILE_COUNT` [environment variable](/reference/env-configuration/#folder_max_file_count) (defaults to 100). This limit applies to the number of files directly associated with a folder.
-*   **Knowledge Base Uploads:**
-    *   **File Limit:** Subject to the same `RAG_FILE_MAX_SIZE` limit as chats, but **not** subject to the `RAG_FILE_MAX_COUNT` limit, allowing for unlimited file uploads.
-    *   **RAG Enforcement:** All files uploaded to a Knowledge Base are automatically indexed. However, similar to chat uploads, Knowledge Bases can also be used in **Full Context Mode** (accessible in chat settings), which feeds the full document content to the model instead of using vector search retrieval.
+- **聊天上传：** 受全局文件大小和文件数量限制
+  - **最大文件大小：** 由 `RAG_FILE_MAX_SIZE` 控制（默认不限），可在 **Admin Panel > Settings > Documents > General > Max Upload Size** 中配置
+  - **最大文件数量：** 由 `RAG_FILE_MAX_COUNT` 控制（默认不限），可在 **Admin Panel > Settings > Documents > General > Max Upload Count** 中配置
+  - **允许的文件扩展名：** 由 `RAG_ALLOWED_FILE_EXTENSIONS` 控制（默认全部允许），可在 **Admin Panel > Settings > Documents > General > Allowed File Extensions** 中配置
+- **文件夹上传：** 受 `FOLDER_MAX_FILE_COUNT` [environment variable](/reference/env-configuration/#folder_max_file_count) 限制（默认 100），限制的是与文件夹直接关联的文件数
+- **知识库上传：**
+  - **文件大小限制：** 与聊天上传相同，受 `RAG_FILE_MAX_SIZE` 约束
+  - **文件数量限制：** **不受** `RAG_FILE_MAX_COUNT` 限制，因此可上传无限数量的文件
+  - **RAG 行为：** 上传到 Knowledge Base 的所有文件都会自动建立索引；但与聊天上传类似，Knowledge Base 也可以在聊天设置里启用 **Full Context Mode**，直接把完整文档内容注入模型，而不是使用向量检索
 
 :::info
-By separating these limits, administrators can better manage resource usage across different features. For example, you might want to allow larger uploads in a curated Knowledge Base while restricting the number of files in ad-hoc Folder uploads.
+这些限制被拆分控制后，管理员就能更精细地管理不同功能的资源占用。例如，你可以允许在精心维护的 Knowledge Base 中上传更大的文件，同时限制临时 Folder 上传的文件数量。
 :::
 
 ---
 
-### 7. Fragmented or Tiny Chunks
+### 7. Chunk 过于碎片化或太小
 
-When using the **Markdown Header Splitter**, documents can sometimes be split into very small fragments (e.g., just a table of contents entry or a short sub-header). These tiny chunks often lack enough semantic context for the embedding model to represent them accurately, leading to poor RAG results and unnecessary overhead.
+使用 **Markdown Header Splitter** 时，文档有时会被切得很碎（例如只剩一条目录项或一个很短的小标题）。这类小 chunk 往往缺乏足够语义上下文，嵌入模型难以准确表示，最终导致 RAG 效果差，而且还带来额外开销。
 
-**Solution:**
+**解决方法：**
 
-- Go to **Admin Settings > Documents**.
-- Increase the **Chunk Min Size Target**.
-- Setting this to a value like `1000` (or ~50-60% of your `CHUNK_SIZE`) merges small fragments with neighboring chunks, resulting in better semantic coherence and fewer total chunks.
-
----
-
-### 8. Slow Follow-up Responses (KV Cache Invalidation)
-
-If your initial response is fast but follow-up questions become increasingly slow, you are likely experiencing **KV Cache invalidation**.
-
-**The Problem**: By default, Open WebUI injects RAG context into the **user message**. As the chat progresses, new messages shift the position of this context, forcing models (like Ollama, llama.cpp, or vLLM) and cloud providers (like OpenAI or Vertex AI) to re-process the entire context for every turn.
-
-**Solution:**
-- Set the environment variable `RAG_SYSTEM_CONTEXT=True`.
-- This injects the RAG context into the **system message**, which stays at a fixed position at the start of the conversation.
-- This allows providers to effectively use **KV prefix caching** or **Prompt Caching**, resulting in nearly instant follow-up responses even with large documents.
+- 前往 **Admin Settings > Documents**
+- 提高 **Chunk Min Size Target**
+- 例如设置为 `1000`（或约为 `CHUNK_SIZE` 的 50-60%），这样系统会把过小碎片与相邻 chunk 合并，获得更好的语义一致性，也能减少总 chunk 数量
 
 ---
 
-| Problem | Fix |
+### 8. 追问越来越慢（KV Cache 失效）
+
+如果首轮回答很快，但后续追问越来越慢，你大概率遇到了 **KV Cache invalidation**。
+
+**问题根源：** 默认情况下，Open WebUI 会把 RAG 上下文注入到 **user message**。随着对话继续，用户消息位置不断向后移动，这会迫使 Ollama、llama.cpp、vLLM 以及 OpenAI、Vertex AI 等提供商不断重新处理整段上下文。
+
+**解决方法：**
+- 设置环境变量 `RAG_SYSTEM_CONTEXT=True`
+- 这样 RAG 上下文会被注入到 **system message**，其位置固定在对话开头
+- 这能让提供商更有效地利用 **KV prefix caching** 或 **Prompt Caching**，即使文档很大，也能让后续追问接近瞬时返回
+
+---
+
+| 问题 | 修复方式 |
 |--------|------|
-| 🤔 Model can't "see" content | Check document extractor settings |
-| 🧹 Only part of content used | Enable Full Context Mode or Bypass Embedding |
-| ⏱ Limited by 2048 token cap | Increase model context length or use large-context LLM |
-| 📉 Inaccurate retrieval | Switch to a better embedding model, then reindex |
-| ❌ Upload limits bypass | Use Folder uploads (with `FOLDER_MAX_FILE_COUNT`); Knowledge Base limits are separate |
-| 🧩 Fragmented/Tiny Chunks | Increase **Chunk Min Size Target** to merge small sections |
-| 🐌 Slow follow-up responses | Enable `RAG_SYSTEM_CONTEXT=True` to fix KV cache invalidation |
-| 📄 API returns "empty content" | Wait for file processing to complete before adding to knowledge base |
-| 💥 CUDA OOM during embedding | Reduce batch size, isolate GPU, or restart container |
-| 📷 PDF images not extracted | Use Tika/Docling, enable OCR, or update pypdf |
-| 💀 Worker dies during upload (instant) | Switch away from default ChromaDB (SQLite) in multi-worker setups |
-| 💀 Worker dies during upload (timeout) | Update Open WebUI, or increase `--timeout-worker-healthcheck` |
-| 🧠 Model ignores attached KB | Enable Builtin Tools, add system prompt hints, or disable native function calling |
+| 🤔 模型看不到内容 | 检查文档提取器设置 |
+| 🧹 只使用了部分内容 | 启用 Full Context Mode 或 Bypass Embedding |
+| ⏱ 受 2048 token 限制 | 增大模型上下文，或使用大上下文 LLM |
+| 📉 检索不准确 | 切换到更好的嵌入模型并重新索引 |
+| ❌ 上传限制受阻 | 使用 Folder 上传（配合 `FOLDER_MAX_FILE_COUNT`）；Knowledge Base 限制单独计算 |
+| 🧩 Chunk 过碎 / 过小 | 提高 **Chunk Min Size Target** 合并小片段 |
+| 🐌 追问越来越慢 | 启用 `RAG_SYSTEM_CONTEXT=True` 修复 KV Cache 失效 |
+| 📄 API 返回 “empty content” | 等文件处理完成后再加入知识库 |
+| 💥 嵌入时 CUDA OOM | 降低 batch size、隔离 GPU、或重启容器 |
+| 📷 PDF 图片无法提取 | 使用 Tika/Docling、启用 OCR、或更新 pypdf |
+| 💀 上传时 worker 瞬时死亡 | 在多 worker 下不要继续使用默认 ChromaDB（SQLite） |
+| 💀 上传时 worker 超时死亡 | 更新 Open WebUI，或提高 `--timeout-worker-healthcheck` |
+| 🧠 模型忽略已附加 KB | 启用 Builtin Tools、加系统提示、或关闭 native function calling |
 
 ---
 
-### 9. API File Upload: "The content provided is empty" Error
+<span id="9-api-file-upload-the-content-provided-is-empty-error"></span>
+### 9. API 文件上传：“The content provided is empty” 错误 {#9-api-file-upload-the-content-provided-is-empty-error}
 
-When uploading files via the API and immediately adding them to a knowledge base, you may encounter:
+通过 API 上传文件后立即把它加入知识库时，你可能会遇到：
 
 ```
 400: The content provided is empty. Please ensure that there is text or data present before proceeding.
 ```
 
-**The Problem**: This is a **race condition**, not an actual empty file. By default, file uploads are processed asynchronously—the upload endpoint returns immediately with a file ID while content extraction and embedding computation happen in the background. If you try to add the file to a knowledge base before processing completes, the system sees empty content.
+**问题根源：** 这其实是**竞争条件**，并不是真的空文件。默认情况下，文件上传是异步处理的——上传 endpoint 会立即返回文件 ID，而内容提取与 embedding 计算会在后台进行。如果你在处理完成前就把文件加入知识库，系统看到的内容自然还是空的。
 
-✅ **Solution: Wait for Processing to Complete**
+✅ **解决方法：等待处理完成**
 
-Before adding a file to a knowledge base, poll the status endpoint until processing is done:
+在把文件加入知识库之前，先轮询状态 endpoint：
 
 ```python
 import requests
@@ -204,251 +199,236 @@ import time
 def wait_for_processing(token, file_id, timeout=300):
     url = f'http://localhost:3000/api/v1/files/{file_id}/process/status'
     headers = {'Authorization': f'Bearer {token}'}
-    
+
     start_time = time.time()
     while time.time() - start_time < timeout:
         response = requests.get(url, headers=headers)
         status = response.json().get('status')
-        
+
         if status == 'completed':
             return True
         elif status == 'failed':
             raise Exception(f"Processing failed: {response.json().get('error')}")
-        
-        time.sleep(2)  # Poll every 2 seconds
-    
+
+        time.sleep(2)  # 每 2 秒轮询一次
+
     raise TimeoutError("File processing timed out")
 ```
 
-**Status Values:**
-| Status | Meaning |
+**状态值说明：**
+| Status | 含义 |
 |--------|---------|
-| `pending` | Still processing |
-| `completed` | Ready to add to knowledge base |
-| `failed` | Processing failed (check error field) |
+| `pending` | 仍在处理中 |
+| `completed` | 可加入知识库 |
+| `failed` | 处理失败（检查 error 字段） |
 
 :::tip
-For complete API workflow examples including proper status checking, see the [API Endpoints documentation](/reference/api-endpoints#checking-file-processing-status).
+完整 API 工作流示例（包括正确的状态检查）请参阅 [API Endpoints documentation](/reference/api-endpoints#checking-file-processing-status)。
 :::
 
 ---
 
-### 10. CUDA Out of Memory During Embedding
+<span id="10-cuda-out-of-memory-during-embedding"></span>
+### 10. 嵌入时 CUDA Out of Memory {#10-cuda-out-of-memory-during-embedding}
 
-When processing large files or many files in sequence, you may encounter CUDA OOM errors like:
+在处理大文件或连续处理很多文件时，你可能会遇到如下 CUDA OOM 错误：
 
 ```
 CUDA out of memory. Tried to allocate X MiB. GPU has a total capacity of Y GiB of which Z MiB is free.
 ```
 
-**Common Causes:**
-- Embedding model competing with chat model for GPU memory
-- PyTorch memory fragmentation from repeated small allocations
-- Large documents creating memory spikes during embedding
+**常见原因：**
+- 嵌入模型与聊天模型争抢 GPU 显存
+- PyTorch 重复小规模分配导致内存碎片化
+- 大文档在嵌入阶段造成瞬时内存峰值
 
-✅ **Solutions:**
+✅ **解决方法：**
 
-1. **Isolate Embedding to a Different GPU** (if available):
-   Set `CUDA_VISIBLE_DEVICES` to pin embedding to a specific GPU separate from your chat model.
-
-2. **Reduce Embedding Batch Size**:
-   Lower `RAG_EMBEDDING_BATCH_SIZE` (e.g., from 32 to 8 or 4) to reduce peak memory usage.
-
-3. **Enable Expandable Segments**:
-   Set the environment variable to reduce fragmentation:
+1. **把嵌入任务隔离到另一张 GPU**（如果有）：
+   使用 `CUDA_VISIBLE_DEVICES`，把 embedding 固定到与聊天模型不同的 GPU。
+2. **降低 Embedding Batch Size**：
+   调低 `RAG_EMBEDDING_BATCH_SIZE`（例如从 32 改到 8 或 4），减少峰值显存占用。
+3. **启用 expandable segments**：
    ```
    PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
    ```
-
-4. **Restart Between Large Ingestion Jobs**:
-   If memory fragmentation builds up, restart the Open WebUI container to clear CUDA contexts.
-
-5. **Use Smaller Embedding Models**:
-   Consider using lighter embedding models for bulk ingestion, then switch to higher-quality models for production queries.
-
-6. **Separate Ingestion from Chat**:
-   Don't run the chat model during large ingestion jobs. Load the chat model after embeddings finish.
+4. **大规模导入任务之间重启容器**：
+   如果碎片化越来越严重，重启 Open WebUI 容器可清理 CUDA context。
+5. **换更小的嵌入模型**：
+   批量导入时使用更轻量的 embedding 模型，正式查询再切回高质量模型。
+6. **将导入与聊天分离**：
+   做大规模导入时，不要同时运行聊天模型。先完成 embeddings，再加载聊天模型。
 
 ---
 
-### 10b. 429 Rate Limit Errors During Embedding
+### 10b. 嵌入阶段的 429 限流错误
 
-When using a **remote/external embedding provider** (OpenAI, Azure OpenAI, etc.) with [`ENABLE_ASYNC_EMBEDDING`](/reference/env-configuration#enable_async_embedding) enabled, you may see HTTP 429 "Too Many Requests" errors in the logs during bulk document ingestion:
+当你使用**远程/外部嵌入提供商**（OpenAI、Azure OpenAI 等），并启用了 [`ENABLE_ASYNC_EMBEDDING`](/reference/env-configuration#enable_async_embedding) 时，在批量导入文档期间可能会在日志里看到 HTTP 429 “Too Many Requests”：
 
 ```
 Error generating embeddings: 429 Rate limit reached
 ```
 
-**The Problem**: With async embedding enabled, Open WebUI sends embedding requests concurrently. If you're ingesting many documents or large documents at once, this can easily exceed your provider's API rate limits — especially on free-tier or lower-tier plans.
+**问题根源：** 启用异步嵌入后，Open WebUI 会并发发送 embedding 请求。如果一次性导入很多文档或特别大的文档，很容易超过提供商 API 的限流，尤其是在免费层或较低套餐下。
 
-✅ **Solutions:**
+✅ **解决方法：**
 
-1. **Limit Concurrent Embedding Requests**:
-   Set [`RAG_EMBEDDING_CONCURRENT_REQUESTS`](/reference/env-configuration#rag_embedding_concurrent_requests) to cap the number of simultaneous embedding API calls. For example, set it to `5` or `10` depending on your provider's rate limits:
+1. **限制并发嵌入请求数**：
+   通过 [`RAG_EMBEDDING_CONCURRENT_REQUESTS`](/reference/env-configuration#rag_embedding_concurrent_requests) 限制同时进行的 embedding API 调用数，例如设置成 `5` 或 `10`：
    ```yaml
-   # docker-compose.yaml
    environment:
      RAG_EMBEDDING_CONCURRENT_REQUESTS: 5
    ```
-   Or configure it in the **Admin Panel > Settings > Documents > Concurrent Requests** field. The default of `0` means unlimited concurrency.
+   也可以在 **Admin Panel > Settings > Documents > Concurrent Requests** 中设置。默认 `0` 表示不限制并发。
+2. **降低 batch size**：
+   调低 [`RAG_EMBEDDING_BATCH_SIZE`](/reference/env-configuration#rag_embedding_batch_size)，减少单次 API 调用发送的文本量。
+3. **关闭异步嵌入**：
+   如果限流问题始终存在，可以把 `ENABLE_ASYNC_EMBEDDING` 设为 `False`，按顺序处理嵌入（更慢，但更稳定）。
 
-2. **Reduce Batch Size**:
-   Lower [`RAG_EMBEDDING_BATCH_SIZE`](/reference/env-configuration#rag_embedding_batch_size) to send fewer texts per API call.
+### 11. PDF OCR 没有提取出图片中的文字
 
-3. **Disable Async Embedding**:
-   If rate limits remain an issue, set `ENABLE_ASYNC_EMBEDDING` to `False` to process embeddings sequentially (slower but avoids rate limit pressure).
+如果包含图片文字的 PDF 上传后返回空内容：
 
-### 11. PDF OCR Not Extracting Text from Images
+**问题根源：** 默认的 `pypdf` 提取器对某些 PDF 格式支持有限，尤其是以图片为主的 PDF。
 
-If PDFs containing images with text are returning empty content:
+✅ **解决方法：**
 
-**The Problem**: The default "pypdf" content extractor may struggle with certain PDF formats, especially those containing primarily image-based content.
-
-✅ **Solutions:**
-
-1. **Use a Different Content Extraction Engine**:
-   - Navigate to **Admin Settings > Documents**
-   - Try **Apache Tika** or **Docling** for better OCR support
-
-2. **Enable PDF Image Extraction**:
-   - In **Admin Settings > Documents**, ensure **PDF Extract Images (OCR)** is enabled
-
-3. **Update pypdf** (if using the default engine):
-   Recent pypdf releases (6.0.0+) have improved handling of various PDF formats
-
-4. **Check for Corrupted PDFs**:
-   Verify the PDF opens correctly in a standard PDF viewer before uploading
+1. **改用其他内容提取引擎**：
+   - 前往 **Admin Settings > Documents**
+   - 尝试 **Apache Tika** 或 **Docling**，它们通常有更好的 OCR 支持
+2. **启用 PDF 图像提取**：
+   - 在 **Admin Settings > Documents** 中确认 **PDF Extract Images (OCR)** 已开启
+3. **更新 pypdf**：
+   新版本 pypdf（6.0.0+）对各类 PDF 格式处理更好
+4. **检查 PDF 是否损坏**：
+   上传前先确认该 PDF 能在常规 PDF 阅读器中正常打开
 
 ---
 
-### 12. Worker Dies During Document Upload
+<span id="12-worker-dies-during-document-upload"></span>
+### 12. 文档上传期间 worker 死亡 {#12-worker-dies-during-document-upload}
 
-When uploading documents in a **multi-worker** deployment, you may see:
+在**多 worker** 部署中上传文档时，你可能会看到：
 
 ```
 INFO:     Waiting for child process [12]
 INFO:     Child process [12] died
 ```
 
-There are **two distinct causes** for this in multi-worker setups:
+在多 worker 场景下，这通常有**两类不同原因**：
 
-#### Cause A: ChromaDB SQLite + Fork (Instant Crash)
+#### 原因 A：ChromaDB SQLite + Fork（瞬时崩溃）
 
-If you are using the **default ChromaDB** vector database (which uses a local SQLite-backed `PersistentClient`) with `UVICORN_WORKERS > 1`, the crash is caused by SQLite being **not fork-safe**. When uvicorn forks multiple workers, each process inherits the same SQLite database connection. Concurrent writes to the vector database from multiple workers cause an immediate crash — not a timeout, but an instant fatal error.
+如果你使用的是**默认 ChromaDB**（本地 SQLite 支持的 `PersistentClient`），并且设置了 `UVICORN_WORKERS > 1`，那么崩溃原因就是 SQLite **不具备 fork-safe 特性**。uvicorn fork 多个 worker 后，每个进程都会继承同一个 SQLite 连接；多个 worker 同时写向量数据库时，就会导致瞬时崩溃，而不是慢慢超时。
 
-You will typically see this pattern all within the same second:
+典型日志通常会在同一秒内出现：
 ```
 save_docs_to_vector_db:1619 - adding to collection file-id
 INFO:     Waiting for child process [pid]
 INFO:     Child process [pid] died
 ```
 
-**Solution:** You **must** switch away from the default local ChromaDB when using multiple workers:
-- Set [`VECTOR_DB`](/reference/env-configuration#vector_db) to `pgvector`, `mariadb-vector`, `milvus`, or `qdrant`
-- Or run ChromaDB as a separate HTTP server and set [`CHROMA_HTTP_HOST`](/reference/env-configuration#chroma_http_host) / [`CHROMA_HTTP_PORT`](/reference/env-configuration#chroma_http_port)
+**解决方法：** 使用多 worker 时，你**必须**停止使用默认本地 ChromaDB：
+- 将 [`VECTOR_DB`](/reference/env-configuration#vector_db) 改为 `pgvector`、`mariadb-vector`、`milvus` 或 `qdrant`
+- 或者把 ChromaDB 作为独立 HTTP 服务运行，并配置 [`CHROMA_HTTP_HOST`](/reference/env-configuration#chroma_http_host) / [`CHROMA_HTTP_PORT`](/reference/env-configuration#chroma_http_port)
 
-See the [Scaling & HA guide](/troubleshooting/multi-replica#6-worker-crashes-during-document-upload-chromadb--multi-worker) for full details.
+完整说明请参见 [扩缩容与高可用指南](/troubleshooting/multi-replica#6-worker-crashes-during-document-upload-chromadb--multi-worker)。
 
-#### Cause B: SentenceTransformers Health Check Timeout (Older Versions)
+#### 原因 B：SentenceTransformers 健康检查超时（旧版本）
 
-When using the **default SentenceTransformers** embedding engine (local embeddings) with multiple workers, uvicorn monitors worker health via periodic pings. The default health check timeout is just **5 seconds**. In older versions of Open WebUI, the embedding call blocked the event loop entirely — preventing the worker from responding to health checks. Uvicorn then killed the worker as unresponsive.
+当你使用**默认 SentenceTransformers** 嵌入引擎（本地嵌入）并启用多个 worker 时，uvicorn 会通过定期 ping 监控 worker 健康。默认健康检查超时仅有 **5 秒**。在旧版本 Open WebUI 中，embedding 调用会阻塞事件循环，worker 因而无法响应健康检查，最终被 uvicorn 判定为无响应并杀掉。
 
 :::note
+这个问题已经在 Open WebUI 中修复。现在 embedding 系统使用 `run_coroutine_threadsafe` 保持主事件循环可响应，因此无论嵌入耗时多久，worker 都不应再因为这个原因在上传期间被杀死。
 
-This issue was **fixed** in Open WebUI. The embedding system now uses `run_coroutine_threadsafe` to keep the main event loop responsive during embedding operations, so workers will no longer be killed during uploads regardless of how long embeddings take.
-
-If you are running a version with this fix and still experiencing worker death, check **Cause A** above (ChromaDB SQLite) first, then ensure your Open WebUI is up to date.
-
+如果你已经使用包含该修复的版本，但仍看到 worker 死亡，请先优先检查上面的**原因 A**（ChromaDB SQLite），然后确认 Open WebUI 是否已更新到最新版本。
 :::
 
-**Who is affected:**
-- Only deployments using the **default SentenceTransformers** embedding engine (local embeddings).
-- Only when running **multiple uvicorn workers**. Single-worker deployments don't have health check timeouts.
-- External embedding engines (Ollama, OpenAI, Azure OpenAI) are **not affected** since their API calls don't block the event loop.
+**谁会受到影响：**
+- 仅限使用**默认 SentenceTransformers** 嵌入引擎（本地嵌入）的部署
+- 仅限启用了**多个 uvicorn worker** 的部署；单 worker 部署没有健康检查超时问题
+- 外部嵌入引擎（Ollama、OpenAI、Azure OpenAI）**不受影响**，因为它们的 API 调用不会阻塞事件循环
 
-✅ **Solutions (for older versions without the fix):**
+✅ **解决方法（适用于尚未包含修复的旧版本）：**
 
-1. **Update Open WebUI** to a version that includes the `run_coroutine_threadsafe` fix.
-
-2. **Increase the health check timeout** as a workaround:
+1. **升级 Open WebUI** 到包含 `run_coroutine_threadsafe` 修复的版本。
+2. **提高健康检查超时**，作为临时解决方案：
    ```yaml
-   # docker-compose.yaml
    command: ["bash", "start.sh", "--workers", "2", "--timeout-worker-healthcheck", "120"]
    ```
-
-3. **Switch to an external embedding engine** to avoid local blocking entirely:
+3. **切换到外部嵌入引擎**，避免本地阻塞：
    ```
    RAG_EMBEDDING_ENGINE=ollama
    RAG_EMBEDDING_MODEL=nomic-embed-text
    ```
-
-4. **Optionally set a safety timeout** via [`RAG_EMBEDDING_TIMEOUT`](/reference/env-configuration#rag_embedding_timeout) to abort abnormally long embedding operations (does not affect health checks).
+4. **可选：设置安全超时**，通过 [`RAG_EMBEDDING_TIMEOUT`](/reference/env-configuration#rag_embedding_timeout) 中止异常长时间的 embedding 操作（这不会影响健康检查机制本身）。
 
 ---
 
-### 13. Knowledge Base Attached to Model Not Working
+<span id="13-knowledge-base-attached-to-model-not-working"></span>
+### 13. 模型附加的 Knowledge Base 不生效 {#13-knowledge-base-attached-to-model-not-working}
 
-You attached a knowledge base to a model in **Workspace > Models > Edit**, but when you chat with the model it doesn't seem to know about the knowledge base content at all.
+你在 **Workspace > Models > Edit** 中把某个知识库附加到了模型上，但聊天时模型似乎完全不知道知识库里的内容。
 
-**The Problem**: Open WebUI has two distinct RAG modes, and they handle model-attached knowledge bases very differently:
+**问题根源：** Open WebUI 现在有两种不同的 RAG 模式，而模型附加知识库在这两种模式下的工作方式完全不同：
 
-| Mode | How Knowledge Works |
+| 模式 | 知识的工作方式 |
 |------|-------------------|
-| **Default (non-native)** | Open WebUI automatically performs RAG — it queries the attached knowledge base, retrieves relevant chunks, and injects them into the conversation context. This happens behind the scenes without the model doing anything. |
-| **Native Function Calling** | Knowledge is **not auto-injected**. Instead, the model receives tools (like `query_knowledge_bases`) and must actively decide to call them. This is **agentic RAG** — the model autonomously searches when it determines it needs information. |
+| **Default（非 native）** | Open WebUI 会自动执行 RAG——查询附加的知识库、检索相关 chunk，并把它们注入会话上下文。整个过程由系统在幕后完成。 |
+| **Native Function Calling** | 知识**不会自动注入**。模型收到的是工具（如 `query_knowledge_bases`），它必须主动决定何时调用。这是 **agentic RAG**——模型自主判断何时需要搜索知识。 |
 
-If you have **Native Function Calling enabled**, the model needs both the **ability** and the **instruction** to use the knowledge tools.
+如果你启用了 **Native Function Calling**，那么模型必须同时具备**使用工具的能力**和**被明确引导去使用工具**。
 
-#### Knowledge Retrieval Behavior Matrix
+#### 知识检索行为矩阵
 
-| | **KB Attached to Model** | **No KB Attached** |
+| | **模型附加了 KB** | **没有附加 KB** |
 |---|---|---|
-| **Default Mode** | Open WebUI auto-injects RAG results from the **attached KB(s) only** | No automatic RAG — user must manually add a knowledge base to the chat via `#` |
-| **Native Function Calling** | Model receives tools scoped to **attached KB(s) only** — must actively call them | Model receives tools with access to **all accessible KBs** (if Builtin Tools enabled) — must actively call them |
+| **Default Mode** | Open WebUI 只会自动注入**附加 KB** 的 RAG 结果 | 不会自动执行 RAG——用户必须通过 `#` 手动把知识库加入聊天 |
+| **Native Function Calling** | 模型收到的工具只允许访问**附加 KB**——仍需主动调用 | 如果启用了 Builtin Tools，模型会收到能访问**所有可访问 KB** 的工具——仍需主动调用 |
 
-Key takeaway: in Native Mode (the supported mode), the model must use its knowledge tools regardless — attaching a KB only restricts *which* KBs are searchable. Default Mode's auto-injection behavior is documented here for legacy deployments only; Default Mode is no longer supported and all models should be on Native Mode.
+关键结论：在 Native Mode（当前受支持模式）下，模型无论如何都必须使用知识工具；附加 KB 只是限制“可以搜索哪些 KB”。Default Mode 的自动注入行为只针对历史部署做兼容说明；Default Mode 已不再受支持，所有模型都应迁移到 Native Mode。
 
-:::tip Preventing Knowledge Base Access in Native Mode
-If you want to prevent a model from accessing **any** knowledge base in native mode, you don't need to disable Builtin Tools entirely. Instead, disable only the **Knowledge Base** category in **Workspace > Models > Edit > Builtin Tools**. This removes all knowledge-related tools while keeping other builtin tools (web search, memory, notes, etc.) active. See [Granular Builtin Tool Categories](/features/extensibility/plugin/tools#granular-builtin-tool-categories-per-model) for the full list of categories.
+:::tip 在 Native Mode 下阻止模型访问知识库
+如果你想阻止某个模型在 native mode 下访问**任何**知识库，不需要关闭整个 Builtin Tools。你只需在 **Workspace > Models > Edit > Builtin Tools** 中关闭 **Knowledge Base** 这个类别。这样会移除所有知识相关工具，但保留其他内置工具（web search、memory、notes 等）。完整分类请参阅 [Granular Builtin Tool Categories](/features/extensibility/plugin/tools#granular-builtin-tool-categories-per-model)。
 :::
 
-![Builtin Tools categories in the Model Editor](/images/features/plugin/tools/builtin_tools.png)
+![模型编辑器中的 Builtin Tools 分类](/images/features/plugin/tools/builtin_tools.png)
 
-✅ **Solutions (check in order):**
+✅ **建议按以下顺序检查：**
 
-1. **Check Global Model Settings first**:
-   - Go to **Admin Panel > Settings > Models > ⚙️ (gear icon)**
-   - Expand **Model Parameters** and check if **Function Calling** is set to `native`
-   - If it is, this **overrides all models** that don't explicitly set their own `function_calling` parameter — even if you never intended for a specific model to use native mode
-   - Either change the global setting to `default`, or explicitly set `function_calling` in the per-model **Advanced Params** to override the global value
-   - Also check the **Model Capabilities** section — if **File Context** is disabled globally, RAG won't process files for any model that doesn't explicitly enable it
+1. **先检查全局模型设置：**
+   - 前往 **Admin Panel > Settings > Models > ⚙️（齿轮图标）**
+   - 展开 **Model Parameters**，确认 **Function Calling** 是否被设为 `native`
+   - 如果是，它会**覆盖所有没有显式设置自身 `function_calling` 参数的模型**——即使你原本并不希望某个特定模型使用 native mode
+   - 可以把全局设置改回 `default`，或者在每个模型的 **Advanced Params** 中显式设置 `function_calling` 来覆盖全局值
+   - 同时检查 **Model Capabilities**，如果全局关闭了 **File Context**，那么未显式开启该能力的模型都不会处理 RAG 文件
 
-:::warning Global Settings Override
-The most common cause of this issue is a global `Function Calling: native` setting in **Admin Panel > Settings > Models > ⚙️ > Model Parameters**. This silently applies to **every model** that doesn't explicitly set its own `function_calling` parameter. Per-model settings in **Workspace > Models > Edit > Advanced Params** will override the global default, but only if explicitly set — a model that simply doesn't have `function_calling` configured will inherit the global value.
+:::warning 全局设置会覆盖单模型默认行为
+这个问题最常见的根源，是 **Admin Panel > Settings > Models > ⚙️ > Model Parameters** 中把全局 `Function Calling` 设为了 `native`。这会悄悄应用到**每个没有显式设置 `function_calling` 的模型**上。只有在 **Workspace > Models > Edit > Advanced Params** 中为某个模型明确设置了值，才会覆盖全局默认。
 :::
 
-2. **Ensure Built-in Tools are enabled for the model** (if using native mode):
-   - Go to **Workspace > Models > Edit** for your model
-   - Under **Builtin Tools**, make sure the **Knowledge Base** category is enabled (it is by default)
-   - If this is disabled, the model has no way to query attached knowledge bases
+2. **确认该模型已启用 Builtin Tools**（适用于 native mode）：
+   - 进入该模型的 **Workspace > Models > Edit**
+   - 在 **Builtin Tools** 下确认 **Knowledge Base** 类别已启用（默认启用）
+   - 如果被关闭，模型就没有任何途径去查询附加知识库
 
-3. **Add a system prompt hint** (if using native mode):
-   - Some models need explicit guidance to use their tools. Add something like:
-     > "When users ask questions, first use list_knowledge_bases to see what knowledge is available, then use query_knowledge_bases to search for relevant information before answering."
+3. **加入系统提示词引导**（适用于 native mode）：
+   - 一些模型需要更明确的工具使用提示，可加入类似内容：
+     > “When users ask questions, first use list_knowledge_bases to see what knowledge is available, then use query_knowledge_bases to search for relevant information before answering.”
 
-4. **Or disable Native Function Calling** for that model:
-   - In the model settings, disable Native Function Calling to restore the classic auto-injection RAG behavior from earlier versions
+4. **或者为该模型关闭 Native Function Calling：**
+   - 在模型设置中关闭 Native Function Calling，恢复早期版本中经典的自动注入式 RAG 行为
 
-5. **Or use Full Context mode**:
-   - Click on the attached knowledge base and select **"Use Entire Document"**
-   - This bypasses RAG entirely and always injects the full content, regardless of native function calling settings
+5. **或者使用 Full Context mode：**
+   - 点击已附加的知识库并选择 **“Use Entire Document”**
+   - 这样会完全绕过 RAG，无论 native function calling 设置如何，都会始终注入完整文档内容
 
-:::info Why the Change?
-Open WebUI is moving toward **agentic RAG**, where the model autonomously decides when and how to search knowledge bases. This is more powerful than classic RAG because the model can retry searches with different queries if the first attempt didn't yield good results. However, it does require models that are capable of using tools effectively. For smaller or older models that struggle with tool calling, disabling Native Function Calling is the recommended approach.
+:::info 为什么会这样变化？
+Open WebUI 正在转向 **agentic RAG**：由模型自主决定何时以及如何搜索知识库。相比传统 RAG，这种方式更强大，因为模型可以在第一次搜索效果不佳时改用不同查询重新尝试。但这也要求模型本身具备较好的工具使用能力。对于较小或较旧、工具调用能力不足的模型，推荐直接关闭 Native Function Calling。
 :::
 
-For the full explanation of how knowledge scoping and retrieval modes work, see the [Knowledge documentation](/features/workspace/knowledge#agentic-knowledge-tools) and [File Context vs Builtin Tools](/features/chat-conversations/rag#file-context-vs-builtin-tools).
+关于知识作用域与检索模式的完整说明，请参阅 [Knowledge documentation](/features/workspace/knowledge#agentic-knowledge-tools) 和 [File Context vs Builtin Tools](/features/chat-conversations/rag#file-context-vs-builtin-tools)。
 
 ---
 
-By optimizing these areas—extraction, embedding, retrieval, and model context—you can dramatically improve how accurately your LLM works with your documents.
+把提取、嵌入、检索和模型上下文这些环节都调优好之后，你就能显著提升 LLM 处理文档时的准确性与稳定性。
