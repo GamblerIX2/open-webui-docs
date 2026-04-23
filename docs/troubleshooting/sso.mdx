@@ -1,69 +1,64 @@
 ---
 sidebar_position: 4
-title: "SSO & OAuth"
+title: "SSO 与 OAuth"
 ---
 
-OAuth and Single Sign-On (SSO) provide secure authentication for Open WebUI. When login problems occur, one of these common issues is usually the cause.
+OAuth 和 Single Sign-On（SSO）为 Open WebUI 提供安全认证。当登录出现问题时，通常都能在下面这些常见原因中找到答案。
 
-## Common OAuth/SSO Issues
+## 常见 OAuth/SSO 问题
 
-### 1. WebUI URL Not Configured
-Most OAuth flows require the application's external URL ("redirect URI") so the provider knows where to send users after login. If this is missing, OAuth cannot complete.
+### 1. WebUI URL 未配置
 
-**Solution:**
-- Navigate to: **Admin Settings > General**
-- Ensure your **WebUI URL** field is filled in and points to your deployed instance (e.g., `https://yourwebui.yourdomain.com`)
+大多数 OAuth 流程都需要应用的外部 URL（redirect URI），这样提供商才能在登录后把用户重定向回来。如果缺失，OAuth 无法完成。
+
+**解决方法：**
+- 前往：**Admin Settings > General**
+- 确认 **WebUI URL** 已填写，并且指向你的真实部署地址（例如 `https://yourwebui.yourdomain.com`）
 
 :::tip
-
-Check for typos — OAuth is strict. URLs must match exactly, including `https://`.
-
+注意拼写错误——OAuth 非常严格。URL 必须完全匹配，包括 `https://`。
 :::
 
 ---
 
-### 2. Incorrect Environment Variable Configuration
-This is the **most common cause** of OAuth breakage. A misspelled, omitted, or incorrect environment variable will prevent authentication from working.
+### 2. 环境变量配置错误
 
-**Common Environment Variable Mistakes:**
+这是 OAuth 失效的**最常见原因**。环境变量拼写错误、缺失，或使用了错误名称，都会让认证无法工作。
 
-#### ❌ Non-Existent Variables People Often Use:
-- `OIDC_CONFIG` → Use `OPENID_PROVIDER_URL` instead
-- `WEBUI_OIDC_CLIENT_ID` → Use `OAUTH_CLIENT_ID` instead
-- `WEBUI_ENABLE_SSO` → Use `ENABLE_OAUTH_SIGNUP` instead
-- `WEBUI_AUTH_TYPE` → This doesn't exist - configure provider-specific variables instead
-- `OPENID_CLIENT_ID` → Use `OAUTH_CLIENT_ID` instead
-- `OPENID_CLIENT_SECRET` → Use `OAUTH_CLIENT_SECRET` instead
+**常见环境变量错误：**
 
-#### ✅ Correct OIDC Variables:
+#### ❌ 人们经常误用的不存在变量：
+- `OIDC_CONFIG` → 应使用 `OPENID_PROVIDER_URL`
+- `WEBUI_OIDC_CLIENT_ID` → 应使用 `OAUTH_CLIENT_ID`
+- `WEBUI_ENABLE_SSO` → 应使用 `ENABLE_OAUTH_SIGNUP`
+- `WEBUI_AUTH_TYPE` → 这个变量不存在——请改用提供商对应的变量
+- `OPENID_CLIENT_ID` → 应使用 `OAUTH_CLIENT_ID`
+- `OPENID_CLIENT_SECRET` → 应使用 `OAUTH_CLIENT_SECRET`
+
+#### ✅ 正确的 OIDC 变量：
 ```bash
-
-# Required for OIDC
+# OIDC 必需
 OAUTH_CLIENT_ID=your_client_id
 OAUTH_CLIENT_SECRET=your_client_secret
 OPENID_PROVIDER_URL=https://your-provider/.well-known/openid-configuration
 ENABLE_OAUTH_SIGNUP=true
 
-# Optional but recommended
+# 可选但推荐
 OAUTH_PROVIDER_NAME=Your Provider Name
 OAUTH_SCOPES=openid email profile
 OPENID_REDIRECT_URI=https://your-domain/oauth/oidc/callback
 
-# Optional: pass provider-specific authorize params (JSON object)
-# e.g. force consent screen, prefill user/email hint
+# 可选：以 JSON 对象传入提供商特定的 authorize 参数
 OAUTH_AUTHORIZE_PARAMS={"prompt":"consent","login_hint":"user@example.com"}
 ```
 
-#### ✅ Google-specific optional authorize params:
+#### ✅ Google 特有的可选 authorize 参数：
 ```bash
-# Optional: extra Google /authorize params as JSON
 GOOGLE_OAUTH_AUTHORIZE_PARAMS={"prompt":"consent","login_hint":"user@example.com","hd":"example.com"}
 ```
 
-#### ✅ Correct Microsoft Variables:
+#### ✅ 正确的 Microsoft 变量：
 ```bash
-
-# Use these for Microsoft Entra ID
 MICROSOFT_CLIENT_ID=your_client_id
 MICROSOFT_CLIENT_SECRET=your_client_secret
 MICROSOFT_CLIENT_TENANT_ID=your_tenant_id
@@ -71,98 +66,92 @@ OPENID_PROVIDER_URL=https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0/.well-
 ENABLE_OAUTH_SIGNUP=true
 ```
 
-**Solutions:**
-- **Always reference the official [environment configuration documentation](https://docs.openwebui.com/reference/env-configuration/)** for exact variable names
-- Double-check your deployment environment:
-  - Ensure all required environment variables are set exactly as documented
-  - If self-hosting, confirm these variables are present in your Docker Compose, Kubernetes manifest, or `.env` file
-- Restart your backend/app after changing variables so the new values are loaded
+**解决方法：**
+- 始终以官方 [environment configuration documentation](https://docs.openwebui.com/reference/env-configuration/) 为准
+- 逐项检查你的部署环境：
+  - 确认所有必需环境变量都按文档中的精确名字设置
+  - 如果你是自托管，请确认这些变量已出现在 Docker Compose、Kubernetes manifest 或 `.env` 文件中
+- 修改变量后，请重启后端/应用，使新值生效
 
 :::info
+如果你的提供商在 `/authorize` 步骤需要额外参数（例如 `prompt`、`login_hint`、`domain_hint` 或 `resource`），请通过 `OAUTH_AUTHORIZE_PARAMS` 以 JSON 对象形式传入。
 
-If your provider needs extra parameters at the `/authorize` step (for example `prompt`, `login_hint`, `domain_hint`, or `resource`), set them via `OAUTH_AUTHORIZE_PARAMS` as a JSON object.
-
-For Google-specific customization, you can also use `GOOGLE_OAUTH_AUTHORIZE_PARAMS`.
-
+对于 Google 特定定制项，也可以使用 `GOOGLE_OAUTH_AUTHORIZE_PARAMS`。
 :::
 
 :::tip
-
-Most OAuth errors (loops, 401s, unresponsiveness) are due to an environment variable that is incorrectly named, missing entirely, or using an outdated variable name.
-
+大多数 OAuth 错误（循环、401、无响应）都源于环境变量名称错误、完全缺失，或沿用了旧变量名。
 :::
 
 :::warning
-
-**Kubernetes/YAML users:** Watch out for **trailing spaces in environment variable names!** In YAML, quoting a key like `'OAUTH_CLIENT_ID '` (with a trailing space inside the quotes) will set a variable named `OAUTH_CLIENT_ID ` (with a space at the end), which Open WebUI will **not** recognize. Always ensure your env var names have no trailing whitespace:
+**Kubernetes/YAML 用户注意：** 小心**环境变量名尾部的空格**。在 YAML 中，如果你把键写成 `'OAUTH_CLIENT_ID '`（引号内尾部带空格），最终设置出来的变量名就真的是 `OAUTH_CLIENT_ID `，Open WebUI **不会识别**。请确保环境变量名末尾没有任何空白字符：
 
 ```yaml
-# ❌ Wrong — trailing space inside quotes:
+# ❌ 错误：引号内尾部多了空格
 - name: 'OAUTH_CLIENT_ID '
   value: your_client_id
 
-# ✅ Correct — no trailing space:
+# ✅ 正确：没有尾部空格
 - name: OAUTH_CLIENT_ID
   value: your_client_id
 ```
-
 :::
 
 ---
 
-### 3. Missing Required Variables
+### 3. 缺少必需变量
 
-#### OPENID_PROVIDER_URL is Mandatory for OIDC
-Many users forget this critical variable. Without it, OIDC authentication cannot work.
+#### OPENID_PROVIDER_URL 对 OIDC 是必需的
+很多用户会忘记这个关键变量。缺少它时，OIDC 无法工作。
 
-✅ **For Microsoft Entra ID:**
+✅ **Microsoft Entra ID：**
 ```bash
 OPENID_PROVIDER_URL=https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0/.well-known/openid-configuration
 ```
 
-✅ **For Google:**
+✅ **Google：**
 ```bash
 OPENID_PROVIDER_URL=https://accounts.google.com/.well-known/openid-configuration
 ```
 
-✅ **For Authentik:**
+✅ **Authentik：**
 ```bash
 OPENID_PROVIDER_URL=https://your-authentik-domain/application/o/your-app-name/.well-known/openid-configuration
 ```
 
-#### Other Required Variables by Provider:
-- **All OAuth providers:** `WEBUI_URL`, `ENABLE_OAUTH_SIGNUP=true`
-- **Microsoft:** `MICROSOFT_CLIENT_ID`, `MICROSOFT_CLIENT_SECRET`, `MICROSOFT_CLIENT_TENANT_ID`
-- **Google:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-- **OIDC:** `OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`, `OPENID_PROVIDER_URL`
+#### 按提供商分类的其他必需变量：
+- **所有 OAuth 提供商：** `WEBUI_URL`、`ENABLE_OAUTH_SIGNUP=true`
+- **Microsoft：** `MICROSOFT_CLIENT_ID`、`MICROSOFT_CLIENT_SECRET`、`MICROSOFT_CLIENT_TENANT_ID`
+- **Google：** `GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`
+- **OIDC：** `OAUTH_CLIENT_ID`、`OAUTH_CLIENT_SECRET`、`OPENID_PROVIDER_URL`
 
 ---
 
-### 4. Persistent Configuration Conflicts
+### 4. 持久化配置冲突
 
-**Important:** Open WebUI has **two** persistence settings that affect OAuth:
+**重要：** Open WebUI 中有**两个**与 OAuth 相关的持久化设置：
 
-1. **`ENABLE_PERSISTENT_CONFIG`** (defaults to **`true`**) — Controls whether *all* settings (including OAuth) are loaded from the database rather than environment variables, once they've been saved to the DB.
-2. **`ENABLE_OAUTH_PERSISTENT_CONFIG`** (defaults to **`false`**) — An *additional* gate specifically for OAuth settings. When set to `false`, OAuth settings with a config path starting with `oauth.` are **not** loaded from the database, even if `ENABLE_PERSISTENT_CONFIG` is `true`.
+1. **`ENABLE_PERSISTENT_CONFIG`**（默认 **`true`**）——控制所有设置（包括 OAuth）在写入数据库后，是否优先从数据库加载，而不是从环境变量读取。
+2. **`ENABLE_OAUTH_PERSISTENT_CONFIG`**（默认 **`false`**）——这是针对 OAuth 设置的额外开关。当它为 `false` 时，即使 `ENABLE_PERSISTENT_CONFIG` 为 `true`，所有以 `oauth.` 开头的配置路径也**不会**从数据库加载。
 
-By default, OAuth env vars **will** take priority over database values because `ENABLE_OAUTH_PERSISTENT_CONFIG` defaults to `false`. However, if you previously configured OAuth through the Admin Panel, those DB values may have been saved, and they will be loaded if `ENABLE_OAUTH_PERSISTENT_CONFIG` is later set to `true`.
+默认情况下，因为 `ENABLE_OAUTH_PERSISTENT_CONFIG=false`，OAuth 环境变量**会优先于数据库值**。但如果你之前通过 Admin Panel 配过 OAuth，而后面又把 `ENABLE_OAUTH_PERSISTENT_CONFIG` 设为 `true`，那么数据库里的旧值就会重新接管。
 
-#### Symptoms:
-- Changes to environment variables don't take effect after restart
-- Authentication worked once but broke after configuration changes
-- "No token found in localStorage" errors after reconfiguration
+#### 症状：
+- 修改环境变量后，重启仍然不生效
+- 之前能登录，改了配置后突然失效
+- 重新配置后出现 “No token found in localStorage”
 
-**Solutions:**
-1. **For Development/Testing:** Ensure `ENABLE_OAUTH_PERSISTENT_CONFIG=false` (this is already the default) to always read from environment variables
-2. **For Production:** Either:
-   - Configure settings through Admin Panel instead of environment variables, OR
-   - Keep `ENABLE_OAUTH_PERSISTENT_CONFIG=false` (default) so that env vars always take priority for OAuth settings
-3. **Fresh Start:** Delete the database volume and restart with correct configuration
+**解决方法：**
+1. **开发/测试环境：** 保持 `ENABLE_OAUTH_PERSISTENT_CONFIG=false`（默认就是如此），确保始终从环境变量读取
+2. **生产环境：** 二选一：
+   - 通过 Admin Panel 配置 OAuth，而不是依赖环境变量；或
+   - 保持 `ENABLE_OAUTH_PERSISTENT_CONFIG=false`（默认），让 OAuth 仍以环境变量为准
+3. **彻底重来：** 删除数据库 volume，用正确配置重新启动
 
-📌 **Example for Docker Compose:**
+📌 **Docker Compose 示例：**
 ```yaml
 environment:
-  - ENABLE_OAUTH_PERSISTENT_CONFIG=false  # Forces reading from env vars (this is the default)
+  - ENABLE_OAUTH_PERSISTENT_CONFIG=false
   - OAUTH_CLIENT_ID=your_client_id
   - OAUTH_CLIENT_SECRET=your_secret
   - OPENID_PROVIDER_URL=your_provider_url
@@ -170,20 +159,21 @@ environment:
 
 ---
 
-### 5. OAuth Misconfiguration on the Provider Side
-Sometimes the issue is with the identity provider (e.g., Google, Okta, Auth0, Azure AD) not aligning with your WebUI's setup.
+### 5. 提供商侧 OAuth 配置错误
 
-**Solutions:**
-- Verify your application is correctly registered with the OAUTH provider. Confirm:
-  - **Redirect URIs exactly match your deployed WebUI address**
+有时问题不在 Open WebUI，而在身份提供商（如 Google、Okta、Auth0、Azure AD）的应用注册与 Open WebUI 配置不一致。
+
+**解决方法：**
+- 确认你的应用已在 OAuth 提供商端正确注册，并检查：
+  - **Redirect URI 与真实部署地址完全一致**
     - OIDC: `https://your-domain/oauth/oidc/callback`
     - Microsoft: `https://your-domain/oauth/microsoft/callback`
     - Google: `https://your-domain/oauth/google/callback`
-  - Client ID and secret match the values given in your environment settings
-  - Scopes and allowed grant types (e.g., `authorization_code`) are set as required by Open WebUI
-- Check the provider's logs—misconfigured apps will often show clear error messages there
+  - Client ID / secret 与环境中填写的值一致
+  - Scopes 与允许的 grant types（例如 `authorization_code`）符合 Open WebUI 需求
+- 查看提供商日志——很多应用注册错误会在那里给出明确原因
 
-📌 **Redirect URI Format Examples:**
+📌 **Redirect URI 格式示例：**
 ```
 ✅ Correct: https://ai.company.com/oauth/oidc/callback
 ❌ Wrong: https://ai.company.com/oauth/callback/oidc
@@ -191,26 +181,25 @@ Sometimes the issue is with the identity provider (e.g., Google, Okta, Auth0, Az
 ```
 
 :::tip
-
-When in doubt, recheck your provider registration and regenerate client secrets if needed.
+如果不确定，就重新检查提供商应用注册，并在需要时重新生成 client secret。
 :::
 
 ---
 
-### 6. Server-Side Caching Issues
-If you use Nginx (or another reverse proxy) with server-side caching, OAuth endpoints can misbehave. This often manifests as random or intermittent login bugs that are difficult to debug.
+### 6. 服务端缓存问题
 
-**Solutions:**
-- In your NGINX (or proxy) configuration:
-  - Make sure to **exclude** the following endpoints from server-side caching:
-    - `/api`, `/oauth`, `/callback`, `/login`, `/ws`, `/websocket`
-  - Any critical login/auth endpoint must remain uncached!
-- Reload the proxy config after making changes
+如果你在使用 Nginx（或其他反向代理）时启用了服务端缓存，OAuth endpoint 可能会出现随机、间歇性的登录问题，而且通常很难排查。
 
-**Example NGINX Configuration:**
+**解决方法：**
+- 在 NGINX（或其他代理）配置中：
+  - 确认**不要缓存**以下 endpoint：
+    - `/api`、`/oauth`、`/callback`、`/login`、`/ws`、`/websocket`
+  - 任何关键登录/认证 endpoint 都必须保持未缓存状态
+- 修改后重新加载代理配置
+
+**NGINX 示例：**
 ```nginx
-
-# Disable caching for login / OAuth / websockets endpoints
+# 为登录 / OAuth / websocket endpoint 关闭缓存
 location ~* ^/(api|oauth|callback|login|ws|websocket) {
     proxy_no_cache 1;
     proxy_cache_bypass 1;
@@ -228,146 +217,124 @@ location ~* ^/(api|oauth|callback|login|ws|websocket) {
 ```
 
 :::warning
-
-Never cache OAuth or login endpoints. Caching can deliver stale tokens or corrupt sessions, causing unpredictable auth errors.
-
+永远不要缓存 OAuth 或登录 endpoint。缓存会导致旧 token 被重复返回，或破坏会话，最终引发难以预测的认证错误。
 :::
 
 ---
 
-### 7. Cookie Configuration Issues
+### 7. Cookie 配置问题
 
-**Common Problem:** Reverse proxy cookie settings can interfere with OAuth authentication, especially the `HttpOnly` and `SameSite` settings.
+**常见问题：** 反向代理里的 cookie 设置，尤其是 `HttpOnly` 与 `SameSite`，可能会干扰 OAuth 认证流程。
 
-#### Symptoms:
-- "No token found in localStorage" errors
-- Redirect loops after successful authentication
-- Authentication works but immediately redirects to login page
+#### 症状：
+- “No token found in localStorage”
+- 登录成功后却不断重定向循环
+- 认证似乎成功了，但立刻又跳回登录页
 
-**Solutions:**
+**解决方法：**
 
-#### For NGINX Proxy Manager:
+#### 对于 NGINX Proxy Manager：
 ```nginx
+# 删除或调整有问题的 cookie 设置
 
-# Remove or adjust problematic cookie settings
-
-# ❌ Problematic:
-
+# ❌ 问题配置：
 # proxy_cookie_path / "/; Secure; HttpOnly; SameSite=None";
 
-# ✅ Better:
+# ✅ 更合理的配置：
 proxy_cookie_flags ~ secure samesite=lax;
-
-# or remove cookie manipulation entirely
+# 或者彻底移除 cookie 篡改逻辑
 ```
 
-#### Environment Variable Cookie Settings:
+#### 环境变量中的 cookie 设置：
 ```bash
-
-# Recommended cookie settings for OAuth
 WEBUI_SESSION_COOKIE_SAME_SITE=lax
 WEBUI_AUTH_COOKIE_SAME_SITE=lax
-WEBUI_SESSION_COOKIE_SECURE=true  # Set to false if using HTTP
-WEBUI_AUTH_COOKIE_SECURE=true     # Set to false if using HTTP
+WEBUI_SESSION_COOKIE_SECURE=true  # 如果你使用 HTTP，请改为 false
+WEBUI_AUTH_COOKIE_SECURE=true     # 如果你使用 HTTP，请改为 false
 ```
 
 ---
 
-### 8. Network Timeout Issues
+### 8. 网络超时问题
 
-OAuth providers may be slow to respond, causing timeout errors during the authentication handshake.
+OAuth 提供商有时响应较慢，导致认证握手阶段超时。
 
-#### Symptoms:
-- `httpcore.ReadTimeout` errors in logs
-- `CSRF Warning! State not equal in request and response` errors
-- OAuth login fails intermittently
+#### 症状：
+- 日志中出现 `httpcore.ReadTimeout`
+- 出现 `CSRF Warning! State not equal in request and response`
+- OAuth 登录偶发性失败
 
-**Solutions:**
+**解决方法：**
 ```bash
-
-# Increase OAuth timeouts
-AIOHTTP_CLIENT_TIMEOUT=600         # Very high number is needed here, since model responses that take a lot of time also rely on this timeout variable (e.g., a model that is reasoning for 5+ minutes)
+AIOHTTP_CLIENT_TIMEOUT=600
 AIOHTTP_CLIENT_TIMEOUT_OPENAI_MODEL_LIST=30
 ```
 
 ---
 
-### 9. Session State Mismatch (CSRF Errors)
+<span id="9-session-state-mismatch-csrf-errors"></span>
+### 9. Session State 不匹配（CSRF 错误） {#9-session-state-mismatch-csrf-errors}
 
-Session cookies may not be properly maintained across the OAuth redirect flow.
+OAuth 重定向过程中，如果 session cookie 没有被正确保留，就会出现这类错误。
 
-#### Symptoms:
+#### 症状：
 - `CSRF Warning! State not equal in request and response`
-- `mismatching_state` errors in logs
-- Authentication appears successful but redirects to login
+- 日志中出现 `mismatching_state`
+- 认证看似成功，但最后又跳回登录页
 
-**Solutions:**
+**解决方法：**
 
-1. **Check Cookie Domain Configuration:**
+1. **检查 Cookie 域名配置：**
 ```bash
-
-# Ensure cookies are set for the correct domain
-WEBUI_URL=https://your-exact-domain.com  # Must match exactly - check if you have a different value set in the admin panel
+WEBUI_URL=https://your-exact-domain.com  # 必须完全匹配；也请检查 admin panel 中是否保存了不同值
 ```
 
-2. **Session Configuration:**
+2. **检查 Session 配置：**
 ```bash
-
-# Ensure session handling is properly configured
 WEBUI_SECRET_KEY=your_very_secure_random_key_here
 OAUTH_SESSION_TOKEN_ENCRYPTION_KEY=another_secure_key_here
 ```
 
 ---
 
-### 10. Load Balancer and Multi-Instance Issues
+### 10. 负载均衡器与多实例问题
 
-In multi-instance deployments, OAuth sessions can fail if not properly synchronized.
+在多实例部署中，如果 OAuth 会话没有正确同步，就会失败。
 
-#### Required Configuration for Clusters:
+#### 集群部署所需配置：
 ```bash
-
-# Redis for session synchronization (required for multi-instance)
 REDIS_URL=redis://your-redis:6379/0
 WEBSOCKET_REDIS_URL=redis://your-redis:6379/0
-
-# Shared secrets across all instances
 WEBUI_SECRET_KEY=same_on_all_instances
 OAUTH_SESSION_TOKEN_ENCRYPTION_KEY=same_on_all_instances
-
-# WebSocket support for clusters
 ENABLE_WEBSOCKET_SUPPORT=true
 WEBSOCKET_MANAGER=redis
 ```
 
 ---
 
-### 11. Provider-Specific Configuration Issues
+### 11. 提供商特定配置问题
 
-#### Microsoft Entra ID Common Issues:
+#### Microsoft Entra ID 常见问题：
 
-**Problem:** Using generic OIDC variables instead of Microsoft-specific ones.
+**问题：** 错把通用 OIDC 变量当成 Microsoft 专属配置使用。
 
-✅ **Correct Microsoft Setup:**
+✅ **正确的 Microsoft 配置：**
 ```bash
-
-# Use Microsoft-specific variables, not generic OIDC
 MICROSOFT_CLIENT_ID=your_azure_app_id
 MICROSOFT_CLIENT_SECRET=your_azure_app_secret
 MICROSOFT_CLIENT_TENANT_ID=your_tenant_id
 MICROSOFT_OAUTH_SCOPE=openid email profile
 MICROSOFT_REDIRECT_URI=https://your-domain/oauth/microsoft/callback
-
-# Also required for a working Microsoft setup
 OPENID_PROVIDER_URL=https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0/.well-known/openid-configuration
 ENABLE_OAUTH_SIGNUP=true
 ```
 
-#### Authentik Common Issues:
+#### Authentik 常见问题：
 
-**Problem:** Incorrect provider URL format.
+**问题：** provider URL 格式错误。
 
-✅ **Correct Authentik Setup:**
+✅ **正确的 Authentik 配置：**
 ```bash
 OAUTH_CLIENT_ID=your_authentik_client_id
 OAUTH_CLIENT_SECRET=your_authentik_client_secret
@@ -378,97 +345,92 @@ OAUTH_SCOPES=openid email profile
 
 ---
 
-## Advanced Troubleshooting Tips
+## 高级排查建议
 
-### Check Token Storage Method
-Recent versions of Open WebUI moved from URL-based tokens to cookie-based tokens. If you have authentication issues:
+### 检查 token 存储方式
 
-1. **Clear browser cookies and cache completely**
-2. **Check browser Developer Tools:**
-   - Look for `oauth_session_id` cookie (new method)
-   - Check for any `oauth_id_token` cookie (legacy method)
-   - Verify cookies have correct domain and path settings
+较新的 Open WebUI 已从基于 URL 的 token 方案迁移到基于 cookie 的方案。如果你遇到认证问题：
 
-### Debugging OAuth Flow
-Enable debug logging and trace the OAuth flow:
+1. **彻底清空浏览器 cookies 和缓存**
+2. **打开浏览器开发者工具检查：**
+   - 是否存在 `oauth_session_id` cookie（新方式）
+   - 是否还残留 `oauth_id_token` cookie（旧方式）
+   - cookie 的 domain 与 path 是否正确
+
+### 调试 OAuth 流程
+
+开启 debug 日志，并按流程逐步跟踪：
 
 ```bash
-
-# Enable detailed logging
 GLOBAL_LOG_LEVEL=DEBUG
 
-# Check logs for these key steps:
-
-# 1. GET /oauth/{provider}/login - Should return 302 redirect
-
-# 2. User authenticates with provider
-
-# 3. GET /oauth/{provider}/callback?code=... - Should return 200 or redirect
-
-# 4. User should be logged in
+# 重点观察：
+# 1. GET /oauth/{provider}/login - 应返回 302 redirect
+# 2. 用户在 provider 端完成认证
+# 3. GET /oauth/{provider}/callback?code=... - 应返回 200 或继续 redirect
+# 4. 用户最终进入已登录状态
 ```
 
-### Database Debugging
-Check if user accounts are being created:
+### 数据库调试
+
+检查用户账号是否真的被创建：
 
 ```bash
-
-# Access your container
+# 进入容器
 docker exec -it your-openwebui-container sh
 
-# Check if users are created (adjust path to your data directory)
+# 检查用户数据（按你的数据目录路径调整）
 ls -la /app/backend/data/
 ```
 
-### Test Without Reverse Proxy
-If using a reverse proxy, test OAuth directly against Open WebUI:
+### 不经过反向代理直接测试
 
-1. Temporarily expose Open WebUI port directly
-2. Update OAuth provider redirect URI to point to direct port
-3. Test authentication without proxy
-4. If it works, the issue is in your proxy configuration
+如果你使用了反向代理，请临时绕过它直接测试 OAuth：
 
----
-
-## Pro Tip: Check the Logs
-
-- Look at backend logs and browser network errors. The first error usually points to the misconfiguration.
-- If unsure which side is the problem, try logging in from an incognito browser window and watch for blocked or failed requests.
-
-### Key Log Messages to Watch For:
-- `OAuth callback error: mismatching_state` → Session/cookie issue
-- `httpcore.ReadTimeout` → Network timeout issue
-- `The email or password provided is incorrect` → Often means OAuth completed but session wasn't established
-- `404` on callback URLs → Redirect URI misconfiguration
+1. 临时直接暴露 Open WebUI 端口
+2. 把 OAuth 提供商中的 redirect URI 改成这个直连地址
+3. 测试认证流程
+4. 如果此时可用，问题就出在你的代理配置上
 
 ---
 
-## Summary Checklist ✅
+## 小提示：先看日志
 
-| Problem | Fix |
+- 先看后端日志和浏览器网络错误。第一条错误通常就最接近根因。
+- 如果你不确定到底是哪一侧有问题，可以用浏览器隐私窗口重新登录，并观察哪些请求被拦截或失败。
+
+### 需要重点关注的日志信息：
+- `OAuth callback error: mismatching_state` → Session/cookie 问题
+- `httpcore.ReadTimeout` → 网络超时问题
+- `The email or password provided is incorrect` → 往往说明 OAuth 已完成，但 session 没有建立成功
+- 回调 URL 返回 `404` → Redirect URI 配置错误
+
+---
+
+## 总结清单 ✅
+
+| 问题 | 修复方式 |
 |-------------------------------|------------------------------------------------------------|
-| 🔗 WebUI URL missing or wrong | Set correct WebUI URL in admin panel                        |
-| 📝 Env var typo or missing    | Double-check against official docs - avoid non-existent vars like `OIDC_CONFIG` |
-| 🚨 Missing OPENID_PROVIDER_URL | Always required for OIDC - set to provider's `.well-known/openid-configuration` |
-| 🔄 Persistent config conflicts | Set `ENABLE_OAUTH_PERSISTENT_CONFIG=false` or use admin panel |
-| 🏢 Provider misconfigured     | Confirm app registration, URIs & client IDs/secrets         |
-| 🧊 Proxy caching interfering  | Exclude OAuth endpoints from all server-side caches         |
-| 🍪 Cookie configuration issues | Check reverse proxy cookie settings and env vars          |
-| ⏱️ Timeout problems          | Increase `AIOHTTP_CLIENT_TIMEOUT` values                    |
-| 🔐 CSRF/session issues       | Verify `WEBUI_SECRET_KEY` and session configuration         |
-| 🔀 Multi-instance problems    | Configure Redis and shared secrets                          |
-| Still stuck? | Check debug logs, test without proxy, verify provider setup |
+| 🔗 WebUI URL 缺失或错误 | 在 admin panel 中设置正确的 WebUI URL |
+| 📝 环境变量拼写错误或缺失 | 对照官方文档逐项检查；不要使用 `OIDC_CONFIG` 这类不存在的变量 |
+| 🚨 缺少 OPENID_PROVIDER_URL | OIDC 必需项，指向提供商的 `.well-known/openid-configuration` |
+| 🔄 持久化配置冲突 | 设 `ENABLE_OAUTH_PERSISTENT_CONFIG=false`，或统一改用 admin panel 配置 |
+| 🏢 提供商侧配置错误 | 核对应用注册、URI、client ID 与 secret |
+| 🧊 代理缓存干扰 | 把所有 OAuth endpoint 排除在服务端缓存之外 |
+| 🍪 Cookie 配置问题 | 检查反向代理 cookie 设置与相关 env vars |
+| ⏱️ 超时问题 | 提高 `AIOHTTP_CLIENT_TIMEOUT` 等超时设置 |
+| 🔐 CSRF / session 问题 | 检查 `WEBUI_SECRET_KEY` 与会话配置 |
+| 🔀 多实例问题 | 配置 Redis 与共享密钥 |
+| 仍未解决？ | 开启 debug 日志、绕过代理测试、复查 provider 配置 |
 
 ---
 
-By carefully configuring both your OAuth provider and your Open WebUI environment — and keeping critical login endpoints immune from caching — you can eliminate nearly all SSO/OAuth login problems.
+只要同时把 OAuth 提供商和 Open WebUI 环境配置正确，并确保关键登录 endpoint 不被缓存，绝大多数 SSO/OAuth 登录问题都能被消除。
 
 ---
 
-:::warning Token Revocation Requires Redis
+:::warning Token 撤销依赖 Redis
+如果没有 Redis，**退出登录并不会撤销 JWT token**——它们会一直有效直到过期（默认：4 周）。对 SSO/OAuth 部署来说，这一点尤其重要，因为你可能需要在用户离职等场景下快速撤销访问权限。没有 Redis 时，密码修改和管理员停用账号也无法让已签发 token 立即失效。
 
-Without Redis, **signing out does not revoke JWT tokens** — they remain valid until they expire (default: 4 weeks). This is especially relevant for SSO/OAuth deployments where you may need to revoke access quickly (e.g., when an employee leaves the organization). Password changes and admin-initiated account deactivation also cannot revoke existing tokens without Redis.
-
-For production SSO deployments, configure Redis or shorten `JWT_EXPIRES_IN` to limit exposure. See [Token Revocation](/getting-started/advanced-topics/hardening#token-revocation) and the [Redis tutorial](/tutorials/integrations/redis) for details.
-
+对于生产环境中的 SSO 部署，请配置 Redis，或缩短 `JWT_EXPIRES_IN` 来降低暴露窗口。更多信息请参阅 [Token Revocation](/getting-started/advanced-topics/hardening#token-revocation) 和 [Redis tutorial](/tutorials/integrations/redis)。
 :::

@@ -1,6 +1,6 @@
-# Docker Desktop Extension
-Docker has released an Open WebUI Docker extension that uses Docker Model Runner for inference. You can read their getting started blog here: [Run Local AI with Open WebUI + Docker Model Runner](https://www.docker.com/blog/open-webui-docker-desktop-model-runner/)
+# Docker Desktop 扩展
+Docker 发布了一个 Open WebUI Docker 扩展，它使用 Docker Model Runner 进行推理。你可以在这篇入门博客中了解更多：[Run Local AI with Open WebUI + Docker Model Runner](https://www.docker.com/blog/open-webui-docker-desktop-model-runner/)
 
-You can find troubleshooting steps for the extension in their Github repository: [Open WebUI Docker Extension - Troubleshooting](https://github.com/rw4lll/open-webui-docker-extension?tab=readme-ov-file#troubleshooting)
+该扩展的故障排查步骤可在其 GitHub 仓库中查看：[Open WebUI Docker Extension - Troubleshooting](https://github.com/rw4lll/open-webui-docker-extension?tab=readme-ov-file#troubleshooting)
 
-While this is an amazing resource to try out Open WebUI with little friction, it is not an officially supported installation method - you may run into unexpected bugs or behaviors while using it. For example, you are not able to log in as different users in the extension since it is designed to be for a single local user. If you run into issues using the extension, please submit an issue on the extension's [Github repository](https://github.com/rw4lll/open-webui-docker-extension). 
+虽然这是一个几乎零门槛体验 Open WebUI 的优秀方式，但它**不是官方支持的安装方式**，因此你可能会遇到意料之外的 bug 或行为差异。例如，该扩展面向单个本地用户设计，因此你无法在其中切换不同用户登录。如果在使用扩展时遇到问题，请前往其 [GitHub 仓库](https://github.com/rw4lll/open-webui-docker-extension)提交 issue。

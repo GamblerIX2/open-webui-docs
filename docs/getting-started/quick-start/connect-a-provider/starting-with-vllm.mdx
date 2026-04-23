@@ -3,55 +3,55 @@ sidebar_position: 4
 title: "vLLM"
 ---
 
-## Overview
+## 概览
 
-vLLM provides an **OpenAI-compatible API** (Chat Completions), making it easy to connect to Open WebUI. This guide will show you how to connect your vLLM server.
+vLLM 提供**兼容 OpenAI 的 API**（Chat Completions），因此可以很容易接入 Open WebUI。本指南将展示如何连接你的 vLLM 服务器。
 
 :::tip
-Open WebUI also supports the experimental [Open Responses](/getting-started/quick-start/connect-a-provider/starting-with-open-responses) specification for providers that implement it.
+对于实现该规范的提供商，Open WebUI 也支持实验性的 [Open Responses](/getting-started/quick-start/connect-a-provider/starting-with-open-responses) 规范。
 :::
 
 ---
 
-## Step 1: Set Up Your vLLM Server
+## 第 1 步：准备 vLLM 服务器
 
-Make sure your vLLM server is running and accessible. The default API base URL is typically:
+请确保 vLLM 服务器已经启动并可访问。默认 API 基础 URL 通常为：
 
 ```
 http://localhost:8000/v1
 ```
 
-For remote servers, use the appropriate hostname or IP address.
+如果是远程服务器，请改用对应的主机名或 IP 地址。
 
 ---
 
-## Step 2: Add the API Connection in Open WebUI
+## 第 2 步：在 Open WebUI 中添加 API 连接
 
-1. Go to ⚙️ **Admin Settings**.
-2. Navigate to **Connections > OpenAI > Manage** (look for the wrench icon).
-3. Click ➕ **Add New Connection**.
-4. Select the **Standard / Compatible** tab (if available).
-5. Fill in the following:
-   - **API URL**: `http://localhost:8000/v1` (or your vLLM server URL)
-     *   **Docker Users**: Use `http://host.docker.internal:8000/v1` if Open WebUI is in a container.
-   - **API Key**: `none` (or leave empty if no key is configured)
-6. Click **Save**.
+1. 进入 ⚙️ **Admin Settings**。
+2. 打开 **Connections > OpenAI > Manage**（查找扳手图标）。
+3. 点击 ➕ **Add New Connection**。
+4. 选择 **Standard / Compatible** 标签（如果可见）。
+5. 填写以下内容：
+   - **API URL**：`http://localhost:8000/v1`（或你的 vLLM 服务器 URL）
+     *   **Docker 用户：** 如果 Open WebUI 运行在容器中，请使用 `http://host.docker.internal:8000/v1`。
+   - **API Key**：`none`（如果未配置密钥，也可以留空）
+6. 点击 **Save**。
 
 ---
 
-## Step 3: Start Using Models
+## 第 3 步：开始使用模型
 
-Select any model that's available on your vLLM server from the Model Selector and start chatting.
+从 Model Selector 中选择 vLLM 服务器提供的任意模型，然后开始聊天。
 
-:::tip Connection Timeout Configuration
+:::tip 连接超时配置
 
-If your vLLM server is slow to respond (especially during model loading), you can adjust the timeout:
+如果你的 vLLM 服务器响应较慢（尤其在模型加载时），可以调整超时：
 
 ```bash
-# Increase timeout for slower model initialization (default is 10 seconds)
+# 针对较慢的模型初始化提高超时（默认 10 秒）
 AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=30
 ```
 
-If you've saved an unreachable URL and the UI becomes unresponsive, see the [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) troubleshooting guide.
+如果你保存了一个不可达 URL，导致界面卡住，请查看 [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) 故障排查页面。
 
 :::

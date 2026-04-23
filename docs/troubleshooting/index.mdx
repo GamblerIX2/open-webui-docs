@@ -1,74 +1,74 @@
 ---
 sidebar_position: 300
-title: "🛠️ Troubleshooting"
+title: "🛠️ 故障排查"
 ---
 
-# Troubleshooting
+# 故障排查
 
-Use this page to find the right guide for your issue. If you're unsure where to start, match your symptom in the table below.
+使用本页可以快速找到与你问题对应的指南。如果不确定从哪里开始，请先在下表中按症状定位。
 
-## Quick Symptom Lookup
+## 快速症状索引
 
-| What you're seeing | Go to |
+| 你看到的问题 | 跳转到 |
 | :--- | :--- |
-| Empty `"{}"` responses, garbled markdown, CORS errors in console | [Connection Errors → HTTPS/CORS/WebSocket](./connection-error#-https-tls-cors--websocket-issues) |
-| `WebSocket connection failed: 403` or chat hangs | [Connection Errors → WebSocket](./connection-error#websocket-troubleshooting) |
-| Can't connect to Ollama from Open WebUI | [Connection Errors → Ollama](./connection-error#connection-to-ollama-server) |
-| Model list takes forever to load / `500` on `/api/models` | [Connection Errors → Model List Loading](./connection-error#%EF%B8%8F-model-list-loading-issues-slow-ui--unreachable-endpoints) |
-| `[SSL: CERTIFICATE_VERIFY_FAILED]` | [Connection Errors → SSL](./connection-error#-ssl-certificate-issues-with-internal-tools) |
-| Login loops, 401 Unauthorized, token errors across replicas | [Scaling & HA → Login Loops](./multi-replica#1-login-loops--401-unauthorized-errors) |
-| `database is locked`, data disappearing across instances | [Scaling & HA → Database](./multi-replica#4-database-corruption--locked-errors) |
-| Worker crash: `Child process [pid] died` during upload | [RAG → Worker Crashes](./rag#12-worker-dies-during-document-upload) |
-| Model ignores attached knowledge base | [RAG → Knowledge Base Not Working](./rag#13-knowledge-base-attached-to-model-not-working) |
-| `NoneType object has no attribute 'encode'` | [RAG → Embedding Error](./rag#5-400-nonetype-object-has-no-attribute-encode) |
-| CUDA out of memory during embedding | [RAG → CUDA OOM](./rag#10-cuda-out-of-memory-during-embedding) |
-| OAuth redirect loops, CSRF state mismatch | [SSO & OAuth](./sso) |
-| `CSRF Warning! State not equal in request and response` | [SSO → CSRF Errors](./sso#9-session-state-mismatch-csrf-errors) |
-| TTS loading forever, `Dataset scripts are no longer supported` | [Audio → TTS Issues](./audio#tts-loading-forever--not-working) |
-| Whisper `int8 compute type` error | [Audio → STT Issues](./audio#whisper-stt-not-working--compute-type-error) |
-| Microphone not working (non-HTTPS) | [Audio → Microphone](./audio#microphone-access-issues) |
-| Image not generating, ComfyUI workflow errors | [Image Generation](./image-generation) |
-| Web search returns empty content or proxy errors | [Web Search](./web-search) |
-| Slow performance, high RAM, OOM crashes | [Performance & RAM](./performance) |
-| "The prompt is too long" / context length exceeded | [Context Window / Prompt Too Long](./context-window) |
-| Forgot admin password | [Reset Admin Password](./password-reset) |
-| `no such table` or `table already exists` on startup | [Database Migration](./manual-database-migration) |
+| 聊天返回空的 `"{}"`、Markdown 乱码、控制台出现 CORS 错误 | [连接错误 → HTTPS/CORS/WebSocket](./connection-error#-https-tls-cors--websocket-issues) |
+| `WebSocket connection failed: 403` 或聊天卡住 | [连接错误 → WebSocket](./connection-error#websocket-troubleshooting) |
+| Open WebUI 无法连接 Ollama | [连接错误 → Ollama](./connection-error#connection-to-ollama-server) |
+| 模型列表加载极慢 / `/api/models` 返回 `500` | [连接错误 → 模型列表加载](./connection-error#%EF%B8%8F-model-list-loading-issues-slow-ui--unreachable-endpoints) |
+| `[SSL: CERTIFICATE_VERIFY_FAILED]` | [连接错误 → SSL](./connection-error#-ssl-certificate-issues-with-internal-tools) |
+| 多副本场景下登录循环、401 Unauthorized、跨副本 token 错误 | [扩缩容与高可用 → 登录循环](./multi-replica#1-login-loops--401-unauthorized-errors) |
+| `database is locked`、不同实例之间数据忽隐忽现 | [扩缩容与高可用 → 数据库](./multi-replica#4-database-corruption--locked-errors) |
+| 上传时 worker 崩溃：`Child process [pid] died` | [RAG → Worker 崩溃](./rag#12-worker-dies-during-document-upload) |
+| 模型忽略已附加的知识库 | [RAG → 知识库不生效](./rag#13-knowledge-base-attached-to-model-not-working) |
+| `NoneType object has no attribute 'encode'` | [RAG → 嵌入错误](./rag#5-400-nonetype-object-has-no-attribute-encode) |
+| 嵌入时出现 CUDA out of memory | [RAG → CUDA OOM](./rag#10-cuda-out-of-memory-during-embedding) |
+| OAuth 重定向循环、CSRF state 不匹配 | [SSO 与 OAuth](./sso) |
+| `CSRF Warning! State not equal in request and response` | [SSO → CSRF 错误](./sso#9-session-state-mismatch-csrf-errors) |
+| TTS 一直加载、`Dataset scripts are no longer supported` | [音频 → TTS 问题](./audio#tts-loading-forever--not-working) |
+| Whisper 报 `int8 compute type` 错误 | [音频 → STT 问题](./audio#whisper-stt-not-working--compute-type-error) |
+| 麦克风不能用（非 HTTPS） | [音频 → 麦克风](./audio#microphone-access-issues) |
+| 图像无法生成、ComfyUI workflow 报错 | [图像生成](./image-generation) |
+| Web Search 返回空内容或代理错误 | [Web Search](./web-search) |
+| 性能慢、RAM 占用高、OOM 崩溃 | [性能与内存](./performance) |
+| “The prompt is too long” / context length exceeded | [上下文窗口 / Prompt Too Long](./context-window) |
+| 忘记管理员密码 | [重置管理员密码](./password-reset) |
+| 启动时出现 `no such table` 或 `table already exists` | [数据库迁移](./manual-database-migration) |
 
-## All Troubleshooting Guides
+## 全部故障排查指南
 
-| Guide | Covers |
+| 指南 | 涵盖内容 |
 | :--- | :--- |
-| [Connection Errors](./connection-error) | HTTPS, CORS, WebSocket, reverse proxy, Ollama, SSL, Podman, MCP |
-| [Performance & RAM](./performance) | Speed tuning, database optimization, scaling infrastructure, resource efficiency |
-| [Context Window / Prompt Too Long](./context-window) | Why "prompt is too long" errors happen and how to manage chat history with filters |
-| [RAG](./rag) | Document ingestion, retrieval quality, embeddings, upload limits, worker crashes |
-| [SSO & OAuth](./sso) | OIDC, Microsoft, Google, Authentik, cookie & session issues |
-| [Audio](./audio) | Speech-to-Text, Text-to-Speech, microphone access, ElevenLabs |
-| [Scaling & HA](./multi-replica) | Multi-replica, multi-worker, Redis, shared storage, database concurrency |
-| [Image Generation](./image-generation) | OpenAI, ComfyUI, Automatic1111, Gemini |
-| [Web Search](./web-search) | Proxy issues, SearXNG, empty results, timeouts |
-| [Reset Admin Password](./password-reset) | Password reset for Docker and local installations |
-| [Database Migration](./manual-database-migration) | Manual Alembic migrations, recovery from failed upgrades |
+| [连接错误](./connection-error) | HTTPS、CORS、WebSocket、反向代理、Ollama、SSL、Podman、MCP |
+| [性能与内存](./performance) | 速度调优、数据库优化、基础设施扩缩容、资源效率 |
+| [上下文窗口 / Prompt Too Long](./context-window) | 为什么会出现 “prompt is too long” 以及如何用过滤器管理聊天历史 |
+| [RAG](./rag) | 文档导入、检索质量、嵌入、上传限制、worker 崩溃 |
+| [SSO 与 OAuth](./sso) | OIDC、Microsoft、Google、Authentik、cookie 与会话问题 |
+| [音频](./audio) | Speech-to-Text、Text-to-Speech、麦克风访问、ElevenLabs |
+| [扩缩容与高可用](./multi-replica) | 多副本、多 worker、Redis、共享存储、数据库并发 |
+| [图像生成](./image-generation) | OpenAI、ComfyUI、Automatic1111、Gemini |
+| [Web Search](./web-search) | 代理问题、SearXNG、空结果、超时 |
+| [重置管理员密码](./password-reset) | Docker 与本地安装的密码重置 |
+| [数据库迁移](./manual-database-migration) | 手动 Alembic 迁移、升级失败后的恢复 |
 
-## Before You Start
+## 开始之前
 
-- **Update first.** Many issues are fixed in newer releases. Make sure you're on the latest version.
-- **Check PersistentConfig.** Open WebUI stores some settings in its database, which take priority over environment variables. If an env var change seems ignored, see the [Environment Variable Configuration](/reference/env-configuration#important-note-on-persistentconfig-environment-variables) page.
+- **先更新。** 很多问题会在较新的版本中修复。请先确认你正在使用最新版本。
+- **检查 PersistentConfig。** Open WebUI 会把部分设置存到数据库中，并且这些设置优先级高于环境变量。如果你发现修改 env var 后似乎没有生效，请参阅 [Environment Variable Configuration](/reference/env-configuration#important-note-on-persistentconfig-environment-variables)。
 
-## Browser Compatibility
+## 浏览器兼容性
 
-Open WebUI requires a modern browser. Minimum supported versions:
+Open WebUI 需要现代浏览器。最低支持版本：
 
-- **Chrome 111+** *(March 2023)*
-- **Safari 16.4+** *(March 2023)*
-- **Firefox 128+** *(July 2024)*
+- **Chrome 111+** *(2023 年 3 月)*
+- **Safari 16.4+** *(2023 年 3 月)*
+- **Firefox 128+** *(2024 年 7 月)*
 
-If you experience rendering or functionality issues, ensure your browser meets these requirements.
+如果你遇到渲染或功能问题，请先确认浏览器满足这些要求。
 
-## Community Support
+## 社区支持
 
-If you're still stuck after following the relevant guide:
+如果按照对应指南排查后仍然卡住：
 
-- Search existing issues on [GitHub](https://github.com/open-webui/open-webui/issues)
-- Ask on [Discord](https://discord.com/invite/5rJgQTnV4s) or [Reddit](https://www.reddit.com/r/OpenWebUI/)
-- [Sponsors](/sponsorships) get access to a dedicated support channel with faster response times
+- 在 [GitHub](https://github.com/open-webui/open-webui/issues) 搜索现有 issues
+- 在 [Discord](https://discord.com/invite/5rJgQTnV4s) 或 [Reddit](https://www.reddit.com/r/OpenWebUI/) 提问
+- [Sponsors](/sponsorships) 可使用专属支持渠道，响应更快

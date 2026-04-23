@@ -1,151 +1,154 @@
 ---
 sidebar_position: 0
-title: "Connection Errors"
+title: "连接错误"
 ---
 
-This page covers common connection issues, their causes, and how to resolve them.
+本页汇总了常见连接问题、成因以及对应的解决方法。
 
-## 🔐 HTTPS, TLS, CORS & WebSocket Issues
+<span id="-https-tls-cors--websocket-issues"></span>
+## 🔐 HTTPS、TLS、CORS 与 WebSocket 问题 {#-https-tls-cors--websocket-issues}
 
-If you're experiencing connectivity problems with Open WebUI, especially when using reverse proxies or HTTPS, these issues often stem from improper CORS, TLS, WebSocket, or cookie configuration. Here's how to diagnose and fix them.
+如果你在使用反向代理或 HTTPS 时遇到 Open WebUI 连接异常，问题通常与 CORS、TLS、WebSocket 或 cookie 配置不正确有关。下面是推荐的排查方式。
 
-### Common Symptoms
+### 常见症状
 
-You might be experiencing these issues if you see:
-- Empty responses like `"{}"` in the chat
-- Errors like `"Unexpected token 'd', "data: {"id"... is not valid JSON"`
-- Garbled markdown (visible `##`, `**`, broken formatting) during streaming—see [Streaming Response Corruption](#-garbled-markdown--streaming-response-corruption)
-- WebSocket connection failures in browser console
-- WebSocket connection failures in CLI logs
-- Login problems or session issues
-- CORS errors in browser developer tools
-- Mixed content warnings when accessing over HTTPS
+如果你看到以下现象，很可能就是这一类问题：
+- 聊天中返回空响应，例如 `"{}"`
+- 出现类似 `"Unexpected token 'd', "data: {"id"... is not valid JSON"` 的错误
+- 流式输出时 Markdown 显示混乱（例如可见的 `##`、`**`、格式断裂）——参见 [流式响应损坏](#-garbled-markdown--streaming-response-corruption)
+- 浏览器控制台出现 WebSocket 连接失败
+- CLI 日志中出现 WebSocket 连接失败
+- 登录异常或会话问题
+- 浏览器开发者工具中出现 CORS 错误
+- 通过 HTTPS 访问时出现 mixed content 警告
 
-### Required Configuration for HTTPS & Reverse Proxies
+### HTTPS 与反向代理所需配置
 
-**Critical Environment Variables**
+**关键环境变量**
 
-When running Open WebUI behind a reverse proxy with HTTPS, you must configure these settings:
+当你把 Open WebUI 放在启用了 HTTPS 的反向代理后面时，必须正确配置这些设置：
 
 ```bash
-# Set this to your actual domain BEFORE FIRST STARTUP (required for OAuth/SSO and proper operation)
+# 在首次启动前把它设为你的真实域名（OAuth/SSO 和正常运行都需要）
 WEBUI_URL=https://your-open-webui-domain.com
-# If you already started Open WebUI, don't worry, you can set this config from the admin panel as well!
+# 如果你已经启动过 Open WebUI 也不用担心，仍然可以在 admin panel 中修改
 
-# CORS configuration - CRITICAL for WebSocket functionality
-# Include ALL ways users might access your instance
-# Make sure to include all IPs, hostnames and domains users can and could access Open WebUI and how requests are going to your Open WebUI instance
-# e.g. localhost, 127.0.0.1, 0.0.0.0, <ip of your server/computer>, public domain - all in http and https with the correct ports
+# CORS 配置——对 WebSocket 功能至关重要
+# 包含用户可能访问你实例的所有方式
+# 请把所有 IP、hostname、domain，以及访问 Open WebUI 的协议与端口都包含进去
+# 例如 localhost、127.0.0.1、0.0.0.0、你的服务器/电脑 IP、公网域名，并区分 http/https 和正确端口
 CORS_ALLOW_ORIGIN="https://yourdomain.com;http://yourdomain.com;https://yourip;http://localhost:3000"
 
-# Cookie security settings for HTTPS
-# Disable if you do not use HTTPS
+# HTTPS 下的 cookie 安全设置
+# 如果不使用 HTTPS，请关闭
 WEBUI_SESSION_COOKIE_SECURE=true
 WEBUI_AUTH_COOKIE_SECURE=true
 
-# For OAuth/SSO, you will probably have to use 'lax' (strict can break OAuth callbacks)
+# 对于 OAuth/SSO，通常需要用 'lax'（strict 可能破坏 OAuth 回调）
 WEBUI_SESSION_COOKIE_SAME_SITE=lax
 WEBUI_AUTH_COOKIE_SAME_SITE=lax
 
-# WebSocket support (if using Redis)
-# If you experience websocket related issues, even after configuring all of the above, you can try turning OFF ENABLE_WEBSOCKET_SUPPORT
-# But this is not recommended for production and also not officially supported!
-# If you experience websocket issues, you should ideally provide websocket support through reverse proxies.
+# WebSocket 支持（如果使用 Redis）
+# 如果你在正确配置以上所有内容后仍然遇到 websocket 问题，可以尝试关闭 ENABLE_WEBSOCKET_SUPPORT
+# 但这不推荐用于生产，也不属于官方支持方案
+# 理想做法仍然是让反向代理提供正确的 websocket 支持
 ENABLE_WEBSOCKET_SUPPORT=true
 WEBSOCKET_MANAGER=redis
 WEBSOCKET_REDIS_URL=redis://redis:6379/1
 ```
 
-**WEBUI_URL Configuration**
+**WEBUI_URL 配置说明**
 
-The `WEBUI_URL` must be set correctly BEFORE using OAuth/SSO. Since it's a persistent config variable, you can only change it by:
-- Disabling persistent config temporarily with `ENABLE_PERSISTENT_CONFIG=false`
-- Changing it in Admin Panel > Settings > WebUI URL
-- Setting it correctly before first launch
+在使用 OAuth/SSO 之前，必须先正确设置 `WEBUI_URL`。由于它是持久化配置变量，只能通过以下方式修改：
+- 临时设置 `ENABLE_PERSISTENT_CONFIG=false`
+- 在 **Admin Panel > Settings > WebUI URL** 中修改
+- 在首次启动前就正确设置
 
-**CORS Configuration Details**
+**CORS 配置说明**
 
-The `CORS_ALLOW_ORIGIN` setting is crucial for WebSocket functionality. If you see errors in the logs like `"https://yourdomain.com is not an accepted origin"` or `"http://127.0.0.1:3000 is not an accepted origin"`, you need to add that URL to your CORS configuration. Use semicolons to separate multiple origins, and include every possible way users access your instance (domain, IP, localhost).
+`CORS_ALLOW_ORIGIN` 对 WebSocket 尤其关键。如果日志中出现 `"https://yourdomain.com is not an accepted origin"` 或 `"http://127.0.0.1:3000 is not an accepted origin"`，就说明该 URL 需要加入配置。多个来源使用分号分隔，并且要覆盖用户访问实例的每一种方式（域名、IP、localhost 等）。
 
-### Reverse Proxy / SSL/TLS Configuration
+### 反向代理 / SSL/TLS 配置
 
-For reverse proxy and TLS setups, check our [tutorials here](/reference/https).
+有关反向代理和 TLS 的具体搭建方式，请查看 [相关教程](/reference/https)。
 
-### WebSocket Troubleshooting
+<span id="websocket-troubleshooting"></span>
+### WebSocket 故障排查 {#websocket-troubleshooting}
 
-WebSocket support is required for Open WebUI v0.5.0 and later. If WebSockets aren't working:
+Open WebUI v0.5.0 及更高版本需要 WebSocket 支持。如果 WebSocket 不能正常工作：
 
-1. **Check your reverse proxy configuration** - Ensure `Upgrade` and `Connection` headers are properly set
-2. **Verify CORS settings** - WebSocket connections respect CORS policies
-3. **Check browser console** - Look for WebSocket connection errors
-4. **Test direct connection** - Try connecting directly to Open WebUI without the proxy to isolate the issue.
-5. **Check for HTTP/2 WebSocket Issues** - Some proxies (like HAProxy 3.x) enable HTTP/2 by default. If your proxy handles client connections via HTTP/2 but the backend/application doesn't support RFC 8441 (WebSockets over H2) properly, the instance may "freeze" or stop responding. 
-   - **Fix for HAProxy**: Add `option h2-workaround-bogus-websocket-clients` to your configuration or force the backend connection to use HTTP/1.1.
-   - **Fix for Nginx**: Ensure you are using `proxy_http_version 1.1;` in your location block (which is the default in many Open WebUI examples).
+1. **检查反向代理配置**——确认 `Upgrade` 和 `Connection` 头已正确设置
+2. **确认 CORS 设置**——WebSocket 连接同样遵守 CORS 策略
+3. **查看浏览器控制台**——检查具体的 WebSocket 连接错误
+4. **测试直连**——尝试绕过代理直接连接 Open WebUI，以隔离问题来源
+5. **检查 HTTP/2 与 WebSocket 的兼容问题**——某些代理（如 HAProxy 3.x）默认启用 HTTP/2。如果代理使用 HTTP/2 连接客户端，而后端/应用没有正确支持 RFC 8441（WebSockets over H2），实例可能会“卡住”或不响应。
+   - **HAProxy 修复方式**：在配置中加入 `option h2-workaround-bogus-websocket-clients`，或强制后端连接使用 HTTP/1.1。
+   - **Nginx 修复方式**：确认 location 块中使用了 `proxy_http_version 1.1;`（Open WebUI 的多数 Nginx 示例默认如此）。
 
-For multi-instance deployments, configure Redis for WebSocket management:
+多实例部署中，请为 WebSocket 管理配置 Redis：
 ```bash
 ENABLE_WEBSOCKET_SUPPORT=true
 WEBSOCKET_MANAGER=redis
 WEBSOCKET_REDIS_URL=redis://redis:6379/1
 ```
 
-For detailed Redis setup instructions, see [Redis WebSocket Support](/tutorials/integrations/redis). For a complete multi-instance scaling walkthrough, see [Scaling Open WebUI](/getting-started/advanced-topics/scaling). If you're seeing WebSocket 403 errors specifically in a multi-replica setup, see [Scaling & HA Troubleshooting](/troubleshooting/multi-replica#2-websocket-403-errors--connection-failures).
+关于 Redis 配置细节，请参阅 [Redis WebSocket Support](/tutorials/integrations/redis)。完整的多实例扩缩容实践请参阅 [Scaling Open WebUI](/getting-started/advanced-topics/scaling)。如果你在多副本场景中遇到特定的 WebSocket 403 错误，请参见 [扩缩容与高可用故障排查](/troubleshooting/multi-replica#2-websocket-403-errors--connection-failures)。
 
-### Testing Your Configuration
+### 测试你的配置
 
-To verify your setup is working:
+要验证配置是否正常：
 
-1. **Check HTTPS**: Visit your domain and ensure you see a valid certificate with no browser warnings
-2. **Test WebSockets**: Open browser developer tools, go to Network tab, filter by "WS", and verify WebSocket connections are established
-3. **Verify CORS**: Check browser console for any CORS-related errors
-4. **Test functionality**: Send a message and ensure streaming responses work properly
+1. **检查 HTTPS**：访问你的域名，确认浏览器能识别有效证书且没有警告
+2. **测试 WebSocket**：打开浏览器开发者工具，进入 Network 标签，筛选 `WS`，确认 WebSocket 连接建立成功
+3. **验证 CORS**：检查控制台是否还有 CORS 相关错误
+4. **测试功能**：发送一条消息，确认流式输出正常工作
 
-### Quick Fixes Checklist
+### 快速修复清单
 
-- ✓ Set `WEBUI_URL` to your actual HTTPS domain before enabling OAuth
-- ✓ Configure `CORS_ALLOW_ORIGIN` with all possible access URLs
-- ✓ Enable `WEBUI_SESSION_COOKIE_SECURE=true` for HTTPS
-- ✓ Add WebSocket headers to your reverse proxy configuration
-- ✓ Use TLSv1.2 or TLSv1.3 in your SSL configuration
-- ✓ Set proper `X-Forwarded-Proto` headers in your reverse proxy
-- ✓ Ensure HTTP to HTTPS redirects are in place
-- ✓ Configure Let's Encrypt for automatic certificate renewal
-- ✓ Disable proxy buffering for SSE streaming (see below)
+- ✓ 在启用 OAuth 前把 `WEBUI_URL` 设为真实 HTTPS 域名
+- ✓ 在 `CORS_ALLOW_ORIGIN` 中配置所有可能的访问 URL
+- ✓ 在 HTTPS 下启用 `WEBUI_SESSION_COOKIE_SECURE=true`
+- ✓ 在反向代理中加入 WebSocket 所需头
+- ✓ 在 SSL 配置中使用 TLSv1.2 或 TLSv1.3
+- ✓ 正确设置反向代理中的 `X-Forwarded-Proto`
+- ✓ 配置 HTTP 到 HTTPS 重定向
+- ✓ 配置 Let's Encrypt 自动续签
+- ✓ 对 SSE 流式输出关闭 proxy buffering（见下文）
 
-## 📝 Garbled Markdown / Streaming Response Corruption
+<span id="-garbled-markdown--streaming-response-corruption"></span>
+## 📝 Markdown 乱码 / 流式响应损坏 {#-garbled-markdown--streaming-response-corruption}
 
-If streaming responses show garbled markdown rendering (e.g., visible `##`, `**`, or broken formatting), but disabling streaming fixes the issue, this is typically caused by **nginx proxy buffering**.
+如果流式响应时出现 Markdown 渲染错乱（例如可见 `##`、`**` 或格式断裂），但关闭流式输出后又恢复正常，这通常是 **nginx proxy buffering** 导致的。
 
-### Common Symptoms
+### 常见症状
 
-- Raw markdown tokens visible in responses (`##`, `**`, `###`)
-- Bold markers appearing incorrectly (`** Control:**` instead of `**Control:**`)
-- Words or sections randomly missing from responses
-- Formatting works correctly when streaming is disabled
+- 响应中直接显示原始 Markdown token（`##`、`**`、`###`）
+- 粗体标记位置异常（例如 `** Control:**` 而不是 `**Control:**`）
+- 响应中随机缺词或缺段落
+- 关闭流式输出后格式恢复正常
 
-### Cause: Nginx Proxy Buffering
+### 原因：Nginx 代理缓冲
 
-When nginx's proxy buffering is enabled, it re-chunks the SSE (Server-Sent Events) stream arbitrarily. This breaks markdown tokens across chunk boundaries—for example, `**bold**` becomes separate chunks `**` + `bold` + `**`, causing the markdown parser to fail.
+启用 nginx 的 proxy buffering 后，SSE（Server-Sent Events）流会被任意重新分块。这样会把 Markdown token 从中间切开——例如 `**bold**` 被拆成 `**` + `bold` + `**`，导致 Markdown 解析失败。
 
-### Solution: Disable Proxy Buffering
+### 解决方案：关闭代理缓冲
 
-Add these directives to your nginx location block for Open WebUI:
+在 Open WebUI 的 nginx location 块中加入以下配置：
 
 ```nginx
 location / {
     proxy_pass http://your-open-webui-upstream;
-    
-    # CRITICAL: Disable buffering for SSE streaming
+
+    # 关键：为 SSE 流关闭缓冲
     proxy_buffering off;
     proxy_cache off;
-    
-    # WebSocket support
+
+    # WebSocket 支持
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
-    
-    # Standard proxy headers
+
+    # 标准代理头
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -154,269 +157,261 @@ location / {
 ```
 
 :::tip
-Disabling proxy buffering also **significantly improves streaming speed**, as responses stream byte-by-byte directly to the client without nginx's buffering delay.
+关闭代理缓冲通常也会**明显提升流式速度**，因为响应会逐字节直接发送给客户端，而不是被 nginx 延迟缓冲。
 :::
 
-### For Other Reverse Proxies
+### 其他反向代理
 
-- **HAProxy**: Ensure `option http-buffer-request` is not enabled for SSE endpoints
-- **Traefik**: Check compression/buffering middleware settings
-- **Caddy**: Generally handles SSE correctly by default, but check for any buffering plugins
+- **HAProxy**：确保没有为 SSE endpoint 启用 `option http-buffer-request`
+- **Traefik**：检查压缩/缓冲相关 middleware 设置
+- **Caddy**：默认通常能正确处理 SSE，但如果用了缓冲插件，也请检查
 
-## 🌐 Frontend vs. Backend Connections (localhost Confusion)
+## 🌐 前端连接与后端连接（localhost 混淆）
 
-Several Open WebUI features offer **two ways** to configure connections: a **user/direct** method (from the browser) and an **admin/global** method (from the backend). These work at completely different network levels, and the same URL can succeed in one and fail in the other.
+Open WebUI 中有些功能提供**两种配置方式**：一种是**用户/直连**（由浏览器发起），另一种是**管理员/全局**（由后端发起）。它们处在完全不同的网络层级，所以同一个 URL 可能在一种方式下能用，在另一种方式下却失败。
 
-### The Core Rule
+### 核心规则
 
-| Request Origin | What `localhost` Means | Who Uses This |
+| 请求来源 | `localhost` 的含义 | 谁在使用 |
 | :--- | :--- | :--- |
-| **Browser (client-side)** | The machine running the browser | User Tool Servers, User-Configured Terminals, Direct Connections |
-| **Backend (server-side)** | The machine/container running Open WebUI | Global Tool Servers, Admin-Configured Terminals, Ollama connections |
+| **浏览器（客户端）** | 运行浏览器的那台机器 | User Tool Servers、用户配置的终端、Direct Connections |
+| **后端（服务端）** | 运行 Open WebUI 的机器/容器 | Global Tool Servers、管理员配置的终端、Ollama 连接 |
 
-### Why the Same URL Can Work and Fail
+### 为什么同一个 URL 可能一边可用、一边失败
 
-When you add a URL like `https://myserver.com/api` as a **user/direct** connection, your browser resolves `myserver.com` and connects directly. When you add the same URL as an **admin/global** connection, the Open WebUI backend resolves that hostname — and inside a Docker container, it may resolve to `127.0.0.1`, bypassing your reverse proxy entirely.
+当你把 `https://myserver.com/api` 添加为**用户/直连**连接时，URL 是由浏览器解析并直接访问的；而当你把同一个 URL 添加为**管理员/全局**连接时，则由 Open WebUI 后端去解析该主机名。在 Docker 容器里，这个域名甚至可能会被解析到 `127.0.0.1`，从而直接绕过你的反向代理。
 
-**Common symptoms:**
-- 502 Bad Gateway on admin-configured connections while user connections work fine
-- `Connect call failed ('127.0.0.1', ...)` in backend logs
-- Connection timeout on global tool servers
+**常见症状：**
+- 用户侧连接正常，但管理员配置的连接报 502 Bad Gateway
+- 后端日志中出现 `Connect call failed ('127.0.0.1', ...)`
+- 全局 tool server 连接超时
 
-**Fix:** For backend/admin connections, use the **internal URL** that the backend can actually reach:
-- Docker service names (e.g. `http://open-terminal:8000`)
-- `host.docker.internal` (to reach the host machine from inside Docker)
-- Internal IPs (e.g. `http://192.168.1.50:8000`)
+**修复方式：** 对于后端/管理员连接，请使用**后端实际可达的内部 URL**：
+- Docker service 名称（例如 `http://open-terminal:8000`）
+- `host.docker.internal`（从 Docker 内部访问宿主机）
+- 内网 IP（例如 `http://192.168.1.50:8000`）
 
 :::tip
-This applies to **all** backend-proxied connections in Open WebUI — not just Open Terminal. The same pattern affects [Tool Server connections](/features/extensibility/plugin/tools/openapi-servers/open-webui#main-difference-where-are-requests-made-from), [Open Terminal admin connections](/features/open-terminal#enterprise-multi-user), and Ollama/OpenAI API endpoints.
-This applies to **all** backend-proxied connections in Open WebUI. The same pattern affects [Tool Server connections](/features/extensibility/plugin/tools/openapi-servers/open-webui#main-difference-where-are-requests-made-from), [Open Terminal admin connections](/features/open-terminal#enterprise-multi-user), and Ollama/OpenAI API endpoints.
+这适用于 Open WebUI 中**所有由后端代理的连接**，不仅仅是 Open Terminal。包括 [Tool Server connections](/features/extensibility/plugin/tools/openapi-servers/open-webui#main-difference-where-are-requests-made-from)、[Open Terminal admin connections](/features/open-terminal#enterprise-multi-user) 以及 Ollama/OpenAI API endpoints 都遵循同样的规律。
 :::
 
-## Connection to Ollama Server
+<span id="connection-to-ollama-server"></span>
+## 连接 Ollama 服务器 {#connection-to-ollama-server}
 
-### Accessing Ollama from Open WebUI
+### 让 Open WebUI 访问 Ollama
 
-If Open WebUI cannot reach Ollama, it's likely because Ollama is only listening on `127.0.0.1` (localhost). To fix this:
+如果 Open WebUI 无法访问 Ollama，通常是因为 Ollama 只监听了 `127.0.0.1`（localhost）。请按下面修复：
 
-1. **Set `OLLAMA_HOST=0.0.0.0`** to make Ollama listen on all network interfaces.
-2. **Ensure the variable is set** in your deployment environment (systemd service, Docker, shell profile).
-3. **Restart Ollama** for the change to take effect.
+1. **设置 `OLLAMA_HOST=0.0.0.0`**，让 Ollama 监听所有网络接口
+2. **确认该变量已在你的部署环境中生效**（systemd、Docker、shell profile 等）
+3. **重启 Ollama** 使变更生效
 
-Verify connectivity by accessing the WebUI interface after restarting. For detailed instructions, see the [Ollama documentation](https://github.com/ollama/ollama/blob/main/docs/faq.md#setting-environment-variables-on-linux).
+重启后再打开 WebUI 验证连通性。更详细说明见 [Ollama 文档](https://github.com/ollama/ollama/blob/main/docs/faq.md#setting-environment-variables-on-linux)。
 
-### Docker Connection Error
+### Docker 中的连接错误
 
-If Open WebUI in Docker cannot connect to Ollama running on the host machine:
+如果 Docker 中的 Open WebUI 无法连接宿主机上的 Ollama：
 
-1. **Adjust the Network Settings**:
-   Use the `--network=host` flag in your Docker command. This links your container directly to your host’s network.
+1. **调整网络设置**：
+   在 Docker 命令中使用 `--network=host`，让容器直接加入宿主机网络。
 
-2. **Change the Port**:
-   Remember that the internal port changes from 3000 to 8080.
+2. **注意端口变化**：
+   使用 host 网络后，WebUI 的内部端口会从 3000 变成 8080。
 
-**Example Docker Command**:
+**示例 Docker 命令：**
 ```bash
 docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
-After running the above, your WebUI should be available at `http://localhost:8080`.
+运行后，WebUI 应可通过 `http://localhost:8080` 访问。
 
-## ⏱️ Model List Loading Issues (Slow UI / Unreachable Endpoints)
+<span id="️-model-list-loading-issues-slow-ui--unreachable-endpoints"></span>
+## ⏱️ 模型列表加载问题（UI 很慢 / endpoint 不可达） {#️-model-list-loading-issues-slow-ui--unreachable-endpoints}
 
-If your Open WebUI takes a long time to load models, or the model selector spins indefinitely, it may be due to an unreachable or slow API endpoint configured in your connections.
+如果 Open WebUI 加载模型需要很久，或者模型选择器一直转圈，常见原因是你在连接配置中保存了不可达或非常慢的 API endpoint。
 
-### Common Symptoms
+### 常见症状
 
-- Model selector shows a loading spinner for extended periods
-- `500 Internal Server Error` on `/api/models` endpoint
-- UI becomes unresponsive when opening Settings
-- Docker/server logs show: `Connection error: Cannot connect to host...`
+- 模型选择器长时间显示加载状态
+- `/api/models` 返回 `500 Internal Server Error`
+- 打开 Settings 时 UI 明显卡顿
+- Docker/服务器日志出现：`Connection error: Cannot connect to host...`
 
-### Cause: Unreachable Endpoints
+### 原因：endpoint 不可达
 
-When you configure multiple Ollama or OpenAI base URLs (for load balancing or redundancy), Open WebUI attempts to fetch models from **all** configured endpoints. If any endpoint is unreachable, the system waits for the full connection timeout before returning results.
+当你配置多个 Ollama 或 OpenAI base URL（用于负载均衡或冗余）时，Open WebUI 会尝试从**所有**已配置 endpoint 拉取模型列表。只要其中任何一个 endpoint 不可达，系统就会一直等到超时后才返回结果。
 
-By default, Open WebUI waits **10 seconds** per unreachable endpoint when fetching the model list. With multiple bad endpoints, this delay compounds.
+默认情况下，Open WebUI 对每个不可达 endpoint 会等待 **10 秒**。坏 endpoint 越多，等待时间叠加越明显。
 
-### Solution 1: Adjust the Timeout
+### 方案 1：缩短超时时间
 
-Lower the timeout for model list fetching using the `AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST` environment variable:
+通过 `AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST` 调低模型列表请求超时：
 
 ```bash
-# Set a shorter timeout (in seconds) for faster failure on unreachable endpoints
+# 把模型列表抓取的超时时间（秒）设短一些，让不可达 endpoint 更快失败
 AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=3
 ```
 
-This reduces how long Open WebUI waits for each endpoint before giving up and continuing.
+### 方案 2：修复或删除不可达 endpoint
 
-### Solution 2: Fix or Remove Unreachable Endpoints
+1. 进入 **Admin Settings → Connections**
+2. 检查你的 Ollama 与 OpenAI base URL
+3. 删除或修正不可达的 IP 地址与主机名
+4. 保存配置
 
-1. Go to **Admin Settings → Connections**
-2. Review your Ollama and OpenAI base URLs
-3. Remove or correct any unreachable IP addresses or hostnames
-4. Save the configuration
+### 方案 3：从数据库中的错误配置中恢复
 
-### Solution 3: Recover from Database-Persisted Bad Configuration
+如果你保存了不可达 URL，导致连 Settings 页面都进不去，那么坏配置已经写入数据库，并且会优先于环境变量生效。可以使用以下恢复方式之一：
 
-If you saved an unreachable URL and now can't access the Settings UI to fix it, the bad configuration is persisted in the database and takes precedence over environment variables. Use one of these recovery methods:
-
-**Option A: Reset configuration on startup**
+**选项 A：启动时重置配置**
 ```bash
-# Forces environment variables to override database values on next startup
 RESET_CONFIG_ON_START=true
 ```
 
-**Option B: Always use environment variables**
+**选项 B：始终使用环境变量**
 ```bash
-# Prevents database values from taking precedence (changes in UI won't persist across restarts)
 ENABLE_PERSISTENT_CONFIG=false
 ```
 
-**Option C: Manual database cleanup (advanced)**
+**选项 C：手动清理数据库（高级）**
 
-If using SQLite, stop the container and run:
+如果你使用的是 SQLite，停止容器后执行：
 ```bash
 sqlite3 webui.db "DELETE FROM config WHERE id LIKE '%urls%';"
 ```
 
 :::warning
-
-Manual database manipulation should be a last resort. Always back up your database first.
-
+手动修改数据库应作为最后手段。操作前务必先备份数据库。
 :::
 
-### Related Environment Variables
+### 相关环境变量
 
-| Variable | Default | Description |
+| Variable | Default | 说明 |
 |----------|---------|-------------|
-| `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER` | Inherits `AIOHTTP_CLIENT_TIMEOUT` | Timeout (seconds) for executing tool server API calls |
-| `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER_DATA` | `10` | Timeout (seconds) for loading tool server metadata/spec data |
-| `AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST` | `10` | Timeout (seconds) for fetching model lists |
-| `AIOHTTP_CLIENT_TIMEOUT` | `300` | General API request timeout |
-| `RESET_CONFIG_ON_START` | `false` | Reset database config to env var values on startup |
-| `ENABLE_PERSISTENT_CONFIG` | `true` | Whether database config takes precedence over env vars |
+| `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER` | 继承 `AIOHTTP_CLIENT_TIMEOUT` | 执行 tool server API 调用的超时（秒） |
+| `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER_DATA` | `10` | 加载 tool server metadata/spec 数据的超时（秒） |
+| `AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST` | `10` | 拉取模型列表的超时（秒） |
+| `AIOHTTP_CLIENT_TIMEOUT` | `300` | 通用 API 请求超时 |
+| `RESET_CONFIG_ON_START` | `false` | 启动时把数据库配置重置为环境变量值 |
+| `ENABLE_PERSISTENT_CONFIG` | `true` | 数据库配置是否优先于环境变量 |
 
-See the [Environment Configuration](/reference/env-configuration#aiohttp_client_timeout_model_list) documentation for more details.
+更多信息请参阅 [Environment Configuration](/reference/env-configuration#aiohttp_client_timeout_model_list)。
 
-## 🐢 Slow Performance or Timeouts on Low-Spec Hardware
+## 🐢 低配硬件上的慢性能或超时
 
-If you're experiencing slow page loads, API timeouts, or unresponsive UI—especially on resource-constrained systems—this may be related to database session sharing.
+如果你在资源受限的系统上（尤其是 Raspberry Pi 等设备）遇到页面加载慢、API 超时或 UI 无响应，问题可能与数据库会话共享有关。
 
-### Cause
+### 原因
 
-Database session sharing can overwhelm low-spec hardware (Raspberry Pi, containers with minimal CPU, etc.) or SQLite databases under concurrent load.
+数据库会话共享可能会让低配硬件（Raspberry Pi、CPU 配额极低的容器等）或并发下的 SQLite 数据库过载。
 
-### Solution
+### 解决方法
 
-Disable database session sharing:
+关闭数据库会话共享：
 
 ```bash
 DATABASE_ENABLE_SESSION_SHARING=false
 ```
 
-For PostgreSQL on adequate hardware, enabling this setting may improve performance. See the [DATABASE_ENABLE_SESSION_SHARING](/reference/env-configuration#database_enable_session_sharing) documentation for details.
+对于硬件资源充足的 PostgreSQL 部署，启用该设置反而可能提高性能。详情请参见 [DATABASE_ENABLE_SESSION_SHARING](/reference/env-configuration#database_enable_session_sharing)。
 
-## 🔒 SSL Connection Issue with Hugging Face
+## 🔒 与 Hugging Face 连接时的 SSL 问题
 
-If you encounter an SSL error connecting to Hugging Face:
+如果你在连接 Hugging Face 时遇到 SSL 错误：
 
-1. **Check Hugging Face Server Status**:
-   Verify if there's a known outage or issue on their end.
+1. **检查 Hugging Face 服务状态**：确认是否是其服务端故障
+2. **切换 endpoint**：如果 Hugging Face 服务异常，可在 Docker 命令中改用镜像
 
-2. **Switch Endpoint**:
-   If Hugging Face is down, switch the endpoint in your Docker command.
-
-**Example Docker Command for Connected Issues**:
+**示例 Docker 命令：**
 ```bash
 docker run -d -p 3000:8080 -e HF_ENDPOINT=https://hf-mirror.com/ --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
-## 🔐 SSL Certificate Issues with Internal Tools
+<span id="-ssl-certificate-issues-with-internal-tools"></span>
+## 🔐 内部工具的 SSL 证书问题 {#-ssl-certificate-issues-with-internal-tools}
 
-If you are using external tools like Tika, Ollama (for embeddings), or an external reranker with self-signed certificates, you might encounter SSL verification errors.
+如果你正在使用带自签名证书的外部工具，例如 Tika、用于嵌入的 Ollama、或外部 reranker，可能会遇到 SSL 校验错误。
 
-### Common Symptoms
+### 常见症状
 
-- Logs show `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate`
-- Tika document ingestion fails
-- Embedding generation fails with SSL errors
-- Reranking fails with SSL errors
+- 日志中出现 `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate`
+- Tika 文档导入失败
+- 嵌入生成因 SSL 报错失败
+- Reranking 因 SSL 报错失败
 
-### Solution
+### 解决方法
 
-You can disable SSL verification for these internal tool connections using the following environment variables:
+你可以通过以下环境变量，为这些内部工具连接关闭 SSL 校验：
 
-1.  **For synchronous requests (Tika, External Reranker):**
-    ```bash
-    REQUESTS_VERIFY=false
-    ```
+1. **同步请求（Tika、External Reranker）使用：**
+   ```bash
+   REQUESTS_VERIFY=false
+   ```
 
-2.  **For asynchronous requests (Ollama Embeddings):**
-    ```bash
-    AIOHTTP_CLIENT_SESSION_SSL=false
-    ```
+2. **异步请求（Ollama Embeddings）使用：**
+   ```bash
+   AIOHTTP_CLIENT_SESSION_SSL=false
+   ```
 
 :::warning
-Disabling SSL verification reduces security. Only do this if you trust the network and the services you are connecting to (e.g., functioning within a secure internal network).
+关闭 SSL 校验会降低安全性。只有在你信任所处网络及目标服务（例如安全的内网环境）时才应这样做。
 :::
 
-## 🍏 Podman on MacOS
+## 🍏 MacOS 上的 Podman
 
-For Podman on MacOS:
+对于 MacOS 上的 Podman：
 
-1. **Enable Host Access**: Podman 5.0+ uses **pasta** by default, which simplifies host loopback. On older versions, use `--network slirp4netns:allow_host_loopback=true`.
-2. **Set OLLAMA_BASE_URL** to **`http://host.containers.internal:11434`**.
+1. **启用宿主机访问**：Podman 5.0+ 默认使用 **pasta**，已经简化了 host loopback。旧版本请使用 `--network slirp4netns:allow_host_loopback=true`。
+2. **设置 `OLLAMA_BASE_URL`** 为 **`http://host.containers.internal:11434`**。
 
-**Example Podman Command**:
+**示例 Podman 命令：**
 ```bash
 podman run -d -p 3000:8080 -e OLLAMA_BASE_URL=http://host.containers.internal:11434 -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
+## 🔐 Web Search 中的 SSL/TLS 错误
 
-## 🔐 SSL/TLS Errors with Web Search
+使用 Web Search 时遇到 SSL 错误，通常可归为两类：代理配置问题，或证书校验问题。
 
-If you are encountering SSL errors while using the Web Search feature, they usually fall into two categories: Proxy configuration issues or Certificate verification issues.
+### 证书校验问题
 
-### Certificate Verification Issues
+如果 Open WebUI 在抓取网页内容（Web Loader）时出现 SSL 校验错误：
 
-If you are seeing SSL verification errors when Open WebUI tries to fetch content from websites (Web Loader):
-
-- **Symptom**: `[SSL: CERTIFICATE_VERIFY_FAILED]` when loading search results.
-- **Solution**: You can disable SSL verification for the Web Loader (scraper) specifically.
+- **症状**：加载搜索结果时出现 `[SSL: CERTIFICATE_VERIFY_FAILED]`
+- **解决方法**：可以单独关闭 Web Loader（抓取器）的 SSL 校验
   ```bash
   ENABLE_WEB_LOADER_SSL_VERIFICATION=false
   ```
-  > **Note**: This setting applies to the *fetching* of web pages. If you are having SSL issues with the Search Engine itself (e.g., local SearXNG) or subsequent steps (Embedding/Reranking), see the sections below.
+  > **注意**：这个设置只影响网页抓取本身。如果你是在搜索引擎（例如本地 SearXNG）或后续步骤（Embedding/Reranking）中遇到 SSL 问题，请查看本页其他章节。
 
-### Proxy Configuration Issues
+### 代理配置问题
 
-If you're seeing SSL errors like `UNEXPECTED_EOF_WHILE_READING` or `Max retries exceeded` when using web search providers (Bocha, Tavily, etc.):
+如果在使用 Bocha、Tavily 等 Web Search 提供商时，看到 `UNEXPECTED_EOF_WHILE_READING` 或 `Max retries exceeded` 之类的 SSL 错误：
 
-#### Common Symptoms
+#### 常见症状
 
 - `SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING]'))`
 - `Max retries exceeded with url: /v1/web-search`
-- Web search works in standalone Python scripts but fails in Open WebUI
+- Web Search 在独立 Python 脚本中能正常工作，但在 Open WebUI 中失败
 
-#### Cause: HTTP Proxy Configured for HTTPS Traffic
+#### 原因：对 HTTPS 流量使用了 HTTP 代理
 
-This typically happens when you have an **HTTP proxy** configured for **HTTPS traffic**. The HTTP proxy cannot properly handle TLS connections, causing SSL handshake failures.
+这通常说明你把**HTTP 代理**用于**HTTPS 流量**。HTTP 代理无法正确处理 TLS 连接，从而导致 SSL 握手失败。
 
-Check your environment for these variables:
+请检查以下环境变量：
 - `HTTP_PROXY` / `http_proxy`
 - `HTTPS_PROXY` / `https_proxy`
 
-If your `https_proxy` points to `http://...` (HTTP) instead of `https://...` (HTTPS), SSL handshakes will fail because the proxy terminates the connection unexpectedly.
+如果你的 `https_proxy` 指向的是 `http://...`（HTTP）而不是 `https://...`（HTTPS），握手通常会失败，因为代理会提前终止连接。
 
-#### Solutions
+#### 解决方法
 
-1. **Fix proxy configuration**: Use an HTTPS-capable proxy for HTTPS traffic, or configure your HTTP proxy to properly support CONNECT tunneling for SSL
-2. **Bypass proxy for specific hosts**: Set `NO_PROXY` environment variable:
+1. **修正代理配置**：为 HTTPS 流量使用支持 HTTPS 的代理，或让 HTTP 代理正确支持 CONNECT 隧道
+2. **为特定主机绕过代理**：设置 `NO_PROXY`
    ```bash
    NO_PROXY=api.bochaai.com,api.tavily.com,api.search.brave.com
    ```
-3. **Disable proxy if not needed**: Unset the proxy environment variables entirely
+3. **如果不需要代理则禁用**：直接取消这些代理环境变量
 
-#### Why Standalone Scripts Work
+#### 为什么独立脚本可以工作
 
-When you run a Python script directly, it may not inherit the same proxy environment variables that your Open WebUI service is using. The service typically inherits environment variables from systemd, Docker, or your shell profile, which may have different proxy settings.
+直接运行 Python 脚本时，它未必继承 Open WebUI 服务所使用的代理环境变量。Open WebUI 服务通常会继承 systemd、Docker 或 shell profile 中的环境变量，因此代理配置可能与手动运行脚本时不同。

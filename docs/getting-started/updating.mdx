@@ -1,34 +1,34 @@
 ---
 sidebar_position: 300
-title: "Updating Open WebUI"
+title: "更新 Open WebUI"
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Updating Open WebUI
+# 更新 Open WebUI
 
-**Stay current without losing your data.**
+**保持最新，同时不丢失你的数据。**
 
-Your data (chats, users, settings, uploads) lives in a Docker volume or local database, not inside the container. Updating Open WebUI means swapping the container image for a newer one. Your data stays exactly where it is.
+你的数据（聊天、用户、设置、上传文件）存放在 Docker 卷或本地数据库中，而不在容器内部。更新 Open WebUI，本质上就是把容器镜像替换成更新版本；数据会保持原样。
 
 ---
 
-## Choose Your Update Strategy
+## 选择更新策略
 
-Before running any commands, decide how you want to track releases. The right choice depends on how you use Open WebUI.
+在执行任何命令前，先决定你想如何跟踪版本发布。最佳方案取决于你如何使用 Open WebUI。
 
-| Scenario | Recommended approach |
+| 场景 | 推荐做法 |
 |---|---|
-| **Personal / homelab** | Use the `:main` tag and pull manually when you want the latest |
-| **Shared / team instance** | Pin a specific version (e.g. `:v0.8.6`) and use [Diun](#diun) for update notifications |
-| **Production / critical** | Pin a version, review [release notes](https://github.com/open-webui/open-webui/releases) before upgrading, test in staging first |
+| **个人 / homelab** | 使用 `:main` 标签，需要最新版本时手动拉取 |
+| **共享 / 团队实例** | 固定特定版本（例如 `:v0.8.6`），并使用 [Diun](#diun) 接收更新通知 |
+| **生产 / 关键系统** | 固定版本，升级前查看[发布说明](https://github.com/open-webui/open-webui/releases)，先在预发布环境测试 |
 
-### `:main` vs. Pinned Versions
+### `:main` 与固定版本
 
-The `:main` tag always points to the **latest build**. It's convenient but can include breaking changes without warning.
+`:main` 标签始终指向**最新构建**。它使用方便，但也可能在没有预告的情况下包含破坏性变更。
 
-For stability, pin a specific release tag:
+如果你更重视稳定性，请固定到具体的发行标签：
 
 ```
 ghcr.io/open-webui/open-webui:v0.9.0
@@ -36,35 +36,35 @@ ghcr.io/open-webui/open-webui:v0.9.0-cuda
 ghcr.io/open-webui/open-webui:v0.9.0-ollama
 ```
 
-Browse all available tags on the [GitHub releases page](https://github.com/open-webui/open-webui/releases).
+你可以在 [GitHub releases 页面](https://github.com/open-webui/open-webui/releases) 查看所有可用标签。
 
 ---
 
-## Before You Update
+## 更新前准备
 
-1. **Back up your data** (see [Backup & Restore](#backup--restore) below). Especially important before releases with database migrations, which can be hard to undo.
-2. **Check the [release notes](https://github.com/open-webui/open-webui/releases)** for breaking changes.
-3. **Clear your browser cache** after updating (`Ctrl+F5` / `Cmd+Shift+R`) to avoid stale frontend assets.
+1. **备份数据**（见下方 [备份与恢复](#backup--restore)）。尤其在遇到包含数据库迁移的版本时更要如此，因为回滚通常不容易。
+2. **查看 [发布说明](https://github.com/open-webui/open-webui/releases)**，确认是否有破坏性变更。
+3. 更新后**清理浏览器缓存**（`Ctrl+F5` / `Cmd+Shift+R`），避免旧前端资源残留。
 
-:::warning Running multiple workers or replicas?
-Run migrations on a single instance first: set `UVICORN_WORKERS=1` or `ENABLE_DB_MIGRATIONS=false` on all but one instance. See the [Scaling guide](/getting-started/advanced-topics/scaling) for details.
+:::warning 正在运行多个 worker 或副本？
+请先只在单实例上运行迁移：将 `UVICORN_WORKERS=1`，或在除一个实例外的所有实例上设置 `ENABLE_DB_MIGRATIONS=false`。详见[扩展指南](/getting-started/advanced-topics/scaling)。
 :::
 
 ---
 
-## Manual Update
+## 手动更新
 
 <Tabs groupId="setup-method">
   <TabItem value="docker-run" label="Docker Run" default>
 
 ```bash
-# 1. Stop and remove the container (data in the volume is preserved)
+# 1. 停止并删除容器（卷中的数据会保留）
 docker rm -f open-webui
 
-# 2. Pull the latest image (or replace :main with a pinned version)
+# 2. 拉取最新镜像（或把 :main 替换成固定版本）
 docker pull ghcr.io/open-webui/open-webui:main
 
-# 3. Recreate the container
+# 3. 重新创建容器
 docker run -d -p 3000:8080 \
   -v open-webui:/app/backend/data \
   -e WEBUI_SECRET_KEY="your-secret-key" \
@@ -72,7 +72,7 @@ docker run -d -p 3000:8080 \
   ghcr.io/open-webui/open-webui:main
 ```
 
-For NVIDIA GPU support, add `--gpus all` to the `docker run` command.
+如需 NVIDIA GPU 支持，请在 `docker run` 命令中加入 `--gpus all`。
 
   </TabItem>
   <TabItem value="docker-compose" label="Docker Compose">
@@ -82,7 +82,7 @@ docker compose pull
 docker compose up -d
 ```
 
-Make sure your `docker-compose.yml` includes `WEBUI_SECRET_KEY`:
+请确认你的 `docker-compose.yml` 包含 `WEBUI_SECRET_KEY`：
 
 ```yaml title="docker-compose.yml"
 services:
@@ -107,7 +107,7 @@ volumes:
 pip install -U open-webui
 ```
 
-The `-U` flag upgrades to the latest version. Then restart the server:
+`-U` 标志会升级到最新版本。然后重启服务：
 
 ```bash
 open-webui serve
@@ -116,27 +116,27 @@ open-webui serve
   </TabItem>
 </Tabs>
 
-:::warning Set WEBUI_SECRET_KEY to avoid logout on every update
-Without a persistent `WEBUI_SECRET_KEY`, a new key is generated each time the container is recreated, invalidating all sessions. Generate one with `openssl rand -hex 32` and keep it across updates. See the [Environment Variable Reference](/reference/env-configuration) for details.
+:::warning 设置 WEBUI_SECRET_KEY，避免每次更新都被登出
+如果没有持久化的 `WEBUI_SECRET_KEY`，容器每次重建都会生成新密钥，导致所有会话失效。可通过 `openssl rand -hex 32` 生成，并在后续更新中持续复用。详情见[环境变量参考](/reference/env-configuration)。
 :::
 
-### Verify the Update
+### 验证更新
 
-After updating, confirm everything is working:
+更新后，请确认一切工作正常：
 
-1. **Check version in logs:**
+1. **在日志里检查版本：**
    ```bash
    docker logs open-webui 2>&1 | head -20
    ```
-2. **Load the UI** at [http://localhost:3000](http://localhost:3000). You should see the login page.
-3. **If the UI looks broken**, clear your browser cache (`Ctrl+F5` / `Cmd+Shift+R`).
-4. **If you see migration errors** in the logs, check the [release notes](https://github.com/open-webui/open-webui/releases) for known issues and the [Connection Errors](/troubleshooting/connection-error) troubleshooting page.
+2. **打开界面：** 访问 [http://localhost:3000](http://localhost:3000)，应看到登录页。
+3. **如果界面显示异常，** 清理浏览器缓存（`Ctrl+F5` / `Cmd+Shift+R`）。
+4. **如果日志里看到迁移错误，** 请查看[发布说明](https://github.com/open-webui/open-webui/releases)中的已知问题，以及[Connection Errors](/troubleshooting/connection-error) 故障排查页面。
 
 ---
 
-## Rolling Back
+## 回滚
 
-If an update causes problems, you can go back to a previous version by pinning its tag.
+如果更新引发问题，你可以通过固定旧版本标签回退到之前的版本。
 
 <Tabs groupId="setup-method">
   <TabItem value="docker-run" label="Docker Run" default>
@@ -153,13 +153,13 @@ docker run -d -p 3000:8080 -v open-webui:/app/backend/data \
   </TabItem>
   <TabItem value="docker-compose" label="Docker Compose">
 
-Change the image tag in your `docker-compose.yml`:
+将 `docker-compose.yml` 中的镜像标签改为：
 
 ```yaml
 image: ghcr.io/open-webui/open-webui:v0.8.3
 ```
 
-Then:
+然后执行：
 
 ```bash
 docker compose pull
@@ -177,33 +177,33 @@ open-webui serve
   </TabItem>
 </Tabs>
 
-:::caution Database migrations are one-way
-If the version you updated to ran a database migration, rolling back the container **does not** undo the migration. The older version may not work with the newer database schema. In that case, you need to restore from a backup taken **before** the update. For database-specific recovery, see the [Manual Database Migration](/troubleshooting/manual-database-migration) guide.
+:::caution 数据库迁移不可逆
+如果你更新到的版本执行了数据库迁移，仅回滚容器**并不会**撤销迁移。旧版本可能无法兼容新数据库结构。在这种情况下，你需要恢复**更新前**创建的备份。针对数据库级恢复，请参见 [Manual Database Migration](/troubleshooting/manual-database-migration)。
 :::
 
 ---
 
-## Stay Notified About Updates
+## 持续接收更新通知
 
-Instead of checking manually, use a tool to monitor for new releases. Options are listed from safest to most hands-on.
+与其手动反复检查，不如使用工具来监控新版本。下面按“最安全”到“最省心”的顺序列出几种选择。
 
-:::tip Recommendation
-- **Production / critical systems:** Diun (notification-only) + manual updates
-- **Managed environments:** WUD (visual dashboard + manual trigger)
-- **Homelabs / personal use:** Watchtower (fully automated)
+:::tip 推荐
+- **生产 / 关键系统：** Diun（只通知）+ 手动更新
+- **托管环境：** WUD（可视化面板 + 手动触发）
+- **Homelab / 个人使用：** Watchtower（全自动）
 :::
 
-| Feature | Diun | WUD | Watchtower |
+| 功能 | Diun | WUD | Watchtower |
 |---------|:---:|:---:|:---:|
-| **Auto-updates containers** | ❌ | ❌ (manual via UI) | ✅ |
-| **Web interface** | ❌ | ✅ | ❌ |
-| **Notifications** | ✅ | ✅ | ✅ |
-| **Docker 29+** | ✅ | ✅ | ✅ (forks) |
-| **Resource usage** | Very Low | Medium | Low |
+| **自动更新容器** | ❌ | ❌（通过 UI 手动触发） | ✅ |
+| **Web 界面** | ❌ | ✅ | ❌ |
+| **通知** | ✅ | ✅ | ✅ |
+| **Docker 29+** | ✅ | ✅ | ✅（fork 版本） |
+| **资源占用** | 很低 | 中等 | 低 |
 
-### Diun
+### Diun {#diun}
 
-Notification-only. Alerts you when updates are available (email, Slack, Discord, Telegram, etc.) without touching your containers. You decide when and how to update.
+只负责通知。它会在有更新可用时提醒你（邮件、Slack、Discord、Telegram 等），但不会触碰你的容器。何时更新、如何更新，都由你决定。
 
 ```yaml title="docker-compose.yml"
 services:
@@ -217,7 +217,7 @@ services:
       - TZ=America/New_York
       - LOG_LEVEL=info
       - DIUN_WATCH_WORKERS=10
-      - DIUN_WATCH_SCHEDULE=0 */6 * * *  # Every 6 hours
+      - DIUN_WATCH_SCHEDULE=0 */6 * * *  # 每 6 小时一次
       - DIUN_PROVIDERS_DOCKER=true
       - DIUN_NOTIF_MAIL_HOST=smtp.gmail.com
       - DIUN_NOTIF_MAIL_PORT=587
@@ -228,62 +228,62 @@ services:
     restart: unless-stopped
 ```
 
-See [Diun documentation](https://crazymax.dev/diun/) for full setup and notification options.
+完整配置与通知选项请查看 [Diun 文档](https://crazymax.dev/diun/)。
 
 ### What's Up Docker (WUD)
 
-Web UI for monitoring container updates and triggering them manually. See [WUD documentation](https://getwud.github.io/wud/) for setup.
+用于监控容器更新并手动触发升级的 Web UI。安装方式见 [WUD 文档](https://getwud.github.io/wud/)。
 
 ### Watchtower
 
-Fully automated. Pulls new images and recreates containers without intervention.
+全自动方案。它会拉取新镜像并自动重建容器，无需人工干预。
 
 :::warning
-The original `containrrr/watchtower` is **no longer maintained** and fails with Docker 29+. Use the [nicholas-fedor/watchtower](https://watchtower.nickfedor.com/) fork instead.
+原始的 `containrrr/watchtower` 已**不再维护**，且在 Docker 29+ 下会失效。请改用 [nicholas-fedor/watchtower](https://watchtower.nickfedor.com/) fork。
 :::
 
 :::warning
-Automated updates can break your deployment if a release includes breaking changes or database migrations. Review release notes before auto-updating production systems, and always have a backup.
+如果新版本包含破坏性变更或数据库迁移，自动更新可能直接破坏你的部署。生产环境启用自动更新前，请务必先查看发布说明，并始终做好备份。
 :::
 
-**One-time update:**
+**一次性更新：**
 ```bash
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
   nickfedor/watchtower --run-once open-webui
 ```
 
-**Continuous (check every 6 hours):**
+**持续运行（每 6 小时检查一次）：**
 ```bash
 docker run -d --name watchtower --restart unless-stopped \
   -v /var/run/docker.sock:/var/run/docker.sock \
   nickfedor/watchtower --interval 21600 open-webui
 ```
 
-Set `WATCHTOWER_CLEANUP=true` to auto-remove old images. See [Watchtower docs](https://watchtower.nickfedor.com/) for scheduling, notifications, and monitor-only mode.
+将 `WATCHTOWER_CLEANUP=true` 设为开启即可自动移除旧镜像。更多调度、通知和仅监控模式配置见 [Watchtower 文档](https://watchtower.nickfedor.com/)。
 
 ---
 
-## Backup & Restore
+## 备份与恢复 {#backup--restore}
 
-All data lives in the `open-webui` Docker volume, including:
-- **Database**: chats, users, settings, admin configuration
-- **Uploaded files**: documents, images, knowledge base content
-- **Generated content**: image generation outputs, exported data
+所有数据都保存在 `open-webui` Docker 卷中，包括：
+- **数据库**：聊天、用户、设置、管理员配置
+- **已上传文件**：文档、图片、知识库内容
+- **生成内容**：图片生成结果、导出数据
 
-### Backup
+### 备份
 
 ```bash
 docker run --rm -v open-webui:/data -v $(pwd):/backup \
   alpine tar czf /backup/openwebui-$(date +%Y%m%d).tar.gz /data
 ```
 
-Back up **before every update** and on a regular schedule (daily or weekly, depending on how actively you use Open WebUI).
+建议在**每次更新前**以及固定周期（按你的使用频率决定每天或每周）进行备份。
 
-### Restore
+### 恢复
 
 :::caution
-The restore command **deletes everything in the volume** before extracting the backup. Make sure you're restoring the right file.
+恢复命令会在解压前**删除卷中的所有内容**。请确认你恢复的是正确的备份文件。
 :::
 
 ```bash
@@ -293,15 +293,15 @@ docker run --rm -v open-webui:/data -v $(pwd):/backup \
 docker start open-webui
 ```
 
-Replace `YYYYMMDD` with the actual date of your backup file.
+请将 `YYYYMMDD` 替换为实际备份文件日期。
 
-For database-specific recovery, see the [Manual Database Migration](/troubleshooting/manual-database-migration) guide.
+数据库级恢复请参见 [Manual Database Migration](/troubleshooting/manual-database-migration)。
 
 ---
 
-## Related Guides
+## 相关指南
 
-- [Scaling Open WebUI](/getting-started/advanced-topics/scaling): multi-worker and multi-instance deployments
-- [Connection Errors](/troubleshooting/connection-error): troubleshooting post-update connectivity issues
-- [Environment Variable Reference](/reference/env-configuration): all configuration options including `WEBUI_SECRET_KEY`
-- [Release Notes](https://github.com/open-webui/open-webui/releases): changelog for every version
+- [扩展 Open WebUI](/getting-started/advanced-topics/scaling)：多 worker 与多实例部署
+- [Connection Errors](/troubleshooting/connection-error)：更新后连通性问题排查
+- [环境变量参考](/reference/env-configuration)：包含 `WEBUI_SECRET_KEY` 在内的全部配置项
+- [发布说明](https://github.com/open-webui/open-webui/releases)：每个版本的变更日志

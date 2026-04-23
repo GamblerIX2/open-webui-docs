@@ -3,39 +3,39 @@ sidebar_position: 3
 title: "Llama.cpp"
 ---
 
-## Overview
+## 概览
 
-Open WebUI makes it simple and flexible to connect and manage a local Llama.cpp server to run efficient, quantized language models. Whether you’ve compiled Llama.cpp yourself or you're using precompiled binaries, this guide will walk you through how to:
+Open WebUI 可以简单灵活地连接并管理本地 Llama.cpp 服务器，以运行高效的量化语言模型。无论你是自行编译 Llama.cpp，还是使用预编译二进制，本指南都会带你完成以下内容：
 
-- Set up your Llama.cpp server
-- Load large models locally
-- Integrate with Open WebUI for a seamless interface
+- 配置 Llama.cpp 服务器
+- 在本地加载大模型
+- 与 Open WebUI 集成，获得顺滑界面体验
 
-Let’s get you started!
-
----
-
-## Step 1: Install Llama.cpp
-
-To run models with Llama.cpp, you first need the Llama.cpp server installed locally.
-
-You can either:
-
-- 📦 [Download prebuilt binaries](https://github.com/ggerganov/llama.cpp/releases)
-- 🛠️ Or build it from source by following the [official build instructions](https://github.com/ggerganov/llama.cpp/blob/master/docs/build.md)
-
-After installing, make sure `llama-server` is available in your local system path or take note of its location.
+开始吧！
 
 ---
 
-## Step 2: Download a Supported Model
+## 第 1 步：安装 Llama.cpp
 
-You can load and run various GGUF-format quantized LLMs using Llama.cpp. One impressive example is the DeepSeek-R1 1.58-bit model optimized by UnslothAI. To download this version:
+要用 Llama.cpp 运行模型，首先需要在本地安装 Llama.cpp 服务器。
 
-1. Visit the [Unsloth DeepSeek-R1 repository on Hugging Face](https://huggingface.co/unsloth/DeepSeek-R1-GGUF)
-2. Download the 1.58-bit quantized version – around 131GB.
+你可以：
 
-Alternatively, use Python to download programmatically:
+- 📦 [下载预编译二进制](https://github.com/ggerganov/llama.cpp/releases)
+- 🛠️ 或按照[官方构建说明](https://github.com/ggerganov/llama.cpp/blob/master/docs/build.md)从源码编译
+
+安装后，请确认 `llama-server` 已加入系统路径，或记下其实际位置。
+
+---
+
+## 第 2 步：下载受支持的模型
+
+你可以用 Llama.cpp 加载并运行多种 GGUF 格式的量化 LLM。其中一个很有代表性的例子，是由 UnslothAI 优化的 DeepSeek-R1 1.58-bit 模型。下载方式如下：
+
+1. 打开 [Hugging Face 上的 Unsloth DeepSeek-R1 仓库](https://huggingface.co/unsloth/DeepSeek-R1-GGUF)
+2. 下载 1.58-bit 量化版本——大约 131GB。
+
+你也可以使用 Python 以编程方式下载：
 
 ```python
 
@@ -46,11 +46,11 @@ from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id = "unsloth/DeepSeek-R1-GGUF",
     local_dir = "DeepSeek-R1-GGUF",
-    allow_patterns = ["*UD-IQ1_S*"],  # Download only 1.58-bit variant
+    allow_patterns = ["*UD-IQ1_S*"],  # 仅下载 1.58-bit 变体
 )
 ```
 
-This will download the model files into a directory like:
+这会把模型文件下载到类似下面的目录：
 ```
 DeepSeek-R1-GGUF/
 └── DeepSeek-R1-UD-IQ1_S/
@@ -59,13 +59,13 @@ DeepSeek-R1-GGUF/
     └── DeepSeek-R1-UD-IQ1_S-00003-of-00003.gguf
 ```
 
-📍 Keep track of the full path to the first GGUF file — you’ll need it in Step 3.
+📍 请记下第一个 GGUF 文件的完整路径——第 3 步会用到。
 
 ---
 
-## Step 3: Serve the Model with Llama.cpp
+## 第 3 步：使用 Llama.cpp 提供模型服务
 
-Start the model server using the llama-server binary. Navigate to your llama.cpp folder (e.g., build/bin) and run:
+使用 `llama-server` 启动模型服务。进入你的 llama.cpp 目录（例如 build/bin）后运行：
 
 ```bash
 ./llama-server \
@@ -75,72 +75,72 @@ Start the model server using the llama-server binary. Navigate to your llama.cpp
   --n-gpu-layers 40
 ```
 
-🛠️ Tweak the parameters to suit your machine:
+🛠️ 可根据你的机器调整参数：
 
-- --model: Path to your .gguf model file
-- --port: 10000 (or choose another open port)
-- --ctx-size: Token context length (can increase if RAM allows)
-- --n-gpu-layers: Layers offloaded to GPU for faster performance
+- --model：`.gguf` 模型文件路径
+- --port：`10000`（或任意其他可用端口）
+- --ctx-size：上下文长度（若内存允许可调大）
+- --n-gpu-layers：卸载到 GPU 的层数，用于提升性能
 
-Once the server runs, it will expose a local **OpenAI-compatible API** (Chat Completions) on:
+服务启动后，会在以下地址暴露一个本地**兼容 OpenAI 的 API**（Chat Completions）：
 
 ```
 http://127.0.0.1:10000
 ```
 
 :::tip
-Open WebUI also supports the experimental [Open Responses](/getting-started/quick-start/connect-a-provider/starting-with-open-responses) specification for providers that implement it.
+对于实现该规范的提供商，Open WebUI 也支持实验性的 [Open Responses](/getting-started/quick-start/connect-a-provider/starting-with-open-responses)。
 :::
 
 ---
 
-## Step 4: Connect Llama.cpp to Open WebUI
+## 第 4 步：把 Llama.cpp 连接到 Open WebUI
 
-To control and query your locally running model directly from Open WebUI:
+要在 Open WebUI 中直接控制并调用本地运行的模型：
 
-1. Open Open WebUI in your browser
-2. Go to ⚙️ **Admin Settings → Connections → OpenAI**.
-3. Click ➕ **Add Connection**.
-4. Set the following (under **Standard / Compatible** if tabs are visible):
-   - **URL**: `http://127.0.0.1:10000/v1`
-     (Or use `http://host.docker.internal:10000/v1` if running WebUI inside Docker. **Note the `/v1` at the end!**)
-   - **API Key**: `none` (leave blank or type specific key if configured)
+1. 在浏览器中打开 Open WebUI
+2. 进入 ⚙️ **Admin Settings → Connections → OpenAI**。
+3. 点击 ➕ **Add Connection**。
+4. 填写以下内容（如果有标签页，请在 **Standard / Compatible** 下填写）：
+   - **URL**：`http://127.0.0.1:10000/v1`
+     （如果 WebUI 运行在 Docker 中，请使用 `http://host.docker.internal:10000/v1`。**注意末尾一定要有 `/v1`！**）
+   - **API Key**：`none`（可留空，或在你已配置时填写特定 key）
 
-💡 Once saved, Open WebUI will begin using your local Llama.cpp server as a backend!
+💡 保存后，Open WebUI 就会开始把你的本地 Llama.cpp 服务器作为后端使用！
 
-:::tip Connection Timeout Configuration
+:::tip 连接超时配置
 
-If your Llama.cpp server is slow to initialize or you see timeout errors, you can increase the model list fetch timeout:
+如果 Llama.cpp 服务器初始化较慢，或你看到了超时报错，可以提高模型列表获取超时：
 
 ```bash
-# Increase timeout for slower model loading (default is 10 seconds)
+# 针对较慢的模型加载提高超时（默认 10 秒）
 AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=30
 ```
 
-If you've saved an unreachable URL and the UI becomes unresponsive, see the [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) troubleshooting guide.
+如果你保存了一个不可达 URL，导致界面卡住，请查看 [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) 故障排查页面。
 
 :::
 
-![Llama.cpp Connection in Open WebUI](/images/tutorials/deepseek/connection.png)
+![Open WebUI 中的 Llama.cpp 连接](/images/tutorials/deepseek/connection.png)
 
 ---
 
-## Quick Tip: Try Out the Model via Chat Interface
+## 小提示：在聊天界面直接试用模型
 
-Once connected, select the model from the Open WebUI chat menu and start interacting!
+连接完成后，只需在 Open WebUI 聊天菜单中选择该模型，然后开始互动！
 
-![Model Chat Preview](/images/tutorials/deepseek/response.png)
-
----
-
-## You're Ready to Go!
-
-Once configured, Open WebUI makes it easy to:
-
-- Manage and switch between local models served by Llama.cpp
-- Use the OpenAI-compatible API with no key needed
-- Experiment with massive models like DeepSeek-R1 — right from your machine!
+![模型聊天预览](/images/tutorials/deepseek/response.png)
 
 ---
 
-🚀 Have fun experimenting and building!
+## 现在可以开始了！
+
+完成配置后，Open WebUI 能让你轻松：
+
+- 管理并切换由 Llama.cpp 提供的本地模型
+- 使用兼容 OpenAI 的 API，且无需 API key
+- 直接在自己的机器上试验像 DeepSeek-R1 这样的大模型
+
+---
+
+🚀 祝你玩得开心，也祝你构建顺利！

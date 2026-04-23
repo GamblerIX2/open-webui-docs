@@ -1,71 +1,71 @@
 ---
 sidebar_position: 100
-title: "Image Generation"
+title: "图像生成"
 ---
 
-## 🎨 Image Generation Troubleshooting
+## 🎨 图像生成故障排查
 
-### General Issues
+### 常见问题
 
-- **Image Not Generating** (clicking generate produces no result, or an error appears in the chat):
-    - Check the **Images** settings in the **Admin Panel** > **Settings** > **Images**. Ensure "Image Generation" is toggled **ON**.
-    - Verify your **API Key** and **Base URL** (for OpenAI, ComfyUI, Automatic1111) are correct.
-    - Ensure the selected model is available and loaded in your backend service (e.g., check the ComfyUI or Automatic1111 console for activity).
-    - **Azure OpenAI**: If you see `[ERROR: azure-openai error: Unknown parameter: 'response_format'.]`, ensure you are using API version `2025-04-01-preview` or later.
+- **图像没有生成**（点击生成后没有结果，或聊天中出现错误）：
+    - 检查 **Admin Panel** > **Settings** > **Images** 中的 **Images** 设置，确认 “Image Generation” 已切换为 **ON**。
+    - 确认你的 **API Key** 和 **Base URL**（适用于 OpenAI、ComfyUI、Automatic1111）填写正确。
+    - 确认所选模型已在后端服务中可用并完成加载（例如查看 ComfyUI 或 Automatic1111 控制台是否有活动日志）。
+    - **Azure OpenAI**：如果你看到 `[ERROR: azure-openai error: Unknown parameter: 'response_format'.]`，请确认使用的是 `2025-04-01-preview` 或更高版本的 API 版本。
 
-### ComfyUI Issues
+### ComfyUI 问题
 
-- **Incompatible Workflow / JSON Errors** (you see `Invalid workflow` or JSON parse errors after uploading a workflow):
-    - **API Format Required**: Open WebUI requires workflows to be in the **API Format**. 
-    - In ComfyUI:
-        1. Click the "Settings" (gear icon).
-        2. Enable "Enable Dev mode Options".
-        3. Click "Save (API Format)" in the menu.
-    - **Do not** use the standard "Save" button or standard JSON export.
+- **Workflow 不兼容 / JSON 错误**（上传 workflow 后出现 `Invalid workflow` 或 JSON 解析错误）：
+    - **必须使用 API Format**：Open WebUI 要求 workflow 使用 **API Format**。
+    - 在 ComfyUI 中：
+        1. 点击 “Settings”（齿轮图标）。
+        2. 启用 “Enable Dev mode Options”。
+        3. 在菜单中点击 “Save (API Format)”。
+    - **不要** 使用普通的 “Save” 按钮或标准 JSON 导出。
 
-- **Image Editing / Image Variation Fails** (generating from text works, but editing or image-to-image fails silently):
-    - If you are using Image Editing or Image+Image generation, your custom workflow **must** have nodes configured to accept an input image (usually a `LoadImage` node replaced/linked effectively).
-    - Check the default "Image Editing" workflow in the Open WebUI settings for the required node structure to ensure compatibility.
+- **图像编辑 / 图像变体失败**（文本生成正常，但编辑或 image-to-image 静默失败）：
+    - 如果你正在使用 Image Editing 或 Image+Image 生成，自定义 workflow **必须** 包含可接收输入图像的节点（通常是正确替换或连接的 `LoadImage` 节点）。
+    - 请参考 Open WebUI 设置中的默认 “Image Editing” workflow，确认所需节点结构兼容。
 
-### Automatic1111 Issues
+### Automatic1111 问题
 
-- **Connection Refused / "Api Not Found"** (Automatic1111 is running, but Open WebUI reports connection errors):
-    - Ensure you are running Automatic1111 with the `--api` flag enabled in your command line arguments.
-    
-- **Docker Connectivity** (Open WebUI can't reach Automatic1111 on `localhost`):
-    - If Open WebUI is running in Docker and Automatic1111 is on your host machine:
-        - Use `http://host.docker.internal:7860` as the Base URL.
-        - Ensure `host.docker.internal` is resolvable (added via `--add-host=host.docker.internal:host-gateway` in your Docker run command).
+- **连接被拒绝 / “Api Not Found”**（Automatic1111 正在运行，但 Open WebUI 报连接错误）：
+    - 请确认你在启动 Automatic1111 时，命令行参数中启用了 `--api`。
 
-### Environment Variables & Configuration
+- **Docker 连接问题**（Open WebUI 无法通过 `localhost` 访问 Automatic1111）：
+    - 如果 Open WebUI 运行在 Docker 中，而 Automatic1111 运行在宿主机：
+        - 请把 Base URL 设为 `http://host.docker.internal:7860`
+        - 确保 `host.docker.internal` 可解析（在 `docker run` 中通过 `--add-host=host.docker.internal:host-gateway` 添加）
 
-For advanced configuration, you can set the following environment variables.
+### 环境变量与配置
 
-#### General Image Generation
-- `ENABLE_IMAGE_GENERATION`: Set to `true` to enable image generation.
-- `IMAGE_GENERATION_ENGINE`: The engine to use (e.g., `openai`, `comfyui`, `automatic1111`, `gemini`).
-- `IMAGE_GENERATION_MODEL`: The model ID to use for generation.
-- `IMAGE_SIZE`: Default image size (e.g., `512x512`).
+如需高级配置，你可以设置以下环境变量。
 
-#### Engine Specifics
+#### 通用图像生成
+- `ENABLE_IMAGE_GENERATION`：设为 `true` 以启用图像生成。
+- `IMAGE_GENERATION_ENGINE`：要使用的引擎（例如 `openai`、`comfyui`、`automatic1111`、`gemini`）。
+- `IMAGE_GENERATION_MODEL`：用于生成的模型 ID。
+- `IMAGE_SIZE`：默认图像尺寸（例如 `512x512`）。
 
-**OpenAI / Compatible**
-- `IMAGES_OPENAI_API_BASE_URL`: Base URL for OpenAI-compatible image generation API.
-- `IMAGES_OPENAI_API_KEY`: API Key for the image generation service.
+#### 各引擎专属设置
+
+**OpenAI / 兼容接口**
+- `IMAGES_OPENAI_API_BASE_URL`：OpenAI 兼容图像生成 API 的 Base URL。
+- `IMAGES_OPENAI_API_KEY`：图像生成服务的 API Key。
 
 **ComfyUI**
-- `COMFYUI_BASE_URL`: Base URL for your ComfyUI instance.
-- `COMFYUI_API_KEY`: API Key (if authentication is enabled).
-- `COMFYUI_WORKFLOW`: Custom workflow JSON (must be API format).
+- `COMFYUI_BASE_URL`：你的 ComfyUI 实例 Base URL。
+- `COMFYUI_API_KEY`：API Key（如果启用了认证）。
+- `COMFYUI_WORKFLOW`：自定义 workflow JSON（必须是 API Format）。
 
 **Automatic1111**
-- `AUTOMATIC1111_BASE_URL`: Base URL for your Automatic1111 instance.
-- `AUTOMATIC1111_API_AUTH`: Authentication credentials (username:password).
+- `AUTOMATIC1111_BASE_URL`：你的 Automatic1111 实例 Base URL。
+- `AUTOMATIC1111_API_AUTH`：认证凭据（username:password）。
 
 **Gemini**
-- `IMAGES_GEMINI_API_KEY`: API Key for Gemini.
-- [View Gemini Configuration Guide](/features/chat-conversations/image-generation-and-editing/gemini)
+- `IMAGES_GEMINI_API_KEY`：Gemini 的 API Key。
+- [查看 Gemini 配置指南](/features/chat-conversations/image-generation-and-editing/gemini)
 
 :::tip
-For a complete list of environment variables and detailed configuration options, please refer to the [Environment Configuration Guide](/reference/env-configuration).
+完整的环境变量列表和更详细的配置选项，请参阅 [Environment Configuration Guide](/reference/env-configuration)。
 :::

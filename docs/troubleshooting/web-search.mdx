@@ -1,51 +1,49 @@
 ---
 sidebar_position: 4
-title: "Web Search"
+title: "网页搜索"
 ---
 
-Web Search in Open WebUI allows language models to access real-time information from the internet. When things don't work as expected, this guide will help you diagnose and fix common issues.
+Open WebUI 中的 Web Search 让语言模型能够访问互联网中的实时信息。当它没有按预期工作时，本指南可以帮助你诊断并解决常见问题。
 
-## Common Web Search Issues
+## 常见 Web Search 问题
 
-### 1. Web Search Fails Behind HTTP Proxy
+### 1. Web Search 在 HTTP 代理后失效
 
-If you're running Open WebUI behind an HTTP proxy, you might notice that web search queries succeed (e.g., SearXNG returns results), but the subsequent content fetching fails with errors like:
+如果你把 Open WebUI 部署在 HTTP 代理后，可能会发现搜索查询本身可以成功（例如 SearXNG 能返回结果），但后续内容抓取会失败，并出现类似错误：
 
 - `[Errno -3] Temporary failure in name resolution`
 - `Connection timeout to host`
 - `The content provided is empty`
 
-This happens because the web content fetcher doesn't use your `http_proxy`/`https_proxy` environment variables by default.
+这是因为网页内容抓取器默认不会使用你的 `http_proxy`/`https_proxy` 环境变量。
 
-✅ **Solution:**
+✅ **解决方法：**
 
-1. Navigate to: **Admin Panel > Settings > Web Search**
-2. Enable **Trust Proxy Environment**
-3. Save changes
+1. 前往：**Admin Panel > Settings > Web Search**
+2. 启用 **Trust Proxy Environment**
+3. 保存修改
 
-Alternatively, set the environment variable [`WEB_SEARCH_TRUST_ENV`](/reference/env-configuration#web_search_trust_env):
+或者设置环境变量 [`WEB_SEARCH_TRUST_ENV`](/reference/env-configuration#web_search_trust_env)：
 
 ```bash
 WEB_SEARCH_TRUST_ENV=True
 ```
 
 :::info
+这是一个 **PersistentConfig** 变量，意味着它既可以在启动时通过环境变量设置，也可以通过 Admin Panel UI 配置。一旦你在 UI 中设置了它，数据库中的值就会优先生效。
 
-This is a **PersistentConfig** variable, meaning it can be set via environment variable on startup OR configured through the Admin Panel UI. Once set in the UI, the database value takes precedence over the environment variable.
-
-This setting tells Open WebUI's web content loader to respect the proxy settings from your environment variables (`http_proxy`, `https_proxy`). Without this, even if your search engine works through the proxy, fetching content from the returned URLs will fail.
-
+这个设置会让 Open WebUI 的网页内容加载器遵循环境变量中的代理设置（`http_proxy`、`https_proxy`）。如果不开启，即使你的搜索引擎本身能通过代理工作，从返回 URL 抓取内容时仍然会失败。
 :::
 
 ---
 
-### 2. 403 Forbidden Errors from SearXNG
+### 2. 来自 SearXNG 的 403 Forbidden 错误
 
-If you're using SearXNG and seeing `403 Client Error: Forbidden` in your logs, the JSON format is not enabled.
+如果你使用的是 SearXNG，并在日志中看到 `403 Client Error: Forbidden`，通常说明没有启用 JSON 格式。
 
-✅ **Solution:**
+✅ **解决方法：**
 
-Edit your SearXNG `settings.yml` and add `json` to the formats list:
+编辑你的 SearXNG `settings.yml`，并在 formats 列表中加入 `json`：
 
 ```yaml
 search:
@@ -54,54 +52,54 @@ search:
     - json
 ```
 
-Restart SearXNG after making this change.
+修改后重启 SearXNG。
 
 ---
 
-### 3. Empty Content or Poor Results
+### 3. 内容为空或结果质量差
 
-If web search returns empty content or poor quality results, the issue is often related to context window size or content extraction.
+如果 Web Search 返回空内容或结果质量很差，问题通常与上下文窗口大小或内容提取有关。
 
-✅ **Solutions:**
+✅ **解决方法：**
 
-- **Increase context length**: Web pages often contain 4,000-8,000+ tokens. If your model has a 2048-token limit, you're missing most of the content. Increase to 16384+ tokens in **Admin Panel > Models > Settings > Advanced Parameters** (anything below will be subpar for web content).
+- **增大上下文长度**：网页通常包含 4,000-8,000+ token。如果你的模型限制是 2048 token，那你实际上会丢掉大部分内容。请在 **Admin Panel > Models > Settings > Advanced Parameters** 中将其提高到 16384+（低于这个值时，网页内容效果通常都比较差）。
 
-- **Check result count**: Adjust `WEB_SEARCH_RESULT_COUNT` to control how many results are fetched.
+- **检查结果数量**：通过调整 `WEB_SEARCH_RESULT_COUNT` 控制抓取的结果数。
 
-  In Native/Agentic tool calling, if the model omits `count` for `search_web`, Open WebUI uses `WEB_SEARCH_RESULT_COUNT` by default. If the model provides `count`, it is capped at the same admin-configured maximum.
+  在 Native/Agentic 工具调用模式下，如果模型在 `search_web` 中省略了 `count`，Open WebUI 会默认使用 `WEB_SEARCH_RESULT_COUNT`。如果模型提供了 `count`，也会被限制在管理员配置的同一最大值以内。
 
-- **Try different loaders**: Configure `WEB_LOADER_ENGINE` to use `playwright` for JavaScript-heavy sites or `firecrawl`/`tavily` for better extraction.
+- **尝试不同 loader**：把 `WEB_LOADER_ENGINE` 改为 `playwright` 以处理 JavaScript 较重的网站，或使用 `firecrawl`/`tavily` 获得更好的提取效果。
 
-For more details on context window issues, see the [RAG Troubleshooting Guide](./rag).
-
----
-
-### 4. Connection Timeouts
-
-If web searches are timing out:
-
-✅ **Solutions:**
-
-- **Reduce concurrent requests**: Set `WEB_SEARCH_CONCURRENT_REQUESTS=1` for sequential execution (required for Brave free tier).
-
-- **Adjust loader concurrency**: Lower `WEB_LOADER_CONCURRENT_REQUESTS` if fetching many pages simultaneously.
-
-- **Check network connectivity**: Ensure Open WebUI can reach both the search engine and the result URLs.
+关于上下文窗口问题的更多细节，请参阅 [RAG 故障排查指南](./rag)。
 
 ---
 
-## Environment Variables Reference
+### 4. 连接超时
 
-For a comprehensive list of all web search environment variables, see the [Environment Configuration documentation](/reference/env-configuration#web-search).
+如果 Web Search 经常超时：
 
-Key variables:
+✅ **解决方法：**
 
-| Variable | Description |
+- **降低并发请求数**：设置 `WEB_SEARCH_CONCURRENT_REQUESTS=1`，按顺序执行（Brave 免费层需要这样做）。
+
+- **调整 loader 并发**：如果同时抓取很多页面，请降低 `WEB_LOADER_CONCURRENT_REQUESTS`。
+
+- **检查网络连通性**：确认 Open WebUI 能访问搜索引擎以及搜索结果对应的 URL。
+
+---
+
+## 环境变量参考
+
+完整的 Web Search 环境变量列表，请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+
+常用变量：
+
+| Variable | 说明 |
 |----------|-------------|
-| `WEB_SEARCH_TRUST_ENV` | Enable proxy support for content fetching |
-| `WEB_SEARCH_RESULT_COUNT` | Number of search results to fetch |
-| `WEB_SEARCH_CONCURRENT_REQUESTS` | Concurrent requests to search engine |
-| `WEB_LOADER_CONCURRENT_REQUESTS` | Concurrent page fetches |
-| `WEB_LOADER_ENGINE` | Content extraction engine |
+| `WEB_SEARCH_TRUST_ENV` | 为内容抓取启用代理支持 |
+| `WEB_SEARCH_RESULT_COUNT` | 要抓取的搜索结果数量 |
+| `WEB_SEARCH_CONCURRENT_REQUESTS` | 向搜索引擎发起的并发请求数 |
+| `WEB_LOADER_CONCURRENT_REQUESTS` | 页面抓取并发数 |
+| `WEB_LOADER_ENGINE` | 内容提取引擎 |
 
 ---

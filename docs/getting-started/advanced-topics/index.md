@@ -1,37 +1,37 @@
 ---
 sidebar_position: 500
-title: "Advanced Topics"
+title: "高级主题"
 ---
 
-# Advanced Topics
+# 高级主题
 
-**Go beyond the defaults: scale, debug, and develop Open WebUI for production and contribution.**
+**超越默认配置：为生产环境与贡献开发扩展、调试并深入使用 Open WebUI。**
 
-Open WebUI works out of the box for personal use, but real-world deployments need more: production databases, horizontal scaling, structured logging, observability. This section covers everything between "it runs on my laptop" and "it serves my entire organization."
-
----
-
-## Why Advanced Topics?
-
-### Scale beyond a single container
-
-The default SQLite database and single-worker setup top out at small-team usage. Learn how to swap in PostgreSQL, add Redis for shared state, run multiple replicas behind a load balancer, and choose an external vector database, all without re-architecting your deployment.
-
-### Debug with confidence
-
-When something goes wrong at scale, the first question is always "what do the logs say?" Configure log levels, enable structured JSON output for log aggregators, and connect OpenTelemetry for end-to-end traces across your entire stack.
-
-### Contribute to the project
-
-Set up a local development environment with hot-reloading frontend and backend, understand the contribution workflow, and start shipping pull requests.
+Open WebUI 开箱即可满足个人使用，但真实部署通常需要更多能力：生产数据库、横向扩展、结构化日志、可观测性。本分区覆盖了从“它能在我笔记本上跑起来”到“它服务整个组织”之间的关键内容。
 
 ---
 
-## What's Covered
+## 为什么需要高级主题？
+
+### 扩展到单容器之外
+
+默认的 SQLite 数据库与单 worker 配置适合小团队使用。你将学会如何切换到 PostgreSQL、加入 Redis 共享状态、在负载均衡器后运行多副本，以及选择外部向量数据库，而无需重构你的部署架构。
+
+### 更有把握地调试
+
+当规模化环境中出现问题时，第一个问题永远是“日志里写了什么？”你可以配置日志级别、为日志聚合器启用结构化 JSON 输出，并接入 OpenTelemetry 以获得贯穿全栈的链路追踪。
+
+### 参与项目贡献
+
+你还可以搭建本地开发环境，让前端与后端支持热重载，理解贡献流程，并开始提交 pull request。
+
+---
+
+## 本节内容
 
 | | |
 | :--- | :--- |
-| 🚀 **[Scaling Open WebUI](scaling)** | Move from SQLite to PostgreSQL, add Redis, run multiple replicas, configure external vector databases, and set up shared storage and observability |
-| 🪵 **[Logging Open WebUI](logging)** | Configure log levels, enable debug output, and switch to structured JSON logging for production log aggregators |
-| 🛠️ **[Developing Open WebUI](development)** | Clone the repo, run the frontend and backend side by side, test on other devices, and submit pull requests |
-| 🔒 **[Hardening Open WebUI](hardening)** | Lock down authentication, secrets, CORS, security headers, audit logging, and network access for production deployments |
+| 🚀 **[扩展 Open WebUI](scaling)** | 从 SQLite 切换到 PostgreSQL，加入 Redis，运行多副本，配置外部向量数据库，并搭建共享存储与可观测性 |
+| 🪵 **[Open WebUI 日志](logging)** | 配置日志级别、启用调试输出，并为生产日志聚合器切换到结构化 JSON 日志 |
+| 🛠️ **[开发 Open WebUI](development)** | 克隆仓库、前后端并行运行、在其他设备上测试并提交 pull request |
+| 🔒 **[强化 Open WebUI 安全](hardening)** | 为生产部署收紧认证、密钥、CORS、安全头、审计日志和网络访问 |

@@ -1,11 +1,10 @@
 ---
 sidebar_position: 2
-title: "Quick Start"
+title: "快速开始"
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
- 
 
 import DockerCompose from './tab-docker/DockerCompose.md';
 import Extension from './tab-docker/DockerDesktopExtension.md';
@@ -23,15 +22,15 @@ import Uv from './tab-python/Uv.md';
 import Conda from './tab-python/Conda.md';
 import PythonUpdating from './tab-python/PythonUpdating.md';
 
-# Quick Start
+# 快速开始
 
-Get Open WebUI running on your machine. Pick your preferred method below.
+让 Open WebUI 在你的机器上跑起来。请选择你偏好的安装方式。
 
-Open WebUI works on **macOS, Linux** (x86_64 and ARM64, including Raspberry Pi and NVIDIA DGX Spark), and **Windows**.
+Open WebUI 支持 **macOS、Linux**（x86_64 和 ARM64，包括 Raspberry Pi 与 NVIDIA DGX Spark）以及 **Windows**。
 
-- **Docker:** Officially supported and recommended for most users. Requires [Docker](https://docs.docker.com/get-docker/) installed.
-- **Python:** Suitable for low-resource environments or manual setups
-- **Kubernetes:** Ideal for enterprise deployments requiring scaling and orchestration
+- **Docker：** 官方支持，适合大多数用户，也是推荐方案。需要先安装 [Docker](https://docs.docker.com/get-docker/)。
+- **Python：** 适合低资源环境或手动部署。
+- **Kubernetes：** 适合需要扩展与编排的企业级部署。
 
 <Tabs>
   <TabItem value="docker" label="Docker">
@@ -49,7 +48,7 @@ Open WebUI works on **macOS, Linux** (x86_64 and ARM64, including Raspberry Pi a
         </div>
       </TabItem>
 
-      <TabItem value="extension" label="Extension">
+      <TabItem value="extension" label="扩展">
         <div className='mt-5'>
           <Extension />
         </div>
@@ -61,17 +60,17 @@ Open WebUI works on **macOS, Linux** (x86_64 and ARM64, including Raspberry Pi a
         </div>
       </TabItem>
 
-      <TabItem value="podman-quadlet" label="Quadlets">
+      <TabItem value="podman-quadlet" label="Quadlet">
         <div className='mt-5'>
           <PodmanQuadlet />
         </div>
       </TabItem>
 
-    <TabItem value="podman-kube-play" label="Kube Play">
-      <div className='mt-5'>
-        <PodmanKubePlay />
-      </div>
-    </TabItem>
+      <TabItem value="podman-kube-play" label="Kube Play">
+        <div className='mt-5'>
+          <PodmanKubePlay />
+        </div>
+      </TabItem>
 
       <TabItem value="swarm" label="Swarm">
         <div className='mt-5'>
@@ -128,28 +127,28 @@ Open WebUI works on **macOS, Linux** (x86_64 and ARM64, including Raspberry Pi a
     </Tabs>
   </TabItem>
 
-  <TabItem value="desktop" label="Desktop">
+  <TabItem value="desktop" label="桌面端">
 
-### Desktop App
+### 桌面应用
 
-Download the desktop app from [**github.com/open-webui/desktop**](https://github.com/open-webui/desktop). It runs Open WebUI natively on your system without Docker or manual setup.
+从 [**github.com/open-webui/desktop**](https://github.com/open-webui/desktop) 下载桌面应用。它可在你的系统上原生运行 Open WebUI，无需 Docker 或手动配置。
 
-:::warning Experimental
-The desktop app is a **work in progress** and is not yet stable. For production use, install via **Docker** or **Python**.
+:::warning 实验性
+桌面应用仍在**持续开发中**，目前尚不稳定。用于生产环境时，请通过 **Docker** 或 **Python** 安装。
 :::
 
   </TabItem>
 
-  <TabItem value="third-party" label="Third Party">
+  <TabItem value="third-party" label="第三方">
     <Tabs>
       <TabItem value="pinokio-computer" label="Pinokio.computer">
-        ### Pinokio.computer Installation
+        ### 通过 Pinokio.computer 安装
 
-        For installation via Pinokio.computer, visit their website:
+        如需通过 Pinokio.computer 安装，请访问其官网：
 
         [https://pinokio.computer/](https://pinokio.computer/)
 
-        Support for this installation method is provided through their website.
+        该安装方式的支持由其官网提供。
       </TabItem>
     </Tabs>
   </TabItem>
@@ -157,56 +156,56 @@ The desktop app is a **work in progress** and is not yet stable. For production 
 
 ---
 
-## After You Install
+## 安装完成后
 
-:::tip First Login
+:::tip 首次登录
 
-- **Admin account:** The first account created gets **Administrator privileges** and controls user management and system settings.
-- **New sign-ups:** Subsequent registrations start with **Pending** status and require Administrator approval.
-- **Privacy:** All data, including login details, is stored locally on your device by default. Open WebUI does not make external requests by default. All models are private by default and must be explicitly shared.
+- **管理员账户：** 第一个创建的账户会获得**管理员权限**，负责用户管理与系统设置。
+- **新注册用户：** 后续注册的账户会以 **Pending** 状态开始，需要管理员批准。
+- **隐私：** 默认情况下，所有数据（包括登录信息）都存储在你的本地设备上。Open WebUI 默认不会发起外部请求。所有模型默认都是私有的，只有显式共享后其他人才能访问。
 
 :::
 
-### Connect a Model Provider
+### 连接模型提供商
 
-Open WebUI needs at least one model provider to start chatting. Choose yours:
+Open WebUI 至少需要一个模型提供商才能开始聊天。请选择你的方案：
 
-| Provider | Guide |
+| 提供商 | 指南 |
 |----------|-------|
-| **Ollama** (local models) | [Starting with Ollama →](/getting-started/quick-start/connect-a-provider/starting-with-ollama) |
-| **OpenAI** | [Starting with OpenAI →](/getting-started/quick-start/connect-a-provider/starting-with-openai) |
-| **Any OpenAI-compatible API** | [OpenAI-Compatible Providers →](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible) |
-| **Anthropic** | [Starting with Anthropic →](/getting-started/quick-start/connect-a-provider/starting-with-anthropic) |
-| **llama.cpp** | [Starting with llama.cpp →](/getting-started/quick-start/connect-a-provider/starting-with-llama-cpp) |
-| **vLLM** | [Starting with vLLM →](/getting-started/quick-start/connect-a-provider/starting-with-vllm) |
+| **Ollama**（本地模型） | [从 Ollama 开始 →](/getting-started/quick-start/connect-a-provider/starting-with-ollama) |
+| **OpenAI** | [从 OpenAI 开始 →](/getting-started/quick-start/connect-a-provider/starting-with-openai) |
+| **任意兼容 OpenAI 的 API** | [兼容 OpenAI 的提供商 →](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible) |
+| **Anthropic** | [从 Anthropic 开始 →](/getting-started/quick-start/connect-a-provider/starting-with-anthropic) |
+| **llama.cpp** | [从 llama.cpp 开始 →](/getting-started/quick-start/connect-a-provider/starting-with-llama-cpp) |
+| **vLLM** | [从 vLLM 开始 →](/getting-started/quick-start/connect-a-provider/starting-with-vllm) |
 
-### Connect an Agent
+### 连接 Agent
 
-Want more than a model? AI agents can execute terminal commands, read and write files, search the web, maintain memory, and chain complex workflows — all through Open WebUI's familiar chat interface.
+想要的不只是模型？AI Agent 可以执行终端命令、读写文件、搜索网页、维护记忆并串联复杂工作流——而这一切都通过 Open WebUI 熟悉的聊天界面完成。
 
-| Agent | Description | Guide |
+| Agent | 描述 | 指南 |
 |-------|-------------|-------|
-| **Hermes Agent** | Autonomous agent by Nous Research with terminal, file ops, web search, memory, and extensible skills | [Set up Hermes Agent →](/getting-started/quick-start/connect-an-agent/hermes-agent) |
-| **OpenClaw** | Open-source self-hosted agent with shell access, file operations, web browsing, and messaging integrations | [Set up OpenClaw →](/getting-started/quick-start/connect-an-agent/openclaw) |
+| **Hermes Agent** | Nous Research 的自主 Agent，支持终端、文件操作、网页搜索、记忆和可扩展技能 | [设置 Hermes Agent →](/getting-started/quick-start/connect-an-agent/hermes-agent) |
+| **OpenClaw** | 开源自托管 Agent，支持 shell 访问、文件操作、网页浏览和消息集成 | [设置 OpenClaw →](/getting-started/quick-start/connect-an-agent/openclaw) |
 
-Learn more about how agents differ from providers in the [**Connect an Agent overview →**](/getting-started/quick-start/connect-an-agent)
+更多关于 Agent 与提供商差异的说明，请阅读 [**连接 Agent 概览 →**](/getting-started/quick-start/connect-an-agent)
 
-### New to Open WebUI?
+### 第一次使用 Open WebUI？
 
-If this is your first time with Open WebUI, read the [**Essentials for New Users**](/getting-started/essentials) guide next. It covers the five things every new user eventually needs to know — plugins, context management, task models, RAG, and tool calling — in one place.
+如果这是你第一次接触 Open WebUI，建议下一步阅读 [**新用户必读**](/getting-started/essentials)。它把每个新用户迟早都需要知道的五件事——插件、上下文管理、任务模型、RAG 与工具调用——集中放在了一页里。
 
-### Explore Features
+### 探索功能
 
-Once connected, explore what Open WebUI can do: [Features Overview →](/features)
+连接完成后，继续看看 Open WebUI 还能做什么：[功能总览 →](/features)
 
-### Experimental: Open Responses
+### 实验性：Open Responses
 
-Open WebUI has experimental support for the [Open Responses](https://www.openresponses.org/) specification. See the [Starting with Open Responses Guide](/getting-started/quick-start/connect-a-provider/starting-with-open-responses) to learn more.
+Open WebUI 对 [Open Responses](https://www.openresponses.org/) 规范提供实验性支持。更多说明请参见 [Open Responses 入门指南](/getting-started/quick-start/connect-a-provider/starting-with-open-responses)。
 
 ---
 
-## Community
+## 社区
 
-- [**Discord**](https://discord.gg/5rJgQTnV4s) for questions, discussion, and support
-- [**GitHub Issues**](https://github.com/open-webui/open-webui/issues) for bug reports and feature requests
-- **Want to help?** Test the [development branch](/contributing) and report issues. No code required.
+- [**Discord**](https://discord.gg/5rJgQTnV4s) —— 提问、讨论与获取支持
+- [**GitHub Issues**](https://github.com/open-webui/open-webui/issues) —— 提交 bug 和功能请求
+- **想帮忙？** 欢迎测试[开发分支](/contributing)并反馈问题，无需写代码。

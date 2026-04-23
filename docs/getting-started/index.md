@@ -1,112 +1,112 @@
 ---
 sidebar_position: 100
-title: "🚀 Getting Started"
+title: "🚀 开始使用"
 ---
 
-# Getting Started with Open WebUI
+# 开始使用 Open WebUI
 
-**From zero to your first AI conversation in under five minutes.**
+**从零开始，不到五分钟开启你的第一次 AI 对话。**
 
-Open WebUI runs anywhere (Docker, Kubernetes, pip, bare metal) and connects to Ollama, OpenAI-compatible, and Open Responses providers out of the box. Pick an install method, connect a provider, and start chatting.
+Open WebUI 几乎可以运行在任何环境中（Docker、Kubernetes、pip、裸机），并可开箱即用地连接 Ollama、兼容 OpenAI 的提供商以及 Open Responses 提供商。选择一种安装方式，连接一个提供商，然后直接开始聊天。
 
 ---
 
-## ⏱️ Quick Start
+## ⏱️ 快速开始
 
-**Install Open WebUI, connect a model, and start chatting.**
+**安装 Open WebUI，连接模型，立即开聊。**
 
-Everything you need for a working setup. Choose Docker for the fastest path, Python for lightweight installs, or Kubernetes for production orchestration. Each guide includes connecting your first model provider.
+这里汇集了搭建可用环境所需的一切内容。Docker 是最快的路径，Python 适合轻量部署，Kubernetes 适合生产编排。每份指南都包含如何连接你的第一个模型提供商。
 
 | | |
 | :--- | :--- |
-| 🐳 **Docker** | One-command deploy, the officially recommended path |
-| 📦 **Python (pip / uv)** | Lightweight install for low-resource or manual setups |
-| ☸️ **Kubernetes (Helm)** | Production-ready orchestration with scaling |
-| 🖥️ **Desktop app** | Native app (experimental), no Docker required |
-| 🔌 **Connect a provider** | Ollama, OpenAI, Anthropic, llama.cpp, vLLM, and more |
-| ⚙️ **Understanding settings** | Learn how Admin Settings and User Settings work together |
+| 🐳 **Docker** | 一条命令部署，官方推荐方案 |
+| 📦 **Python (pip / uv)** | 适合低资源环境或手动部署的轻量安装方式 |
+| ☸️ **Kubernetes (Helm)** | 适合扩展与编排的生产级方案 |
+| 🖥️ **桌面应用** | 原生应用（实验性），无需 Docker |
+| 🔌 **连接提供商** | Ollama、OpenAI、Anthropic、llama.cpp、vLLM 等 |
+| ⚙️ **理解设置** | 了解 Admin Settings 与 User Settings 如何协同工作 |
 
-[**Start installing →**](/getting-started/quick-start)
-
----
-
-## ✨ Essentials for New Users
-
-**Installed and chatting — now what?**
-
-Five short sections that cover the things every new user eventually wishes they'd known on day one: what plugins are and how to install them, why long chats eventually error out (and how to fix it with a filter), the "invisible" Task Model that powers titles/autocomplete, getting started with RAG over your own documents, and turning on Native tool calling.
-
-| | |
-| :--- | :--- |
-| 🧩 **Plugins** | Tools, Pipes, Filters, Actions — the extensibility story |
-| 🧠 **Context management** | Why long chats hit a wall and how to handle it |
-| 🤖 **Task models** | Keep titles, tags, and autocomplete off your main model |
-| 📚 **Basic RAG** | Chatting with your own documents |
-| 🔧 **Tool calling** | Native mode + first Tools to install |
-
-[**Read the essentials →**](/getting-started/essentials)
+[**开始安装 →**](/getting-started/quick-start)
 
 ---
 
-## 🤖 Connect an Agent
+## ✨ 新用户必读
 
-**Go beyond simple model providers. Connect an autonomous AI agent.**
+**已经安装并开始聊天了——接下来呢？**
 
-AI agents like Hermes Agent and OpenClaw bring their own tools (terminal, file ops, web search, memory) and use Open WebUI as a rich chat frontend. The agent decides when to use tools, executes them, and streams results back to you.
+五个简短部分，带你了解每位新用户最终都会想早点知道的事情：什么是插件、如何安装；为什么长对话最终会报错（以及如何用过滤器解决）；驱动标题与自动补全的“隐形” Task Model；如何开始基于自己文档做 RAG；以及如何启用原生工具调用。
 
 | | |
 | :--- | :--- |
-| 🧠 **Hermes Agent** | Nous Research's agent with terminal, file ops, web search, and skills |
-| 🐾 **OpenClaw** | Self-hosted agent framework with shell access, web browsing, and channel bots |
+| 🧩 **插件** | Tools、Pipes、Filters、Actions——完整扩展能力概览 |
+| 🧠 **上下文管理** | 为什么长对话会撞墙，以及如何处理 |
+| 🤖 **任务模型** | 让标题、标签和自动补全不再占用主模型 |
+| 📚 **基础 RAG** | 与你自己的文档对话 |
+| 🔧 **工具调用** | 原生模式 + 首批推荐安装的 Tools |
 
-[**Connect an agent →**](/getting-started/quick-start/connect-an-agent)
+[**阅读必读内容 →**](/getting-started/essentials)
 
 ---
 
-## Sharing Open WebUI
+## 🤖 连接 Agent
 
-**Bring AI to your entire organization with a single deployment.**
+**不止连接模型提供商。还可以连接自主 AI Agent。**
 
-Open WebUI isn't just a local interface for AI. It is designed to be a centralized AI operating system for teams. Deploy it once to leverage streamlined onboarding, collaborative intelligence, resource pooling, and centralized security.
+像 Hermes Agent 和 OpenClaw 这样的 AI Agent 自带终端、文件操作、网页搜索、记忆等工具，并把 Open WebUI 用作功能丰富的聊天前端。Agent 会自行决定何时使用工具、执行操作，并将结果流式返回给你。
 
 | | |
 | :--- | :--- |
-| **LAN & Tunnels** | Tailscale, Cloudflare Tunnels, and local IP access |
-| **Reverse Proxies** | Secure your instance with Nginx, Caddy, or HAProxy |
-| **Team Onboarding** | Admin approval flows and Enterprise SSO integrations |
-| **Shared Context** | Channels, shared chats, and common knowledge bases |
+| 🧠 **Hermes Agent** | Nous Research 的 Agent，支持终端、文件操作、网页搜索与技能 |
+| 🐾 **OpenClaw** | 具备 shell 访问、网页浏览和频道机器人能力的自托管 Agent 框架 |
 
-[**Learn how to share Open WebUI →**](/getting-started/sharing)
+[**连接 Agent →**](/getting-started/quick-start/connect-an-agent)
 
 ---
 
-## 🛠️ Advanced Topics
+## 共享 Open WebUI
 
-**Scale, observe, and customize your deployment.**
+**一次部署，让整个组织都能使用 AI。**
 
-Go beyond the basics. Configure environment variables, connect external databases, add cloud storage, enable OpenTelemetry, or scale horizontally with Redis and multiple workers.
+Open WebUI 不只是本地 AI 界面，更可以作为团队的集中式 AI 操作系统。只需部署一次，就能获得更顺畅的接入流程、协作式智能、资源复用与集中式安全控制。
 
 | | |
 | :--- | :--- |
-| ⚖️ **Scaling** | Multi-worker, multi-node, Redis-backed sessions |
-| 📊 **Logging & observability** | OpenTelemetry traces, metrics, and structured logs |
-| 🧪 **Development setup** | Run from source for local development and testing |
+| **局域网与隧道** | Tailscale、Cloudflare Tunnels 和本地 IP 访问 |
+| **反向代理** | 使用 Nginx、Caddy 或 HAProxy 保护你的实例 |
+| **团队接入** | 管理员审批流程与 Enterprise SSO 集成 |
+| **共享上下文** | 频道、共享聊天和公共知识库 |
 
-[**Explore advanced topics →**](/getting-started/advanced-topics)
+[**了解如何共享 Open WebUI →**](/getting-started/sharing)
 
 ---
 
-## 🔄 Updating
+## 🛠️ 高级主题
 
-**Stay current with the latest features and security patches.**
+**扩展、观测并自定义你的部署。**
 
-Update manually with a single Docker or pip command, or automate with Watchtower, WUD, or Diun. Includes backup/restore procedures and version pinning for production.
+如果你需要超越基础配置，这里就是下一站。你可以配置环境变量、连接外部数据库、接入云存储、启用 OpenTelemetry，或借助 Redis 和多 worker 实现横向扩展。
 
 | | |
 | :--- | :--- |
-| 🔄 **Manual update** | Docker pull + recreate, or pip upgrade |
-| 🤖 **Automated updates** | Watchtower, WUD, or Diun |
-| 📌 **Version pinning** | Lock to a specific release for stability |
-| 💾 **Backup & restore** | One-command volume backup and recovery |
+| ⚖️ **扩展** | 多 worker、多节点、Redis 支持的会话 |
+| 📊 **日志与可观测性** | OpenTelemetry 链路、指标和结构化日志 |
+| 🧪 **开发环境** | 从源码运行，进行本地开发与测试 |
 
-[**Update guide →**](/getting-started/updating)
+[**探索高级主题 →**](/getting-started/advanced-topics)
+
+---
+
+## 🔄 更新
+
+**通过最新功能和安全修复保持版本最新。**
+
+你可以手动用一条 Docker 或 pip 命令更新，也可以通过 Watchtower、WUD 或 Diun 自动化。还包含备份/恢复流程和生产环境版本固定建议。
+
+| | |
+| :--- | :--- |
+| 🔄 **手动更新** | Docker 拉取并重建，或 pip 升级 |
+| 🤖 **自动更新** | Watchtower、WUD 或 Diun |
+| 📌 **版本固定** | 锁定到特定版本以保持稳定 |
+| 💾 **备份与恢复** | 一条命令完成卷备份和恢复 |
+
+[**更新指南 →**](/getting-started/updating)

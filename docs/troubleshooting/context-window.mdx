@@ -1,71 +1,71 @@
 ---
 sidebar_position: 17
-title: "Context Window / Prompt Too Long"
+title: "上下文窗口 / Prompt Too Long"
 ---
 
-# "The prompt is too long" / Model Context Length Exceeded
+# “The prompt is too long” / 模型上下文长度超限
 
-## What you're seeing
+## 你看到的现象
 
-Errors like:
+常见错误包括：
 
 - `The prompt is too long: 207601, model maximum context length: 202751`
 - `This model's maximum context length is 128000 tokens. However, your messages resulted in …`
 - `Input is too long for the model`
 - `context length exceeded`
 
-These come from the **model provider** (OpenAI, Anthropic, Google, your Ollama server, GLM-4/5.x, etc.), **not from Open WebUI**. The provider counted the tokens of everything you sent and rejected the request because it exceeds the model's context window.
+这些错误来自**模型提供商**（OpenAI、Anthropic、Google、你的 Ollama 服务器、GLM-4/5.x 等），**不是 Open WebUI 本身报出的**。提供商会统计你发送的全部 token，一旦超过模型上下文窗口，就会拒绝请求。
 
-## Why it happens
+## 为什么会发生
 
-The "prompt" a model sees is the **entire conversation** — not just the message you just typed. Every time you send a new message, Open WebUI forwards:
+模型看到的 “prompt” 是**整个对话**，不是你刚输入的那条消息。每次发送新消息时，Open WebUI 都会一并转发：
 
-- Your system prompt
-- The **full chat history** (every previous user/assistant turn in that conversation)
-- Any **attached files** that are inlined into context (not retrieved via RAG)
-- Any **tool definitions** and prior **tool call results**
-- Any **inlet-injected context** (from filters, RAG, web search, memories, etc.)
-- Your newest user message
+- 你的 system prompt
+- **完整聊天历史**（当前会话中所有过往 user/assistant 轮次）
+- 任何被直接内联到上下文中的**附件文件**（不是通过 RAG 检索的那种）
+- 所有**工具定义**和之前的**工具调用结果**
+- 任何由 inlet 注入的上下文（过滤器、RAG、web search、记忆等）
+- 你最新输入的用户消息
 
-As a chat grows, the history grows. Large attachments or long tool-call outputs can eat the entire window in a single turn. Once the sum of all of that exceeds the model's context window, the provider rejects the request.
+聊天越长，历史越长。大型附件或很长的工具输出，也可能在单轮内就把整个上下文窗口吃满。一旦这些内容总和超过模型支持范围，请求就会被提供商拒绝。
 
-## Why Open WebUI doesn't auto-truncate for you
+## 为什么 Open WebUI 不会自动帮你截断
 
-Open WebUI intentionally does **not** ship a built-in context trimmer. This is a design choice, not an oversight, and it is unlikely to change. Here's why:
+Open WebUI 有意**不内置**上下文裁剪器。这是设计选择，不是疏漏，而且今后大概率也不会改变。原因如下：
 
-1. **Every model uses a different tokenizer.** The token count for the same text differs between OpenAI (tiktoken), Anthropic, Gemini, GLM, Llama-family, Mistral, Qwen, and so on. A truly correct trimmer would need a per-model tokenizer for every provider in existence. Getting that wrong ships silent data corruption.
-2. **Every model has a different context window.** 8k, 32k, 128k, 200k, 1M — and that's before you factor in reserved output tokens, provider-side overhead, and multimodal content.
-3. **Everyone wants a different truncation policy.** We have seen users ask for all of the following, and all of them are reasonable:
-   - Trim by **token count**.
-   - Trim by **number of messages**.
-   - Trim by **number of conversational turns**.
-   - Trim only **non-system, non-assistant** messages.
-   - Trim **file attachments** first, keep the dialogue.
-   - Trim **tool-call results** first, keep everything else.
-   - Set a **hard ceiling** on chat length (block further messages beyond N turns).
-   - Summarize older messages instead of dropping them, and replace the dropped block with the summary.
-   - Per-model policies (keep 1M tokens for Gemini, 128k for GPT-4, 32k for smaller local models).
+1. **每个模型使用的 tokenizer 都不同。** 同一段文本在 OpenAI（tiktoken）、Anthropic、Gemini、GLM、Llama 系列、Mistral、Qwen 等模型里的 token 数都不一样。真正精确的裁剪器必须为每个提供商、每个模型适配 tokenizer。做错就会带来静默数据损坏。
+2. **每个模型的上下文窗口都不同。** 8k、32k、128k、200k、1M——还不包括预留的输出 token、提供商侧额外开销以及多模态内容。
+3. **不同用户需要不同的截断策略。** 我们见过的合理诉求包括：
+   - 按 **token 数** 裁剪
+   - 按 **消息数量** 裁剪
+   - 按 **对话轮数** 裁剪
+   - 只裁掉**非 system、非 assistant** 消息
+   - 先裁**文件附件**，保留对话
+   - 先裁**工具调用结果**，保留其他内容
+   - 给聊天长度设置**硬上限**（超过 N 轮后直接拒绝）
+   - 将旧消息先做摘要，再用摘要替换原块，而不是直接删除
+   - 按模型分别配置策略（Gemini 保留 1M，GPT-4 保留 128k，小型本地模型保留 32k 等）
 
-There is no single policy that is correct for every deployment, every user, and every model. A built-in implementation would be wrong for most users by definition, and would hide the much better option: give the user the hook and let them pick.
+并不存在一个对所有部署、所有用户、所有模型都正确的统一策略。内置实现对大多数用户而言注定不合适，还会掩盖更好的方式：把钩子交给用户，由用户自行决定策略。
 
-## The supported way: use a filter Function
+## 官方支持的方式：使用 filter Function
 
-Context management in Open WebUI is done with [**filter Functions**](/features/extensibility/plugin/functions/filter). `inlet()` runs on every request before the payload is sent to the model — it receives the full `body` (including `body["messages"]`) and can modify it freely. That is the hook you use.
+在 Open WebUI 中，上下文管理通过 [**filter Functions**](/features/extensibility/plugin/functions/filter) 完成。`inlet()` 会在每次请求发送给模型之前运行，它会收到完整的 `body`（包括 `body["messages"]`），你可以在这里自由修改内容。这就是正确的扩展点。
 
-Typical approaches, in increasing order of sophistication:
+常见做法按复杂度递增大致如下：
 
-1. **Hard chat-length cap.** Refuse or error if `len(body["messages"]) > N`. Simple and predictable; no tokenization needed.
-2. **Newest-N-turns window.** Keep the system prompt and only the most recent N user/assistant turns; drop the older ones.
-3. **Token-budget window, per model.** Estimate tokens per message (e.g., with `tiktoken` for OpenAI-family or a char/4 heuristic for others) and trim from the oldest non-system message until the total fits the model's window.
-4. **Summarize-and-replace.** When the window is about to overflow, call a cheap model to summarize the oldest block of messages, then replace that block with a single assistant-authored summary message. Preserves long-running context without busting the window.
-5. **Attachment- or tool-output-first trimming.** Strip large file contents or tool results from old turns before touching the dialogue.
+1. **硬限制聊天长度。** 如果 `len(body["messages"]) > N` 就直接拒绝或报错。实现简单、行为可预测，不需要 token 统计。
+2. **仅保留最新 N 轮。** 保留 system prompt 和最近 N 轮 user/assistant 消息，删除更旧内容。
+3. **按模型预算做 token 窗口裁剪。** 为每条消息估算 token（例如 OpenAI 系列使用 `tiktoken`，其他模型用 char/4 近似），从最旧的非 system 消息开始删除，直到总量落入模型窗口。
+4. **摘要替换。** 当上下文将要溢出时，调用一个便宜模型先对最旧的消息块做摘要，再用一条 assistant 摘要消息替换原始消息块。这样可以保留长期上下文，而不是简单丢弃。
+5. **优先裁剪附件或工具输出。** 在动对话正文之前，先去掉旧轮次中的大文件内容或工具结果。
 
-Community filters for most of these already exist on the [Open WebUI community site](https://openwebui.com/). Install one, configure its valves, and you're done. If none fits your policy exactly, copy the closest one into the **Functions** admin page and edit it — filters are pure Python and easy to tweak.
+上述多数策略都已有社区过滤器可用，发布在 [Open WebUI community](https://openwebui.com/) 上。安装一个、配置阀门参数，就能直接使用。如果没有完全满足你的策略，再把最接近的那个复制到 **Functions** 管理页里修改即可——过滤器就是纯 Python，通常很容易调。
 
-### Minimal example: "newest N turns" filter
+### 最小示例：“保留最新 N 条”过滤器
 
 <details>
-<summary>Show the full filter code (keeps the last N non-system messages)</summary>
+<summary>显示完整过滤器代码（保留最近 N 条非 system 消息）</summary>
 
 ```python
 from pydantic import BaseModel, Field
@@ -124,25 +124,25 @@ class Filter:
 
 </details>
 
-Enable this filter globally or attach it to specific models in **Admin Panel → Functions**. The `max_turns` valve is configurable per-model via the model card, so you can set a smaller window for local 8k models and a larger one for Gemini 1M.
+在 **Admin Panel → Functions** 中全局启用这个过滤器，或仅将其挂到特定模型上。`max_turns` 阀门还可以在模型卡上按模型分别配置，因此你可以给本地 8k 模型设更小窗口，而给 Gemini 1M 设更大窗口。
 
-:::info Why the tool-call repair block?
-With tool calling on, an `assistant` message that invokes tools is paired with one or more `tool` messages carrying results that share the same `tool_call_id`. If `max_turns` happens to slice the conversation in the middle of that pair — keeping the orphan half — the upstream provider returns a 400 because the tool call / result structure is invalid. The repair block drops the orphans so the window always starts on a clean boundary. This matches what production community filters for context management do; the rest of the filter is the generic trimming logic.
+:::info 为什么需要 tool-call 修复块？
+启用工具调用后，发起工具调用的 `assistant` 消息会与一个或多个 `tool` 消息成对出现，它们通过相同的 `tool_call_id` 关联。如果 `max_turns` 正好把会话切在这一组的中间，只保留了一半，上游提供商就会因为工具调用结构不完整而返回 400。修复块的作用就是把这些孤立消息剔除，确保裁剪后的窗口总是从一个有效边界开始。这也是生产级社区上下文过滤器常见的处理方式。
 :::
 
-### Slightly more involved: per-model token budget
+### 稍复杂一些：按模型做 token 预算
 
-Counting turns is easy to reason about but wrong in practice — 40 turns of one-liners fit in 8k tokens, five turns with a 200-page PDF attachment do not. The more useful policy is "keep everything until we're about to bust the model's context window, then drop the oldest non-system messages until we fit."
+按轮数裁剪容易理解，但在真实场景中往往不够准确——40 轮单句对话也许能放进 8k token，而附带一个 200 页 PDF 的 5 轮对话就不行。更实用的策略是：“尽量保留全部内容，直到快超出模型窗口时，再从最旧的非 system 消息开始删除”。
 
-This second example does that. It:
+下面这个示例就是这么做的。它会：
 
-- Estimates tokens from character length (cheap heuristic, no dependencies; swap in `tiktoken` or a real tokenizer if you want strict counts).
-- Reads per-model budgets from a valve, so a single instance of the filter works for your 8k local model and your 1M Gemini at the same time.
-- Leaves a configurable headroom for the response.
-- Re-applies the tool-call repair from the first example after trimming.
+- 根据字符长度估算 token（成本低、无依赖；如果你需要严格统计，可以换成 `tiktoken` 或真实 tokenizer）
+- 从 valve 中读取每个模型的预算，让同一个过滤器实例同时适配 8k 本地模型和 1M Gemini
+- 预留可配置的回复 headroom
+- 在裁剪后再次执行第一个示例中的 tool-call 修复逻辑
 
 <details>
-<summary>Show the full filter code (per-model token-budget trimmer)</summary>
+<summary>显示完整过滤器代码（按模型 token 预算裁剪）</summary>
 
 ```python
 import json
@@ -165,12 +165,18 @@ class Filter:
         )
         model_budgets_json: str = Field(
             default=(
-                '{\n'
-                '  "gpt-4o": 120000,\n'
-                '  "gpt-4o-mini": 120000,\n'
-                '  "claude-3-5-sonnet": 180000,\n'
-                '  "gemini-1.5-pro": 900000,\n'
-                '  "llama3.1:8b": 6000\n'
+                '{
+'
+                '  "gpt-4o": 120000,
+'
+                '  "gpt-4o-mini": 120000,
+'
+                '  "claude-3-5-sonnet": 180000,
+'
+                '  "gemini-1.5-pro": 900000,
+'
+                '  "llama3.1:8b": 6000
+'
                 '}'
             ),
             description="JSON mapping of model id (or prefix) to input-token budget.",
@@ -179,17 +185,12 @@ class Filter:
     def __init__(self):
         self.valves = self.Valves()
 
-    # ---- helpers -----------------------------------------------------------
-
     @staticmethod
     def _estimate_tokens(content) -> int:
-        """~4 chars per token is close enough for a trim budget.
-        For strict counts, replace with tiktoken or a provider tokenizer."""
         if content is None:
             return 0
         if isinstance(content, str):
             return max(1, len(content) // 4)
-        # Some providers deliver multimodal content as a list of parts.
         if isinstance(content, list):
             return sum(
                 Filter._estimate_tokens(part.get("text", "")) if isinstance(part, dict) else 0
@@ -198,9 +199,7 @@ class Filter:
         return 0
 
     def _message_tokens(self, msg: dict) -> int:
-        # Content + a small per-message overhead for role/formatting.
         tokens = self._estimate_tokens(msg.get("content"))
-        # Tool calls carry arguments in JSON; count them too.
         for tc in msg.get("tool_calls") or []:
             args = tc.get("function", {}).get("arguments", "")
             tokens += self._estimate_tokens(args)
@@ -213,9 +212,6 @@ class Filter:
             budgets = {}
         if model_id in budgets:
             return int(budgets[model_id])
-        # Allow prefix match — "gpt-4o-2024-11-20" uses the "gpt-4o" budget.
-        # Sort by key length descending so more specific prefixes win:
-        # "gpt-4o-mini" must match before "gpt-4o".
         for key, value in sorted(budgets.items(), key=lambda kv: -len(kv[0])):
             if model_id.startswith(key):
                 return int(value)
@@ -240,8 +236,6 @@ class Filter:
                 other_msgs.pop(0)
         return other_msgs
 
-    # ---- inlet -------------------------------------------------------------
-
     async def inlet(self, body: dict) -> dict:
         messages = body.get("messages", [])
         if not messages:
@@ -250,17 +244,13 @@ class Filter:
         model_id = body.get("model", "") or ""
         budget = self._budget_for(model_id) - self.valves.response_headroom_tokens
         if budget <= 0:
-            return body  # Misconfigured — don't mangle the request, let the provider reject.
+            return body
 
         system_msgs = [m for m in messages if m.get("role") == "system"]
         other_msgs = [m for m in messages if m.get("role") != "system"]
 
         used = sum(self._message_tokens(m) for m in system_msgs + other_msgs)
 
-        # Drop oldest non-system messages one at a time until we're under budget
-        # or nothing is left to drop. System messages stay put; if they alone
-        # already exceed the budget, the provider will reject the request and
-        # that's the right signal (the admin needs to shrink the system prompt).
         while used > budget and other_msgs:
             dropped = other_msgs.pop(0)
             used -= self._message_tokens(dropped)
@@ -273,58 +263,58 @@ class Filter:
 
 </details>
 
-A few things worth noticing:
+值得特别注意的几点：
 
-- **Configure once, run everywhere.** Set this filter as a **global** filter in Admin Panel → Functions. The `model_budgets_json` valve lets you enumerate every model you care about; anything else falls back to `default_budget_tokens`. Admins can tune budgets at runtime without touching code.
-- **Prefix match on model id, longest-first.** `gpt-4o-2024-11-20` transparently uses the `gpt-4o` budget, and `gpt-4o-mini-2024-07-18` correctly uses the `gpt-4o-mini` budget (more specific wins). The `_budget_for` helper sorts keys by length descending before the prefix loop — otherwise dict insertion order would decide, and `"gpt-4o"` would shadow `"gpt-4o-mini"` for anyone who listed it first.
-- **Multimodal content is partially counted.** The estimator walks list-of-parts content and sums text parts. **Image / audio / file parts count as zero.** For a char/4 heuristic that's fine for a trim budget, but if you rely heavily on image inputs with small providers (e.g. a local 8k vision model), add a per-image allowance inside `_estimate_tokens` (something like 255 tokens per image is a reasonable start).
-- **Same tool-call repair.** Reused from the first example. This is the block that keeps the request valid after trimming.
-- **Fail-open when misconfigured.** If you somehow set the headroom larger than the budget, the filter passes the request through untouched rather than wiping the conversation. The provider's error is better than a silent delete.
+- **配置一次，到处运行。** 将该过滤器设为 **Admin Panel → Functions** 中的全局过滤器。`model_budgets_json` 阀门允许你枚举所有关心的模型，未列出的模型会回退到 `default_budget_tokens`。管理员无需改代码，就能在运行时调整预算。
+- **按模型 id 前缀匹配，且长前缀优先。** `gpt-4o-2024-11-20` 会自动使用 `gpt-4o` 的预算，`gpt-4o-mini-2024-07-18` 则会正确使用 `gpt-4o-mini`（更具体的项优先）。
+- **多模态内容只做了部分统计。** 当前估算器会遍历 list-of-parts，并累计文本部分。**图片 / 音频 / 文件部分会按 0 处理。** 对 char/4 近似来说通常足够，但如果你大量使用图片输入且提供商上下文较小（例如本地 8k 视觉模型），建议在 `_estimate_tokens` 中加入每张图片的额外估算值。
+- **同样的 tool-call 修复逻辑。** 用于保证裁剪后的请求结构依然有效。
+- **配置错误时选择 fail-open。** 如果你不小心把 headroom 设得比预算还大，过滤器会原样放行请求，而不是默默清空会话。此时让提供商返回错误，比静默丢数据更安全。
 
-:::warning Check your model ids
-Open WebUI doesn't always present the raw provider id to `body["model"]`. If an admin sets a connection `prefix_id`, every model is wrapped as `{prefix}.{raw_id}` (e.g. `openai.gpt-4o`). Pipe-function manifolds wrap their sub-models as `{pipe.id}.{sub_id}` (e.g. `anthropic.claude-3-5-sonnet-20241022`). Custom Workspace models can have arbitrary ids, often UUIDs.
+:::warning 检查你的模型 id
+Open WebUI 传给 `body["model"]` 的，不一定是提供商原始 id。如果管理员设置了 connection 的 `prefix_id`，模型 id 会变成 `{prefix}.{raw_id}`（例如 `openai.gpt-4o`）。Pipe function manifest 中的子模型也会被包装成 `{pipe.id}.{sub_id}`。Workspace 中自定义模型甚至可能用 UUID。
 
-**Copy the exact id shown in the model picker** into `model_budgets_json` — not the upstream provider's id. If you get the format wrong, requests silently land on `default_budget_tokens` and you won't notice until a chat that fits a real budget fails to fit the fallback.
+请把模型选择器里**实际显示的 id**复制到 `model_budgets_json` 中，而不是盲目使用上游提供商的原始 id。格式不对时，请求会静默落回 `default_budget_tokens`，直到真正需要更大预算的聊天失败你才会发现。
 :::
 
-:::warning RAG and native-tool definitions are added AFTER this filter
-This filter runs in `inlet()`, which is before Open WebUI's RAG retrieval (`chat_completion_files_handler`) and before native-tool definitions are attached to the payload. Both can add non-trivial bytes to the request **after** the filter has trimmed. If you rely on Knowledge bases or if your models have heavy built-in tool specs (web search + memory + code interpreter + MCP servers + …), **reserve extra headroom** by bumping `response_headroom_tokens` — it doubles as a general "leave room for post-filter additions" budget.
+:::warning RAG 和原生工具定义会在此过滤器之后追加
+这个过滤器运行在 `inlet()` 阶段，也就是 Open WebUI 的 RAG 检索（`chat_completion_files_handler`）以及原生工具定义挂载之前。这两部分都会在**过滤器裁剪之后**继续往请求中增加字节。如果你依赖 Knowledge Base，或者模型有较重的内置工具定义（web search + memory + code interpreter + MCP servers + …），请额外增大 `response_headroom_tokens`，给这些后续追加内容预留空间。
 :::
 
-If you need higher-fidelity token counting, swap `_estimate_tokens` for `tiktoken.encoding_for_model(model_id).encode(text)` (OpenAI-family) or your provider's own tokenizer. For everything else — Anthropic, Gemini, local models — the char/4 heuristic is close enough to keep you safely under the limit, *as long as you've left enough headroom for the RAG / tool additions above*.
+如果你需要更精确的 token 统计，可以把 `_estimate_tokens` 替换为 `tiktoken.encoding_for_model(model_id).encode(text)`（适用于 OpenAI 系列）或提供商自己的 tokenizer。对于其他场景——Anthropic、Gemini、本地模型——只要你给 RAG / 工具追加内容预留了足够 headroom，char/4 近似通常已经足够安全。
 
-## You almost certainly want a community filter, not this one
+## 你大概率更需要社区过滤器，而不是直接用这里的示例
 
-The two examples on this page are deliberately minimal — they exist to show the shape of the `inlet()` hook and to teach the one non-obvious detail (tool-call repair). For a real deployment, **don't write your own from scratch** and don't ship these as-is. Go browse the [Open WebUI Community](https://openwebui.com/) and pick a context-management filter someone else has already battle-tested.
+本页的两个示例故意保持最小化——它们主要用于说明 `inlet()` 钩子的基本形态，以及那个不太显眼但非常重要的细节（tool-call 修复）。在真实部署里，**不要从零自己写一个**，也不要直接把这里的示例原样投入生产。先去 [Open WebUI Community](https://openwebui.com/) 找一个已经经过实战验证的上下文管理过滤器。
 
-Production-grade community filters typically handle things the minimal examples above skip:
+生产级社区过滤器通常还会处理许多这里省略的问题：
 
-- **Real tokenizers per provider** — `tiktoken` for OpenAI, Anthropic's tokenizer for Claude, Gemini's for Google, `transformers` tokenizers for local models. Not char/4 heuristics.
-- **Proper image / audio / file token accounting** — provider-specific allowances for every content-part type, not "zero."
-- **Summarize-and-replace strategies** — when the window is about to overflow, call a cheap model to summarize the oldest block and replace it with one summary message, preserving long-running context instead of silently forgetting.
-- **Per-user / per-role policies** — power users get larger budgets than free users; service accounts get different defaults than humans.
-- **Per-model-family policies** — more intelligent than a prefix match (e.g. recognize all Claude 3.x Sonnet variants via a regex or metadata).
-- **Tool-result-first or attachment-first trimming** — drop the giant scraped web pages and RAG citations from old turns before touching dialogue.
-- **Sliding-window summarization with checkpoints** — keep running summaries stored in `__metadata__` across turns so you don't re-summarize on every request.
-- **Hard message caps and user-facing errors** — refuse a request with a friendly "this chat is too long, please start a new one" event-emitter message instead of silently dropping context.
-- **Observability hooks** — log every trim decision to Langfuse, OpenLit, or your stack of choice so you can audit what the filter actually did.
-- **Configurable valves for everything** — admins tune everything at runtime without touching code.
+- **按提供商使用真实 tokenizer**——OpenAI 用 `tiktoken`、Claude 用 Anthropic tokenizer、Google 用 Gemini tokenizer、本地模型用 `transformers` tokenizer，而不是 char/4 近似。
+- **正确统计图片 / 音频 / 文件 token**——不是简单按 0 处理。
+- **摘要替换策略**——窗口快溢出时，调用便宜模型把旧消息块总结成一条摘要，再替换原文，而不是直接遗忘。
+- **按用户 / 角色区分策略**——高级用户预算更大，服务账号与普通用户默认值不同。
+- **按模型家族区分策略**——比简单前缀匹配更智能，例如用 regex 或 metadata 识别所有 Claude 3.x Sonnet 变体。
+- **优先裁剪工具结果或附件**——先删掉旧轮次中的超大网页抓取结果和 RAG 引用，再考虑删对话正文。
+- **带检查点的滑动摘要**——在 `__metadata__` 中保存运行中的摘要，避免每次请求都重新总结。
+- **硬性消息上限和面向用户的提示**——通过事件消息明确告诉用户“这个聊天太长了，请新开一个”，而不是默默丢掉上下文。
+- **可观测性钩子**——把每一次裁剪决策记录到 Langfuse、OpenLit 或你自己的栈中，便于审计过滤器真实做了什么。
+- **一切都能通过阀门配置**——管理员运行时即可调优，不必改代码。
 
-None of that is hard to do, but all of it together is a week of work if you're starting from one of the minimal examples above. Someone on the community site has almost certainly already done it. **Search first.**
+单看每一点都不难，但把这些内容全部补齐，如果你是从本页的最小示例开始，往往就是一周的工作量。而社区里几乎肯定已经有人做过了。**先搜索。**
 
-:::tip Really, search first
-When you're shopping for a context-management filter, look for names like *context window*, *trim*, *summarize*, *conversation length*, *token budget*, *history limiter*, and the provider name of the models you use. Sort by popularity on the community site — the top-downloaded filters tend to be the ones that already solved the edge cases you haven't hit yet.
+:::tip 真的，先搜索
+在挑选上下文管理过滤器时，可以搜这些关键词：*context window*、*trim*、*summarize*、*conversation length*、*token budget*、*history limiter*，以及你正在使用的模型提供商名称。并按社区站点中的热度排序——下载量最高的那些，往往已经帮你踩过不少坑。
 :::
 
-## What users will experience
+## 用户最终会体验到什么
 
-- With a filter in place, old turns are silently removed / summarized / replaced before the request reaches the model. The user keeps chatting as normal. The model simply "forgets" older history according to your policy.
-- Without a filter, long conversations will eventually hit the provider's context limit and return the "prompt is too long" error. Users will need to start a new chat.
+- **有过滤器时**：旧轮次会在请求到达模型前被静默删除 / 摘要 / 替换。用户仍会像平常一样继续聊天；模型只是按照你的策略“忘记”一部分旧历史。
+- **没有过滤器时**：长对话最终一定会撞到提供商的上下文上限，并返回 “prompt is too long” 错误。用户届时只能新开一个聊天。
 
-Both are valid UX choices. Pick the one that matches your deployment.
+这两种 UX 都合理。选择与你部署目标相符的那一种即可。
 
-## Related
+## 相关内容
 
-- [Filter Functions](/features/extensibility/plugin/functions/filter) — the full reference for `inlet()` / `stream()` / `outlet()`
-- [Open WebUI Community](https://openwebui.com/) — browse and install community-built filters, including context-management ones
-- [Chat Parameters](/features/chat-conversations/chat-features/chat-params) — per-chat, per-user, and per-model parameter precedence
+- [Filter Functions](/features/extensibility/plugin/functions/filter) —— `inlet()` / `stream()` / `outlet()` 的完整参考
+- [Open WebUI Community](https://openwebui.com/) —— 浏览并安装社区过滤器，包括上下文管理类
+- [Chat Parameters](/features/chat-conversations/chat-features/chat-params) —— 聊天级、用户级、模型级参数优先级

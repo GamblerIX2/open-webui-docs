@@ -41,8 +41,8 @@ function CopyButton({ code }: { code: string }) {
 	return (
 		<button
 			type="button"
-			aria-label={copied ? "Copied" : "Copy code to clipboard"}
-			title="Copy"
+			aria-label={copied ? "已复制" : "复制代码到剪贴板"}
+			title="复制"
 			className={clsx("clean-btn", "shiki-copy-button")}
 			onClick={handleCopy}
 		>
