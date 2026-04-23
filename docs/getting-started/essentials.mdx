@@ -1,209 +1,209 @@
 ---
 sidebar_position: 5
-title: "Essentials for New Users"
+title: "新用户必读"
 ---
 
-# Essentials for New Users
+# 新用户必读
 
-So you've installed Open WebUI, connected a provider, and had your first conversation. Now what?
+你已经安装了 Open WebUI、连接好了提供商，也完成了第一次对话。接下来呢？
 
-This page walks through the handful of things that make the difference between *"a chat UI"* and *"a setup that actually works well day-to-day."* Nothing here is required — you can ignore it and keep chatting — but if you've ever wondered "can Open WebUI do X?" the answer is almost certainly **yes, with one of these pieces**.
+本页会带你了解那些真正决定体验差异的关键点：让 Open WebUI 从“一个聊天界面”变成“日常真正好用的一套系统”。这些内容都不是强制的——你完全可以继续直接聊天——但如果你曾经想过“Open WebUI 能不能做 X？”，答案几乎总是**可以，而且就靠下面这些能力**。
 
-Work through in order, or jump to the part that matches your question:
+可以按顺序阅读，也可以直接跳到与你当前问题最相关的部分：
 
-1. [**Plugins** — what they are and when to install one](#-plugins-the-extensibility-story)
-2. [**Task models** — the invisible model behind the UI, and the hidden costs of the default](#-task-models-the-invisible-model-behind-the-ui)
-3. [**Context management** — why long chats eventually error out](#-context-management-why-long-chats-break)
-4. [**Tool calling** — letting the model do things, not just talk](#-tool-calling-letting-the-model-do-things)
-5. [**Basic RAG** — chatting with your own documents](#-basic-rag-chatting-with-your-own-documents)
-6. [**Open Terminal** — giving the model a real computer](#-open-terminal-giving-the-model-a-real-computer)
+1. [**插件**——它们是什么，什么时候该安装](#-plugins-the-extensibility-story)
+2. [**任务模型**——界面背后的隐形模型，以及默认配置的隐藏成本](#-task-models-the-invisible-model-behind-the-ui)
+3. [**上下文管理**——为什么长对话最终会报错](#-context-management-why-long-chats-break)
+4. [**工具调用**——让模型不仅能说，还能做](#-tool-calling-letting-the-model-do-things)
+5. [**基础 RAG**——和你自己的文档对话](#-basic-rag-chatting-with-your-own-documents)
+6. [**Open Terminal**——给模型一台真正的电脑](#-open-terminal-giving-the-model-a-real-computer)
 
 ---
 
-## 🧩 Plugins: the extensibility story
+## 🧩 插件：扩展能力全貌 {#-plugins-the-extensibility-story}
 
-Open WebUI is intentionally small at the core. Most of the "wow" things people show in demos — auto-translation, token/cost tracking, image generation buttons, custom post-processing, provider integrations that aren't OpenAI or Ollama — are **plugins**, not built-in features. Knowing the plugin landscape is the biggest single unlock for a new user.
+Open WebUI 的核心设计刻意保持精简。你在演示里看到的很多“哇，这也行”的能力——自动翻译、token/成本追踪、图片生成按钮、自定义后处理、不属于 OpenAI 或 Ollama 的提供商集成——很多都**不是内置功能，而是插件**。对新用户来说，理解插件生态是最重要的一次认知升级。
 
-There are two plugin families, and the name of the family tells you what it does:
+插件主要分为两大家族，名字基本就说明了它的作用：
 
-| Family | What it does | Where it runs | Examples |
+| 家族 | 做什么 | 运行位置 | 示例 |
 | :--- | :--- | :--- | :--- |
-| **Tools** | Give the model new abilities ("call this function when you need X") | In Open WebUI's process, invoked by the model during a chat | Langfuse / OpenLit observability, Home Assistant control, arXiv / PubMed lookups, Wolfram Alpha, Jira / Linear ticket creation, SQL queries against your own DB |
-| **Functions — Pipes** | Add a new "model" to the model picker, backed by custom code | Same | Model-routing pipes (cheap vs. expensive based on prompt), multi-step agent loops, proprietary corporate-LLM backends without an OpenAI-compatible endpoint |
-| **Functions — Filters** | Modify every request and/or response as it passes through | Same, on every chat turn | Context trimming, PII scrubbing, token / cost counting, Langfuse tracing, response reformatting |
-| **Functions — Actions** | Add a button under each message that runs custom code | Same, when the user clicks | "Regenerate follow-ups", "Translate reply", "Pin message", "Save to Knowledge" |
+| **Tools** | 给模型新的能力（“需要 X 时调用这个函数”） | 运行在 Open WebUI 进程内，由模型在对话过程中触发 | Langfuse / OpenLit 可观测性、Home Assistant 控制、arXiv / PubMed 检索、Wolfram Alpha、Jira / Linear 工单创建、针对你自己数据库的 SQL 查询 |
+| **Functions — Pipes** | 在模型选择器里新增一个由自定义代码驱动的“模型” | 同上 | 模型路由 Pipe（根据提示词决定走便宜还是昂贵模型）、多步 Agent 循环、没有兼容 OpenAI 端点的企业内部 LLM 后端 |
+| **Functions — Filters** | 在请求和/或响应经过时统一修改 | 同上，每一轮对话都会执行 | 上下文裁剪、PII 清洗、token / 成本统计、Langfuse tracing、响应重格式化 |
+| **Functions — Actions** | 在每条消息下增加一个执行自定义代码的按钮 | 同上，在用户点击时执行 | “重新生成后续问题”“翻译回复”“固定消息”“保存到 Knowledge” |
 
-**How you install them:** the [**Open WebUI Community site**](https://openwebui.com/) hosts the one-click catalog — pick one, click "Get", paste into **Admin Panel → Functions** (or **Tools**), flip it on, and configure its **valves** (the plugin's settings).
+**如何安装：** [**Open WebUI Community**](https://openwebui.com/) 提供了一键安装目录——选中一个项目，点击 “Get”，粘贴到 **Admin Panel → Functions**（或 **Tools**），启用后再配置它的 **valves**（插件设置）即可。
 
-**When to install one:** when you think "it would be nice if Open WebUI did X." It almost certainly already does — via a plugin. **Always browse the community site first** — there are thousands of Tools, Filters, Actions, and Pipes already written, and the one you need is usually already there. Even if nothing matches exactly, the closest hit is usually ~20 lines off from what you want and you can fork it from the admin panel.
+**什么时候该安装：** 当你开始想“要是 Open WebUI 能做 X 就好了”时，十有八九它已经能做——只是通过插件实现。**先去社区站点看看**：那里已经有数千个 Tools、Filters、Actions 和 Pipes，通常你要的功能已经有人写好了。即使没有完全匹配的，最接近的版本往往也只差十几二十行代码，你可以直接在管理面板里 fork 它。
 
-Reference reading:
-- [Plugin overview](/features/extensibility)
-- [Tools reference](/features/extensibility/plugin/tools)
-- [Functions reference (Pipes/Filters/Actions)](/features/extensibility/plugin/functions)
+参考阅读：
+- [插件总览](/features/extensibility)
+- [Tools 参考](/features/extensibility/plugin/tools)
+- [Functions 参考（Pipes/Filters/Actions）](/features/extensibility/plugin/functions)
 
 ---
 
-## 🤖 Task models: the invisible model behind the UI
+## 🤖 任务模型：界面背后的隐形模型 {#-task-models-the-invisible-model-behind-the-ui}
 
-This is the highest-leverage change you can make right after install, because the default is silently costing you money, latency, and patience.
+这是安装完成后最值得优先调整的一项，因为默认配置会悄悄消耗你的金钱、延迟和耐心。
 
-Every time Open WebUI needs a short bit of "thinking" for a UI feature — writing a chat **title** for the sidebar, generating **tags**, suggesting **follow-up questions**, powering the **autocomplete** in the prompt box — it calls a **Task Model**. By default that task model is whatever main model you're currently chatting with, which means:
+每当 Open WebUI 需要为界面功能做一小段“思考”——生成侧边栏里的聊天**标题**、生成**标签**、给出**后续问题建议**、驱动输入框中的**自动补全**——它都会调用一个 **Task Model**。默认情况下，这个任务模型就是你当前正在聊天的主模型，这意味着：
 
-- Your expensive flagship model gets hit every time you open a new chat just to write "Groceries list."
-- On a slow local model, every keystroke feels laggy because autocomplete is blocking on a 30B-parameter model.
-- A reasoning model (o1, r1, Claude with extended thinking) spends 5 seconds *thinking* before producing the three-word title.
+- 你昂贵的旗舰模型会在每次新建对话时，仅仅为了写出“购物清单”这样的标题而被调用。
+- 如果你使用的是较慢的本地模型，每次按键都会感觉卡顿，因为自动补全在等一个 30B 参数模型回应。
+- 推理模型（o1、r1、启用 extended thinking 的 Claude）可能会先花 5 秒“思考”，才吐出三词标题。
 
-These costs are easy to miss because they happen in the background. Fix them first.
+这些成本很容易被忽略，因为它们都发生在后台。优先把它们处理掉。
 
-**Fix:** in **Admin Panel → Settings → Interface**, set a dedicated Task Model. Two fields, because the right choice depends on what your main chat model is:
+**修复方法：** 在 **Admin Panel → Settings → Interface** 中设置专门的 Task Model。这里有两个字段，因为最佳选择取决于你的主聊天模型类型：
 
-- **Task Model (External)** — used when you are chatting with a cloud model (OpenAI, Anthropic, etc.). Set this to a fast, cheap, *non-reasoning* cloud model like `gpt-5-nano`, `gemini-2.5-flash-lite`, or `llama-3.1-8b-instant`.
-- **Task Model (Local)** — used when you are chatting with a local model (Ollama, llama.cpp, vLLM). Set this to a tiny local model like `qwen3:1b`, `gemma3:1b`, or `llama3.2:3b`.
+- **Task Model (External)** —— 当你使用云端模型（OpenAI、Anthropic 等）聊天时使用。建议设置为快速、便宜、**非推理型**的云模型，比如 `gpt-5-nano`、`gemini-2.5-flash-lite` 或 `llama-3.1-8b-instant`。
+- **Task Model (Local)** —— 当你使用本地模型（Ollama、llama.cpp、vLLM）聊天时使用。建议设置为体积很小的本地模型，比如 `qwen3:1b`、`gemma3:1b` 或 `llama3.2:3b`。
 
-The main chat experience doesn't change. The background chores just stop dragging.
+主聊天体验不会改变，只是后台这些“杂活”不再拖慢你。
 
-While you're in the Interface settings, if you are on a low-spec machine or simply don't want some of these features, you can also disable the chores entirely. Each one has both an **admin toggle** in the same page and an **environment variable** — use whichever fits your workflow:
+既然已经进入 Interface 设置，如果你的机器配置较低，或者你根本不需要其中某些功能，也可以直接把这些后台任务整体关掉。每项功能同时提供**管理面板开关**和**环境变量**：
 
-| Chore | Admin toggle (Settings → Interface) | Env var |
+| 后台任务 | 管理面板开关（Settings → Interface） | 环境变量 |
 | :--- | :--- | :--- |
-| Autocomplete *(the big one — fires on every keystroke)* | **Autocomplete Generation** | `ENABLE_AUTOCOMPLETE_GENERATION=False` |
-| Follow-up suggestions | **Follow-up Generation** | `ENABLE_FOLLOW_UP_GENERATION=False` |
-| Chat title generation | **Title Generation** | `ENABLE_TITLE_GENERATION=False` |
-| Tag generation | **Tags Generation** | `ENABLE_TAGS_GENERATION=False` |
+| 自动补全 *(最大头——每次按键都会触发)* | **Autocomplete Generation** | `ENABLE_AUTOCOMPLETE_GENERATION=False` |
+| 后续问题建议 | **Follow-up Generation** | `ENABLE_FOLLOW_UP_GENERATION=False` |
+| 聊天标题生成 | **Title Generation** | `ENABLE_TITLE_GENERATION=False` |
+| 标签生成 | **Tags Generation** | `ENABLE_TAGS_GENERATION=False` |
 
-Autocomplete is the single biggest "make it snappy" toggle on weak hardware — it fires on every keystroke, so a slow task model turns the whole prompt box into molasses.
+在硬件较弱的环境中，自动补全是最值得优先关闭的“提速开关”——它每次按键都会触发，所以慢速任务模型会让整个输入框像陷进糖浆一样迟钝。
 
-More detail: [Performance & RAM → Dedicated Task Models](/troubleshooting/performance#1-dedicated-task-models).
+更多说明：[性能与内存 → Dedicated Task Models](/troubleshooting/performance#1-dedicated-task-models)。
 
 ---
 
-## 🧠 Context management: why long chats break
+## 🧠 上下文管理：为什么长对话会崩 {#-context-management-why-long-chats-break}
 
-After enough back-and-forth you will eventually see:
+对话来回足够多之后，你迟早会看到这样的报错：
 
 > `The prompt is too long: 207601, model maximum context length: 202751`
 
-This error does **not** come from Open WebUI — it comes from your model provider. Every time you send a new message, the *entire* conversation (system prompt + all previous turns + attached files + tool call results + your new message) is sent as the "prompt." When the sum exceeds the model's context window, the provider rejects the request.
+这个错误**不是** Open WebUI 抛出的——它来自你的模型提供商。每次发送新消息时，*整个*会话（system prompt + 所有历史轮次 + 附件文件 + 工具调用结果 + 你的新消息）都会一起作为 “prompt” 发给模型。当总量超过模型的上下文窗口时，提供商就会拒绝请求。
 
-Open WebUI intentionally does not ship a built-in trimmer, because:
+Open WebUI 有意不内置统一裁剪器，因为：
 
-- Every model uses a **different tokenizer** (GPT ≠ Claude ≠ Gemini ≠ GLM ≠ Llama).
-- Every model has a **different context window** (8k → 1M).
-- Every deployment wants a **different policy** (trim by tokens, by turns, by message count, drop attachments first, summarize older messages, etc.).
+- 每个模型的 **tokenizer 都不同**（GPT ≠ Claude ≠ Gemini ≠ GLM ≠ Llama）。
+- 每个模型的 **上下文窗口也不同**（8k → 1M）。
+- 每个部署对裁剪策略的需求都不同（按 token 裁、按轮次裁、按消息数裁、优先丢附件、总结旧消息等）。
 
-There is no single correct answer. The supported approach is to install a **filter Function** that trims the conversation on your terms. Community filters for most of the common policies already exist and can be installed with one click; if none fits, the code is short enough to copy and adapt.
+并不存在一个“唯一正确”的答案。官方支持的方式是安装一个**过滤器 Function**，按照你的规则裁剪会话。社区里已经有不少覆盖常见策略的过滤器可以一键安装；如果都不完全合适，代码通常也足够短，拷贝后改一下就能用。
 
-➡️ Full guide, including a minimal "newest N turns" filter you can paste into your instance: [Troubleshooting → Context Window / Prompt Too Long](/troubleshooting/context-window).
+➡️ 完整指南（含可直接粘贴到实例中的最小版“保留最新 N 轮”过滤器）：[故障排查 → Context Window / Prompt Too Long](/troubleshooting/context-window)。
 
 ---
 
-## 🔧 Tool calling: letting the model do things
+## 🔧 工具调用：让模型开始做事 {#-tool-calling-letting-the-model-do-things}
 
-Tool calling is what turns an LLM from "a very smart text box" into "an assistant that can actually go look things up, run code, and take actions." You attach a **Tool** to your chat (or your model), and the model decides — mid-response — when to call it, with what arguments. Open WebUI runs it, returns the result, and the model continues.
+工具调用会把 LLM 从“一个非常聪明的文本框”变成“一个真的能查资料、跑代码、执行动作的助手”。你把 **Tool** 挂到对话或模型上，模型会在回复过程中自行决定何时调用、传什么参数。Open WebUI 执行它，把结果返回，再由模型继续生成。
 
-Two things every new user should configure:
+每个新用户都应该优先完成下面两件事：
 
-### 1. Turn on Native tool calling
+### 1. 打开 Native tool calling
 
-Open WebUI has two tool-calling modes in the UI: **Native** and **Default**. **Default is legacy and no longer supported** — it is kept in the dropdown only so existing deployments keep running during migration. **All models should be configured to use Native Mode.** Native is faster, preserves KV cache, supports built-in system tools (Memory, Notes, Knowledge, Web Search, Image Gen, Code Interpreter), and is the only mode that receives feature work going forward.
+Open WebUI 界面中有两种工具调用模式：**Native** 和 **Default**。**Default 已是遗留模式，不再受支持**——它还留在下拉菜单里，只是为了让旧部署在迁移期间不至于立即中断。**所有模型都应该配置为使用 Native Mode。** Native 更快、可保留 KV cache、支持内置系统工具（Memory、Notes、Knowledge、Web Search、Image Gen、Code Interpreter），也是未来唯一持续获得新特性的模式。
 
-Every mainstream model supports it — OpenAI, Anthropic, Gemini, Llama 3.1+, Qwen 2.5+, DeepSeek, GLM, and essentially any other current model. Turn it on:
+主流模型基本都支持它——OpenAI、Anthropic、Gemini、Llama 3.1+、Qwen 2.5+、DeepSeek、GLM，以及几乎所有当前主流模型。开启方式如下：
 
-- **Best — once, for every model:** in **Admin Panel → Settings → Models**, click the **Settings** button at the **top right** of the models list. That opens **global model parameters** — set **Function Calling = Native** there, save, and every current *and future* model in your instance inherits it. No per-model click-through required.
-- Per-model override: **Admin Panel → Settings → Models → [your model] → Model Parameters → Function Calling = Native**
-- Per-chat override: in a chat's **Chat Controls** (right sidebar)
+- **最佳方式——一次设置，应用到所有模型：** 在 **Admin Panel → Settings → Models** 中，点击模型列表**右上角**的 **Settings** 按钮。这里打开的是**全局模型参数**——把 **Function Calling = Native** 设好并保存后，实例中当前和未来新增的所有模型都会继承这个设置，无需逐个点进去改。
+- 单模型覆盖：**Admin Panel → Settings → Models → [你的模型] → Model Parameters → Function Calling = Native**
+- 单对话覆盖：在聊天页右侧边栏的 **Chat Controls** 中设置
 
-If a tool "isn't being called" on a capable model, 90% of the time Native Mode just needs flipping on. If a specific small model struggles with Native Mode, the fix is to use a stronger model for tool-using conversations — not to fall back to Default Mode.
+如果一个本来有能力调用工具的模型“怎么都不调用”，90% 的情况下只是 Native Mode 没打开。如果某个特定的小模型在 Native Mode 下表现吃力，正确的解决办法是换一个更强的模型来做工具型对话——而不是退回 Default Mode。
 
-### 2. Install a few Tools
+### 2. 安装几个实用 Tools
 
-A lot of what people reach for — **web search**, **code execution**, **image generation**, **memory**, **knowledge-base retrieval** — is already built in and doesn't need a community plugin. Turn those on in **Admin Panel → Settings** (Web Search, Code Interpreter, Images, etc.) and attach them to your models. You'll get them injected automatically as built-in system tools in Native Mode.
+很多大家第一时间想要的能力——**网页搜索**、**代码执行**、**图片生成**、**记忆**、**知识库检索**——其实已经是内置功能，不需要社区插件。你只需要在 **Admin Panel → Settings** 中启用它们（Web Search、Code Interpreter、Images 等），再把它们挂到模型上。开启 Native Mode 后，它们会自动作为内置系统工具注入。
 
-Tools from the [community site](https://openwebui.com/) are for everything *not* built in. Good examples to explore:
+[社区站点](https://openwebui.com/) 上的 Tools，则是用来补足那些*不是内置*的能力。值得优先探索的方向包括：
 
-- **Observability / cost tracking** — Langfuse, OpenLit, Portkey tools that log every chat turn, token usage, and latency to your own observability stack. Essential once more than a handful of people use your instance.
-- **Smart-home / automation integrations** — Home Assistant tools that let the model actually control devices, routines, and scenes from a conversation.
-- **Research lookups** — arXiv, PubMed, Semantic Scholar, Wolfram Alpha — the model gets structured results it couldn't recall from training data, with real citations.
-- **Issue / ticket / messaging integrations** — create Jira / Linear / GitHub issues, post to Slack or Discord, send an email — the model stops being a read-only assistant.
-- **Database / API tools** — expose a read-only SQL query tool against your own database, or a tool that hits your internal API — the model starts answering questions grounded in your real data.
-- **Domain tools** — weather, stocks, time, crypto prices, shipping-tracking, recipe APIs, whatever matches your work.
+- **可观测性 / 成本追踪** —— Langfuse、OpenLit、Portkey 这类工具可以把每轮对话、token 使用量和延迟记录到你自己的观测栈里。一旦实例开始被多人使用，它们就非常关键。
+- **智能家居 / 自动化集成** —— Home Assistant 工具可以让模型在对话中真正控制设备、例程和场景。
+- **研究检索** —— arXiv、PubMed、Semantic Scholar、Wolfram Alpha——模型获得的是结构化结果，而不是训练数据里的模糊记忆，还带真实引用。
+- **Issue / 工单 / 消息系统集成** —— 创建 Jira / Linear / GitHub issue、发 Slack 或 Discord、发送邮件——模型不再只是只读助手。
+- **数据库 / API 工具** —— 给模型暴露一个只读 SQL 查询工具，或一个访问你内部 API 的工具——这样它就能基于你的真实数据回答问题。
+- **领域型工具** —— 天气、股票、时间、加密货币价格、物流追踪、菜谱 API，任何贴合你工作场景的能力。
 
-Tools show up in the `+` menu in the chat input. Enable the ones you want for a given chat; the model only sees the tools you've enabled.
+Tools 会出现在聊天输入框旁边的 `+` 菜单中。只启用当前对话需要的工具；模型只能看到你已启用的那些工具。
 
-:::tip Seriously — browse the community site
-The list above is a *tiny* sample of what's out there. The [**Open WebUI Community**](https://openwebui.com/) has **thousands** of community-built Tools, Filters, Actions, and Pipes covering use cases nobody on the core team would have thought of. Before you write anything yourself, **browse the community site** — sort by popularity, filter by category, and skim a few pages. You'll almost always find something that does exactly what you need, or is two lines off. One-click install, configure the valves, done.
+:::tip 认真一点——去逛逛社区站点
+上面列的只是一小部分。[**Open WebUI Community**](https://openwebui.com/) 上有**数千个**社区构建的 Tools、Filters、Actions 和 Pipes，覆盖的使用场景远超核心团队能想到的范围。真正要自己写东西之前，**先去社区里搜一下**——按热度排序、按分类筛选、翻几页看看。通常你要的功能已经存在，或者只差两行。点一下安装，调好 valves，就结束了。
 
-This is the single biggest reason to treat Open WebUI as a platform rather than an app. The community is the feature set.
+这也是为什么要把 Open WebUI 看成一个平台，而不只是一个应用。真正的功能集，就是社区本身。
 :::
 
-More detail:
-- [Tools reference](/features/extensibility/plugin/tools)
-- [Tool-calling modes (Default vs Native)](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)
-- [Open WebUI Community — Tools, Functions, Models](https://openwebui.com/)
+更多说明：
+- [Tools 参考](/features/extensibility/plugin/tools)
+- [工具调用模式（Default vs Native）](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)
+- [Open WebUI Community — Tools、Functions、Models](https://openwebui.com/)
 
 ---
 
-## 📚 Basic RAG: chatting with your own documents
+## 📚 基础 RAG：与自己的文档对话 {#-basic-rag-chatting-with-your-own-documents}
 
-**RAG** (Retrieval-Augmented Generation) is the feature that lets you say "Here's a 400-page PDF, answer my questions about it" without the model having to (or being able to) read the whole thing every turn. Open WebUI splits your documents into chunks, embeds them as vectors, stores them in a vector DB, and at chat time retrieves just the relevant bits and passes those to the model.
+**RAG**（Retrieval-Augmented Generation，检索增强生成）让你可以说出“这是一个 400 页的 PDF，请回答我关于它的问题”，而不需要模型每轮都把整份文档读一遍（它也做不到）。Open WebUI 会把文档切块、生成向量嵌入、存入向量数据库，并在对话时只检索相关片段再传给模型。
 
-Two ways to use it, in order of simplicity:
+最简单的两种使用方式如下：
 
-1. **One-off attachments.** Drag a file into any chat input and ask questions. The file is chunked and embedded just for that chat.
-2. **Knowledge bases.** For documents you want to reuse across many chats (company handbook, codebase, research library, user manual), go to **Workspace → Knowledge** and create a knowledge base. You can then attach the *entire* knowledge base to a chat (via the `#` shortcut in the input), or bind it to a model in **Workspace → Models** so that model always has it available.
+1. **一次性附件。** 把文件拖进任意聊天输入框，然后提问。文件会只为这场对话完成切块和嵌入。
+2. **知识库。** 对于需要跨多个聊天反复复用的文档（公司手册、代码库、研究资料、用户手册），进入 **Workspace → Knowledge** 创建知识库。之后你可以在聊天里通过输入框中的 `#` 快捷方式把**整个知识库**附加进来，或者在 **Workspace → Models** 中把它绑定到某个模型上，让该模型始终可用。
 
-The defaults are reasonable for getting started. When you outgrow them, there are three knobs that matter most:
+默认配置足够你顺利上手。等你开始遇到瓶颈后，最重要的是下面三个调节点：
 
-- **Embedding engine.** The default (SentenceTransformers `all-MiniLM-L6-v2`) runs locally on CPU and consumes ~500 MB of RAM per worker. For any multi-user deployment, point at an external embeddings API (OpenAI, or Ollama with `nomic-embed-text`) via `RAG_EMBEDDING_ENGINE`.
-- **Content extraction engine.** The default uses `pypdf`, which leaks memory during heavy ingestion. For anything beyond casual use, switch to **Tika** or **Docling** via `CONTENT_EXTRACTION_ENGINE`.
-- **Vector database.** The default ChromaDB (local SQLite-backed) does not tolerate multi-worker deployments. At scale, use **Milvus**, **Qdrant**, or **PGVector**.
+- **Embedding 引擎。** 默认使用的 SentenceTransformers `all-MiniLM-L6-v2` 会在本地 CPU 上运行，每个 worker 大约消耗 500 MB 内存。只要进入多人部署，就建议通过 `RAG_EMBEDDING_ENGINE` 改为外部 embeddings API（OpenAI，或使用 `nomic-embed-text` 的 Ollama）。
+- **内容提取引擎。** 默认使用 `pypdf`，在高强度导入时会内存泄漏。只要不再是轻量尝试性质的使用，就建议通过 `CONTENT_EXTRACTION_ENGINE` 切换到 **Tika** 或 **Docling**。
+- **向量数据库。** 默认的 ChromaDB（本地 SQLite 支撑）无法可靠承受多 worker 部署。要扩展时，请使用 **Milvus**、**Qdrant** 或 **PGVector**。
 
-None of these matter for "a single user with a handful of PDFs." All of them start mattering the moment you have 100 documents or 10 concurrent users.
+对于“一个用户、几份 PDF”这种场景，这些都不重要；但一旦你有 100 份文档，或者 10 个并发用户，它们就会迅速变得重要。
 
-More detail:
-- [RAG overview](/features/chat-conversations/rag/)
-- [Knowledge workspace](/features/workspace/knowledge)
-- [Performance tuning for RAG](/troubleshooting/performance#embedding-engine)
-
----
-
-## ⚡ Open Terminal: giving the model a real computer
-
-If "run Python" is too restrictive and you want the model to actually work on your machine — clone repos, install packages, run test suites, spin up a local preview of a website, iterate on a data report against a real CSV — that's [**Open Terminal**](/features/open-terminal). It connects a real shell (sandboxed in a Docker container by default, or bare-metal if you want) as a tool the model can call the same way it calls any other tool. In-chat file browser, live web previews, and skill definitions are included.
-
-This is the biggest "aha" feature once you get past basic chat. It turns Open WebUI from a chat UI into a place where the model actually builds things for you. If Native Mode is on and you've given the model a capable terminal, ask it to build you a small app or run an analysis on a folder of files and watch it go.
-
-More detail:
-- [Open Terminal — give your AI a real computer](/features/open-terminal)
-- [Use cases — software development, data reports, app builder, research assistant, …](/features/open-terminal/use-cases/advanced-workflows/)
+更多说明：
+- [RAG 总览](/features/chat-conversations/rag/)
+- [Knowledge 工作区](/features/workspace/knowledge)
+- [RAG 性能调优](/troubleshooting/performance#embedding-engine)
 
 ---
 
-## What to do next
+## ⚡ Open Terminal：给模型一台真正的电脑 {#-open-terminal-giving-the-model-a-real-computer}
 
-You don't need all of the above on day one. A reasonable order for a new install:
+如果“运行 Python”对你来说太受限，你希望模型真的能在机器上工作——clone 仓库、安装包、跑测试、打开本地网页预览、对真实 CSV 做数据分析——那就该看看 [**Open Terminal**](/features/open-terminal)。它会把一个真正的 shell（默认运行在 Docker 容器沙箱里，也可改为裸机）作为工具暴露给模型，就像它调用其他工具一样来使用。还附带聊天内文件浏览器、实时网页预览和技能定义。
 
-1. **Day one:** pick a good default model, have a few conversations, get a feel for the UI.
-2. **First thing after that:** set a Task Model and decide which background chores you actually want enabled. This is the single biggest "feels better" change you can make, and it directly addresses hidden per-chat costs.
-3. **Within the first week:** turn on Native Mode globally and install one or two Tools that match your work.
-4. **When you hit it:** install a context filter the first time you see "prompt is too long."
-5. **When you need it:** set up a Knowledge base the first time you want to ask questions across multiple documents.
-6. **When you're ready to go big:** point the model at Open Terminal and let it actually build things for you.
-7. **When you scale up:** revisit the RAG infrastructure section if you go beyond a single user.
+这是很多用户从基础聊天进一步深入后最容易产生“原来还能这样”的功能。它把 Open WebUI 从聊天界面变成了模型真正帮你做事的地方。只要 Native Mode 已开启，且你给了模型一个足够能干的终端，就可以直接让它为你搭一个小应用，或者对一整个文件夹跑分析，然后看它一步步完成。
 
-Everything else — enterprise SSO, multi-replica HA, Redis scaling, observability — is in [Advanced Topics](/getting-started/advanced-topics) and [Troubleshooting](/troubleshooting) when and if you need it.
+更多说明：
+- [Open Terminal —— 给你的 AI 一台真正的电脑](/features/open-terminal)
+- [使用场景——软件开发、数据报告、应用构建器、研究助手等](/features/open-terminal/use-cases/advanced-workflows/)
 
 ---
 
-## Any questions? Think something's missing? Got stuck?
+## 接下来做什么
 
-This page is the condensed version — the real docs go much deeper. If you didn't find what you needed, try these, roughly in order:
+第一天并不需要把上面所有内容都配齐。一个比较合理的新安装顺序是：
 
-- 🔎 **[Search the docs](https://docs.openwebui.com/)** — use the search box at the top of any page. A lot more is in here than the Essentials overview covers.
-- 💬 **[Ask on GitHub Discussions](https://github.com/open-webui/open-webui/discussions)** — best for open-ended questions, feature discussions, and "how would I do X?" threads. Searchable and visible to future users who hit the same thing.
-- 🎮 **[Ask on Discord](https://discord.gg/5rJgQTnV4s)** — most active community. Try the `#questions` channel; there's also an experimental bot there with full docs + issue context that can answer most questions in a few seconds.
-- 👽 **[Ask on Reddit](https://www.reddit.com/r/OpenWebUI/)** — good for broader discussion, deployment stories, and community showcases.
-- 🐛 **[Report a bug](https://github.com/open-webui/open-webui/issues)** — only after you've confirmed it's a bug (reproducible, latest version, template filled in). "It doesn't work" issues get closed; "here's the exact repro, here are the logs" issues get fixed.
+1. **第一天：** 先选一个不错的默认模型，聊上几轮，熟悉界面。
+2. **紧接着：** 设置 Task Model，并决定哪些后台任务真的需要开启。这是最明显的“体感更顺手”优化，也能直接减少每次对话的隐藏成本。
+3. **第一周内：** 全局开启 Native Mode，再装一两个和你工作场景匹配的 Tools。
+4. **第一次碰到时：** 一旦看到 “prompt is too long”，就去装一个上下文过滤器。
+5. **需要时：** 第一次想跨多份文档提问时，就搭一个 Knowledge 知识库。
+6. **准备玩大一点时：** 把模型接到 Open Terminal，让它真的帮你干活。
+7. **开始扩展后：** 如果不再是单用户使用，就回头重新看一遍 RAG 基础设施部分。
 
-Welcome aboard. 👋
+其他内容——企业级 SSO、多副本高可用、Redis 扩展、可观测性——都在 [高级主题](/getting-started/advanced-topics) 和 [故障排查](/troubleshooting) 里，等你需要的时候再深入即可。
+
+---
+
+## 有问题？觉得少了什么？卡住了？
+
+这页只是高度浓缩版，完整文档的深度远不止这些。如果还没找到你需要的内容，可以按下面顺序继续：
+
+- 🔎 **[搜索文档](https://docs.openwebui.com/)** —— 使用任意页面顶部的搜索框。很多内容都比本页概览展开得更详细。
+- 💬 **[去 GitHub Discussions 提问](https://github.com/open-webui/open-webui/discussions)** —— 最适合开放式问题、功能讨论，以及“我该怎么做 X？”这类场景。内容可搜索，也方便后来者参考。
+- 🎮 **[去 Discord 提问](https://discord.gg/5rJgQTnV4s)** —— 当前最活跃的社区。可以先试试 `#questions` 频道；那里还有一个实验性机器人，带有完整文档和 issue 上下文，通常几秒内就能回答大多数问题。
+- 👽 **[去 Reddit 讨论](https://www.reddit.com/r/OpenWebUI/)** —— 更适合泛化讨论、部署经验分享和社区展示。
+- 🐛 **[报告 Bug](https://github.com/open-webui/open-webui/issues)** —— 仅在你确认这是个 bug 之后再提交（能复现、已更新到最新版、已按模板填写）。只写“不能用”的 issue 通常会被关闭；带精确复现步骤和日志的 issue 才更容易被修复。
+
+欢迎加入。👋

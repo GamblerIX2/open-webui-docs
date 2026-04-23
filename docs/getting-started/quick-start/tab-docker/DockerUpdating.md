@@ -1,32 +1,32 @@
-## Updating
+## 更新
 
-To update your local Docker installation to the latest version, you can either use **Watchtower** or manually update the container.
+要把本地 Docker 安装更新到最新版本，你可以使用 **Watchtower**，或手动更新容器。
 
-### Option 1: Using Watchtower
+### 方案 1：使用 Watchtower
 
-With [Watchtower](https://github.com/nicholas-fedor/watchtower), you can automate the update process:
+借助 [Watchtower](https://github.com/nicholas-fedor/watchtower)，你可以自动化更新流程：
 
 ```bash
 docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock nickfedor/watchtower --run-once open-webui
 ```
 
-*(Replace `open-webui` with your container's name if it's different.)*
+*（如果你的容器名称不是 `open-webui`，请将其替换成实际名称。）*
 
-### Option 2: Manual Update
+### 方案 2：手动更新
 
-1. Stop and remove the current container:
+1. 停止并删除当前容器：
 
    ```bash
    docker rm -f open-webui
    ```
 
-2. Pull the latest version:
+2. 拉取最新版本：
 
    ```bash
    docker pull ghcr.io/open-webui/open-webui:main
    ```
 
-3. Start the container again:
+3. 重新启动容器：
 
    ```bash
    docker run -d -p 3000:8080 -v open-webui:/app/backend/data \
@@ -35,8 +35,8 @@ docker run --rm --volume /var/run/docker.sock:/var/run/docker.sock nickfedor/wat
      ghcr.io/open-webui/open-webui:main
    ```
 
-:::warning Set WEBUI_SECRET_KEY
-Without a persistent `WEBUI_SECRET_KEY`, you'll be logged out every time the container is recreated. Generate one with `openssl rand -hex 32`.
+:::warning 设置 WEBUI_SECRET_KEY
+如果没有持久化的 `WEBUI_SECRET_KEY`，每次重建容器时你都会被登出。可通过 `openssl rand -hex 32` 生成。
 :::
 
-For version pinning, rollback, automated update tools, and backup procedures, see the [full update guide](/getting-started/updating).
+有关版本固定、回滚、自动更新工具和备份流程，请参见[完整更新指南](/getting-started/updating)。

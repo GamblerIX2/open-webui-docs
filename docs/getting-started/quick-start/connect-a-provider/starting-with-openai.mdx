@@ -4,111 +4,111 @@ title: "OpenAI"
 
 ---
 
-## Overview
+## 概览
 
-Open WebUI makes it easy to connect to **OpenAI** and **Azure OpenAI**. This guide will walk you through adding your API key, setting the correct endpoint, and selecting models — so you can start chatting right away.
+Open WebUI 可以轻松连接 **OpenAI** 和 **Azure OpenAI**。本指南会带你完成 API key 配置、正确端点填写与模型选择，让你马上开始聊天。
 
-For other providers that offer an OpenAI-compatible API (Google Gemini, Mistral, Groq, DeepSeek, and many more), see the **[OpenAI-Compatible Providers](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible)** guide. For Anthropic's Claude models, see the dedicated **[Anthropic (Claude)](/getting-started/quick-start/connect-a-provider/starting-with-anthropic)** guide.
+对于其他提供兼容 OpenAI API 的提供商（如 Google Gemini、Mistral、Groq、DeepSeek 等），请参见 **[兼容 OpenAI 的提供商](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible)** 指南。至于 Anthropic 的 Claude 模型，请参阅专门的 **[Anthropic（Claude）](/getting-started/quick-start/connect-a-provider/starting-with-anthropic)** 指南。
 
 ---
 
-## Important: Protocols, Not Providers
+## 重要：我们支持的是协议，而不是厂商私有实现
 
-Open WebUI is a **protocol-centric** platform. While we provide first-class support for OpenAI models, we do so mainly through the **OpenAI Chat Completions API protocol**.
+Open WebUI 是一个**以协议为中心**的平台。虽然我们为 OpenAI 模型提供了一流支持，但本质上主要还是通过 **OpenAI Chat Completions API 协议**来实现。
 
-We focus on universal standards shared across dozens of providers, with experimental support for emerging standards like **[Open Responses](https://www.openresponses.org/)**. For a detailed explanation, see our **[FAQ on protocol support](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**.
+我们优先支持被几十家提供商共同采用的通用标准，并对 **[Open Responses](https://www.openresponses.org/)** 这类新兴标准提供实验性支持。关于这一设计思路的详细解释，请参见 **[协议支持 FAQ](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**。
 
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-## Step 1: Get Your OpenAI API Key
+## 第 1 步：获取你的 OpenAI API key
 
-- **OpenAI**: Get your key at [platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys)
-- **Azure OpenAI**: Get your key from the [Azure Portal](https://portal.azure.com/)
+- **OpenAI：** 在 [platform.openai.com/account/api-keys](https://platform.openai.com/account/api-keys) 获取
+- **Azure OpenAI：** 在 [Azure Portal](https://portal.azure.com/) 中获取
 
 ---
 
-## Step 2: Add the API Connection in Open WebUI
+## 第 2 步：在 Open WebUI 中添加 API 连接
 
-Once Open WebUI is running:
+当 Open WebUI 已经运行后：
 
-1. Go to the ⚙️ **Admin Settings**.
-2. Navigate to **Connections > OpenAI > Manage** (look for the wrench icon).
-3. Click ➕ **Add New Connection**.
+1. 进入 ⚙️ **Admin Settings**。
+2. 打开 **Connections > OpenAI > Manage**（查找扳手图标）。
+3. 点击 ➕ **Add New Connection**。
 
 <Tabs>
   <TabItem value="standard" label="OpenAI" default>
 
-  *   **Connection Type**: External
-  *   **URL**: `https://api.openai.com/v1`
-  *   **API Key**: Your secret key (starts with `sk-...`)
+  *   **Connection Type**：External
+  *   **URL**：`https://api.openai.com/v1`
+  *   **API Key**：你的密钥（通常以 `sk-...` 开头）
 
   </TabItem>
   <TabItem value="azure" label="Azure OpenAI">
 
-  For Microsoft Azure OpenAI deployments.
+  适用于 Microsoft Azure OpenAI 部署。
 
-  1.  Find **Provider Type** and click the button labeled **OpenAI** to switch it to **Azure OpenAI**.
-  2.  **URL**: Your Azure Endpoint (e.g., `https://my-resource.openai.azure.com`).
-  3.  **API Version**: e.g., `2024-02-15-preview`.
-  4.  **API Key**: Your Azure API Key.
-  5.  **Model IDs (Deployments)**: You **must** add your specific Deployment Names here (e.g., `my-gpt4-deployment`).
+  1. 找到 **Provider Type**，点击当前标记为 **OpenAI** 的按钮，将其切换为 **Azure OpenAI**。
+  2. **URL**：你的 Azure Endpoint（例如 `https://my-resource.openai.azure.com`）。
+  3. **API Version**：例如 `2024-02-15-preview`。
+  4. **API Key**：你的 Azure API Key。
+  5. **Model IDs (Deployments)**：你**必须**在此填写具体的 Deployment Name（例如 `my-gpt4-deployment`）。
 
   </TabItem>
 </Tabs>
 
-### Advanced Configuration
+### 高级配置
 
-*   **Model IDs (Filter)**:
-    *   *Default (Empty)*: Auto-detects all available models from the provider.
-    *   *Set*: Acts as an **Allowlist**. Only the specific model IDs you enter here will be visible to users. Use this to hide older or expensive models.
+*   **Model IDs (Filter)**：
+    *   *默认（留空）*：自动检测提供商中的全部可用模型。
+    *   *填写后*：作为**Allowlist** 生效。只有这里列出的模型 ID 会对用户可见，适合隐藏旧模型或高成本模型。
 
-*   **Prefix ID**:
-    *   If you connect multiple providers that have models with the same name (e.g., two providers both offering `llama3`), add a prefix here (e.g., `groq/`) to distinguish them. The model will appear as `groq/llama3`.
+*   **Prefix ID**：
+    *   如果你连接了多个提供商，而它们刚好存在同名模型（例如都提供 `llama3`），可在这里加上前缀（如 `groq/`）用于区分。模型将显示为 `groq/llama3`。
 
-4. Click **Save** ✅.
+4. 点击 **Save** ✅。
 
-This securely stores your credentials.
+这样你的凭据就会被安全保存。
 
-:::tip Connection Timeout Configuration
+:::tip 连接超时配置
 
-If your API provider is slow to respond or you're experiencing timeout issues, you can adjust the model list fetch timeout:
+如果你的 API 提供商响应较慢，或你遇到了超时问题，可以调整模型列表获取超时：
 
 ```bash
-# Increase timeout for slow networks (default is 10 seconds)
+# 针对慢网络提高超时（默认 10 秒）
 AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=15
 ```
 
-If you've saved an unreachable URL and the UI becomes unresponsive, see the [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) troubleshooting guide for recovery options.
+如果你保存了一个不可达 URL，导致界面卡住，请参见 [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) 故障排查页面。
 
 :::
 
-![OpenAI Connection Screen](/images/getting-started/quick-start/manage-openai.png)
+![OpenAI 连接界面](/images/getting-started/quick-start/manage-openai.png)
 
 ---
 
-## Step 3: Start Using Models
+## 第 3 步：开始使用模型
 
-Once your connection is saved, you can start using models right inside Open WebUI.
+保存连接后，你就可以直接在 Open WebUI 内使用模型。
 
-🧠 You don't need to download any models — just select one from the Model Selector and start chatting. If a model is supported by your provider, you'll be able to use it instantly via their API.
+🧠 无需下载任何模型——只要在 Model Selector 中选择一个模型并开始聊天即可。只要提供商支持该模型，你就能通过其 API 立即使用它。
 
-Here's what model selection looks like:
+模型选择界面如下：
 
-![OpenAI Model Selector](/images/getting-started/quick-start/selector-openai.png)
+![OpenAI 模型选择器](/images/getting-started/quick-start/selector-openai.png)
 
-Simply choose GPT-4, o3-mini, or any compatible model offered by your provider.
+只需选择 GPT-4、o3-mini 或提供商支持的任意兼容模型即可。
 
 ---
 
-## All Set!
+## 一切就绪！
 
-That's it! Your OpenAI API connection is ready to use.
+就是这样！你的 OpenAI API 连接已经可以使用了。
 
-If you want to connect other providers, see the **[Anthropic (Claude)](/getting-started/quick-start/connect-a-provider/starting-with-anthropic)** guide or the **[OpenAI-Compatible Providers](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible)** guide for Google Gemini, Mistral, Groq, DeepSeek, and more.
+如果还想连接其他提供商，请查看 **[Anthropic（Claude）](/getting-started/quick-start/connect-a-provider/starting-with-anthropic)** 指南，或 **[兼容 OpenAI 的提供商](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible)** 指南，了解 Google Gemini、Mistral、Groq、DeepSeek 等更多方案。
 
-If you run into issues or need additional support, visit our [help section](/troubleshooting).
+如果你遇到问题或需要更多支持，请访问我们的[帮助页面](/troubleshooting)。
 
-Happy prompting! 🎉
+祝你提示愉快！🎉

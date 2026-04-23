@@ -1,17 +1,17 @@
 ---
 sidebar_position: 0
-title: "Connect a Provider"
+title: "连接提供商"
 ---
 
-# 🔌 Connect a Provider
+# 🔌 连接提供商
 
-**Connect Open WebUI to your model provider and start chatting in minutes.**
+**把 Open WebUI 连接到你的模型提供商，几分钟内开始聊天。**
 
-Open WebUI supports multiple connection protocols, including **Ollama**, **OpenAI-compatible APIs**, and **Open Responses**. Any cloud API or local server that speaks one of these protocols works out of the box. Just add a URL and API key, and your models appear in the dropdown.
+Open WebUI 支持多种连接协议，包括 **Ollama**、**兼容 OpenAI 的 API** 与 **Open Responses**。任何实现这些协议的云端 API 或本地服务都可以开箱即用。你只需填写 URL 和 API key，模型就会出现在下拉列表中。
 
 ---
 
-## How It Works
+## 工作原理
 
 ```
 ┌──────────────┐         ┌──────────────────┐         ┌──────────────┐
@@ -22,53 +22,53 @@ Open WebUI supports multiple connection protocols, including **Ollama**, **OpenA
 └──────────────┘         └──────────────────┘         └──────────────┘
 ```
 
-1. **You type a message** in Open WebUI
-2. Open WebUI sends it to your provider's API endpoint
-3. The provider runs inference on the selected model
-4. Tokens **stream back** to Open WebUI in real time
-5. You see the response in the chat interface
+1. **你在 Open WebUI 中输入消息**
+2. Open WebUI 将消息发送到你的提供商 API 端点
+3. 提供商在所选模型上执行推理
+4. token **实时流式返回**到 Open WebUI
+5. 你在聊天界面中看到回复
 
 :::tip
-Adding a provider is as simple as entering a URL and API key in **Admin Settings → Connections**. Open WebUI auto-detects available models from most providers.
+添加提供商通常只需要在 **Admin Settings → Connections** 中填写 URL 和 API key。对于大多数提供商，Open WebUI 都能自动发现可用模型。
 :::
 
 ---
 
-## Cloud Providers
+## 云端提供商
 
-Hosted APIs that require an account and API key. No hardware needed.
+托管 API，需要账户和 API key。无需本地硬件。
 
-| Provider | Models | Guide |
+| 提供商 | 模型 | 指南 |
 |----------|--------|-------|
-| **Ollama** | Llama, Mistral, Gemma, Phi, and thousands more (local) | [Starting with Ollama →](./starting-with-ollama) |
-| **OpenAI** | GPT-4o, GPT-4.1, o3, o4-mini | [Starting with OpenAI →](./starting-with-openai) |
-| **Anthropic** | Claude Opus, Sonnet, Haiku | [Starting with Anthropic →](./starting-with-anthropic) |
-| **OpenAI-Compatible** | Google Gemini, DeepSeek, Mistral, Groq, OpenRouter, Amazon Bedrock, Azure, and more | [OpenAI-Compatible Providers →](./starting-with-openai-compatible) |
+| **Ollama** | Llama、Mistral、Gemma、Phi 等数千种模型（本地） | [从 Ollama 开始 →](./starting-with-ollama) |
+| **OpenAI** | GPT-4o、GPT-4.1、o3、o4-mini | [从 OpenAI 开始 →](./starting-with-openai) |
+| **Anthropic** | Claude Opus、Sonnet、Haiku | [从 Anthropic 开始 →](./starting-with-anthropic) |
+| **兼容 OpenAI** | Google Gemini、DeepSeek、Mistral、Groq、OpenRouter、Amazon Bedrock、Azure 等 | [兼容 OpenAI 的提供商 →](./starting-with-openai-compatible) |
 
 ---
 
-## Local Servers
+## 本地服务器
 
-Run models on your own hardware. No API keys, no cloud dependency.
+在你自己的硬件上运行模型。无需 API key，也不依赖云服务。
 
-| Server | Description | Guide |
+| 服务器 | 说明 | 指南 |
 |--------|-------------|-------|
-| **llama.cpp** | Efficient GGUF model inference with OpenAI-compatible API | [Starting with llama.cpp →](./starting-with-llama-cpp) |
-| **vLLM** | High-throughput inference engine for production workloads | [Starting with vLLM →](./starting-with-vllm) |
+| **llama.cpp** | 使用兼容 OpenAI 的 API 高效运行 GGUF 模型推理 | [从 llama.cpp 开始 →](./starting-with-llama-cpp) |
+| **vLLM** | 面向生产负载的高吞吐推理引擎 | [从 vLLM 开始 →](./starting-with-vllm) |
 
-More local servers (LM Studio, LocalAI, Docker Model Runner, Lemonade) are covered in the [OpenAI-Compatible Providers](./starting-with-openai-compatible#local-servers) guide.
+更多本地服务器（LM Studio、LocalAI、Docker Model Runner、Lemonade）可参见[兼容 OpenAI 的提供商](./starting-with-openai-compatible#local-servers)指南。
 
 ---
 
-## Other Connection Methods
+## 其他连接方式
 
-| Feature | Description | Guide |
+| 功能 | 说明 | 指南 |
 |---------|-------------|-------|
-| **Open Responses** | Connect providers using the Open Responses specification | [Starting with Open Responses →](./starting-with-open-responses) |
-| **Functions** | Extend Open WebUI with custom pipe functions for any backend | [Starting with Functions →](./starting-with-functions) |
+| **Open Responses** | 通过 Open Responses 规范连接提供商 | [从 Open Responses 开始 →](./starting-with-open-responses) |
+| **Functions** | 通过自定义 pipe functions 将任意后端接入 Open WebUI | [从 Functions 开始 →](./starting-with-functions) |
 
 ---
 
-## Looking for Agents?
+## 在找 Agent？
 
-If you want to connect an autonomous AI agent (with terminal access, file operations, web search, and more) instead of a plain model provider, see [**Connect an Agent**](/getting-started/quick-start/connect-an-agent).
+如果你想连接的是具备终端访问、文件操作、网页搜索等能力的自主 AI Agent，而不是普通模型提供商，请参见 [**连接 Agent**](/getting-started/quick-start/connect-an-agent)。

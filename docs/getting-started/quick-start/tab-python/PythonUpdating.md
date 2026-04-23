@@ -1,27 +1,27 @@
-# Updating with Python
+# 使用 Python 更新
 
-To update your locally installed **Open-WebUI** package to the latest version using `pip`, follow these simple steps:
+如果你是通过 `pip` 在本地安装的 **Open WebUI**，可按以下方式升级到最新版本：
 
 ```bash
 pip install -U open-webui
 ```
 
-The `-U` (or `--upgrade`) flag ensures that `pip` upgrades the package to the latest available version.
+`-U`（或 `--upgrade`）标志会让 `pip` 升级到最新可用版本。
 
-After upgrading, restart the server and verify it starts correctly:
+升级后，重启服务并确认能够正常启动：
 
 ```bash
 open-webui serve
 ```
 
-:::warning Multi-Worker Environments
-If you run Open WebUI with `UVICORN_WORKERS > 1` (e.g., in a production environment), you **MUST** ensure the update migration runs on a single worker first to prevent database schema corruption.
+:::warning 多 worker 环境
+如果你以 `UVICORN_WORKERS > 1` 运行 Open WebUI（例如生产环境），则**必须**先确保更新迁移在单 worker 下完成，否则可能导致数据库 schema 损坏。
 
-**Steps for proper update:**
-1. Update `open-webui` using `pip`.
-2. Start the application with `UVICORN_WORKERS=1` environment variable set.
-3. Wait for the application to fully start and complete migrations.
-4. Stop and restart the application with your desired number of workers.
+**正确更新步骤：**
+1. 使用 `pip` 更新 `open-webui`。
+2. 设置 `UVICORN_WORKERS=1` 后启动应用。
+3. 等待应用完全启动并完成迁移。
+4. 停止应用，再按目标 worker 数重新启动。
 :::
 
-For version pinning, rollback, and backup procedures, see the [full update guide](/getting-started/updating).
+有关版本固定、回滚和备份流程，请参见[完整更新指南](/getting-started/updating)。

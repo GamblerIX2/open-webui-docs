@@ -1,61 +1,61 @@
-### Installation with `uv`
+### 使用 `uv` 安装
 
-The `uv` runtime manager ensures seamless Python environment management for applications like Open WebUI. Follow these steps to get started:
+`uv` 运行时管理器可以为 Open WebUI 这类应用提供顺畅的 Python 环境管理。按以下步骤开始：
 
-#### 1. Install `uv`
+#### 1. 安装 `uv`
 
-Pick the appropriate installation command for your operating system:
+根据你的操作系统选择合适的安装命令：
 
-- **macOS/Linux**:
+- **macOS/Linux**：
 
   ```bash
   curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
 
-- **Windows**:
+- **Windows**：
 
   ```powershell
   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
 
-#### 2. Run Open WebUI
+#### 2. 运行 Open WebUI
 
-Once `uv` is installed, running Open WebUI is a breeze. Use the command below, ensuring to set the `DATA_DIR` environment variable to avoid data loss. Example paths are provided for each platform:
+安装好 `uv` 后，就可以直接运行 Open WebUI。建议设置 `DATA_DIR`，避免数据丢失。下面分别给出了各平台示例：
 
-- **macOS/Linux**:
+- **macOS/Linux**：
 
   ```bash
   DATA_DIR=~/.open-webui uvx --python 3.11 open-webui@latest serve
   ```
 
-- **Windows** (PowerShell):
+- **Windows**（PowerShell）：
 
   ```powershell
   $env:DATA_DIR="C:\open-webui\data"; uvx --python 3.11 open-webui@latest serve
   ```
 
-:::tip Why set DATA_DIR?
-Setting `DATA_DIR` ensures your chats and settings are saved in a predictable location. If you don't set it, `uvx` might store it in a temporary folder that gets deleted when the process ends.
+:::tip 为什么要设置 DATA_DIR？
+设置 `DATA_DIR` 可以确保你的聊天与设置保存到可预期的位置。如果不设置，`uvx` 可能会把数据放在进程结束后就被清理掉的临时目录中。
 :::
 
-## Uninstall
+## 卸载
 
-To remove Open WebUI when running with `uvx`:
+如果你是通过 `uvx` 运行 Open WebUI，可按以下方式移除：
 
-1.  **Stop the Server:**
-    Press `Ctrl+C` in the terminal where it's running.
+1.  **停止服务：**
+    在运行它的终端中按 `Ctrl+C`。
 
-2. **Uninstall from UV:**
-    Enter `uv tool uninstall open-webui`
+2. **从 UV 中卸载：**
+    运行 `uv tool uninstall open-webui`
 
-3.  **Available cleanup commands:**
-    The `uvx` command runs the application ephemerally or from cache. To remove cached components:
+3.  **可用的清理命令：**
+    `uvx` 会以临时方式或从缓存中运行应用。如需移除缓存组件：
     ```bash
     uv cache clean
     ```
 
-4.  **Remove Data (WARNING: Deletes all data):**
-    Delete your data directory (default is `~/.open-webui` or the path set in `DATA_DIR`):
+4.  **删除数据（警告：会删除所有数据）：**
+    删除你的数据目录（默认为 `~/.open-webui`，或你在 `DATA_DIR` 中指定的路径）：
     ```bash
     rm -rf ~/.open-webui
     ```

@@ -19,7 +19,7 @@ const shikiPlugin: [typeof rehypeShiki, RehypeShikiOptions] = [
 const config: Config = {
 	title: "Open WebUI",
 	titleDelimiter: "/",
-	tagline: "On a mission to build the best AI interface",
+	tagline: "致力于打造最佳 AI 界面",
 	favicon: "images/favicon.png",
 
 	// Set the production url of your site here
@@ -39,8 +39,8 @@ const config: Config = {
 	// useful metadata like html lang. For example, if your site is Chinese, you
 	// may want to replace "en" with "zh-Hans".
 	i18n: {
-		defaultLocale: "en",
-		locales: ["en"],
+		defaultLocale: "zh-Hans",
+		locales: ["zh-Hans"],
 	},
 
 	// Enable Mermaid for diagrams
@@ -95,7 +95,7 @@ const config: Config = {
 			items: [
 				{
 					href: "https://openwebui.com/blog",
-					label: "Blog",
+					label: "博客",
 					position: "left",
 				},
 				{
@@ -103,14 +103,14 @@ const config: Config = {
 					href: "https://github.com/open-webui/open-webui",
 					position: "right",
 					className: "header-github-link",
-					"aria-label": "GitHub repository",
+					"aria-label": "GitHub 仓库",
 				},
 				{
 					label: "Discord",
 					href: "https://discord.com/invite/5rJgQTnV4s",
 					position: "right",
 					className: "header-discord-link",
-					"aria-label": "Discord server",
+					"aria-label": "Discord 服务器",
 				},
 			],
 		},
@@ -118,24 +118,24 @@ const config: Config = {
 			style: "light",
 			links: [
 				{
-					title: "Docs",
+					title: "文档",
 					items: [
 						{
-							label: "Getting Started",
+							label: "快速开始",
 							to: "getting-started",
 						},
 						{
-							label: "FAQ",
+							label: "常见问题",
 							to: "faq",
 						},
 						{
-							label: "Help Improve The Docs",
+							label: "帮助改进文档",
 							to: "https://github.com/open-webui/docs",
 						},
 					],
 				},
 				{
-					title: "Community",
+					title: "社区",
 					items: [
 						{
 							label: "GitHub",
@@ -156,18 +156,18 @@ const config: Config = {
 					],
 				},
 				{
-					title: "More",
+					title: "更多",
 					items: [
 						{
-							label: "Release Notes",
+							label: "发布说明",
 							to: "https://github.com/open-webui/open-webui/blob/main/CHANGELOG.md",
 						},
 						{
-							label: "About",
+							label: "关于",
 							to: "https://openwebui.com",
 						},
 						{
-							label: "Report a Vulnerability / Responsible Disclosure",
+							label: "报告漏洞 / 负责任披露",
 							to: "https://github.com/open-webui/open-webui/security",
 						},
 					],

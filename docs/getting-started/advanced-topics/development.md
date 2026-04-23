@@ -1,35 +1,35 @@
 ---
 sidebar_position: 10
-title: "Developing Open WebUI"
+title: "开发 Open WebUI"
 ---
 
-# Developing Open WebUI
+# 开发 Open WebUI
 
-**Run Open WebUI from source for development and testing.**
+**从源码运行 Open WebUI，用于开发与测试。**
 
-This guide covers setting up a local development environment with the frontend (SvelteKit) and backend (Python/FastAPI) running side by side. You will need two terminal sessions, one for each.
+本指南介绍如何搭建本地开发环境，让前端（SvelteKit）和后端（Python/FastAPI）并行运行。你需要两个终端会话，各负责一端。
 
-:::tip Don't need a full dev environment?
-You can test the latest changes by running the [dev Docker image](/getting-started/quick-start) instead: `docker run -d -p 3000:8080 -v open-webui-dev:/app/backend/data --name open-webui-dev ghcr.io/open-webui/open-webui:dev`
+:::tip 不需要完整开发环境？
+如果你只是想体验最新改动，也可以直接运行 [dev Docker 镜像](/getting-started/quick-start)：`docker run -d -p 3000:8080 -v open-webui-dev:/app/backend/data --name open-webui-dev ghcr.io/open-webui/open-webui:dev`
 :::
 
 ---
 
-## Prerequisites
+## 前置要求
 
-| Requirement | Version |
+| 要求 | 版本 |
 |-------------|---------|
 | **Python** | 3.11+ |
 | **Node.js** | 22.10+ |
-| **Git** | Any recent version |
+| **Git** | 任意较新版本 |
 
-:::warning Separate your data
-Never share your database or data directory between dev and production. Dev builds may include database migrations that are not backward-compatible.
+:::warning 将开发数据与生产数据分开
+不要在开发环境与生产环境之间共享数据库或数据目录。开发构建可能包含向后不兼容的数据库迁移。
 :::
 
 ---
 
-## 1. Clone the repository
+## 1. 克隆仓库
 
 ```bash
 git clone https://github.com/open-webui/open-webui.git
@@ -38,9 +38,9 @@ cd open-webui
 
 ---
 
-## 2. Frontend setup
+## 2. 前端环境配置
 
-In your **first terminal**, from the project root:
+在你的**第一个终端**中，于项目根目录执行：
 
 ```bash
 cp -RPp .env.example .env
@@ -49,78 +49,78 @@ npm run build
 npm run dev
 ```
 
-`npm run build` compiles the frontend and catches build-time errors early. `npm run dev` then starts the dev server at [http://localhost:5173](http://localhost:5173). It will show a waiting screen until the backend is running.
+`npm run build` 会先编译前端并尽早发现构建期错误；随后 `npm run dev` 会在 [http://localhost:5173](http://localhost:5173) 启动开发服务器。在后端启动之前，它会显示等待画面。
 
 :::tip
-If `npm install` fails with compatibility warnings, run `npm install --force`.
+如果 `npm install` 因兼容性警告失败，可尝试运行 `npm install --force`。
 :::
 
 ---
 
-## 3. Backend setup
+## 3. 后端环境配置
 
-In your **second terminal**:
+在你的**第二个终端**中执行：
 
 ```bash
 cd backend
 ```
 
-Create and activate a virtual environment (Conda or venv):
+创建并激活虚拟环境（Conda 或 venv）：
 
 ```bash
-# Option A: Conda
+# 方案 A：Conda
 conda create --name open-webui python=3.11
 conda activate open-webui
 
-# Option B: venv
+# 方案 B：venv
 python3 -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
-Install dependencies and start the server:
+安装依赖并启动服务：
 
 ```bash
 pip install -r requirements.txt -U
 sh dev.sh
 ```
 
-The backend starts at [http://localhost:8080](http://localhost:8080). API docs are available at [http://localhost:8080/docs](http://localhost:8080/docs).
+后端会在 [http://localhost:8080](http://localhost:8080) 启动，API 文档可在 [http://localhost:8080/docs](http://localhost:8080/docs) 查看。
 
-Refresh the frontend at [http://localhost:5173](http://localhost:5173) and you should see the full application.
+刷新前端页面 [http://localhost:5173](http://localhost:5173)，你应该就能看到完整应用了。
 
 ---
 
-## Testing from another device
+## 从其他设备测试
 
-To access your dev instance from a phone or another computer on the same network:
+如果你想在手机或同一网络中的另一台电脑上访问开发实例：
 
-1. Find your machine's LAN IP (e.g., `192.168.1.42`)
-2. Add the origin to CORS in `backend/dev.sh`:
+1. 找到你机器的局域网 IP（例如 `192.168.1.42`）
+2. 将该来源加入 `backend/dev.sh` 中的 CORS：
 
 ```bash
 export CORS_ALLOW_ORIGIN="http://localhost:5173;http://localhost:8080;http://192.168.1.42:5173"
 ```
 
-3. Restart the backend and browse to `http://192.168.1.42:5173`
+3. 重启后端，然后访问 `http://192.168.1.42:5173`
 
 ---
 
-## Troubleshooting
+## 故障排查
 
-### "FATAL ERROR: Reached Heap Limit"
+### “FATAL ERROR: Reached Heap Limit”
 
-Node.js is running out of memory during the build. Increase the heap size before running frontend commands:
+说明 Node.js 在构建时内存不足。执行前端命令前先增大堆内存：
 
 ```bash
 export NODE_OPTIONS="--max-old-space-size=4096"
 npm run dev
 ```
 
-Ensure at least 4 GB of RAM is available.
+请确认系统至少有 4 GB 可用内存。
 
-### Port conflicts
+### 端口冲突
 
-If port `5173` or `8080` is already in use, find the conflicting process:
+如果端口 `5173` 或 `8080` 已被占用，请先找出冲突进程：
 
 ```bash
 # macOS/Linux
@@ -130,25 +130,25 @@ lsof -i :5173
 Get-Process -Id (Get-NetTCPConnection -LocalPort 5173).OwningProcess
 ```
 
-Terminate the process or change the port in `vite.config.js` (frontend) or `dev.sh` (backend).
+结束对应进程，或在 `vite.config.js`（前端）或 `dev.sh`（后端）中修改端口。
 
-### Icons not loading (CORS)
+### 图标未加载（CORS）
 
-If static assets fail to load, configure `CORS_ALLOW_ORIGIN` in `backend/dev.sh` to include your frontend URL. See [CORS configuration](/reference/env-configuration#cors_allow_origin) for details.
+如果静态资源加载失败，请在 `backend/dev.sh` 中配置 `CORS_ALLOW_ORIGIN`，使其包含你的前端 URL。详情参见 [CORS 配置](/reference/env-configuration#cors_allow_origin)。
 
-### Hot reload not working
+### 热重载不工作
 
-1. Verify both dev servers are running without errors
-2. Hard refresh the browser (Ctrl+Shift+R / Cmd+Shift+R)
-3. Reinstall frontend dependencies: `rm -rf node_modules && npm install`
-4. Backend changes may require manually restarting `sh dev.sh`
+1. 确认两个开发服务器都已启动且没有报错
+2. 强制刷新浏览器（Ctrl+Shift+R / Cmd+Shift+R）
+3. 重新安装前端依赖：`rm -rf node_modules && npm install`
+4. 后端改动可能需要手动重启 `sh dev.sh`
 
 ---
 
-## Contributing workflow
+## 贡献流程
 
-1. **Open a discussion first** at [GitHub Discussions](https://github.com/open-webui/open-webui/discussions/new/choose) before writing code
-2. **Create a branch** from `dev` for your work. Never commit directly to `dev`.
+1. 在开始写代码前，先到 [GitHub Discussions](https://github.com/open-webui/open-webui/discussions/new/choose) **发起讨论**
+2. 从 `dev` 分支**创建你自己的分支**。不要直接向 `dev` 提交
 
 ```bash
 git checkout dev
@@ -156,7 +156,7 @@ git pull origin dev
 git checkout -b my-feature-branch
 ```
 
-3. **Keep your branch synced** by periodically merging from `dev`
-4. **Submit a pull request** to the `dev` branch with a clear title and description
+3. **保持分支同步**，定期从 `dev` 合并更新
+4. 以清晰的标题和描述向 `dev` 分支**提交 pull request**
 
-For contribution guidelines, see [Contributing](/contributing).
+贡献规范请参见 [Contributing](/contributing)。

@@ -1,103 +1,103 @@
 ---
 sidebar_position: 100
-title: "Understanding Settings"
+title: "理解设置"
 ---
 
-# Understanding Settings
+# 理解设置
 
-**Open WebUI has two separate settings areas, not one.**
+**Open WebUI 有两个独立的设置区域，而不是一个。**
 
-Open WebUI is multi-user from day one. Even if you are the only person using it, the architecture assumes there could be many users on the same instance. That means the platform needs two layers of configuration: one for the administrator who controls the instance, and one for each individual user who controls their own experience.
+Open WebUI 从一开始就是面向多用户设计的。即使你是唯一使用者，系统架构也假定同一个实例上可能会有很多用户。因此平台需要两层配置：一层属于控制整个实例的管理员，另一层属于控制个人体验的每位用户。
 
 ---
 
-## The Two Settings Areas
+## 两个设置区域
 
-### Admin Settings (Global)
+### Admin Settings（全局）
 
 | | |
 | :--- | :--- |
-| **Location** | Profile avatar > **Admin Settings**, or **Admin Panel > Settings** |
-| **Access** | Administrators only |
-| **Scope** | The entire instance and all users |
+| **位置** | 头像菜单 > **Admin Settings**，或 **Admin Panel > Settings** |
+| **访问权限** | 仅管理员 |
+| **作用范围** | 整个实例和所有用户 |
 
-Admin Settings control everything about the Open WebUI instance itself: API connections, feature toggles, security policies, and default behaviors. Think of this as the **control panel for the building**. It determines what is installed and available for everyone.
+Admin Settings 控制的是 Open WebUI 实例本身：API 连接、功能开关、安全策略和默认行为。你可以把它理解为**整栋楼的控制面板**——它决定了哪些东西被安装、哪些能力对所有人开放。
 
-**Examples of what lives here:**
+**典型示例：**
 
-- Connections to Ollama, OpenAI, and other providers
-- Enabling or disabling web search, image generation, and code execution
-- Default model selection and parameter presets
-- RBAC policies, SSO configuration, and signup restrictions
+- 与 Ollama、OpenAI 及其他提供商的连接
+- 启用或禁用网页搜索、图片生成与代码执行
+- 默认模型选择与参数预设
+- RBAC 策略、SSO 配置和注册限制
 
 ---
 
-### User Settings (Personal)
+### User Settings（个人）
 
 | | |
 | :--- | :--- |
-| **Location** | Profile avatar > **Settings** |
-| **Access** | Every user (including admins) |
-| **Scope** | Only the individual user |
+| **位置** | 头像菜单 > **Settings** |
+| **访问权限** | 所有用户（包括管理员） |
+| **作用范围** | 仅当前用户本人 |
 
-User Settings control personal preferences: your default model, interface theme, language, notification preferences, and per-feature toggles for features the admin has already enabled. Think of this as the **thermostat in your own room**. You can adjust things for yourself, but only within what the building provides.
+User Settings 控制的是个人偏好：你的默认模型、界面主题、语言、通知偏好，以及管理员已开启功能上的个人开关。你可以把它理解为**自己房间里的恒温器**——你可以调整属于自己的体验，但前提仍由整栋楼的基础设施决定。
 
-**Examples of what lives here:**
+**典型示例：**
 
-- Preferred default model and system prompt
-- Interface theme and language
-- Personal API keys (if [Direct Connections](/features/chat-conversations/direct-connections) are enabled)
-- Per-feature toggles like autocomplete or rich text input
+- 偏好的默认模型与 system prompt
+- 界面主题与语言
+- 个人 API key（如果启用了 [Direct Connections](/features/chat-conversations/direct-connections)）
+- 自动补全、富文本输入等功能的个人开关
 
 ---
 
-## How They Work Together
+## 它们如何协同工作
 
-Many features follow a **two-layer pattern**:
+很多功能都遵循一种**双层模式**：
 
-1. The admin decides whether a feature is **available** (Admin Settings)
-2. Each user decides whether they **personally want to use it** (User Settings)
+1. 管理员决定该功能是否**可提供**（Admin Settings）
+2. 每位用户决定自己是否**要使用**（User Settings）
 
-**Example: Autocomplete (AI-powered typing suggestions)**
+**示例：自动补全（AI 驱动的输入建议）**
 
-| Layer | Setting Location | Effect |
+| 层级 | 设置位置 | 效果 |
 |-------|-----------------|--------|
-| Admin enables it | Admin Settings > Interface | Makes autocomplete **available** on the instance |
-| User enables it | Settings > Interface | Turns autocomplete **on for you personally** |
+| 管理员启用 | Admin Settings > Interface | 让自动补全在实例中**可用** |
+| 用户启用 | Settings > Interface | 只为**你本人**打开自动补全 |
 
-:::important Key Rule
-If an admin **disables** a feature globally, users **cannot** enable it for themselves. The admin setting is always the ceiling.
+:::important 关键规则
+如果管理员在全局范围**关闭**某个功能，用户**无法**自行启用它。管理员设置永远是上限。
 :::
 
-This pattern applies across web search, image generation, direct connections, code interpreter, and more. The admin controls **what is possible**. Users control **what they want**.
+这种模式适用于网页搜索、图片生成、direct connections、code interpreter 等多种功能。管理员控制**什么是可能的**，用户控制**自己想要什么**。
 
 ---
 
-## Quick Reference
+## 快速对照
 
 | | Admin Settings | User Settings |
 |---|---|---|
-| **Scope** | Entire instance (all users) | Individual user only |
-| **Access** | Admins only | Everyone |
-| **Controls** | API connections, feature toggles, security, defaults | Theme, default model, personal preferences |
-| **Override behavior** | Cannot be overridden by users | Can customize within admin-allowed boundaries |
+| **作用范围** | 整个实例（所有用户） | 单个用户 |
+| **访问权限** | 仅管理员 | 所有人 |
+| **控制内容** | API 连接、功能开关、安全、默认值 | 主题、默认模型、个人偏好 |
+| **覆盖行为** | 用户无法覆盖 | 可在管理员允许范围内自定义 |
 
 ---
 
-## Common Scenarios
+## 常见场景
 
-**"I enabled a feature in my settings but it is not working."**
-Check whether the admin has enabled it globally first. Your personal toggle only takes effect if the admin has made the feature available at the instance level.
+**“我在自己的设置里打开了某个功能，但它不生效。”**
+请先确认管理员是否已在全局范围内启用该功能。只有当管理员先让实例层面可用时，你的个人开关才会生效。
 
-**"I am the admin. Where do I configure connections to OpenAI or Ollama?"**
-Admin Settings > Connections. These are instance-wide and shared by all users.
+**“我是管理员。OpenAI 或 Ollama 的连接要在哪里配置？”**
+前往 Admin Settings > Connections。这些连接是实例级的，会被所有用户共享。
 
-**"I want to use my own API key without sharing it with the server."**
-If the admin has enabled **Direct Connections**, you can add personal API keys in User Settings > Connections. See [Direct Connections](/features/chat-conversations/direct-connections).
+**“我想用自己的 API key，但不想和服务器共享。”**
+如果管理员启用了 **Direct Connections**，你可以在 User Settings > Connections 中添加个人 API key。详见 [Direct Connections](/features/chat-conversations/direct-connections)。
 
-**"I set a system prompt but my admin's model settings override it."**
-Model-level settings configured by admins in the Workspace take precedence over personal settings. See [Chat Parameters](/features/chat-conversations/chat-features/chat-params) for the full precedence hierarchy.
+**“我设置了 system prompt，但管理员在 Workspace 里的模型设置把它覆盖了。”**
+管理员在 Workspace 中配置的模型级设置优先于个人设置。完整优先级见 [Chat Parameters](/features/chat-conversations/chat-features/chat-params)。
 
-:::tip First-Time Admin?
-Start with **Admin Settings > Connections** to connect your model providers (Ollama, OpenAI, etc.), then explore **Admin Settings > Interface** to enable or disable features for your users.
+:::tip 第一次当管理员？
+建议先从 **Admin Settings > Connections** 开始，连接模型提供商（Ollama、OpenAI 等），然后再进入 **Admin Settings > Interface**，按需为用户启用或禁用功能。
 :::

@@ -28,7 +28,7 @@ export const SponsorList = () => {
 			imgSrc: "/sponsors/sponsor.png",
 			url: "https://openwebui.com",
 			name: "Open WebUI",
-			description: "On a mission to build the best AI user interface.",
+			description: "致力于打造最佳 AI 用户界面。",
 		},
 	];
 
@@ -63,7 +63,7 @@ export const SponsorList = () => {
 
 			<div className="mb-4">
 				<div className="text-xl font-medium text-black dark:text-white">
-					Emerald
+					翡翠级
 				</div>
 				<hr className="mb-3 mt-1 border-gray-200 dark:border-gray-700" />
 
@@ -76,7 +76,7 @@ export const SponsorList = () => {
 
 			<div className="mb-4">
 				<div className="text-xl font-medium text-black dark:text-white">
-					Jade
+					玉石级
 				</div>
 				<hr className="mb-3 mt-1 border-gray-200 dark:border-gray-700" />
 

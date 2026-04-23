@@ -1,18 +1,17 @@
 ---
 sidebar_position: 0
 slug: /
-title: 🏡 Home
+title: 🏡 首页
 hide_title: true
 ---
 
- 
 import { SponsorList } from "@site/src/components/SponsorList";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Open WebUI
 
-**Open WebUI is an [extensible](https://docs.openwebui.com/features/extensibility/plugin/), feature-rich, and user-friendly self-hosted AI platform designed to operate entirely offline.** It supports **Ollama** and **OpenAI-compatible APIs**, making it a powerful, provider-agnostic solution for both local and cloud-based models.
+**Open WebUI 是一个[可扩展](https://docs.openwebui.com/features/extensibility/plugin/)、功能丰富且易于使用的自托管 AI 平台，专为完全离线运行而设计。** 它支持 **Ollama** 和 **兼容 OpenAI 的 API**，无论是本地模型还是云端模型，都是一套强大且与提供商无关的解决方案。
 
 ![Open WebUI Demo](/images/demo.png)
 
@@ -22,7 +21,7 @@ import TabItem from '@theme/TabItem';
 
 ---
 
-## Quick Start
+## 快速开始
 
 <Tabs>
   <TabItem value="docker" label="Docker" default>
@@ -31,9 +30,9 @@ import TabItem from '@theme/TabItem';
 docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+然后打开 [http://localhost:3000](http://localhost:3000)。
 
-For GPU support, Docker Compose, and more → [Full Docker guide](/getting-started/quick-start)
+如需 GPU 支持、Docker Compose 等更多内容 → [完整 Docker 指南](/getting-started/quick-start)
 
   </TabItem>
   <TabItem value="pip" label="pip">
@@ -43,7 +42,7 @@ pip install open-webui
 open-webui serve
 ```
 
-Then open [http://localhost:8080](http://localhost:8080).
+然后打开 [http://localhost:8080](http://localhost:8080)。
 
   </TabItem>
   <TabItem value="uv" label="uv">
@@ -53,72 +52,72 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 DATA_DIR=~/.open-webui uvx --python 3.11 open-webui@latest serve
 ```
 
-Then open [http://localhost:8080](http://localhost:8080).
+然后打开 [http://localhost:8080](http://localhost:8080)。
 
   </TabItem>
-  <TabItem value="desktop" label="Desktop">
+  <TabItem value="desktop" label="桌面端">
 
-Download the desktop app from [**github.com/open-webui/desktop**](https://github.com/open-webui/desktop). It runs Open WebUI natively on your system without Docker or manual setup.
+从 [**github.com/open-webui/desktop**](https://github.com/open-webui/desktop) 下载桌面应用。它可在你的系统上原生运行 Open WebUI，无需 Docker 或手动配置。
 
-:::warning Experimental
-The desktop app is a **work in progress** and is not yet stable. For production use, install via **Docker** or **Python**.
+:::warning 实验性
+桌面应用仍在**持续开发中**，目前尚不稳定。用于生产环境时，请通过 **Docker** 或 **Python** 安装。
 :::
 
   </TabItem>
 </Tabs>
 
-:::tip Running? Read this next.
-Installed Open WebUI but don't know where to start? The [**Essentials for New Users**](/getting-started/essentials) guide walks through the five things every new user eventually needs to know — plugins, context management, task models, RAG, tool calling, and Open Terminal — in one page.
+:::tip 已经跑起来了？接着看这里
+已经安装好 Open WebUI，但不知道下一步该做什么？[**新用户必读**](/getting-started/essentials) 会在一页内带你了解每位新用户迟早都会用到的五件事：插件、上下文管理、任务模型、RAG、工具调用和 Open Terminal。
 :::
 
 ---
 
-## Getting Started
+## 入门指南
 
-- [**Quick Start**](/getting-started/quick-start) — Docker, Python, Kubernetes install options
-- [**Connect a Provider**](/getting-started/quick-start/connect-a-provider) — Ollama, OpenAI, Anthropic, vLLM, and more
-- [**Essentials for New Users**](/getting-started/essentials) — Start here after your first install. Plugins, context management, task models, RAG, tool calling, Open Terminal.
-- [**Connect an Agent**](/getting-started/quick-start/connect-an-agent) — Hermes Agent, OpenClaw, and other autonomous AI agents
-- [**Updating**](/getting-started/updating) — Keep your instance current
-- [**Development Branch**](/getting-started/quick-start) — Help test the latest changes before stable release
-- [**Advanced Topics**](/getting-started/advanced-topics) — Scaling, logging, and advanced configuration
-
----
-
-## Explore
-
-- [**Features**](/features) — Discover what Open WebUI can do
-- [**Tutorials**](/tutorials) — Step-by-step guides
-- [**FAQ**](/faq) — Common questions answered
-- [**Troubleshooting**](/troubleshooting) — Fix common issues
-- [**Reference**](/reference) — Environment variables and API details
+- [**快速开始**](/getting-started/quick-start) — Docker、Python、Kubernetes 安装方式
+- [**连接提供商**](/getting-started/quick-start/connect-a-provider) — Ollama、OpenAI、Anthropic、vLLM 等
+- [**新用户必读**](/getting-started/essentials) — 首次安装后从这里开始。插件、上下文管理、任务模型、RAG、工具调用、Open Terminal。
+- [**连接 Agent**](/getting-started/quick-start/connect-an-agent) — Hermes Agent、OpenClaw 等自主 AI Agent
+- [**更新**](/getting-started/updating) — 让你的实例保持最新
+- [**开发分支**](/getting-started/quick-start) — 在稳定版发布前帮助测试最新变更
+- [**高级主题**](/getting-started/advanced-topics) — 扩展、日志与高级配置
 
 ---
 
-## Enterprise
+## 探索
 
-Need **custom branding**, **SLA support**, or **Long-Term Support (LTS)** versions?
-→ [Learn about Enterprise plans](/enterprise)
-
----
-
-## Get Involved
-
-- [**Contributing**](/contributing) — Help build Open WebUI
-- [**Development Setup**](/getting-started/advanced-topics/development) — Run the project locally from source
-- [**Discord**](https://discord.gg/5rJgQTnV4s) — Join the community
-- [**GitHub**](https://github.com/open-webui/open-webui) — Report issues, submit PRs
-- [**Careers**](https://careers.openwebui.com/) — Join our team
+- [**功能特性**](/features) — 了解 Open WebUI 能做什么
+- [**教程**](/tutorials) — 分步指南
+- [**FAQ**](/faq) — 常见问题解答
+- [**故障排查**](/troubleshooting) — 修复常见问题
+- [**参考**](/reference) — 环境变量和 API 详情
 
 ---
 
-## Sponsors
+## 企业版
+
+需要 **自定义品牌**、**SLA 支持** 或 **长期支持版（LTS）**？
+→ [了解企业版方案](/enterprise)
+
+---
+
+## 参与进来
+
+- [**贡献指南**](/contributing) — 一起建设 Open WebUI
+- [**开发环境搭建**](/getting-started/advanced-topics/development) — 从源码在本地运行项目
+- [**Discord**](https://discord.gg/5rJgQTnV4s) — 加入社区
+- [**GitHub**](https://github.com/open-webui/open-webui) — 报告问题、提交 PR
+- [**Careers**](https://careers.openwebui.com/) — 加入团队
+
+---
+
+## 赞助商
 
 <SponsorList />
 
 ---
 
-## Acknowledgements
+## 致谢
 
 <div className="grid gap-4 items-start grid-cols-1 md:grid-cols-3">
 

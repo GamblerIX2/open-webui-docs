@@ -3,89 +3,89 @@ sidebar_position: 6
 title: "Functions"
 ---
 
-## Overview
+## 概览
 
-**Pipe Functions** are Python plugins that appear as selectable models in your chat sidebar. Behind the scenes, they can do anything Python can do: integrate a proprietary AI provider, control your smart home with natural language, query a database, run a search engine, build a multi-step agent, generate charts, automate workflows, or serve as a calculator. No LLM is even required. If you can write the logic in Python, it becomes a "model" users can chat with.
+**Pipe Functions** 是一类 Python 插件，会像模型一样出现在聊天侧边栏中。在底层，它们几乎能做任何 Python 能做的事：接入私有 AI 提供商、用自然语言控制智能家居、查询数据库、调用搜索引擎、构建多步 Agent、生成图表、自动化工作流，甚至充当计算器。它甚至**不一定需要 LLM**。只要你能用 Python 写出逻辑，它就能变成一个用户可聊天的“模型”。
 
-This guide walks you through importing and enabling your first Pipe Function, using the [Anthropic Pipe](https://openwebui.com/posts/60984ebf-cf4e-4822-98b8-0492463c2852) as an example.
+本指南会以 [Anthropic Pipe](https://openwebui.com/posts/60984ebf-cf4e-4822-98b8-0492463c2852) 为例，带你导入并启用第一个 Pipe Function。
 
-:::info Already have an OpenAI-compatible provider?
-If your provider supports the **OpenAI Chat Completions API protocol** (OpenAI, Google Gemini, Mistral, Groq, DeepSeek, and many more), you don't need a Function. Just [add a connection](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible). Anthropic also has native support via their OpenAI-compatible endpoint; see the [Anthropic guide](/getting-started/quick-start/connect-a-provider/starting-with-anthropic). Functions are for everything else: proprietary APIs, custom agents, or entirely novel interfaces.
+:::info 已经有兼容 OpenAI 的提供商？
+如果你的提供商支持 **OpenAI Chat Completions API 协议**（如 OpenAI、Google Gemini、Mistral、Groq、DeepSeek 等），那你根本不需要 Function。直接[添加一个连接](/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible)即可。Anthropic 也已经通过其兼容 OpenAI 的端点获得原生支持；详见 [Anthropic 指南](/getting-started/quick-start/connect-a-provider/starting-with-anthropic)。Functions 适用于其他场景：私有 API、自定义 Agent，或完全全新的交互接口。
 :::
 
 ---
 
-## Step 1: Find a Function
+## 第 1 步：找到一个 Function
 
-1. Go to the [Community Function Library](https://openwebui.com/search).
-2. Browse or search for the function you need. There are thousands of community-contributed functions for AI providers, search tools, home automation, productivity utilities, content filters, and more.
-3. Click **Get** on the function you want to import.
+1. 打开 [Community Function Library](https://openwebui.com/search)。
+2. 浏览或搜索你需要的 Function。社区里已有数千个由贡献者提供的 functions，涵盖 AI 提供商、搜索工具、家居自动化、生产力工具、内容过滤等各种场景。
+3. 在你想导入的 Function 上点击 **Get**。
 
-:::note Community Account Required
-Importing directly from the community library requires a registered account at [openwebui.com](https://openwebui.com).
+:::note 需要社区账号
+要直接从社区库导入，你需要在 [openwebui.com](https://openwebui.com) 注册账号。
 :::
 
 ---
 
-## Step 2: Import to Open WebUI
+## 第 2 步：导入到 Open WebUI
 
-A modal will appear:
+随后会出现一个弹窗：
 
-1. Enter your Open WebUI instance URL (e.g., `http://localhost:3000`).
-2. Click **Import to Open WebUI**.
+1. 输入你的 Open WebUI 实例 URL（例如 `http://localhost:3000`）。
+2. 点击 **Import to Open WebUI**。
 
-You'll be redirected to the **Function Editor** within your running instance.
+之后你会被重定向到正在运行实例中的 **Function Editor**。
 
-![Import Modal Screenshot](/images/getting-started/pipe-import-modal.png)
-
----
-
-## Step 3: Review & Save
-
-Review the Python source code in the editor. Functions execute arbitrary code on your server, so only install from sources you trust.
-
-Click **Save** to add the function to your instance.
-
-![Function Editor Screenshot](/images/getting-started/pipe-function-editor.png)
+![导入弹窗截图](/images/getting-started/pipe-import-modal.png)
 
 ---
 
-## Step 4: Enable the Function
+## 第 3 步：审查并保存
 
-New functions are disabled by default. Toggle the switch to enable it.
+在编辑器中查看 Python 源代码。由于 Function 会在你的服务器上执行任意代码，因此只应安装来自可信来源的内容。
 
-![Enable Function Screenshot](/images/getting-started/pipe-enable.png)
+点击 **Save**，将该 Function 添加到你的实例中。
 
----
-
-## Step 5: Configure Valves
-
-Many functions require configuration, such as API keys or endpoint URLs:
-
-1. Click the ⚙️ **gear icon** next to the toggle switch.
-2. Enter the required values (e.g., your Anthropic API key).
-3. Save.
-
-![Valves Configuration Screenshot](/images/getting-started/pipe-valves.png)
+![Function 编辑器截图](/images/getting-started/pipe-function-editor.png)
 
 ---
 
-## Step 6: Start Chatting
+## 第 4 步：启用 Function
 
-The function now appears as a selectable model in the chat sidebar. Select it and start chatting.
+新导入的 Function 默认是禁用状态。请切换开关将其启用。
 
-![Select Pipe Function as Model Screenshot](/images/getting-started/pipe-select-model.png)
+![启用 Function 截图](/images/getting-started/pipe-enable.png)
 
 ---
 
-:::danger ⚠️ Security Reminder
-Functions run arbitrary Python on your server. Always review code before enabling, and only import from trusted sources. For details, see the [Plugin Security Warning](/features/extensibility/plugin/).
+## 第 5 步：配置 Valves
+
+很多 Function 都需要进一步配置，例如 API key 或服务端点 URL：
+
+1. 点击开关旁边的 ⚙️ **齿轮图标**。
+2. 输入所需值（例如 Anthropic API key）。
+3. 保存。
+
+![Valves 配置截图](/images/getting-started/pipe-valves.png)
+
+---
+
+## 第 6 步：开始聊天
+
+现在这个 Function 会作为可选模型出现在聊天侧边栏中。选中它，即可开始聊天。
+
+![将 Pipe Function 作为模型选择的截图](/images/getting-started/pipe-select-model.png)
+
+---
+
+:::danger ⚠️ 安全提醒
+Functions 会在你的服务器上执行任意 Python 代码。启用前务必先审查源码，并且只从可信来源导入。详见 [插件安全警告](/features/extensibility/plugin/)。
 :::
 
-## Learn More
+## 了解更多
 
-- **[Functions Overview](/features/extensibility/plugin/functions/)**: Architecture, types, and the full range of possibilities.
-- **[Pipe Function Guide](/features/extensibility/plugin/functions/pipe)**: Build custom models, agents, and non-LLM interfaces.
-- **[Filter Function Guide](/features/extensibility/plugin/functions/filter)**: Intercept, translate, moderate, and log messages.
-- **[Action Function Guide](/features/extensibility/plugin/functions/action)**: Add interactive buttons for export, workflows, and more.
-- **[Community Library](https://openwebui.com/search)**: Browse thousands of community functions.
+- **[Functions 概览](/features/extensibility/plugin/functions/)**：架构、类型与完整能力范围
+- **[Pipe Function 指南](/features/extensibility/plugin/functions/pipe)**：构建自定义模型、Agent 与非 LLM 接口
+- **[Filter Function 指南](/features/extensibility/plugin/functions/filter)**：拦截、翻译、审核并记录消息
+- **[Action Function 指南](/features/extensibility/plugin/functions/action)**：为导出、工作流等添加交互按钮
+- **[社区库](https://openwebui.com/search)**：浏览数千个社区 Functions

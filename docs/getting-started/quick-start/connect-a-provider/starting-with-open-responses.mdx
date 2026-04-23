@@ -4,94 +4,94 @@ title: "Open Responses"
 
 ---
 
-## Overview
+## 概览
 
-Open WebUI has experimental support for **[Open Responses](https://www.openresponses.org/)**, an open specification for multi-provider, interoperable LLM interfaces. This guide walks you through enabling the Open Responses API for a connection.
+Open WebUI 对 **[Open Responses](https://www.openresponses.org/)** 提供实验性支持。它是一套面向多提供商、可互操作的开放 LLM 接口规范。本指南将带你为某个连接启用 Open Responses API。
 
-:::warning Experimental Feature
-This feature is currently experimental and may not work as expected with all providers.
+:::warning 实验性功能
+该功能目前仍处于实验阶段，未必能在所有提供商上按预期工作。
 :::
 
 ---
 
-## What is Open Responses?
+## 什么是 Open Responses？
 
-Open Responses is an open-source specification that standardizes how LLM requests and responses are structured across providers. It provides:
+Open Responses 是一个开源规范，用于统一不同提供商之间 LLM 请求与响应的结构。它带来的好处包括：
 
-- **One spec, many providers**: Describe inputs/outputs once; run on OpenAI, Anthropic, Gemini, or local models.
-- **Composable agentic loops**: Unified streaming, tool invocation, and message orchestration.
-- **Easier evaluation and routing**: Compare providers, route requests, and log results through a shared schema.
+- **一套规范，多家提供商**：一次描述输入/输出，就能运行在 OpenAI、Anthropic、Gemini 或本地模型上。
+- **可组合的 Agent 循环**：统一流式输出、工具调用与消息编排。
+- **更容易做评估与路由**：在共享 schema 下比较不同提供商、路由请求并记录结果。
 
-Open Responses builds on the OpenAI Responses API format but is designed to work across any provider that implements the spec.
-
----
-
-## Step 1: Add or Edit a Connection
-
-1. Go to the ⚙️ **Admin Settings**.
-2. Navigate to **Connections > OpenAI > Manage** (look for the wrench icon).
-3. Click ➕ **Add New Connection** or edit an existing connection.
+Open Responses 基于 OpenAI Responses API 格式，但目标是面向任何实现该规范的提供商。
 
 ---
 
-## Step 2: Select the API Type
+## 第 1 步：新增或编辑连接
 
-In the connection modal, look for the **API Type** setting:
-
-- **Chat Completions** (default): Uses the standard OpenAI Chat Completions API format.
-- **Responses** (experimental): Uses the Open Responses API format.
-
-Click the toggle to switch to **Responses**. You'll see an "Experimental" label indicating this feature is still in development.
-
-![API Type Toggle](/images/getting-started/quick-start/api-type-responses.gif)
+1. 进入 ⚙️ **Admin Settings**。
+2. 打开 **Connections > OpenAI > Manage**（查找扳手图标）。
+3. 点击 ➕ **Add New Connection**，或编辑现有连接。
 
 ---
 
-## Step 3: Configure Your Provider
+## 第 2 步：选择 API 类型
 
-Enter the connection details for a provider that supports the Open Responses format:
+在连接弹窗中，找到 **API Type** 设置：
 
-- **URL**: Your provider's API endpoint
-- **API Key**: Your authentication credentials
-- **Model IDs**: (Optional) Specify specific models to use
+- **Chat Completions**（默认）：使用标准 OpenAI Chat Completions API 格式
+- **Responses**（实验性）：使用 Open Responses API 格式
 
----
+点击切换到 **Responses**。你会看到 “Experimental” 标记，表示该功能仍在开发中。
 
-## Supported Providers
-
-Open Responses is a new specification, so provider support is still growing. Check the [Open Responses website](https://www.openresponses.org/) for the latest list of compliant providers and implementations.
+![API Type 切换](/images/getting-started/quick-start/api-type-responses.gif)
 
 ---
 
-## Troubleshooting
+## 第 3 步：配置你的提供商
 
-### Connection works with Chat Completions but not Responses
+填写支持 Open Responses 格式的提供商连接信息：
 
-Not all providers support the Open Responses format yet. Try:
+- **URL**：提供商 API 端点
+- **API Key**：认证凭据
+- **Model IDs**：（可选）指定你要使用的特定模型
 
-1. Switching back to Chat Completions
-2. Checking if your provider explicitly supports Open Responses
-3. Using a middleware proxy that can translate to Open Responses format
+---
 
-### Streaming or tool calls behave unexpectedly
+## 支持的提供商
 
-Tool calls, re-invocations, and streaming are supported for Responses API connections. Open WebUI transparently converts between Chat Completions and Responses API formats, including tool call arguments, function call outputs, and multi-turn tool use. If you still encounter issues:
+Open Responses 是一项较新的规范，因此提供商支持仍在持续增长。请查看 [Open Responses 官网](https://www.openresponses.org/) 以获取最新的兼容提供商与实现列表。
 
-1. Check the [Open WebUI Discord](https://discord.gg/5rJgQTnV4s) for known issues
-2. Report bugs on [GitHub](https://github.com/open-webui/open-webui/issues)
+---
 
-### Stateful sessions
+## 故障排查
 
-By default, Open WebUI treats Responses API connections as **stateless** — it manages conversation history locally and sends the full context with each request. If your upstream provider supports **stateful sessions** (server-side response storage with `previous_response_id` anchoring, e.g., direct OpenAI connections), you can enable `ENABLE_RESPONSES_API_STATEFUL=true` to let the provider manage conversation state.
+### Chat Completions 能用，但 Responses 不能用
+
+并非所有提供商都已经支持 Open Responses 格式。你可以尝试：
+
+1. 切回 Chat Completions
+2. 确认你的提供商是否明确声明支持 Open Responses
+3. 使用可以转换到 Open Responses 格式的中间代理
+
+### 流式输出或工具调用行为异常
+
+对于 Responses API 连接，工具调用、重新调用与流式输出都受支持。Open WebUI 会在 Chat Completions 与 Responses API 格式之间透明转换，包括工具调用参数、函数调用输出以及多轮工具使用。如果你仍然遇到问题：
+
+1. 到 [Open WebUI Discord](https://discord.gg/5rJgQTnV4s) 查看已知问题
+2. 在 [GitHub](https://github.com/open-webui/open-webui/issues) 报告 bug
+
+### 有状态会话
+
+默认情况下，Open WebUI 会把 Responses API 连接当作**无状态**连接处理——它会在本地管理对话历史，并在每次请求时发送完整上下文。如果你的上游提供商支持**有状态会话**（例如支持 `previous_response_id` 锚定的服务端响应存储，如直接 OpenAI 连接），你可以启用 `ENABLE_RESPONSES_API_STATEFUL=true`，让提供商自己管理会话状态。
 
 :::warning
-Most proxies and third-party Responses API endpoints are stateless and will break if stateful mode is enabled. Only use this with providers that explicitly support stateful Responses API sessions.
+大多数代理和第三方 Responses API 端点都是无状态的，启用有状态模式后会直接出问题。只有在提供商明确支持有状态 Responses API 会话时才应开启。
 :::
 
 ---
 
-## Learn More
+## 了解更多
 
-- **[Open Responses Specification](https://www.openresponses.org/specification)**: Full technical specification
-- **[Open Responses GitHub](https://github.com/openresponses/openresponses)**: Source code and discussions
-- **[FAQ: Why doesn't Open WebUI natively support proprietary APIs?](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**: Learn about our protocol-first philosophy
+- **[Open Responses Specification](https://www.openresponses.org/specification)**：完整技术规范
+- **[Open Responses GitHub](https://github.com/openresponses/openresponses)**：源码与讨论
+- **[FAQ：为什么 Open WebUI 不原生支持私有 API？](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**：了解我们的协议优先理念

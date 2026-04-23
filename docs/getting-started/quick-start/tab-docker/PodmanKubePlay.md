@@ -1,12 +1,12 @@
-# Podman Kube Play Setup
+# Podman Kube Play 配置
 
-Podman supports Kubernetes like-syntax for deploying resources such as pods, volumes without having the overhead of a full Kubernetes cluster. [More about Kube Play](https://docs.podman.io/en/latest/markdown/podman-kube-play.1.html).
+Podman 支持类似 Kubernetes 的语法来部署 Pod、卷等资源，而无需真正运行完整 Kubernetes 集群。[更多关于 Kube Play](https://docs.podman.io/en/latest/markdown/podman-kube-play.1.html)。
 
-If you don't have Podman installed, check out [Podman's official website](https://podman.io/docs/installation).
+如果你尚未安装 Podman，请查看 [Podman 官方安装说明](https://podman.io/docs/installation)。
 
-## Example `play.yaml`
+## 示例 `play.yaml`
 
-Here is an example of a Podman Kube Play file to deploy:
+下面是一个用于部署的 Podman Kube Play 示例文件：
 
 ```yaml
 apiVersion: v1
@@ -41,17 +41,17 @@ spec:
       storage: 5Gi
 ```
 
-## Starting
+## 启动
 
-To start your pod, run the following command:
+运行以下命令启动 Pod：
 
 ```bash
 podman kube play ./play.yaml
 ```
 
-## Using GPU Support
+## 使用 GPU 支持
 
-For Nvidia GPU support, you need to replace the container image with `ghcr.io/open-webui/open-webui:cuda` and need to specify the device (GPU) required in the pod resources limits as followed:
+若需 Nvidia GPU 支持，请将容器镜像替换为 `ghcr.io/open-webui/open-webui:cuda`，并在 Pod 资源限制中声明所需设备（GPU）：
 
 ```yaml
       [...]
@@ -63,7 +63,7 @@ For Nvidia GPU support, you need to replace the container image with `ghcr.io/op
 
 :::important
 
-To successfully have the open-webui container access the GPU(s),
-you will need to have the Container Device Interface (CDI) for the GPU you wish to access installed in your Podman Machine. You can check [Podman GPU container access](https://podman-desktop.io/docs/podman/gpu).
+要让 open-webui 容器成功访问 GPU，
+你需要在 Podman Machine 中安装对应 GPU 的 Container Device Interface（CDI）。可参考 [Podman GPU container access](https://podman-desktop.io/docs/podman/gpu)。
 
 :::

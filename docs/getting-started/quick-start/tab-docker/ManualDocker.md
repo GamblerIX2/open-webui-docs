@@ -1,52 +1,52 @@
-## Quick Start with Docker
+## 使用 Docker 快速开始
 
 :::info
-**WebSocket** support is required. Ensure your network configuration allows WebSocket connections.
+必须支持 **WebSocket**。请确认你的网络配置允许 WebSocket 连接。
 :::
 
-:::tip Docker Hub Now Available
-Open WebUI images are published to **both** registries:
-- **GitHub Container Registry:** `ghcr.io/open-webui/open-webui`
-- **Docker Hub:** `openwebui/open-webui`
+:::tip Docker Hub 现已可用
+Open WebUI 镜像同时发布到了**两个**镜像仓库：
+- **GitHub Container Registry：** `ghcr.io/open-webui/open-webui`
+- **Docker Hub：** `openwebui/open-webui`
 
-Both contain identical images. Replace `ghcr.io/open-webui/open-webui` with `openwebui/open-webui` in any command below.
+两者内容完全一致。你可以在下面的命令中把 `ghcr.io/open-webui/open-webui` 替换成 `openwebui/open-webui`。
 :::
 
-### 1. Pull the image
+### 1. 拉取镜像
 
 ```bash
 docker pull ghcr.io/open-webui/open-webui:main
 ```
 
-### 2. Run the container
+### 2. 运行容器
 
 ```bash
 docker run -d -p 3000:8080 -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main
 ```
 
-| Flag | Purpose |
+| 参数 | 作用 |
 |------|---------|
-| `-v open-webui:/app/backend/data` | Persistent storage. Prevents data loss between restarts. |
-| `-p 3000:8080` | Exposes the UI on port 3000 of your machine. |
+| `-v open-webui:/app/backend/data` | 持久化存储，避免重启后数据丢失 |
+| `-p 3000:8080` | 将界面暴露在本机的 3000 端口 |
 
-### 3. Open the UI
+### 3. 打开界面
 
-Visit [http://localhost:3000](http://localhost:3000).
+访问 [http://localhost:3000](http://localhost:3000)。
 
 ---
 
-## Image Variants
+## 镜像变体
 
-| Tag | Use case |
+| 标签 | 适用场景 |
 |-----|----------|
-| `:main` | Standard image (recommended) |
-| `:main-slim` | Smaller image, downloads Whisper and embedding models on first use |
-| `:cuda` | Nvidia GPU support (add `--gpus all` to `docker run`) |
-| `:ollama` | Bundles Ollama inside the container for an all-in-one setup |
+| `:main` | 标准镜像（推荐） |
+| `:main-slim` | 更小的镜像，首次使用时下载 Whisper 和 embedding 模型 |
+| `:cuda` | 提供 Nvidia GPU 支持（需在 `docker run` 中加入 `--gpus all`） |
+| `:ollama` | 在容器内集成 Ollama，适合一体化部署 |
 
-### Specific release versions
+### 固定特定发布版本
 
-For production environments, pin a specific version instead of using floating tags:
+生产环境建议固定版本，而不是使用浮动标签：
 
 ```bash
 docker pull ghcr.io/open-webui/open-webui:v0.9.0
@@ -56,79 +56,79 @@ docker pull ghcr.io/open-webui/open-webui:v0.9.0-ollama
 
 ---
 
-## Common Configurations
+## 常见配置
 
-### GPU support (Nvidia)
+### GPU 支持（Nvidia）
 
 ```bash
 docker run -d -p 3000:8080 --gpus all -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:cuda
 ```
 
-### Bundled with Ollama
+### 与 Ollama 打包在一起
 
-A single container with Open WebUI and Ollama together:
+将 Open WebUI 和 Ollama 放在同一个容器中：
 
-**With GPU:**
+**使用 GPU：**
 ```bash
 docker run -d -p 3000:8080 --gpus=all -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama
 ```
 
-**CPU only:**
+**仅 CPU：**
 ```bash
 docker run -d -p 3000:8080 -v ollama:/root/.ollama -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama
 ```
 
-### Connecting to Ollama on a different server
+### 连接另一台服务器上的 Ollama
 
 ```bash
 docker run -d -p 3000:8080 -e OLLAMA_BASE_URL=https://example.com -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
 ```
 
-### Single-user mode (no login)
+### 单用户模式（无登录）
 
 ```bash
 docker run -d -p 3000:8080 -e WEBUI_AUTH=False -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:main
 ```
 
 :::warning
-You cannot switch between single-user mode and multi-account mode after this change.
+切换到单用户模式后，不能再无缝切回多账户模式。
 :::
 
 ---
 
-## Using the Dev Branch
+## 使用开发分支
 
 :::tip
-Testing dev builds is one of the most valuable ways to contribute. Run it on a test instance and report issues on [GitHub](https://github.com/open-webui/open-webui/issues).
+测试 dev 构建是很有价值的贡献方式之一。建议在测试实例中运行，并通过 [GitHub](https://github.com/open-webui/open-webui/issues) 报告问题。
 :::
 
-The `:dev` tag contains the latest features before they reach a stable release.
+`:dev` 标签包含的是进入稳定版前的最新功能。
 
 ```bash
 docker run -d -p 3000:8080 -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:dev
 ```
 
 :::warning
-**Never share your data volume between dev and production.** Dev builds may include database migrations that are not backward-compatible. Always use a separate volume (e.g., `-v open-webui-dev:/app/backend/data`).
+**不要在 dev 与生产之间共享数据卷。** dev 构建可能包含向后不兼容的数据库迁移。请始终使用单独卷（例如 `-v open-webui-dev:/app/backend/data`）。
 :::
 
-If Docker is not your preference, follow the [Developing Open WebUI](/getting-started/advanced-topics/development).
+如果你不想使用 Docker，也可以参考 [开发 Open WebUI](/getting-started/advanced-topics/development)。
 
 ---
 
-## Uninstall
+## 卸载
 
-1. **Stop and remove the container:**
+1. **停止并删除容器：**
     ```bash
     docker rm -f open-webui
     ```
 
-2. **Remove the image (optional):**
+2. **删除镜像（可选）：**
     ```bash
     docker rmi ghcr.io/open-webui/open-webui:main
     ```
 
-3. **Remove the volume (optional, deletes all data):**
+3. **删除数据卷（可选，会删除所有数据）：**
     ```bash
     docker volume rm open-webui
     ```

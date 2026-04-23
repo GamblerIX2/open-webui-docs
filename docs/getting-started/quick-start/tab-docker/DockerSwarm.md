@@ -1,35 +1,35 @@
 ## Docker Swarm
 
-This installation method requires knowledge on Docker Swarms, as it utilizes a stack file to deploy 3 seperate containers as services in a Docker Swarm.
+这种安装方式要求你熟悉 Docker Swarm，因为它会使用 stack 文件在 Docker Swarm 中将 3 个独立容器部署为服务。
 
-It includes isolated containers of ChromaDB, Ollama, and OpenWebUI.
-Additionally, there are pre-filled [Environment Variables](https://docs.openwebui.com/reference/env-configuration) to further illustrate the setup.
+其中包含独立运行的 ChromaDB、Ollama 与 Open WebUI 容器。
+另外还预填了一些[环境变量](https://docs.openwebui.com/reference/env-configuration)，以便更直观地说明部署方式。
 
-:::info Why ChromaDB Runs as a Separate Container
+:::info 为什么要将 ChromaDB 作为独立容器运行
 
-This stack correctly deploys ChromaDB as a **separate HTTP server** container, with Open WebUI connecting to it via `CHROMA_HTTP_HOST` and `CHROMA_HTTP_PORT`. This is **required** for any multi-worker or multi-replica deployment.
+这个 stack 正确地将 ChromaDB 部署为**独立的 HTTP 服务容器**，Open WebUI 通过 `CHROMA_HTTP_HOST` 和 `CHROMA_HTTP_PORT` 与其连接。对于任何多 worker 或多副本部署，这都是**必须的**。
 
-The default ChromaDB mode (without `CHROMA_HTTP_HOST`) uses a local SQLite-backed `PersistentClient` that is **not fork-safe** — concurrent writes from multiple worker processes will crash workers instantly. Running ChromaDB as a separate server avoids this by using HTTP connections instead of direct SQLite access.
+默认的 ChromaDB 模式（未设置 `CHROMA_HTTP_HOST`）使用本地基于 SQLite 的 `PersistentClient`，**不具备 fork 安全性**——多个 worker 进程并发写入会立刻导致 worker 崩溃。将 ChromaDB 作为独立服务运行，可以通过 HTTP 连接避免直接访问 SQLite。
 
-If you plan to scale the `openWebUI` service to multiple replicas, you should also switch to PostgreSQL for the main database and set up Redis. See the [Scaling & HA guide](https://docs.openwebui.com/troubleshooting/multi-replica) for full requirements.
+如果你打算把 `openWebUI` 服务扩展到多个副本，还应同时把主数据库切换到 PostgreSQL，并配置 Redis。完整要求请参见 [Scaling & HA guide](https://docs.openwebui.com/troubleshooting/multi-replica)。
 
 :::
 
-Choose the appropriate command based on your hardware setup:
+请根据你的硬件情况选择相应命令：
 
-- **Before Starting**:
+- **开始前：**
 
-  Directories for your volumes need to be created on the host, or you can specify a custom location or volume.
+  需要先在宿主机上创建用于卷的数据目录，或者改用你自己的自定义路径 / 卷。
 
-  The current example utilizes an isolated dir `data`, which is within the same dir as the `docker-stack.yaml`.
+  当前示例使用的是与 `docker-stack.yaml` 位于同一目录下的隔离目录 `data`。
 
-      - **For example**:
+      - **例如：**
 
         ```bash
         mkdir -p data/open-webui data/chromadb data/ollama
         ```
 
-- **With GPU Support**:
+- **启用 GPU：**
 
 #### Docker-stack.yaml
 
@@ -52,7 +52,7 @@ Choose the appropriate command based on your hardware setup:
           CHROMA_TENANT: default_tenant
           VECTOR_DB: chroma
           WEBUI_NAME: Awesome ChatBot
-          CORS_ALLOW_ORIGIN: "*" # This is the current Default, will need to change before going live
+          CORS_ALLOW_ORIGIN: "*" # 当前默认值；正式上线前应修改
           RAG_EMBEDDING_ENGINE: ollama
           RAG_EMBEDDING_MODEL: nomic-embed-text-v1.5
           RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE: "True"
@@ -117,16 +117,16 @@ Choose the appropriate command based on your hardware setup:
 
     ```
 
-- **Additional Requirements**:
+- **额外要求：**
 
-      1. Ensure CUDA is Enabled, follow your OS and GPU instructions for that.
-      2. Enable Docker GPU support, see [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html " on Nvidia's site.")
-      3. Follow the [Guide here on configuring Docker Swarm to with with your GPU](https://gist.github.com/tomlankhorst/33da3c4b9edbde5c83fc1244f010815c#configuring-docker-to-work-with-your-gpus)
-  - Ensure *GPU Resource* is enabled in `/etc/nvidia-container-runtime/config.toml` and enable GPU resource advertising by uncommenting the `swarm-resource = "DOCKER_RESOURCE_GPU"`. The docker daemon must be restarted after updating these files on each node.
+      1. 确保已启用 CUDA，请按你的操作系统和 GPU 对应说明完成。
+      2. 启用 Docker GPU 支持，参见 [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html " on Nvidia's site.")
+      3. 参考[此指南，配置 Docker Swarm 使用 GPU](https://gist.github.com/tomlankhorst/33da3c4b9edbde5c83fc1244f010815c#configuring-docker-to-work-with-your-gpus)
+  - 请确认 `/etc/nvidia-container-runtime/config.toml` 中已启用 *GPU Resource*，并取消注释 `swarm-resource = "DOCKER_RESOURCE_GPU"` 以启用 GPU 资源广播。修改这些文件后，必须在每个节点上重启 Docker daemon。
 
-- **With CPU Support**:
+- **仅 CPU：**
 
-    Modify the Ollama Service within `docker-stack.yaml` and remove the lines for `generic_resources:`
+    修改 `docker-stack.yaml` 中的 Ollama 服务，删除 `generic_resources:` 相关行：
 
     ```yaml
         ollama:
@@ -146,7 +146,7 @@ Choose the appropriate command based on your hardware setup:
         - ./data/ollama:/root/.ollama
     ```
 
-- **Deploy Docker Stack**:
+- **部署 Docker Stack：**
 
   ```bash
   docker stack deploy -c docker-stack.yaml -d super-awesome-ai
