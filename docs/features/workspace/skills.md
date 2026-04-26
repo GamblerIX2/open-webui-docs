@@ -1,184 +1,184 @@
 ---
 sidebar_position: 6
-title: "Skills"
-sidebar_label: "Skills"
+title: "技能"
+sidebar_label: "技能"
 ---
 
-# 🧩 Skills
+# 🧩 技能
 
-**Teach your AI how to approach a task with plain-text instructions.**
+**用纯文本指令教会您的 AI 如何处理任务。**
 
-Skills are reusable, markdown-based instruction sets that you attach to models or invoke on-the-fly in chat. Unlike [Tools](/features/extensibility/plugin/tools) (executable Python scripts), Skills are plain-text instructions: code review guidelines, writing style rules, troubleshooting playbooks, data analysis workflows. The model reads them and follows them.
+技能是可复用的、基于 Markdown 的指令集，您可以附加到模型或在对话中即时调用。与[工具](/features/extensibility/plugin/tools)（可执行的 Python 脚本）不同，技能是纯文本指令：代码审查准则、写作风格规范、故障排查手册、数据分析工作流。模型读取它们并遵照执行。
 
-Mention a skill with `$` in chat to inject its full content immediately. Or bind skills to a model so they're always available, loaded on-demand to keep the context window efficient.
-
----
-
-## Why Skills?
-
-### Instructions without code
-
-Write guidelines in Markdown. No Python, no API calls, no deployment. If you can write a document, you can create a skill.
-
-### On-demand context loading
-
-Model-attached skills use lazy loading. Only a lightweight manifest (name + description) is injected by default. The model loads the full instructions only when it needs them via the `view_skill` tool.
-
-### Reusable across models
-
-Create one "Code Review Guidelines" skill and attach it to every coding model. Update the skill once, and every model gets the new version.
-
-### Composable with tools
-
-Pair a skill with [Open Terminal](/features/open-terminal) or any tool server. The skill teaches the model *how* to use the tool (check exit codes, handle errors, use streaming for long-running commands), while the tool provides the *capability*.
+在对话中使用 `$` 提及技能，可立即注入其全部内容。或将技能绑定到模型，使其始终可用，并按需加载以保持上下文窗口高效。
 
 ---
 
-## Key Features
+## 为什么使用技能？
+
+### 无需代码的指令
+
+用 Markdown 编写准则。无需 Python、无需 API 调用、无需部署。只要您能写文档，就能创建技能。
+
+### 按需上下文加载
+
+绑定到模型的技能采用懒加载。默认情况下，只注入轻量级清单（名称 + 描述）。模型仅在需要时通过 `view_skill` 工具加载完整指令。
+
+### 跨模型复用
+
+创建一个"代码审查准则"技能，并将其附加到每个编程模型。更新一次技能，每个模型都能获得新版本。
+
+### 与工具组合使用
+
+将技能与[开放终端](/features/open-terminal)或任何工具服务器配合使用。技能教会模型*如何*使用工具（检查退出码、处理错误、对长时间运行的命令使用流式输出），而工具提供*能力*。
+
+---
+
+## 主要功能
 
 | | |
 | :--- | :--- |
-| 📝 **Markdown content** | Write instructions in plain Markdown |
-| ⚡ **$ mention in chat** | Type `$` to inject a skill's full content into the current message |
-| 🤖 **Model binding** | Attach skills to models so they're always available |
-| 📦 **Lazy loading** | Model-attached skills inject only a manifest; full content loads on-demand |
-| 📥 **Import/Export** | Import `.md` files with YAML frontmatter; export as JSON |
-| 🔒 **Access control** | Private by default, shareable with users or groups |
-| 🔀 **Active/Inactive toggle** | Deactivate skills without deleting them |
+| 📝 **Markdown 内容** | 用纯 Markdown 编写指令 |
+| ⚡ **对话中 $ 提及** | 输入 `$` 将技能的完整内容注入当前消息 |
+| 🤖 **模型绑定** | 将技能附加到模型，使其始终可用 |
+| 📦 **懒加载** | 绑定到模型的技能只注入清单；完整内容按需加载 |
+| 📥 **导入/导出** | 导入带 YAML frontmatter 的 `.md` 文件；导出为 JSON |
+| 🔒 **访问控制** | 默认私有，可与用户或用户组共享 |
+| 🔀 **启用/禁用切换** | 无需删除即可停用技能 |
 
 ---
 
-## How Skills Work
+## 技能的工作原理
 
-### User-selected skills ($ mention)
+### 用户选择的技能（$ 提及）
 
-Type `$` in the chat input to open the skill picker. Select a skill, and its **full content is injected directly** into the system prompt. The model has immediate access to the complete instructions.
+在对话输入框中输入 `$` 打开技能选择器。选择一个技能，其**完整内容将直接注入**系统提示词中。模型可以立即访问完整指令。
 
-### Model-attached skills
+### 绑定到模型的技能
 
-Skills bound to a model use lazy loading:
+绑定到模型的技能采用懒加载：
 
-1. **Manifest injection** - Only the skill's name and description are added to the system prompt.
-2. **On-demand loading** - The model receives a `view_skill` builtin tool. When it determines it needs a skill's full instructions, it calls `view_skill(skill_name)` to load them.
+1. **清单注入** - 只将技能的名称和描述添加到系统提示词中。
+2. **按需加载** - 模型收到 `view_skill` 内置工具。当它判断需要技能的完整指令时，会调用 `view_skill(skill_name)` 加载它们。
 
-This means many skills can be attached to a model without consuming context window space until actually needed.
+这意味着可以将多个技能附加到一个模型，而不会占用上下文窗口空间，直到实际需要时才消耗。
 
 ---
 
-## Creating a Skill
+## 创建技能
 
-Navigate to **Workspace > Skills** and click **+ New Skill**.
+导航到**工作区 > 技能**，点击 **+ 新建技能**。
 
-| Field | Description |
+| 字段 | 说明 |
 | :--- | :--- |
-| **Name** | Human-readable display name (e.g., "Code Review Guidelines") |
-| **Skill ID** | Unique slug, auto-generated from the name. Editable during creation, read-only afterwards |
-| **Description** | Short summary shown in the manifest. For model-attached skills, the model uses this to decide whether to load the full instructions |
-| **Content** | Full skill instructions in Markdown |
+| **名称** | 人类可读的显示名称（例如"代码审查准则"） |
+| **技能 ID** | 唯一的 slug，从名称自动生成。创建时可编辑，之后只读 |
+| **描述** | 清单中显示的简短摘要。对于绑定到模型的技能，模型用此决定是否加载完整指令 |
+| **内容** | Markdown 格式的完整技能指令 |
 
-### Importing from Markdown
+### 从 Markdown 导入
 
-Click **Import** and select a `.md` file. If the file contains YAML frontmatter with `name` and/or `description` fields, those values are auto-populated:
+点击**导入**并选择 `.md` 文件。如果文件包含带有 `name` 和/或 `description` 字段的 YAML frontmatter，这些值会自动填充：
 
 ```yaml
 ---
 name: code-review-guidelines
-description: Step-by-step instructions for thorough code reviews
+description: 全面代码审查的分步指令
 ---
 
-# Code Review Guidelines
+# 代码审查准则
 
-1. Check for correctness...
+1. 检查正确性...
 ```
 
 ---
 
-## Binding Skills to a Model
+## 将技能绑定到模型
 
-1. Go to **Workspace > Models**.
-2. Edit a model and scroll to the **Skills** section.
-3. Check the skills you want this model to always have access to.
-4. Click **Save**.
+1. 进入**工作区 > 模型**。
+2. 编辑一个模型，滚动到**技能**部分。
+3. 勾选您希望该模型始终可访问的技能。
+4. 点击**保存**。
 
-The selected skills' manifests are automatically injected, and the model can load full content on-demand via `view_skill`.
+所选技能的清单会自动注入，模型可以通过 `view_skill` 按需加载完整内容。
 
 ---
 
-## Skill Management
+## 技能管理
 
-From the Skills workspace list, use the ellipsis menu (**...**):
+在技能工作区列表中，使用省略号菜单（**...**）：
 
-| Action | Description |
+| 操作 | 说明 |
 | :--- | :--- |
-| **Edit** | Modify content, name, or description |
-| **Clone** | Create a copy with `-clone` appended to the ID |
-| **Export** | Download as JSON |
-| **Delete** | Permanently remove (Shift+Click for quick deletion) |
+| **编辑** | 修改内容、名称或描述 |
+| **克隆** | 创建一个副本，ID 末尾添加 `-clone` |
+| **导出** | 下载为 JSON |
+| **删除** | 永久删除（Shift+点击 可快速删除） |
 
-**Bulk export**: Click the **Export** button at the top of the Skills page to export all accessible skills as a single JSON file.
+**批量导出**：点击技能页面顶部的**导出**按钮，将所有可访问的技能导出为单个 JSON 文件。
 
-**Active/Inactive toggle**: Inactive skills are excluded from manifests and cannot be loaded by the model, even if bound to one or mentioned in chat.
+**启用/禁用切换**：非活跃的技能从清单中排除，即使绑定到模型或在对话中提及，模型也无法加载。
 
 ---
 
-## Access Control
+## 访问控制
 
-Skills use the same [Access Control](/features/authentication-access/rbac) system as other workspace resources:
+技能使用与其他工作区资源相同的[访问控制](/features/authentication-access/rbac)系统：
 
-- **Private by default**: Only the creator can see and edit a new skill.
-- **Share with users or groups**: Grant `read` or `write` access via the **Access** button.
-- **Read-only access**: Users with read access can view but not edit. The editor shows a "Read Only" badge.
+- **默认私有**：只有创建者可以查看和编辑新技能。
+- **与用户或用户组共享**：通过**访问**按钮授予 `read`（读取）或 `write`（写入）访问权限。
+- **只读访问**：拥有读取权限的用户可以查看但不能编辑。编辑器显示"只读"标识。
 
-:::caution Attached skills still require user access
-Attaching a skill to a model does **not** bypass access control. When a user chats with the model, Open WebUI checks whether that user has read access to each attached skill. Skills the user can't access are silently excluded.
+:::caution 已附加的技能仍需要用户访问权限
+将技能附加到模型**不会**绕过访问控制。当用户与模型对话时，Open WebUI 会检查该用户是否对每个已附加技能有读取权限。用户无法访问的技能会被静默排除。
 
-**Example**: An admin creates a private skill and attaches it to a shared model. Regular users chatting with this model will not get the skill because they don't have read access.
+**示例**：管理员创建一个私有技能并附加到共享模型。与此模型对话的普通用户将无法获得该技能，因为他们没有读取权限。
 
-**Solution**: Make sure users who need the model's skills also have read access to each skill (via access grants, group permissions, or by making the skill public).
+**解决方案**：确保需要使用模型技能的用户也对每个技能有读取权限（通过访问授权、用户组权限或将技能设为公开）。
 :::
 
-### Required permissions
+### 所需权限
 
-| Permission | What it controls |
+| 权限 | 控制内容 |
 | :--- | :--- |
-| **Workspace > Skills Access** | Access the Skills workspace and create/manage skills |
-| **Sharing > Share Skills** | Share skills with individual users or groups |
-| **Sharing > Public Skills** | Make skills publicly accessible |
+| **工作区 > 技能访问** | 访问技能工作区并创建/管理技能 |
+| **共享 > 共享技能** | 与单个用户或用户组共享技能 |
+| **共享 > 公开技能** | 使技能公开可访问 |
 
-See [Permissions](/features/authentication-access/rbac/permissions) for configuration details.
-
----
-
-## Use Cases
-
-### Code review standards
-
-Write your team's review checklist as a skill: naming conventions, error handling patterns, test coverage requirements. Attach it to your coding models so every review follows the same bar.
-
-### Writing style guide
-
-Document tone, formatting rules, and terminology in a skill. Attach it to content-writing models. Every draft follows your brand voice.
-
-### Troubleshooting playbooks
-
-Encode your runbook for common issues: "check logs first, verify config, test connectivity, escalate if X." The model follows the same diagnostic steps your senior engineers would.
-
-### Tool usage instructions
-
-Pair a skill with Open Terminal to teach the model *how* to use it well. "Always check exit codes. Use `set -e` in scripts. Stream output for commands that take more than 10 seconds."
+有关配置详情，请参阅[权限](/features/authentication-access/rbac/permissions)。
 
 ---
 
-## Limitations
+## 使用场景
 
-### Plain text only
+### 代码审查标准
 
-Skills are instructions, not executable code. For actions that require computation, API calls, or system access, use [Tools](/features/extensibility/plugin/tools) instead.
+将团队的审查清单写为技能：命名规范、错误处理模式、测试覆盖要求。附加到您的编程模型，每次审查都遵循同样的标准。
 
-### Context window with $ mention
+### 写作风格指南
 
-When injected via `$` mention, the full skill content goes into the system prompt. A very long skill attached to a model with a small context window may crowd out conversation history.
+在技能中记录语气、格式规则和术语。附加到内容写作模型。每份草稿都遵循您的品牌风格。
 
-### Lazy loading requires function calling
+### 故障排查手册
 
-Model-attached skills depend on the `view_skill` builtin tool, which requires [native function calling](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) to be enabled. Without it, the model receives only the manifest and cannot load the full instructions.
+将常见问题的操作手册编码为技能："先检查日志，验证配置，测试连接，如果 X 则上报。"模型遵循与您的高级工程师相同的诊断步骤。
+
+### 工具使用指南
+
+将技能与开放终端配合使用，教模型如何更好地使用它。"始终检查退出码。在脚本中使用 `set -e`。对需要超过 10 秒的命令使用流式输出。"
+
+---
+
+## 局限性
+
+### 纯文本
+
+技能是指令，不是可执行代码。对于需要计算、API 调用或系统访问的操作，请使用[工具](/features/extensibility/plugin/tools)。
+
+### $ 提及时的上下文窗口
+
+通过 `$` 提及注入时，完整技能内容进入系统提示词。将很长的技能附加到上下文窗口较小的模型可能会占用对话历史空间。
+
+### 懒加载需要函数调用
+
+绑定到模型的技能依赖 `view_skill` 内置工具，该工具需要启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。没有它，模型只能收到清单，无法加载完整指令。

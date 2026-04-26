@@ -1,44 +1,44 @@
 ---
 title: Notion (MCP)
-sidebar_label: Notion MCP Integration
+sidebar_label: Notion MCP 集成
 sidebar_position: 50
-description: Connect Open WebUI to your Notion workspace using Notion's hosted MCP endpoint. Search, read, create, and manage pages and databases with automatic Markdown conversion.
+description: 通过 Notion 托管的 MCP 端点将 Open WebUI 连接到您的 Notion 工作区。支持搜索、读取、创建和管理页面及数据库，并自动转换为 Markdown 格式。
 keywords: [notion, mcp, model context protocol, integration, productivity, tools, streamable http, oauth]
 ---
 
-:::warning Community Contribution
+:::warning 社区贡献
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the [contributing tutorial](/tutorials/contributing-tutorial/).
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 
 :::
 
-Notion hosts a remote MCP server at `https://mcp.notion.com/mcp` that Open WebUI connects to natively via **Streamable HTTP**. Authentication is handled through Notion's OAuth flow — no API tokens, no proxies, no extra containers.
+Notion 在 `https://mcp.notion.com/mcp` 托管了一个远程 MCP 服务器，Open WebUI 通过 **Streamable HTTP** 原生连接。身份验证通过 Notion 的 OAuth 流程处理——无需 API 令牌、无需代理、无需额外容器。
 
 
-## Setup
+## 设置
 
-:::danger Prerequisite: WEBUI_SECRET_KEY
-You **MUST** set the `WEBUI_SECRET_KEY` environment variable to a persistent value. Without it, your OAuth session breaks every time the container restarts, forcing re-authentication. See the [MCP feature docs](/features/extensibility/mcp) for details.
+:::danger 前置条件：WEBUI_SECRET_KEY
+您**必须**将 `WEBUI_SECRET_KEY` 环境变量设置为持久值。若不设置，每次容器重启后 OAuth 会话将中断，强制重新进行身份验证。详情请参见 [MCP 功能文档](/features/extensibility/mcp)。
 :::
 
-### 1. Add the tool
+### 1. 添加工具
 
-Go to **Admin Panel → Settings → External Tools** and click **+** to add a new connection. Fill in the following:
+进入 **Admin Panel → Settings → External Tools**，点击 **+** 添加新连接。填写以下信息：
 
-| Field | Value |
-|-------|-------|
+| 字段 | 值 |
+|-------|----|
 | **Type** | MCP Streamable HTTP |
 | **URL** | `https://mcp.notion.com/mcp` |
 | **Auth** | OAuth 2.1 |
 | **ID** | `ntn` |
 | **Name** | `Notion` |
 
-Click **Register Client**, then **Save**. Use `OAuth 2.1 (Static)` if you have pre-created OAuth client credentials.
+点击 **Register Client**，然后 **Save**。如果您已预先创建 OAuth 客户端凭据，请使用 `OAuth 2.1 (Static)`。
 
 <details>
-<summary>Alternative: Import JSON</summary>
+<summary>备选方案：导入 JSON</summary>
 
-You can also click **Import** in the modal and paste this configuration:
+您也可以点击弹窗中的 **Import** 并粘贴以下配置：
 
 ```json
 [
@@ -61,50 +61,50 @@ You can also click **Import** in the modal and paste this configuration:
 
 </details>
 
-![External Tools modal with the Notion MCP configuration imported.](/images/mcp-notion/notion-setup-step5.png)
+![已导入 Notion MCP 配置的外部工具弹窗。](/images/mcp-notion/notion-setup-step5.png)
 
-### 2. Authorize
+### 2. 授权
 
-In any chat, open **+ → Integrations → Tools** and toggle **Notion** on. You'll be redirected to Notion's OAuth flow — select your workspace and grant access.
+在任意聊天中，打开 **+ → Integrations → Tools** 并开启 **Notion**。您将被重定向到 Notion 的 OAuth 流程——选择您的工作区并授权访问。
 
-![Chat input bar with Notion tool toggled on.](/images/mcp-notion/notion-setup-step6.png)
+![已开启 Notion 工具的聊天输入栏。](/images/mcp-notion/notion-setup-step6.png)
 
-![Notion OAuth authorization screen.](/images/mcp-notion/notion-setup-step7.png)
+![Notion OAuth 授权界面。](/images/mcp-notion/notion-setup-step7.png)
 
-:::warning OAuth 2.1 tools cannot be pre-enabled
-Do **not** set this as a default tool on a model. OAuth 2.1 requires an interactive browser redirect that cannot happen mid-request. Users must enable it manually per-chat via the **+** button. See [MCP docs](/features/extensibility/mcp) for details.
+:::warning OAuth 2.1 工具无法预先启用
+**请勿**将此工具设置为模型的默认工具。OAuth 2.1 需要交互式浏览器重定向，无法在请求过程中进行。用户必须通过 **+** 按钮在每次聊天时手动启用。详情请参见 [MCP 文档](/features/extensibility/mcp)。
 :::
 
-:::note Re-authentication
-Notion's OAuth session may expire after inactivity or container restarts. If you see `Failed to connect to MCP server 'ntn'`, re-toggle the tool in any chat to trigger the authorization flow again.
+:::note 重新验证
+Notion 的 OAuth 会话可能在空闲或容器重启后过期。如果出现 `Failed to connect to MCP server 'ntn'`，请在任意聊天中重新切换工具以触发授权流程。
 :::
 
 
-## Rate limits
+## 速率限制
 
-Standard [Notion API limits](https://developers.notion.com/reference/request-limits) apply:
+标准 [Notion API 限制](https://developers.notion.com/reference/request-limits)适用：
 
-- **General:** 180 requests per minute
-- **Search:** 30 requests per minute
+- **常规：** 每分钟 180 次请求
+- **搜索：** 每分钟 30 次请求
 
-## Troubleshooting
+## 故障排除
 
 ### `Failed to connect to MCP server 'ntn'`
 
-Your OAuth session has expired. Re-toggle the Notion tool in any chat (**+** → **Integrations → Tools**) to re-authorize.
+OAuth 会话已过期。在任意聊天中重新切换 Notion 工具（**+** → **Integrations → Tools**）以重新授权。
 
-![Failed to connect to MCP server error in chat.](/images/mcp-notion/notion-setup-step12.png)
+![聊天中 MCP 服务器连接失败错误。](/images/mcp-notion/notion-setup-step12.png)
 
 ### `OAuth callback failed: mismatching_state`
 
-You're accessing Open WebUI via `localhost`, but `WEBUI_URL` is set to a public domain. Access your instance using the **exact URL** from `WEBUI_URL` and authorize again.
+您正在通过 `localhost` 访问 Open WebUI，但 `WEBUI_URL` 设置为公共域名。请使用 `WEBUI_URL` 中的**确切 URL** 访问实例并重新授权。
 
-![OAuth callback mismatching_state error.](/images/mcp-notion/notion-setup-step13.png)
+![OAuth 回调 mismatching_state 错误。](/images/mcp-notion/notion-setup-step13.png)
 
 ### `Object not found`
 
-The page hasn't been shared with the integration. During the OAuth flow, Notion asks which pages to grant access to — make sure the relevant pages are selected. You can update access anytime from your [Notion integrations settings](https://www.notion.so/profile/integrations).
+该页面尚未与集成共享。在 OAuth 流程中，Notion 会询问授权访问哪些页面——请确保选择了相关页面。您可以随时通过 [Notion 集成设置](https://www.notion.so/profile/integrations)更新访问权限。
 
-### `missing_property` when creating a page
+### 创建页面时出现 `missing_property`
 
-Notion requires a parent page or database. Tell the model: *"Search for my 'Notes' page first, then create the new page inside it."*
+Notion 需要父页面或数据库。请告知模型：*"先搜索我的'Notes'页面，然后在其中创建新页面。"*

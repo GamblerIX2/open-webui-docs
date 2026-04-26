@@ -1,259 +1,259 @@
 ---
 sidebar_position: 2
-title: "Calendar"
+title: "日历"
 ---
 
-# 📅 Calendar
+# 📅 日历
 
-**Schedule, track, and manage events — with AI that can plan for you.**
+**日程安排、事件跟踪与管理——AI 可以为您规划。**
 
-Calendar is a built-in scheduling feature that gives every user a personal calendar. Create events, set recurring schedules, share calendars with teammates, and let AI models autonomously create and manage events through natural conversation.
+日历是一项内置的日程安排功能，为每个用户提供个人日历。创建事件、设置重复日程、与队友共享日历，并让 AI 模型通过自然对话自主创建和管理事件。
 
-Active [Automations](/features/chat-conversations/chat-features/automations) are automatically surfaced on a dedicated **Scheduled Tasks** calendar, so you get a unified view of both manual events and automated workflows in one place.
+活跃的[自动化](/features/chat-conversations/chat-features/automations)会自动显示在专用的**定时任务**日历中，让您在同一界面同时查看手动事件和自动化工作流。
 
 :::note
-Calendar is enabled by default but can be disabled by an administrator via the [`ENABLE_CALENDAR`](/reference/env-configuration#enable_calendar) environment variable or the Admin Panel toggle.
+日历默认启用，但管理员可通过 [`ENABLE_CALENDAR`](/reference/env-configuration#enable_calendar) 环境变量或管理面板开关禁用。
 :::
 
 ---
 
-## Why Calendar?
+## 为什么使用日历？
 
-### AI-powered scheduling
+### AI 驱动的日程安排
 
-With [native function calling](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models can search, create, update, and delete calendar events through natural language. Say *"Schedule a standup every weekday at 9am"* and the model handles it.
+启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型可以通过自然语言搜索、创建、更新和删除日历事件。说一句"*每个工作日上午 9 点安排一次站立会议*"，模型就会处理好一切。
 
-### Automation integration
+### 与自动化集成
 
-Active automations with RRULE schedules appear as virtual events on your **Scheduled Tasks** calendar. Past automation runs are shown as completed events with links to the generated chats.
+带有 RRULE 日程的活跃自动化会作为虚拟事件显示在**定时任务**日历中。过去的自动化运行显示为已完成事件，并附有链接到生成的对话。
 
-### Shared calendars
+### 共享日历
 
-Share calendars with specific users or groups via access grants. Team members see shared events alongside their own.
+通过访问授权与特定用户或用户组共享日历。团队成员可以在自己的事件旁边看到共享事件。
 
-### Multi-calendar organization
+### 多日历组织
 
-Organize events across multiple calendars (e.g., "Personal", "Team Meetings") with color coding. Each user gets **Personal** and **Scheduled Tasks** calendars created automatically on first access.
+跨多个日历组织事件（例如"个人"、"团队会议"），并使用颜色编码。每个用户首次访问时会自动创建**个人**和**定时任务**日历。
 
 ---
 
-## Key Features
+## 主要功能
 
 | | |
 | :--- | :--- |
-| 📅 **Month/Week/Day views** | Full calendar UI with month, week, and day views |
-| 🔁 **Recurring events** | RRULE-based recurrence (daily, weekly, monthly, custom) |
-| 🤖 **Agentic management** | Models can search, create, update, and delete events autonomously |
-| ⚡ **Automation overlay** | Active automations and past runs surface as virtual calendar events |
-| 👥 **Calendar sharing** | Share calendars with users or groups via access grants |
-| 📍 **Location & description** | Attach locations and rich descriptions to events |
-| 🎨 **Color coding** | Per-calendar and per-event color customization |
-| ✅ **RSVP / Attendees** | Invite users to events with pending/accepted/declined/tentative status |
-| 🔔 **Reminders** | Per-event alerts via toast, browser notification, and webhook |
+| 📅 **月/周/日视图** | 完整的日历 UI，支持月、周、日视图 |
+| 🔁 **重复事件** | 基于 RRULE 的重复规则（每日、每周、每月、自定义） |
+| 🤖 **智能体管理** | 模型可以自主搜索、创建、更新和删除事件 |
+| ⚡ **自动化叠加** | 活跃自动化和过去运行以虚拟日历事件形式显示 |
+| 👥 **日历共享** | 通过访问授权与用户或用户组共享日历 |
+| 📍 **地点和描述** | 为事件添加地点和详细描述 |
+| 🎨 **颜色编码** | 按日历和按事件自定义颜色 |
+| ✅ **RSVP/参与者** | 邀请用户参加事件，支持待定/接受/拒绝/暂定状态 |
+| 🔔 **提醒** | 通过 toast 通知、浏览器通知和 Webhook 发送每事件提醒 |
 
 ---
 
-## Access Control
+## 访问控制
 
-Calendar is permission-gated for non-admin users.
+日历对非管理员用户实行权限门控。
 
-- **Admins**: always have access to Calendar
-- **Users**: require the **Features > Calendar** permission
+- **管理员**：始终有权访问日历
+- **用户**：需要 **功能 > 日历** 权限
 
-See [RBAC Permissions](/features/authentication-access/rbac/permissions#4-features-permissions) for the permission category.
+有关权限类别，请参阅 [RBAC 权限](/features/authentication-access/rbac/permissions#4-features-permissions)。
 
-To grant user access:
+授予用户访问权限：
 
-1. Open **Admin Panel > Users > Groups**
-2. Edit **Default permissions** or a specific group
-3. Enable **Features > Calendar**
+1. 打开 **管理面板 > 用户 > 用户组**
+2. 编辑 **默认权限** 或特定用户组
+3. 启用 **功能 > 日历**
 
-You can also set this default via [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar).
+也可以通过 [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar) 设置此默认值。
 
 ---
 
-## Getting Started
+## 入门指南
 
-### Access the Calendar
+### 访问日历
 
-Open **User Menu > Calendar** from the sidebar. On first visit, two default calendars are created automatically:
+从侧边栏打开 **用户菜单 > 日历**。首次访问时，会自动创建两个默认日历：
 
-:::tip Quick Access
-Hold **Shift** in the User Menu to reveal pin/unpin buttons. Pinning Calendar adds a shortcut icon to the sidebar rail for one-click access.
+:::tip 快速访问
+在用户菜单中按住 **Shift** 键可显示固定/取消固定按钮。固定日历会在侧边栏导航栏添加快捷图标，一键访问。
 :::
 
-- **Personal** — your default calendar for manual events (blue, auto-created on first visit)
-- **Scheduled Tasks** — virtual read-only overlay of automation schedules and runs (purple, only visible when the user has [Automations](/features/chat-conversations/chat-features/automations) access)
+- **个人** — 用于手动事件的默认日历（蓝色，首次访问时自动创建）
+- **定时任务** — 自动化日程和运行的虚拟只读叠加层（紫色，仅在用户有[自动化](/features/chat-conversations/chat-features/automations)访问权限时可见）
 
-### Create an Event
+### 创建事件
 
-1. Click **New Event** (sidebar or top bar) or click any day/hour cell on the calendar grid
-2. Fill in the event details:
-   - **Title** (required)
-   - **Calendar** — which calendar to add the event to
-   - **When** — date and time, or toggle **All day**
-   - **Location** (optional)
-   - **Description** (optional)
-3. Click **Create**
+1. 点击 **新建事件**（侧边栏或顶部栏），或点击日历网格上的任意日期/时间格
+2. 填写事件详情：
+   - **标题**（必填）
+   - **日历** — 将事件添加到哪个日历
+   - **时间** — 日期和时间，或切换**全天**
+   - **地点**（可选）
+   - **描述**（可选）
+3. 点击 **创建**
 
-### Edit or Delete an Event
+### 编辑或删除事件
 
-Click any event on the calendar to open the event editor. From there you can update details or delete the event. Automation-generated virtual events cannot be edited directly — clicking them navigates to the automation or the run's chat.
+点击日历上的任意事件打开事件编辑器。在那里您可以更新详情或删除事件。自动化生成的虚拟事件无法直接编辑——点击它们会导航到自动化或运行的对话。
 
 ---
 
-## Calendar Views
+## 日历视图
 
-Switch between views using the dropdown in the top bar:
+使用顶部栏的下拉菜单切换视图：
 
-| View | Description |
+| 视图 | 说明 |
 |------|-------------|
-| **Month** | Full month grid with event chips. Events that overflow show a "+N more" link to the day view. |
-| **Week** | 7-day time grid with hourly slots. Scroll vertically through the day. |
-| **Day** | Single-day time grid with hourly slots for detailed scheduling. |
+| **月视图** | 完整月度网格，带事件标签。溢出的事件显示"+N 更多"链接到日视图。 |
+| **周视图** | 7 天时间网格，带每小时时间槽。垂直滚动浏览全天。 |
+| **日视图** | 单天时间网格，带每小时时间槽，用于精细日程安排。 |
 
-Use the **arrow buttons** to navigate forward/backward, or click **Today** to jump to the current date. The mini calendar in the sidebar provides quick date navigation.
-
----
-
-## Automation Integration
-
-The **Scheduled Tasks** calendar bridges the gap between automations and the calendar view. It is a **virtual calendar** — not stored in the database — that is synthesized at API response time whenever the user has access to the Automations feature.
-
-### Future runs
-
-For each active automation with an RRULE schedule, the calendar computes upcoming occurrences and renders them as virtual events in the requested date range.
-
-### Past runs
-
-Completed automation runs appear as historical events. Each shows the automation name and includes metadata linking to the generated chat (if available). Click a past run event to open the chat it created.
-
-### How it works
-
-- The virtual calendar uses a constant ID (`__scheduled_tasks__`) and is excluded from the event editor's calendar picker
-- Virtual events have IDs prefixed with `auto_` (future) or `run_` (past)
-- They cannot be edited or deleted from the calendar UI
-- Clicking a future run event navigates to the automation editor
-- Clicking a past run event navigates to the run's chat
+使用**箭头按钮**向前/后导航，或点击**今天**跳转到当前日期。侧边栏中的小型日历提供快速日期导航。
 
 ---
 
-## Agentic Event Management
+## 自动化集成
 
-With [**native function calling**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models can manage your calendar autonomously:
+**定时任务**日历连接了自动化和日历视图。它是一个**虚拟日历**——不存储在数据库中——在用户有自动化功能访问权限时，于 API 响应时间动态生成。
 
-| Tool | What it does |
+### 未来运行
+
+对于每个具有 RRULE 日程的活跃自动化，日历计算即将发生的事件并在请求的日期范围内将其渲染为虚拟事件。
+
+### 过去运行
+
+已完成的自动化运行显示为历史事件。每个事件显示自动化名称，并包含链接到生成的对话（如果有）的元数据。点击过去的运行事件可打开其创建的对话。
+
+### 工作原理
+
+- 虚拟日历使用固定 ID（`__scheduled_tasks__`），并从事件编辑器的日历选择器中排除
+- 虚拟事件 ID 以 `auto_`（未来）或 `run_`（过去）为前缀
+- 无法从日历 UI 中编辑或删除
+- 点击未来运行事件导航到自动化编辑器
+- 点击过去运行事件导航到运行的对话
+
+---
+
+## 智能体事件管理
+
+启用[**原生函数调用**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型可以自主管理您的日历：
+
+| 工具 | 功能 |
 |------|-------------|
-| `search_calendar_events` | Search events by text and/or date range across all accessible calendars |
-| `create_calendar_event` | Create a new event on the default or specified calendar |
-| `update_calendar_event` | Update an event's title, time, description, location, or cancel it |
-| `delete_calendar_event` | Delete an event permanently |
+| `search_calendar_events` | 跨所有可访问日历按文本和/或日期范围搜索事件 |
+| `create_calendar_event` | 在默认或指定日历上创建新事件 |
+| `update_calendar_event` | 更新事件的标题、时间、描述、地点，或取消事件 |
+| `delete_calendar_event` | 永久删除事件 |
 
-> **You:** Schedule a team standup every weekday at 9am starting next Monday.
+> **您：** 从下周一开始，每个工作日上午 9 点安排团队站立会议。
 >
-> **You:** What do I have on my calendar this week?
+> **您：** 本周我的日历上有什么安排？
 >
-> **You:** Move tomorrow's design review to 3pm and add Building A as the location.
+> **您：** 把明天的设计评审改到下午 3 点，并将地点添加为 A 楼。
 
-### Requirements
+### 要求
 
-For chat-based calendar tools to be available:
+要使基于对话的日历工具可用：
 
-1. **Native Function Calling** must be enabled for the model
-2. **Builtin Tools** capability must be enabled for the model
-3. **Calendar** category must be enabled in the model's Builtin Tools settings (enabled by default)
-4. **`ENABLE_CALENDAR`** must be enabled globally (enabled by default)
-5. The user must have the **Features > Calendar** permission (admins always pass)
+1. 模型必须启用**原生函数调用**
+2. 模型必须启用**内置工具**能力
+3. 模型的内置工具设置中必须启用**日历**类别（默认启用）
+4. **`ENABLE_CALENDAR`** 必须全局启用（默认启用）
+5. 用户必须有 **功能 > 日历** 权限（管理员始终通过）
 
-All datetime values are automatically handled in the user's detected timezone.
+所有日期时间值会自动按用户检测到的时区处理。
 
-See the [Builtin Tools reference](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode) for full details on all builtin tools.
+有关所有内置工具的完整详情，请参阅[内置工具参考](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode)。
 
 ---
 
-## Sharing Calendars
+## 共享日历
 
-Calendars support the same access grant system used by knowledge bases, models, and other resources.
+日历支持与知识库、模型和其他资源相同的访问授权系统。
 
-### Share a calendar
+### 共享日历
 
-1. Open the calendar's **settings** (via the calendar list or edit endpoint)
-2. Add access grants for specific users or groups with `read` or `write` permission
+1. 打开日历的**设置**（通过日历列表或编辑端点）
+2. 为特定用户或用户组添加具有 `read`（读取）或 `write`（写入）权限的访问授权
 
-### What shared access provides
+### 共享访问提供的功能
 
-| Permission | Effect |
+| 权限 | 效果 |
 |------------|--------|
-| **Read** | See the calendar and its events |
-| **Write** | Read + create, update, and delete events on the calendar |
+| **读取** | 查看日历及其事件 |
+| **写入** | 读取 + 在日历上创建、更新和删除事件 |
 
-Only the calendar **owner** (or an admin) can manage access grants and delete the calendar itself.
+只有日历**所有者**（或管理员）才能管理访问授权和删除日历本身。
 
 ---
 
-## Attendees and RSVP
+## 参与者与 RSVP
 
-Events support attendees with RSVP tracking:
+事件支持带有 RSVP 跟踪的参与者：
 
-| Status | Meaning |
+| 状态 | 含义 |
 |--------|---------|
-| `pending` | Invitation sent, no response yet |
-| `accepted` | Attendee confirmed attendance |
-| `declined` | Attendee declined |
-| `tentative` | Attendee is uncertain |
+| `pending` | 已发送邀请，尚无回复 |
+| `accepted` | 参与者已确认出席 |
+| `declined` | 参与者已拒绝 |
+| `tentative` | 参与者不确定 |
 
-Attendees can update their own RSVP status via the API. Events where a user is an attendee are visible regardless of calendar ownership.
+参与者可以通过 API 更新自己的 RSVP 状态。作为参与者的用户可以查看其受邀事件，无论日历所有权如何。
 
 ---
 
-## Reminders & Alerts
+## 提醒与提示
 
-Each event has a **Reminder** setting that controls when an alert fires before the event starts.
+每个事件都有**提醒**设置，控制事件开始前何时触发提示。
 
-| Option | Behavior |
+| 选项 | 行为 |
 |--------|----------|
-| **None** | No alert |
-| **At time of event** | Alert when the event starts |
-| **5 / 10 / 15 / 30 minutes before** | Alert that many minutes ahead |
-| **1 hour before** | Alert 60 minutes ahead |
+| **无** | 不提示 |
+| **事件开始时** | 事件开始时提示 |
+| **提前 5/10/15/30 分钟** | 提前相应分钟数提示 |
+| **提前 1 小时** | 提前 60 分钟提示 |
 
-The default is **10 minutes before**.
+默认为**提前 10 分钟**。
 
-### How alerts are delivered
+### 提示的发送方式
 
-1. **Toast notification** — appears in the Open WebUI UI with the event title and time remaining. Clicking the toast navigates to the Calendar.
-2. **Browser notification** — if browser notifications are enabled in user settings, a native OS notification is shown.
-3. **Webhook** — if the user has a webhook URL configured in **Settings > Notifications**, a `calendar_alert` payload is sent.
+1. **Toast 通知** — 在 Open WebUI 界面显示带事件标题和剩余时间的提示。点击 toast 导航到日历。
+2. **浏览器通知** — 如果用户设置中启用了浏览器通知，会显示原生 OS 通知。
+3. **Webhook** — 如果用户在 **设置 > 通知** 中配置了 Webhook URL，会发送 `calendar_alert` 负载。
 
-Alerts are de-duplicated server-side via `meta.alerted_at`, so each event fires at most once per start time — even across restarts and multi-instance deployments.
+提示通过 `meta.alerted_at` 在服务端进行去重，因此每个事件每个开始时间最多触发一次——即使重启或多实例部署也不例外。
 
-The global alert polling window is configurable via [`CALENDAR_ALERT_LOOKAHEAD_MINUTES`](/reference/env-configuration#calendar_alert_lookahead_minutes) (default: 10 minutes).
+全局提示轮询窗口可通过 [`CALENDAR_ALERT_LOOKAHEAD_MINUTES`](/reference/env-configuration#calendar_alert_lookahead_minutes) 配置（默认：10 分钟）。
 
 ---
 
-## Configuration
+## 配置
 
-| Variable | Default | Description |
+| 变量 | 默认值 | 说明 |
 |----------|---------|-------------|
-| [`ENABLE_CALENDAR`](/reference/env-configuration#enable_calendar) | `True` | Enable or disable the Calendar feature globally |
-| [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar) | `True` | Enable or disable Calendar access for non-admin users by default |
-| [`SCHEDULER_POLL_INTERVAL`](/reference/env-configuration#scheduler_poll_interval) | `10` | Seconds between scheduler ticks (shared with automations) |
-| [`CALENDAR_ALERT_LOOKAHEAD_MINUTES`](/reference/env-configuration#calendar_alert_lookahead_minutes) | `10` | Default alert window in minutes for upcoming events |
+| [`ENABLE_CALENDAR`](/reference/env-configuration#enable_calendar) | `True` | 全局启用或禁用日历功能 |
+| [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar) | `True` | 默认启用或禁用非管理员用户的日历访问 |
+| [`SCHEDULER_POLL_INTERVAL`](/reference/env-configuration#scheduler_poll_interval) | `10` | 调度器心跳间隔秒数（与自动化共享） |
+| [`CALENDAR_ALERT_LOOKAHEAD_MINUTES`](/reference/env-configuration#calendar_alert_lookahead_minutes) | `10` | 即将到来事件的默认提示窗口（分钟） |
 
-Calendar can also be toggled from **Admin Panel > Settings > General** under the Features section.
+也可以从**管理面板 > 设置 > 通用**的功能部分切换日历。
 
 ---
 
-## Limitations
+## 局限性
 
-### No external calendar sync
+### 不支持外部日历同步
 
-Calendar is currently a standalone feature within Open WebUI. It does not sync with Google Calendar, Outlook, or other external calendar services via CalDAV/iCal.
+日历目前是 Open WebUI 中的独立功能。它不与 Google Calendar、Outlook 或其他外部日历服务通过 CalDAV/iCal 同步。
 
-### Scheduled Tasks calendar is virtual and read-only
+### 定时任务日历是虚拟且只读的
 
-The Scheduled Tasks calendar is generated at runtime and is not stored in the database. Its events cannot be edited or deleted from the calendar UI. Manage the underlying automations from the [Automations](/features/chat-conversations/chat-features/automations) page instead.
+定时任务日历在运行时生成，不存储在数据库中。其事件无法从日历 UI 中编辑或删除。请从[自动化](/features/chat-conversations/chat-features/automations)页面管理底层自动化。
 
-### Recurring event expansion
+### 重复事件展开
 
-Recurring events are expanded server-side at query time. Very complex RRULE patterns or extremely long date ranges may increase response time.
+重复事件在查询时在服务端展开。非常复杂的 RRULE 模式或极长的日期范围可能会增加响应时间。

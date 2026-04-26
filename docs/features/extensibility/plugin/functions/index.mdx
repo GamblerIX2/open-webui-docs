@@ -5,21 +5,21 @@ title: "Functions"
 
 # 🧩 Functions
 
-:::danger ⚠️ Critical Security Warning
-**Functions execute arbitrary Python code on your server.** Function creation is restricted to administrators only. Only install from trusted sources and review code before importing. A malicious Function could access your file system, exfiltrate data, or compromise your entire system. For full details, see the [Plugin Security Warning](/features/extensibility/plugin/).
+:::danger ⚠️ 重要安全警告
+**Functions 在你的服务器上执行任意 Python 代码。** Function 创建仅限管理员。只从受信任的来源安装，导入前审查代码。恶意 Function 可能访问你的文件系统、泄露数据或危害整个系统。详情参见[插件安全警告](/features/extensibility/plugin/)。
 :::
 
-Functions are **modular Python plugins** that extend the capabilities of Open WebUI itself. While [Tools](/features/extensibility/plugin/tools/) give LLMs the ability to call external APIs during inference, Functions change how the platform behaves at a deeper level. They can add entirely new "models" powered by any Python logic, intercept and transform every message flowing through the system, or place interactive buttons directly in the chat UI.
+Functions 是**模块化 Python 插件**，扩展 Open WebUI 本身的能力。[Tools](/features/extensibility/plugin/tools/) 让 LLM 在推理时调用外部 API，而 Functions 在更深层次上改变平台的行为方式。它们可以添加由任何 Python 逻辑驱动的全新"模型"、拦截和转换流经系统的每条消息，或者直接在对话 UI 中放置交互式按钮。
 
-The possibilities are broad: connect a proprietary AI provider, build a smart home controller that responds to natural language, create a database query interface, add real-time translation to every conversation, enforce compliance policies, generate charts from data, or trigger external workflows with a button click. If you can write it in Python, you can turn it into a Function.
+可能性非常广泛：连接专有 AI 提供商、构建响应自然语言的智能家居控制器、创建数据库查询界面、为每次对话添加实时翻译、执行合规策略、从数据生成图表，或通过按钮点击触发外部工作流。如果你能用 Python 编写它，你就能将其变成 Function。
 
-Functions are stored in the database as Python source code, dynamically loaded at runtime, and executed server-side. Administrators create and manage them; regular users interact with the results.
+Functions 以 Python 源代码的形式存储在数据库中，在运行时动态加载，并在服务器端执行。管理员创建和管理它们；普通用户与结果交互。
 
 ---
 
-## Function Types
+## Function 类型
 
-Open WebUI supports three types of Functions. The type is **auto-detected** from the class name in your Python code, so you never need to configure it manually.
+Open WebUI 支持三种类型的 Functions。类型根据你 Python 代码中的类名**自动检测**，因此你无需手动配置。
 
 | Type | Class Name | What It Does | How Users See It |
 |:-----|:-----------|:-------------|:-----------------|
@@ -29,46 +29,46 @@ Open WebUI supports three types of Functions. The type is **auto-detected** from
 
 ### Pipe Functions
 
-A Pipe registers itself as a new "model" in Open WebUI. When a user selects it and sends a message, the `pipe()` method handles the entire request with no LLM backend required. This makes Pipes incredibly versatile:
+Pipe 将自己注册为 Open WebUI 中的新"模型"。当用户选择它并发送消息时，`pipe()` 方法处理整个请求，无需 LLM 后端。这使 Pipes 极其灵活：
 
-- **Model providers**: Integrate APIs that don't follow the OpenAI protocol (Anthropic native, Google Vertex, custom inference servers).
-- **Agents & workflows**: Build multi-step agents that call tools, search the web, and reason across multiple turns.
-- **Non-LLM interfaces**: Create a smart home controller, a database query tool, a search engine, a calculator, or a code executor. Anything that takes user input and returns a response.
-- **Proxies & routers**: Route requests through your own logic, add caching, load balancing, or cost tracking.
+- **模型提供商**：集成不遵循 OpenAI 协议的 API（Anthropic 原生、Google Vertex、自定义推理服务器）。
+- **代理和工作流**：构建调用工具、搜索网络并跨多轮推理的多步骤代理。
+- **非 LLM 界面**：创建智能家居控制器、数据库查询工具、搜索引擎、计算器或代码执行器。任何接受用户输入并返回响应的东西。
+- **代理和路由器**：通过你自己的逻辑路由请求，添加缓存、负载均衡或成本追踪。
 
-A single Pipe can also expose **multiple models** (called a "manifold") by defining a `pipes()` method that returns a list of model identifiers.
+单个 Pipe 还可以通过定义返回模型标识符列表的 `pipes()` 方法暴露**多个模型**（称为"manifold"）。
 
-→ **[Pipe Function Guide](./pipe)**
+→ **[Pipe Function 指南](./pipe)**
 
 ### Filter Functions
 
-A Filter sits between the user and the model, intercepting data at three stages:
+Filter 位于用户和模型之间，在三个阶段拦截数据：
 
-- **`inlet()`**: Modifies the request **before** it reaches the model (add context, sanitize input, detect language, enforce rate limits, estimate token costs).
-- **`stream()`**: Intercepts **streamed chunks** from the model in real time (censor content, replace terms, track token usage).
-- **`outlet()`**: Processes the completed response **after** it's generated (log to observability platforms, format citations, append disclaimers, cache responses).
+- **`inlet()`**：在请求到达模型**之前**修改它（添加上下文、净化输入、检测语言、执行速率限制、估算令牌成本）。
+- **`stream()`**：实时拦截来自模型的**流式块**（审查内容、替换术语、追踪令牌使用）。
+- **`outlet()`**：在生成**之后**处理完整响应（记录到可观测性平台、格式化引用、追加免责声明、缓存响应）。
 
-Filters enable powerful cross-cutting concerns like real-time translation, content moderation, prompt injection detection, A/B testing, compliance logging, and PII redaction, all without modifying the underlying model.
+Filters 支持强大的横切关注点，如实时翻译、内容审核、提示注入检测、A/B 测试、合规日志记录和 PII 删除，所有这些都不需要修改底层模型。
 
-Filters can be applied globally (to all models) or attached to specific models. Toggleable filters let users enable/disable them per-chat.
+Filters 可以全局应用（到所有模型）或附加到特定模型。可切换的过滤器让用户按对话启用/禁用它们。
 
-→ **[Filter Function Guide](./filter)**
+→ **[Filter Function 指南](./filter)**
 
 ### Action Functions
 
-An Action adds a custom button to the chat message toolbar. When a user clicks it, the `action()` method runs with full access to the event system for real-time UI feedback, user prompts, and confirmations.
+Action 向对话消息工具栏添加自定义按钮。当用户点击它时，`action()` 方法运行，可完全访问事件系统以进行实时 UI 反馈、用户提示和确认。
 
-Actions can do anything Python can do: summarize or translate a message, copy formatted output, pin important messages, export conversations to external systems, trigger a CI/CD pipeline, send a Slack notification, generate a PDF report, run a code snippet, or kick off an external workflow.
+Actions 可以做 Python 能做的任何事情：摘要或翻译消息、复制格式化输出、固定重要消息、将对话导出到外部系统、触发 CI/CD 管道、发送 Slack 通知、生成 PDF 报告、运行代码片段或启动外部工作流。
 
-→ **[Action Function Guide](./action)**
+→ **[Action Function 指南](./action)**
 
 ---
 
-## How Functions Work
+## Functions 的工作原理
 
-### Type Detection
+### 类型检测
 
-When you save a Function, Open WebUI scans the Python source code for a top-level class named `Pipe`, `Filter`, or `Action`. The first match determines the function type. You never need to manually set the type because it's inferred from the code.
+保存 Function 时，Open WebUI 扫描 Python 源代码中名为 `Pipe`、`Filter` 或 `Action` 的顶级类。第一个匹配项确定函数类型。你永远不需要手动设置类型，因为它是从代码推断出来的。
 
 ```
 # This is detected as a Pipe function:
@@ -82,13 +82,13 @@ class Filter:
         return body
 ```
 
-### Module Loading & Caching
+### 模块加载和缓存
 
-The Python source code is loaded via `exec()` into a temporary module namespace. Once loaded, the module is cached in memory (`request.app.state.FUNCTIONS`) and only reloaded when the source code changes. Import statements in your code are automatically rewritten to resolve within the Open WebUI package namespace.
+Python 源代码通过 `exec()` 加载到临时模块命名空间中。一旦加载，模块就会缓存在内存中（`request.app.state.FUNCTIONS`），只有在源代码更改时才重新加载。你代码中的 import 语句会自动重写以在 Open WebUI 包命名空间内解析。
 
-### Frontmatter
+### 前置信息
 
-A triple-quoted docstring at the top of the file is parsed as YAML frontmatter for metadata:
+文件顶部的三引号文档字符串被解析为元数据的 YAML 前置信息：
 
 ```python
 """
@@ -111,48 +111,48 @@ requirements: requests, beautifulsoup4
 | `required_open_webui_version` | Minimum compatible Open WebUI version |
 | `requirements` | Comma-separated list of pip packages to auto-install |
 
-:::tip Automatic Dependency Installation
-When `requirements` is specified in the frontmatter, Open WebUI automatically installs the listed packages via `pip` the first time the function loads. This is controlled by the `PIP_INSTALL_FRONTMATTER_REQUIREMENTS` environment variable (enabled by default).
+:::tip 自动依赖安装
+当在前置信息中指定 `requirements` 时，Open WebUI 在函数第一次加载时通过 `pip` 自动安装列出的包。这由 `PIP_INSTALL_FRONTMATTER_REQUIREMENTS` 环境变量控制（默认启用）。
 :::
 
 ---
 
-## Installing Functions
+## 安装 Functions
 
-### From the Community Library
+### 从社区库
 
-1. Browse the [Community Function Library](https://openwebui.com/search).
-2. Click **Get** on the function you want.
-3. Enter your Open WebUI instance URL (e.g., `http://localhost:3000`).
-4. Click **Import to Open WebUI**. You'll be redirected to the Function Editor.
-5. Review the code, then click **Save**.
+1. 浏览[社区 Function 库](https://openwebui.com/search)。
+2. 点击你想要的 Function 上的 **Get**。
+3. 输入你的 Open WebUI 实例 URL（如 `http://localhost:3000`）。
+4. 点击 **Import to Open WebUI**。你将被重定向到 Function 编辑器。
+5. 审查代码，然后点击**保存**。
 
 :::warning
-Always review the source code before importing. Community functions are user-contributed and **run directly on your server**.
+导入前务必审查源代码。社区 Functions 是用户贡献的，**直接在你的服务器上运行**。
 :::
 
-### From a URL
+### 从 URL
 
-1. Go to **Admin Panel → Functions**.
-2. Click **Import from URL** and paste a link to the Python file.
-   - GitHub URLs are automatically converted to raw file URLs.
-3. Review and save.
+1. 前往**管理面板 → Functions**。
+2. 点击**从 URL 导入**，粘贴 Python 文件的链接。
+   - GitHub URL 会自动转换为原始文件 URL。
+3. 审查并保存。
 
-### Create Manually
+### 手动创建
 
-1. Go to **Admin Panel → Functions**.
-2. Click **Create**.
-3. Enter an ID (alphanumeric and underscores only), name, and description.
-4. Write your Python code in the editor.
-5. Click **Save**. The function type is auto-detected from your code.
+1. 前往**管理面板 → Functions**。
+2. 点击**创建**。
+3. 输入 ID（仅限字母数字和下划线）、名称和描述。
+4. 在编辑器中编写 Python 代码。
+5. 点击**保存**。函数类型从你的代码自动检测。
 
 ---
 
-## Managing Functions
+## 管理 Functions
 
-### Admin Controls
+### 管理员控制
 
-Functions are managed from **Admin Panel → Functions**. Each function has the following controls:
+Functions 从**管理面板 → Functions** 管理。每个 Function 具有以下控制：
 
 | Control | Description |
 |:--------|:-----------|
@@ -161,19 +161,19 @@ Functions are managed from **Admin Panel → Functions**. Each function has the 
 | **Valves** (⚙️ gear icon) | Opens the admin-configurable settings for this function. |
 | **Export / Delete** | Export the function as a file or remove it. |
 
-### Assigning Functions to Specific Models
+### 将 Functions 分配给特定模型
 
-Instead of making a Filter or Action global, you can attach it to specific models:
+除了将 Filter 或 Action 设为全局，你也可以将其附加到特定模型：
 
-1. Go to **Workspace → Models**.
-2. Edit the target model.
-3. In the **Filters** or **Actions** section, select the functions you want to attach.
+1. 前往 **Workspace → 模型**。
+2. 编辑目标模型。
+3. 在 **Filters** 或 **Actions** 部分，选择要附加的 Functions。
 
-This allows different models to use different filters. For example, you might apply a content-moderation filter only on public-facing models.
+这允许不同模型使用不同的过滤器。例如，你可能只在面向公众的模型上应用内容审核过滤器。
 
-### Toggleable Filters
+### 可切换的 Filters
 
-Filters can be made user-toggleable by setting `self.toggle = True` in `__init__`. When toggleable, users see an on/off switch in the chat input area and can enable or disable the filter per-conversation. Filters without `self.toggle` are always-on when active.
+通过在 `__init__` 中设置 `self.toggle = True`，可以使 Filters 用户可切换。可切换时，用户在对话输入区域看到开/关开关，可以按对话启用或禁用过滤器。没有 `self.toggle` 的 Filters 在激活时始终开启。
 
 ---
 
@@ -194,7 +194,7 @@ Both are defined as nested Pydantic `BaseModel` classes inside your `Pipe`, `Fil
 
 ---
 
-## Functions vs Tools: When to Use Which
+## Functions vs Tools：何时使用哪个
 
 | Use Case | Use a... | Why |
 |:---------|:---------|:----|
@@ -210,7 +210,7 @@ Both are defined as nested Pydantic `BaseModel` classes inside your `Pipe`, `Fil
 
 ---
 
-## Development Resources
+## 开发资源
 
 | Guide | Description |
 |:------|:-----------|

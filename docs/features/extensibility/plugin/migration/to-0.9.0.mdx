@@ -1,37 +1,37 @@
 ---
 sidebar_position: 2
-title: "Migrating to 0.9.0"
+title: "迁移到 0.9.0"
 ---
 
-# 🚚 Migration Guide: Upgrading to Open WebUI 0.9.0
+# 🚚 迁移指南：升级到 Open WebUI 0.9.0
 
-This guide covers breaking changes and required updates for Tools, Functions, Pipes, Filters, and Actions when upgrading to **Open WebUI 0.9.0**.
-
----
-
-## 🧐 What Has Changed and Why?
-
-Open WebUI 0.9.0 ships a large internal refactor: the backend data layer has moved from **synchronous** to **asynchronous** from top to bottom. Almost every database-backed method on every model class (Users, Chats, Files, Models, Functions, Tools, Knowledge, Memories, Groups, Folders, Messages, Feedback, …) is now an `async def` and must be awaited.
-
-At the storage layer, SQLAlchemy is now used in its async mode: sessions are `AsyncSession` instances, and queries are issued via `await db.execute(select(...))` instead of the legacy `db.query(...).first()` style. A sync engine still exists internally, but it is reserved for startup-only tasks (config loading, Alembic/peewee migrations, health checks) — **all runtime code, including plugins, must use the async engine**.
-
-📌 **Why did we make this change?**
-- **Concurrency**: blocking DB calls on the event loop were the biggest bottleneck under load. Making the data layer async lets FastAPI handle many more concurrent chats without thread-pool saturation.
-- **Consistency**: request handlers were already async; the data layer being sync forced awkward `run_in_threadpool` wrappers throughout the codebase.
-- **Forward-looking**: SQLAlchemy 2.0's async API is the supported path going forward.
+本指南涵盖升级到 **Open WebUI 0.9.0** 时 Tools、Functions、Pipes、Filters 和 Actions 的破坏性变更和必要更新。
 
 ---
 
-## ⚠️ Breaking Changes
+## 🧐 发生了什么变化，为什么？
 
-If your plugin touches the Open WebUI database or models — **or calls any helper that eventually touches them** — you will need to update it. Because almost every utility in `open_webui.utils.*` and every router function ultimately reads or writes through a model, "async reach" extends well beyond obvious `Users.`/`Chats.` calls. Specifically:
+Open WebUI 0.9.0 进行了大规模内部重构：后端数据层从上到下从**同步**改为**异步**。每个模型类（Users、Chats、Files、Models、Functions、Tools、Knowledge、Memories、Groups、Folders、Messages、Feedback……）上的几乎每个数据库支持方法现在都是 `async def`，必须使用 `await`。
+
+在存储层，SQLAlchemy 现在以异步模式使用：会话是 `AsyncSession` 实例，查询通过 `await db.execute(select(...))` 发出，而不是旧式的 `db.query(...).first()`。同步引擎仍在内部存在，但仅用于启动任务（配置加载、Alembic/peewee 迁移、健康检查）——**所有运行时代码（包括插件）必须使用异步引擎**。
+
+📌 **为什么进行这次变更？**
+- **并发性**：事件循环上的阻塞 DB 调用是负载下最大的瓶颈。将数据层改为异步使 FastAPI 能够处理更多并发对话，而不会耗尽线程池。
+- **一致性**：请求处理器已经是异步的；数据层是同步的迫使整个代码库使用笨拙的 `run_in_threadpool` 包装器。
+- **面向未来**：SQLAlchemy 2.0 的异步 API 是未来的受支持路径。
+
+---
+
+## ⚠️ 破坏性变更
+
+如果你的插件访问 Open WebUI 数据库或模型——**或调用最终访问它们的任何辅助函数**——你需要更新它。由于 `open_webui.utils.*` 中的几乎每个工具以及每个路由器函数最终都通过模型进行读写，"异步影响范围"远超明显的 `Users.`/`Chats.` 调用。具体来说：
 
 1. **All model methods are now coroutines.** Any call like `Users.get_user_by_id(...)`, `Chats.get_chat_by_id(...)`, `Files.get_file_by_id(...)`, `Models.get_model_by_id(...)`, `Functions.get_function_by_id(...)`, `Tools.get_tool_by_id(...)`, `Knowledges.get_knowledge_by_id(...)` — previously synchronous — now return an awaitable. Calling them without `await` returns a coroutine object, not your data.
 2. **Anything downstream of a model call is now async too.** Utility helpers you may import from `open_webui.utils.*`, `open_webui.retrieval.*`, router helpers, access-control checks, and similar — if they touch the DB directly or indirectly, they have been promoted to `async def`. Previously-sync helpers you were calling without `await` almost certainly need `await` now. Re-check every import from `open_webui.*` in your plugin.
 3. **Database sessions are now `AsyncSession`.** Use `get_async_db_context` (or the no-sharing variant `get_async_db`) instead of the old `get_db_context`. The sync helpers (`get_db`, `SessionLocal`) still exist but are reserved for startup code — using them from a request handler or plugin will block the event loop and contend with the async pool. Direct query code needs to be rewritten to the SQLAlchemy 2.0 async style.
 4. **Any plugin helper that awaits one of the above must itself be `async def`.** Async propagates up through your call graph: once one function in the chain becomes a coroutine, every caller does too, all the way up to your plugin's entrypoint.
 
-Plugin entrypoints themselves (the `pipe`, `inlet`, `outlet`, `stream`, `action`, and Tool methods) were already asynchronous in 0.5 and later, so the signatures you declare do not change — only the bodies do.
+插件入口点本身（`pipe`、`inlet`、`outlet`、`stream`、`action` 和 Tool 方法）在 0.5 及更高版本中已经是异步的，因此你声明的签名不会改变——只有函数体需要更新。
 
 :::info Deployment note — database drivers
 Open WebUI now requires an async-capable driver matching your database. Standard deployments get this automatically:
@@ -44,13 +44,13 @@ This is primarily an operator concern, but plugins that pin their own DB URL str
 
 ---
 
-## ✅ Step-by-Step Migration
+## ✅ 逐步迁移
 
-### 🔄 1. Await every model method
+### 🔄 1. 对每个模型方法使用 await
 
-The most common change. Anywhere your plugin reads or writes through a model class, add `await`.
+最常见的变更。在你的插件通过模型类进行读写的任何地方，添加 `await`。
 
-#### Before (0.8.x):
+#### 之前（0.8.x）：
 ```python
 from open_webui.models.users import Users
 from open_webui.models.chats import Chats
@@ -61,7 +61,7 @@ def resolve_user(user_id: str):
     return user, chats
 ```
 
-#### After (0.9.0):
+#### 之后（0.9.0）：
 ```python
 from open_webui.models.users import Users
 from open_webui.models.chats import Chats
@@ -72,11 +72,11 @@ async def resolve_user(user_id: str):
     return user, chats
 ```
 
-Note that the helper itself became `async def`. Its callers must now `await` it in turn — async propagates upward through your code.
+注意辅助函数本身变成了 `async def`。其调用者现在也必须依次使用 `await`——异步向上传播到你的代码中。
 
 ---
 
-### 🗄️ 2. Replace `get_db_context` with `get_async_db_context`
+### 🗄️ 2. 将 `get_db_context` 替换为 `get_async_db_context`
 
 If your plugin opens its own database session (rare, but some Tools do for custom queries), the sync helper is gone. Switch to the async variant.
 

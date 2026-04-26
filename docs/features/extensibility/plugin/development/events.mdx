@@ -1,57 +1,57 @@
 ---
 sidebar_position: 3
-title: "Events"
+title: "事件"
 ---
 
-# 🔔 Events: Using `__event_emitter__` and `__event_call__` in Open WebUI
+# 🔔 事件：在 Open WebUI 中使用 `__event_emitter__` 和 `__event_call__`
 
-Open WebUI's plugin architecture is not just about processing input and producing output—**it's about real-time, interactive communication with the UI and users**. To make your Tools, Functions, and Pipes more dynamic, Open WebUI provides a built-in event system via the `__event_emitter__` and `__event_call__` helpers.
+Open WebUI 的插件架构不仅仅是处理输入和产生输出——**它还涉及与 UI 和用户的实时交互式通信**。为了使你的 Tools、Functions 和 Pipes 更具动态性，Open WebUI 通过 `__event_emitter__` 和 `__event_call__` 辅助函数提供了内置事件系统。
 
-This guide explains **what events are**, **how you can trigger them** from your code, and **the full catalog of event types** you can use (including much more than just `"input"`).
-
----
-
-## 🌊 What Are Events?
-
-**Events** are real-time notifications or interactive requests sent from your backend code (Tool, or Function) to the web UI. They allow you to update the chat, display notifications, request confirmation, run UI flows, and more.
-
-- Events are sent using the `__event_emitter__` helper for one-way updates, or `__event_call__` when you need user input or a response (e.g., confirmation, input, etc.).
-
-**Metaphor:**
-Think of Events like push notifications and modal dialogs that your plugin can trigger, making the chat experience richer and more interactive.
+本指南解释了**什么是事件**、**如何从代码中触发事件**以及**可以使用的完整事件类型目录**（包括远不止 `"input"` 的更多内容）。
 
 ---
 
-## 🏁 Availability
+## 🌊 什么是事件？
 
-### Native Python Tools & Functions
+**事件**是从你的后端代码（Tool 或 Function）发送到 Web UI 的实时通知或交互式请求。它们允许你更新对话、显示通知、请求确认、运行 UI 流程等。
 
-Events are **fully available** for native Python Tools and Functions defined directly in Open WebUI using the `__event_emitter__` and `__event_call__` helpers.
+- 事件使用 `__event_emitter__` 辅助函数发送单向更新，或在需要用户输入或响应时（如确认、输入等）使用 `__event_call__`。
 
-### External Tools (OpenAPI & MCP)
+**比喻：**
+将事件想象成插件可以触发的推送通知和模态对话框，使对话体验更丰富、更具交互性。
 
-External tools can emit events via a **dedicated REST endpoint**. Open WebUI passes the following headers to all external tool requests when `ENABLE_FORWARD_USER_INFO_HEADERS=True` is set:
+---
+
+## 🏁 可用性
+
+### 原生 Python Tools & Functions
+
+对于直接在 Open WebUI 中使用 `__event_emitter__` 和 `__event_call__` 辅助函数定义的原生 Python Tools 和 Functions，事件**完全可用**。
+
+### 外部工具（OpenAPI & MCP）
+
+外部工具可以通过**专用 REST 端点**发出事件。当设置 `ENABLE_FORWARD_USER_INFO_HEADERS=True` 时，Open WebUI 将以下标头传递给所有外部工具请求：
 
 | Header | Description |
 |--------|-------------|
 | `X-Open-WebUI-Chat-Id` | The chat ID where the tool was invoked |
 | `X-Open-WebUI-Message-Id` | The message ID associated with the tool call |
 
-Your external tool can use these headers to emit events back to the UI via:
+你的外部工具可以使用这些标头通过以下方式将事件发送回 UI：
 
 ```
 POST /api/v1/chats/{chat_id}/messages/{message_id}/event
 ```
 
-See [External Tool Events](#-external-tool-events) below for details.
+详情参见下方的[外部工具事件](#-外部工具事件)。
 
 ---
 
-## 🧰 Basic Usage
+## 🧰 基本用法
 
-### Sending an Event
+### 发送事件
 
-You can trigger an event anywhere inside your Tool, or Function by calling:
+你可以通过调用以下代码在 Tool 或 Function 的任何位置触发事件：
 
 ```python
 await __event_emitter__(
@@ -66,11 +66,11 @@ await __event_emitter__(
 )
 ```
 
-You **do not** need to manually add fields like `chat_id` or `message_id`—these are handled automatically by Open WebUI.
+你**不需要**手动添加 `chat_id` 或 `message_id` 等字段——这些由 Open WebUI 自动处理。
 
-### Interactive Events
+### 交互式事件
 
-When you need to pause execution until the user responds (e.g., confirm/cancel dialogs, code execution, or input), use `__event_call__`:
+当你需要暂停执行直到用户响应时（如确认/取消对话框、代码执行或输入），使用 `__event_call__`：
 
 ```python
 result = await __event_call__(

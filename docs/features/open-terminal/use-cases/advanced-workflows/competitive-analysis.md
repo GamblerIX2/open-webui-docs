@@ -1,30 +1,30 @@
 ---
 sidebar_position: 8
-title: "Competitive Analysis"
+title: "竞争对比"
 ---
 
-# 🌐 Competitive Analysis
+# 🌐 竞争对比分析
 
-Scrape competitor pricing pages and build a comparison.
+抓取竞争对手定价页面并建立对比分析。
 
-> **You:** $Competitive Analyst <br/>
-> Check these 5 competitor websites and compare their pricing plans to ours.
+> **你：** $Competitive Analyst <br/>
+> 检查这 5 个竞争对手网站，将它们的定价方案与我们进行对比。
 
-## What the AI does
+## AI 的工作流程
 
-1. Fetches each competitor's pricing page
-2. Parses HTML to extract plan names, prices, and feature lists
-3. Normalizes pricing (monthly vs. annual)
-4. Builds a comparison spreadsheet and highlights key differences
-5. Writes strategic observations
+1. 获取每个竞争对手的定价页面
+2. 解析 HTML 提取方案名称、价格和功能列表
+3. 标准化定价（按月/按年）
+4. 建立对比电子表格并高亮主要差异
+5. 撰写战略观察
 
 {/* TODO: Screenshot — File browser previewing competitor_pricing.csv as a table: rows for features, columns for competitors, with prices and ✓/✗ marks. */}
 
 {/* TODO: Screenshot — The summary: "Key findings: Competitor A has a free tier, Competitor C is 30% cheaper on Pro, but we're the only one with 24/7 support included." */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

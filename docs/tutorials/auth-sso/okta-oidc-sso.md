@@ -1,94 +1,92 @@
 ---
 sidebar_position: 10
-title: "Okta SSO (OIDC)"
+title: "Okta SSO（OIDC）"
 ---
 
-# 🔗 Okta OIDC SSO Integration
+# 🔗 Okta OIDC SSO 集成
 
 :::warning
-
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
-
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 :::
 
-## Overview
+## 概述
 
-This documentation page outlines the steps required to integrate Okta OIDC Single Sign-On (SSO) with Open WebUI. It also covers the **optional** features of managing Open WebUI user groups based on Okta group membership, including **Just-in-Time (JIT) group creation**. By following these steps, you will enable users to log in to Open WebUI using their Okta credentials. If you choose to enable group syncing (`ENABLE_OAUTH_GROUP_MANAGEMENT`), users will be automatically assigned to relevant groups within Open WebUI based on their Okta groups upon login. If you *also* enable JIT group creation (`ENABLE_OAUTH_GROUP_CREATION`), groups present in Okta claims but missing in Open WebUI will be created automatically during login.
+本文档介绍将 Okta OIDC 单点登录（SSO）与 Open WebUI 集成所需的步骤。同时涵盖基于 Okta 群组成员资格管理 Open WebUI 用户群组的**可选**功能，包括**即时（JIT）群组创建**。按照这些步骤操作后，用户可以使用其 Okta 凭据登录 Open WebUI。如果您选择启用群组同步（`ENABLE_OAUTH_GROUP_MANAGEMENT`），用户在登录时将根据其 Okta 群组自动分配到 Open WebUI 中的相关群组。如果同时启用了 JIT 群组创建（`ENABLE_OAUTH_GROUP_CREATION`），Okta 声明中存在但 Open WebUI 中缺失的群组将在登录过程中自动创建。
 
-### Prerequisites
+### 前提条件
 
-*   A new or existing Open WebUI instance.
-*   An Okta account with administrative privileges to create and configure applications.
-*   Basic understanding of OIDC, Okta application configuration, and Open WebUI environment variables.
+*   一个新的或现有的 Open WebUI 实例。
+*   具有创建和配置应用程序管理员权限的 Okta 账户。
+*   对 OIDC、Okta 应用程序配置和 Open WebUI 环境变量有基本了解。
 
-## Setting up Okta
+## 配置 Okta
 
-First, you need to configure an OIDC application within your Okta organization and set up a groups claim to pass group information to Open WebUI.
+首先，需要在您的 Okta 组织内配置一个 OIDC 应用程序，并设置群组声明以将群组信息传递给 Open WebUI。
 
-### 1. Create/Configure OIDC Application in Okta
+### 1. 在 Okta 中创建/配置 OIDC 应用程序
 
-1.  Log in to your Okta Admin Console.
-2.  Navigate to **Applications > Applications**.
-3.  Either create a new **OIDC - OpenID Connect** application (choose **Web Application** as the type) or select an existing one you wish to use for Open WebUI.
+1.  登录 Okta 管理控制台。
+2.  导航至 **Applications > Applications**。
+3.  创建新的 **OIDC - OpenID Connect** 应用程序（选择 **Web Application** 类型），或选择现有应用程序用于 Open WebUI。
 
-    ![Okta Create App](/images/tutorials/okta/okta-auth-create-app.png)
+    ![Okta 创建应用](/images/tutorials/okta/okta-auth-create-app.png)
 
-4.  During setup or in the application's **General** settings tab, configure the **Sign-in redirect URIs**. Add the URI for your Open WebUI instance, followed by `/oauth/oidc/callback`. Example: `https://your-open-webui.com/oauth/oidc/callback`.
-5.  Take note of the **Client ID** and **Client secret** provided on the application's **General** tab. You will need these for the Open WebUI configuration.
+4.  在设置过程中或在应用程序的 **General** 设置标签中，配置**登录重定向 URI**。添加 Open WebUI 实例的 URI，后跟 `/oauth/oidc/callback`。例如：`https://your-open-webui.com/oauth/oidc/callback`。
+5.  记录应用程序 **General** 标签上提供的 **Client ID** 和 **Client secret**，Open WebUI 配置时需要用到。
 
-    ![Okta Client Key](/images/tutorials/okta/okta-auth-clientkey.png)
+    ![Okta 客户端密钥](/images/tutorials/okta/okta-auth-clientkey.png)
 
-6.  Ensure the correct users or groups are assigned to this application under the **Assignments** tab.
+6.  确保在 **Assignments** 标签下将正确的用户或群组分配给该应用程序。
 
-### 2. Add a Groups Claim to the ID Token
+### 2. 向 ID 令牌添加群组声明
 
-**(Optional)** To enable automatic group management in Open WebUI based on Okta groups, you need to configure Okta to send the user's group memberships in the ID token. If you only need SSO login and prefer to manage groups manually within Open WebUI, you can skip this section.
+**（可选）** 要在 Open WebUI 中根据 Okta 群组启用自动群组管理，需要将 Okta 配置为在 ID 令牌中发送用户的群组成员资格。如果您只需要 SSO 登录并希望在 Open WebUI 中手动管理群组，可以跳过本节。
 
-1.  In the Admin Console, go to **Applications > Applications** and select your OIDC client app.
-2.  Go to the **Sign On** tab and click **Edit** in the **OpenID Connect ID Token** section.
-3.  In the **Group claim type** section, select **Filter**.
-4.  In the **Group claims filter** section:
-    *   Enter `groups` as the claim name (or use the default if present).
-    *   Select **Matches regex** from the dropdown.
-    *   Enter `.*` in the regex field. This will include all groups the user is a member of. You can use a more specific regex if needed.
-5.  Click **Save**.
-6.  Click the **Back to applications** link.
-7.  From the **More** button dropdown menu for your application, click **Refresh Application Data**.
+1.  在管理控制台中，转到 **Applications > Applications** 并选择您的 OIDC 客户端应用程序。
+2.  转到 **Sign On** 标签，在 **OpenID Connect ID Token** 部分点击 **Edit**。
+3.  在 **Group claim type** 部分，选择 **Filter**。
+4.  在 **Group claims filter** 部分：
+    *   输入 `groups` 作为声明名称（如果已有默认值则使用默认值）。
+    *   从下拉菜单中选择 **Matches regex**。
+    *   在正则表达式字段中输入 `.*`。这将包含用户所属的所有群组。如有需要，可以使用更具体的正则表达式。
+5.  点击 **Save**。
+6.  点击 **Back to applications** 链接。
+7.  在应用程序的 **More** 下拉按钮菜单中，点击 **Refresh Application Data**。
 
-*For more advanced group claim configurations, refer to the Okta documentation on [customizing tokens](https://developer.okta.com/docs/guides/customize-tokens-returned-from-okta/main/) and [group functions](https://developer.okta.com/docs/reference/okta-expression-language/#group-functions).*
+*有关更高级的群组声明配置，请参阅 Okta 文档中的[自定义令牌](https://developer.okta.com/docs/guides/customize-tokens-returned-from-okta/main/)和[群组函数](https://developer.okta.com/docs/reference/okta-expression-language/#group-functions)。*
 
-### 3. Applying MFA (e.g., Google Authenticator)
+### 3. 应用 MFA（例如 Google Authenticator）
 
-To enhance security, you can enforce Multi-Factor Authentication (MFA) for users logging into Open WebUI via Okta. This example demonstrates how to set up Google Authenticator as an additional factor.
+为增强安全性，您可以为通过 Okta 登录 Open WebUI 的用户强制执行多因素认证（MFA）。以下示例演示如何将 Google Authenticator 设置为附加因素。
 
-1.  **Configure an Authenticator**:
-    *   In the Okta Admin Console, navigate to **Security > Authenticators**.
-    *   Click **Add Authenticator** and add **Google Authenticator**.
-    *   During setup, you can set **"User verification"** to **"Required"** to enhance security.
+1.  **配置认证器**：
+    *   在 Okta 管理控制台中，导航至 **Security > Authenticators**。
+    *   点击 **Add Authenticator**，添加 **Google Authenticator**。
+    *   在设置过程中，可将 **"User verification"** 设置为 **"Required"** 以增强安全性。
 
-2.  **Create and Apply a Sign-On Policy**:
-    *   Go to **Security > Authenticators**, then click the **Sign On** tab.
-    *   Click **Add a policy** to create a new policy (e.g., "WebUI MFA Policy").
-    *   In the policy you just created, click **Add rule**.
-    *   Configure the rule:
-        *   Set **"IF User's IP is"** to **"Anywhere"**.
-        *   Set **"THEN Access is"** to **"Allowed after successful authentication"**.
-        *   Under **"AND User must authenticate with"**, select **"Password + Another factor"**.
-        *   Ensure your desired factor (e.g., Google Authenticator) is included under **"AND Possession factor constraints are"**.
-    *   Finally, assign this policy to your Open WebUI application. Go to **Applications > Applications**, select your OIDC app, and under the **Sign On** tab, select the policy you created.
+2.  **创建并应用登录策略**：
+    *   转到 **Security > Authenticators**，然后点击 **Sign On** 标签。
+    *   点击 **Add a policy** 创建新策略（例如 "WebUI MFA Policy"）。
+    *   在刚创建的策略中，点击 **Add rule**。
+    *   配置规则：
+        *   将 **"IF User's IP is"** 设置为 **"Anywhere"**。
+        *   将 **"THEN Access is"** 设置为 **"Allowed after successful authentication"**。
+        *   在 **"AND User must authenticate with"** 下，选择 **"Password + Another factor"**。
+        *   确保您想要的因素（例如 Google Authenticator）在 **"AND Possession factor constraints are"** 下已包含。
+    *   最后，将此策略分配给您的 Open WebUI 应用程序。转到 **Applications > Applications**，选择您的 OIDC 应用程序，在 **Sign On** 标签下选择您创建的策略。
 
-Now, when users log in to Open WebUI, they will be required to provide their Okta password and an additional verification code from Google Authenticator.
+现在，当用户登录 Open WebUI 时，他们需要提供 Okta 密码以及来自 Google Authenticator 的附加验证码。
 
 :::note
 
-Re-authentication Frequency
-By default, Okta's Sign-On Policy may not prompt for MFA on every login from the same device or browser to improve user experience. If you require MFA for every session, you can adjust this setting within the policy rule you created. Look for the **"Prompt for re-authentication"** setting and set it to **"Every sign-in attempt"**.
+重新认证频率
+默认情况下，Okta 的登录策略可能不会在同一设备或浏览器的每次登录时提示 MFA，以改善用户体验。如果需要每次会话都强制 MFA，可以在您创建的策略规则中调整此设置。找到 **"Prompt for re-authentication"** 设置，将其设置为 **"Every sign-in attempt"**。
 
 :::
 
-## Configuring Open WebUI
+## 配置 Open WebUI
 
-To enable Okta OIDC SSO in Open WebUI, you need to set the following core environment variables. Additional variables are required if you wish to enable the optional group management feature.
+要在 Open WebUI 中启用 Okta OIDC SSO，需要设置以下核心环境变量。如果希望启用可选的群组管理功能，还需要额外的变量。
 
 ```bash
 
@@ -145,44 +143,44 @@ OAUTH_PROVIDER_NAME="Okta"
 # ENABLE_OAUTH_GROUP_CREATION="false"
 ```
 
-Replace `YOUR_OKTA_CLIENT_ID`, `YOUR_OKTA_CLIENT_SECRET`, and `YOUR_OKTA_OIDC_DISCOVERY_URL` with the actual values from your Okta application configuration.
+将 `YOUR_OKTA_CLIENT_ID`、`YOUR_OKTA_CLIENT_SECRET` 和 `YOUR_OKTA_OIDC_DISCOVERY_URL` 替换为 Okta 应用程序配置中的实际值。
 
-To enable group synchronization based on Okta claims, set `ENABLE_OAUTH_GROUP_MANAGEMENT="true"` and ensure `OAUTH_GROUP_CLAIM` matches the claim name configured in Okta (default is `groups`).
+要根据 Okta 声明启用群组同步，将 `ENABLE_OAUTH_GROUP_MANAGEMENT="true"` 设置为 `true`，并确保 `OAUTH_GROUP_CLAIM` 与 Okta 中配置的声明名称匹配（默认为 `groups`）。
 
-To *also* enable automatic Just-in-Time (JIT) creation of groups that exist in Okta but not yet in Open WebUI, set `ENABLE_OAUTH_GROUP_CREATION="true"`. You can leave this as `false` if you only want to manage memberships for groups that already exist in Open WebUI.
+要*同时*启用自动即时（JIT）创建存在于 Okta 但尚未在 Open WebUI 中的群组，将 `ENABLE_OAUTH_GROUP_CREATION="true"` 设置为 `true`。如果您只想管理 Open WebUI 中已存在群组的成员资格，可以将其保留为 `false`。
 
 :::warning
 
-Group Membership Management
-When `ENABLE_OAUTH_GROUP_MANAGEMENT` is set to `true`, a user's group memberships in Open WebUI will be **strictly synchronized** with the groups received in their Okta claims upon each login. This means:
-*   Users will be **added** to Open WebUI groups that match their Okta claims.
-*   Users will be **removed** from any Open WebUI groups (including those manually created or assigned within Open WebUI) if those groups are **not** present in their Okta claims for that login session.
+群组成员资格管理
+当 `ENABLE_OAUTH_GROUP_MANAGEMENT` 设置为 `true` 时，用户在 Open WebUI 中的群组成员资格将在每次登录时与其 Okta 声明中收到的群组**严格同步**。这意味着：
+*   用户将被**添加**到与其 Okta 声明匹配的 Open WebUI 群组中。
+*   如果某个 Open WebUI 群组（包括在 Open WebUI 中手动创建或分配的群组）**不**存在于该登录会话的 Okta 声明中，用户将被从该群组中**移除**。
 
-Ensure that all necessary groups are correctly configured and assigned within Okta and included in the group claim.
+确保所有必要的群组在 Okta 中正确配置和分配，并包含在群组声明中。
 
 :::
 
 :::info
 
-Session Persistence in Multi-Node Deployments
+多节点部署中的会话持久性
 
-When deploying Open WebUI across multiple nodes (e.g., in a Kubernetes cluster or behind a load balancer), it is crucial to ensure session persistence for a seamless user experience, especially with SSO. Set the `WEBUI_SECRET_KEY` environment variable to the **same secure, unique value** on **all** Open WebUI instances.
+在跨多个节点部署 Open WebUI 时（例如在 Kubernetes 集群中或负载均衡器后面），确保会话持久性对于无缝用户体验至关重要，尤其是在使用 SSO 的情况下。将 `WEBUI_SECRET_KEY` 环境变量设置为**所有** Open WebUI 实例上**相同的安全唯一值**。
 
 :::
 
 ```bash
 
-# Example: Generate a strong secret key (e.g., using openssl rand -hex 32)
+# 示例：生成强密钥（例如使用 openssl rand -hex 32）
 WEBUI_SECRET_KEY="YOUR_UNIQUE_AND_SECURE_SECRET_KEY"
 ```
 
-If this key is not consistent across all nodes, users may be forced to log in again if their session is routed to a different node, as the session token signed by one node will not be valid on another. By default, the Docker image generates a random key on first start, which is unsuitable for multi-node setups.
+如果该密钥在所有节点上不一致，当用户的会话被路由到不同节点时可能会被强制重新登录，因为由一个节点签发的会话令牌在另一个节点上无效。默认情况下，Docker 镜像在首次启动时会生成随机密钥，不适用于多节点设置。
 
 :::tip
 
-Disabling the Standard Login Form
+禁用标准登录表单
 
-If you intend to *only* allow logins via Okta (and potentially other configured OAuth providers), you can disable the standard email/password login form by setting the following environment variable:
+如果您打算*仅*允许通过 Okta（以及可能配置的其他 OAuth 提供商）登录，可以通过设置以下环境变量来禁用标准邮箱/密码登录表单：
 
 :::
 
@@ -193,8 +191,8 @@ ENABLE_LOGIN_FORM="false"
 
 :::danger
 
-Important Prerequisite
-Setting `ENABLE_LOGIN_FORM="false"` **requires** `ENABLE_OAUTH_SIGNUP="true"` to be set as well. If you disable the login form without enabling OAuth signup, **users (including administrators) will be unable to log in.** Ensure at least one OAuth provider is configured and `ENABLE_OAUTH_SIGNUP` is enabled before disabling the standard login form.
+重要前提
+将 `ENABLE_LOGIN_FORM="false"` 设置为 `false` **需要**同时将 `ENABLE_OAUTH_SIGNUP="true"` 设置为 `true`。如果在未启用 OAuth 注册的情况下禁用登录表单，**用户（包括管理员）将无法登录。** 在禁用标准登录表单之前，请确保至少配置了一个 OAuth 提供商并启用了 `ENABLE_OAUTH_SIGNUP`。
 
 :::
 

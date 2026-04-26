@@ -3,94 +3,94 @@ title: Model Context Protocol (MCP)
 sidebar_position: 200
 ---
 
-Open WebUI natively supports **MCP (Model Context Protocol)** starting in **v0.6.31**. This page shows how to enable it quickly, harden it for production, and troubleshoot common snags.
+Open WebUI 从 **v0.6.31** 起原生支持 **MCP（Model Context Protocol）**。本页介绍如何快速启用、加固生产环境配置以及排查常见问题。
 
 :::info 
-Requires **Open WebUI v0.6.31+**.
+需要 **Open WebUI v0.6.31+**。
 :::
 
-:::danger Prerequisite: WEBUI_SECRET_KEY
-You **MUST** set the `WEBUI_SECRET_KEY` environment variable in your Docker setup. Without it, **OAuth-connected MCP tools (like Notion)** will **break** every time you restart or recreate the container (Error: `Error decrypting tokens`), forcing you to re-authenticate everything.
+:::danger 前置条件：WEBUI_SECRET_KEY
+在 Docker 配置中，你**必须**设置 `WEBUI_SECRET_KEY` 环境变量。若未设置，每次重启或重建容器后，**通过 OAuth 连接的 MCP 工具（如 Notion）**都会**失效**（错误：`Error decrypting tokens`），迫使你重新进行身份验证。
 :::
 
-## 🚀 Quick start 
+## 🚀 快速开始 
 
-1. Open **⚙️ Admin Settings → External Tools**.
-2. Click **+ (Add Server)**.
-3. Set **Type** to **MCP (Streamable HTTP)**.
-4. Enter your **Server URL** and **Auth** details (OAuth 2.1, if required).
-5. **Save**. If prompted, restart Open WebUI.
+1. 打开 **⚙️ 管理员设置 → 外部工具**。
+2. 点击 **+（添加服务器）**。
+3. 将**类型**设置为 **MCP (Streamable HTTP)**。
+4. 输入你的**服务器 URL** 和**身份验证**详情（如需要，OAuth 2.1）。
+5. **保存**。如有提示，重启 Open WebUI。
 
-You can now call tools exposed by your MCP server from Open WebUI.
+现在你可以从 Open WebUI 调用 MCP 服务器暴露的工具了。
 
-:::warning Common Mistake: Wrong Connection Type
-If you are adding an MCP server, make sure **Type** is set to **MCP (Streamable HTTP)**, not **OpenAPI**.
+:::warning 常见错误：连接类型错误
+添加 MCP 服务器时，请确保**类型**设置为 **MCP (Streamable HTTP)**，而不是 **OpenAPI**。
 
-Entering MCP-style configuration (with `mcpServers` in JSON) into an OpenAPI connection will cause the UI to crash or display an infinite loading screen. If you encounter this:
+将 MCP 风格的配置（包含 `mcpServers` 的 JSON）输入到 OpenAPI 连接中会导致 UI 崩溃或显示无限加载页面。如遇此情况：
 
-1. Disable the problematic tool connection via Admin Settings
-2. Re-add it with the correct **Type** set to **MCP**
+1. 通过管理员设置禁用有问题的工具连接
+2. 以正确的**类型**重新添加为 **MCP**
 :::
 
-## 🧭 When to use MCP vs OpenAPI
+## 🧭 何时使用 MCP vs OpenAPI
 
 :::tip 
-For most deployments, **OpenAPI** remains the **preferred** integration path.
+对于大多数部署，**OpenAPI** 仍是**首选**集成路径。
 :::
 
-Choose **OpenAPI** if you want:
+选择 **OpenAPI** 适合你需要：
 
-* **Enterprise readiness**: deep SSO, API gateways, audit, quotas, typed SDKs.
-* **Operational resilience**: standard HTTP verbs, idempotency, caching, rich error codes.
-* **Observability**: first-class tracing and policy integration.
+* **企业就绪性**：深度 SSO、API 网关、审计、配额、类型化 SDK。
+* **运营弹性**：标准 HTTP 动词、幂等性、缓存、丰富的错误码。
+* **可观测性**：一流的链路追踪和策略集成。
 
-Choose **MCP (Streamable HTTP)** if you need:
+选择 **MCP (Streamable HTTP)** 适合你需要：
 
-* A **common tool protocol** already used by your MCP servers/clients.
-* **Streamed** protocol communication over HTTP (Note: This refers to MCP's transport-level streaming, not Open WebUI's [UI event system](/features/extensibility/plugin/development/events) which is only available for native Python tools).
+* MCP 服务器/客户端已使用的**通用工具协议**。
+* 通过 HTTP 进行的**流式**协议通信（注意：这指的是 MCP 的传输层流式传输，而不是 Open WebUI 的 [UI 事件系统](/features/extensibility/plugin/development/events)，后者仅适用于原生 Python 工具）。
 
-> You don’t have to pick one: many teams expose OpenAPI internally and **wrap MCP** at the edge for specific clients.
+> 你不必只选一个：许多团队内部使用 OpenAPI，并在边缘为特定客户端**封装 MCP**。
 
 :::warning
 Browser-based, multi-user deployments increase the surface area (CORS/CSRF, per-user isolation, reconnects). Review your org’s auth, proxy, and rate-limiting policies before exposing MCP externally.
 :::
 
-## ⚙️ Configuration Best Practices
+## ⚙️ 配置最佳实践
 
-### Authentication Modes
+### 身份验证模式
 
-*   **None**: Use this for **local MCP servers** or internal networks where no token is required.
-    *   **⚠️ Important**: Default to "None" unless your server strictly requires a token. Selecting "Bearer" without providing a key sends an empty Authorization header (`Authorization: Bearer`), which causes many servers to reject the connection immediately.
-*   **Bearer**: Use this **only** if your MCP server requires a specific API token. You **must** populate the "Key" field.
-*   **OAuth 2.1**: Uses Dynamic Client Registration (DCR). Best when your MCP server supports registering OAuth clients automatically.
-*   **OAuth 2.1 (Static)**: Uses a pre-created client ID/client secret. Best when your provider does not support DCR, or when your security team requires manually managed credentials.
+*   **None**：适用于**本地 MCP 服务器**或不需要令牌的内网。
+    *   **⚠️ 重要**：除非服务器严格要求令牌，否则默认选择 "None"。在未提供密鑰的情况下选择 "Bearer" 会发送空的 Authorization 标头（`Authorization: Bearer`），导致许多服务器立即拒绝连接。
+*   **Bearer**：**仅**在你的 MCP 服务器需要特定 API 令牌时使用。**必须**填写 "Key" 字段。
+*   **OAuth 2.1**：使用动态客户端注册（DCR）。最适合你的 MCP 服务器支持自动注册 OAuth 客户端的情况。
+*   **OAuth 2.1（静态）**：使用预先创建的客户端 ID/客户端密鑰。最适合你的提供商不支持 DCR，或你的安全团队要求手动管理凭据的情况。
 
-:::tip Choosing Between OAuth 2.1 and OAuth 2.1 (Static)
+:::tip 在 OAuth 2.1 和 OAuth 2.1（静态）之间选择
 
-- Start with **OAuth 2.1** if your server supports DCR.
-- Use **OAuth 2.1 (Static)** when you already have credentials from your IdP and want Open WebUI to use those directly.
+- 如果服务器支持 DCR，从 **OAuth 2.1** 开始。
+- 当你已经有来自 IdP 的凭据且希望 Open WebUI 直接使用时，使用 **OAuth 2.1（静态）**。
 
 :::
 
-### OAuth 2.1 (Static) Setup
+### OAuth 2.1（静态）设置
 
-Use this when you already have a client ID/client secret from your identity provider.
+当你已经有来自身份提供商的客户端 ID/客户端密钥时使用。
 
-1. Open **Admin Settings → External Tools**.
-2. Click **+ (Add Server)**.
-3. Set **Type** to **MCP (Streamable HTTP)**.
-4. Enter your MCP server **URL**.
-5. In **Auth**, select **OAuth 2.1 (Static)**.
-6. Enter **Client ID** and **Client Secret**.
-7. Click **Register Client**.
-8. Click **Save**.
+1. 打开**管理员设置 → 外部工具**。
+2. 点击 **+（添加服务器）**。
+3. 将**类型**设置为 **MCP（Streamable HTTP）**。
+4. 输入你的 MCP 服务器 **URL**。
+5. 在**认证**中，选择 **OAuth 2.1（静态）**。
+6. 输入**客户端 ID** 和**客户端密钥**。
+7. 点击**注册客户端**。
+8. 点击**保存**。
 
-After saving:
+保存后：
 
-1. Open a chat.
-2. Click **+ → Integrations → Tools**.
-3. Enable your MCP tool.
-4. Complete the OAuth consent/authorization flow in the browser redirect.
+1. 打开一个对话。
+2. 点击 **+ → 集成 → 工具**。
+3. 启用你的 MCP 工具。
+4. 在浏览器重定向中完成 OAuth 同意/授权流程。
 
 :::info
 
@@ -106,57 +106,57 @@ If an OAuth 2.1 tool is set as a default and the user hasn't previously authenti
 **Workaround:** Users should manually enable OAuth 2.1 tools per-chat via the **➕** button in the chat input area. This triggers the auth flow before the tool is ever invoked. Token refresh works automatically once the initial authentication is complete.
 :::
 
-### Connection URLs
+### 连接 URL
 
-If you are running Open WebUI in **Docker** and your MCP server is on the **host machine**:
-*   Use `http://host.docker.internal:<port>` (e.g., `http://host.docker.internal:3000/sse`) instead of `localhost`.
+如果你在 **Docker** 中运行 Open WebUI，而 MCP 服务器在**宿主机**上：
+*   使用 `http://host.docker.internal:<port>`（如 `http://host.docker.internal:3000/sse`）而不是 `localhost`。
 
-### Function Name Filter List
+### 函数名称过滤列表
 
-This field restricts which tools are exposed to the LLM.
-*   **Default**: Leave empty to expose all tools (in most cases).
-*   **Workaround**: If you encounter connection errors with an empty list, try adding a single comma (`,`) to this field. This forces the system to treat it as a valid (but empty) filter, potentially bypassing some parsing issues.
+此字段限制哪些工具暴露给 LLM。
+*   **默认**：大多数情况下留空以暴露所有工具。
+*   **解决方法**：如果列表为空时遇到连接错误，尝试在此字段添加一个逗号（`,`）。这会强制系统将其视为有效（但为空）的过滤器，可能绕过某些解析问题。
 
-## Troubleshooting
+## 故障排除
 
 ### "Failed to connect to MCP server"
 
-**Symptom**: 
-The chat shows "Failed to connect to MCP server" when using a tool, even if the **Verify Connection** button in settings says "Connected".
+**现象**：
+使用工具时对话显示 "Failed to connect to MCP server"，即使设置中的**验证连接**按钮显示"已连接"。
 
-**Solutions**:
-1.  **Check Authentication**: Ensure you haven't selected `Bearer` without a key. Switch to `None` if no token is needed.
-2.  **Filter List Bug**: If the "Function Name Filter List" is empty, try adding a comma (`,`) to it.
-3.  **OAuth 2.1 Default Tool**: If the failing tool uses OAuth 2.1 and is set as a default tool on the model, this is a known limitation. Remove it from the model's default tools and have users enable it manually per-chat.
+**解决方案**：
+1.  **检查身份验证**：确保没有在没有密钥的情况下选择 `Bearer`。如果不需要令牌，切换到 `None`。
+2.  **过滤列表 Bug**：如果"函数名称过滤列表"为空，尝试向其添加逗号（`,`）。
+3.  **OAuth 2.1 默认工具**：如果失败的工具使用 OAuth 2.1 并被设置为模型的默认工具，这是已知限制。从模型的默认工具中删除它，让用户每次对话手动启用。
 
-### Infinite loading screen after adding External Tool
+### 添加外部工具后出现无限加载界面
 
-**Symptom**: 
-After adding an External Tool connection, the frontend gets stuck on a loading spinner. The browser console shows an error like `Cannot convert undefined or null to object at Object.entries`.
+**现象**：
+添加外部工具连接后，前端停留在加载旋转图标上。浏览器控制台显示类似 `Cannot convert undefined or null to object at Object.entries` 的错误。
 
-**Cause**: 
-You likely configured an **MCP server** using the **OpenAPI** connection type, or entered MCP-style JSON (containing `mcpServers`) into an OpenAPI connection.
+**原因**：
+你可能使用 **OpenAPI** 连接类型配置了 **MCP 服务器**，或者将包含 `mcpServers` 的 MCP 风格 JSON 输入到了 OpenAPI 连接中。
 
-**Solution**:
-1.  Open **Admin Settings → External Tools** (the sidebar still loads)
-2.  **Disable** or **delete** the problematic tool connection
-3.  Refresh the page (Ctrl+F5)
-4.  Re-add the connection with the correct **Type** set to **MCP (Streamable HTTP)**
+**解决方案**：
+1.  打开**管理员设置 → 外部工具**（侧边栏仍可加载）
+2.  **禁用**或**删除**有问题的工具连接
+3.  刷新页面（Ctrl+F5）
+4.  使用正确的**类型**（设置为 **MCP（Streamable HTTP）**）重新添加连接
 
-## ❓ FAQ
+## ❓ 常见问题
 
-**Do you support stdio or SSE transports?**
+**是否支持 stdio 或 SSE 传输？**
 
-Native MCP support in Open WebUI is **Streamable HTTP only**. This design choice reflects our architecture: Open WebUI is a **web-based, multi-tenant environment**, not a local desktop process.
+Open WebUI 中的原生 MCP 支持**仅限 Streamable HTTP**。这一设计选择反映了我们的架构：Open WebUI 是一个**基于 Web 的多租户环境**，而非本地桌面进程。
 
-Browsers operate within strict **sandboxed and event-driven HTTP constraints**, making long-lived stdio or SSE connections difficult to maintain securely across users and sessions.
+浏览器在严格的**沙盒化和事件驱动的 HTTP 约束**下运行，使得跨用户和会话安全维护长期的 stdio 或 SSE 连接非常困难。
 
-If you need to bridge those other MCP transports, check out [**mcpo**](https://github.com/open-webui/mcpo) — an open-source proxy that translates **stdio or SSE-based MCP servers into OpenAPI-compatible endpoints**. It effectively lets you run traditional MCP tools inside Open WebUI without modifying their transport layer.
+如果你需要桥接其他 MCP 传输，请查看 [**mcpo**](https://github.com/open-webui/mcpo)——这是一个将 **stdio 或基于 SSE 的 MCP 服务器转换为 OpenAPI 兼容端点**的开源代理。它实际上让你可以在 Open WebUI 中运行传统 MCP 工具，而无需修改其传输层。
 
-**Is MCP considered stable here?**
+**MCP 在这里被认为是稳定的吗？**
 
-Supported and improving. The broader ecosystem is still evolving; expect occasional breaking changes.
+已支持且持续改进中。更广泛的生态系统仍在演进；预期偶尔会有破坏性变更。
 
-**Can I mix OpenAPI and MCP tools?**
+**可以同时混合使用 OpenAPI 和 MCP 工具吗？**
 
-Yes. Many deployments do both.
+可以。许多部署同时使用两者。

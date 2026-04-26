@@ -1,31 +1,31 @@
 ---
 sidebar_position: 9
-title: "App Builder"
+title: "应用构建器"
 ---
 
-# 🏗️ Build a Complete Application
+# 🏗️ 构建完整应用
 
-Describe what you want and get a working app with frontend, backend, and database.
+描述你想要的，获得一个具有前端、后端和数据库的完整工作应用。
 
-> **You:** $App Builder <br/>
-> Build me an inventory tracker. I need to add products with name, quantity, and price. Show total value and low-stock alerts.
+> **你：** $App Builder <br/>
+> 帮我做一个库存跟踪器。我需要加入带有名称、数量和价格属性的产品。显示总价値和库存预警。
 
-## What the AI does
+## AI 的工作流程
 
-1. Designs the database schema
-2. Builds a Python API (Flask) with CRUD endpoints
-3. Creates a polished frontend with dashboard, charts, and search
-4. Seeds it with sample data
-5. Starts the server and tests every endpoint
-6. The port preview shows the running app
+1. 设计数据库结构
+2. 使用 Flask 构建带有 CRUD 接口的 Python API
+3. 创建带有仰表盘、图表和搜索功能的精美前端
+4. 填充示例数据
+5. 启动服务器并测试每个接口
+6. 端口预览展示运行中的应用
 
 {/* TODO: Screenshot — The port preview showing a polished dashboard: summary cards (Total Items: 156, Total Value: $24,350, Low Stock: 3), a bar chart by category, and a searchable product table. */}
 
 {/* TODO: Screenshot — File browser showing the project structure: app.py, database.py, templates/, static/. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

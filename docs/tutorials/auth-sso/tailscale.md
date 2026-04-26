@@ -3,31 +3,31 @@ sidebar_position: 50
 title: "Tailscale"
 ---
 
-# Tailscale Integration
+# Tailscale 集成
 
-**Private, encrypted access to Open WebUI from any device. No ports to open, no certificates to manage.**
+**从任何设备私密加密地访问 Open WebUI，无需开放端口，无需管理证书。**
 
-[Tailscale](https://tailscale.com) creates a WireGuard-based mesh VPN (a "tailnet") between your devices. Every device gets a stable hostname like `my-server.tail1234.ts.net`, and Tailscale can provision trusted HTTPS certificates automatically. Your Open WebUI instance stays completely private, accessible only to devices on your tailnet.
+[Tailscale](https://tailscale.com) 在您的设备之间创建基于 WireGuard 的网状 VPN（"tailnet"）。每台设备都会获得一个稳定的主机名，例如 `my-server.tail1234.ts.net`，Tailscale 还可以自动配置受信任的 HTTPS 证书。您的 Open WebUI 实例保持完全私密，只有 tailnet 上的设备才能访问。
 
-:::tip When to use Tailscale
-Tailscale is ideal when you want **private, authenticated access** across devices without exposing Open WebUI to the public internet. Perfect for personal setups, small teams, or accessing a home server from your phone or laptop on the go.
+:::tip 何时使用 Tailscale
+当您希望在不将 Open WebUI 暴露到公共互联网的情况下实现**跨设备私密、认证访问**时，Tailscale 是理想选择。非常适合个人用户、小团队，或者在外出时通过手机或笔记本访问家庭服务器。
 :::
 
 ---
 
-## Prerequisites
+## 前提条件
 
-| Requirement | Details |
+| 要求 | 详情 |
 | :--- | :--- |
-| **Open WebUI** | Running locally on port `8080` (default) |
-| **Tailscale account** | Free for personal use at [tailscale.com](https://tailscale.com) |
-| **Tailscale installed** | On both the server running Open WebUI and any client devices |
+| **Open WebUI** | 在本地端口 `8080`（默认值）上运行 |
+| **Tailscale 账户** | 个人使用免费，注册地址 [tailscale.com](https://tailscale.com) |
+| **已安装 Tailscale** | 在运行 Open WebUI 的服务器和所有客户端设备上均需安装 |
 
 ---
 
-## Quick Start
+## 快速开始
 
-### 1. Install Tailscale
+### 1. 安装 Tailscale
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -35,7 +35,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="mac" label="macOS" default>
 
-Download from the [Mac App Store](https://apps.apple.com/app/tailscale/id1475387142) or:
+从 [Mac App Store](https://apps.apple.com/app/tailscale/id1475387142) 下载，或运行：
 
 ```bash
 brew install tailscale
@@ -51,53 +51,53 @@ curl -fsSL https://tailscale.com/install.sh | sh
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-Download from [tailscale.com/download](https://tailscale.com/download/windows).
+从 [tailscale.com/download](https://tailscale.com/download/windows) 下载。
 
   </TabItem>
 </Tabs>
 
-### 2. Connect the server
+### 2. 连接服务器
 
-On the machine running Open WebUI:
+在运行 Open WebUI 的机器上：
 
 ```bash
 sudo tailscale up
 ```
 
-Your machine gets a tailnet hostname like `my-server.tail1234.ts.net`. Find it with:
+您的机器将获得类似 `my-server.tail1234.ts.net` 的 tailnet 主机名。通过以下命令查看：
 
 ```bash
 tailscale status
 ```
 
-### 3. Access Open WebUI
+### 3. 访问 Open WebUI
 
-From any device on the same tailnet, open:
+在同一 tailnet 上的任意设备，打开：
 
 ```
 http://my-server.tail1234.ts.net:8080
 ```
 
-This connection is already encrypted end-to-end by WireGuard. For browser features that require HTTPS (like Voice Calls), continue to the next section.
+该连接已由 WireGuard 进行端对端加密。如需使用语音通话等需要 HTTPS 的浏览器功能，请继续阅读下一节。
 
 ---
 
-## HTTPS with Tailscale
+## 使用 Tailscale 启用 HTTPS
 
-Tailscale can provision trusted Let's Encrypt certificates for your tailnet hostname, no reverse proxy required.
+Tailscale 可以为您的 tailnet 主机名配置受信任的 Let's Encrypt 证书，无需反向代理。
 
-For the full step-by-step HTTPS setup (certificate generation, `tailscale serve`, configuring `WEBUI_URL`), see the dedicated reference guide:
+有关完整的 HTTPS 配置步骤（证书生成、`tailscale serve`、配置 `WEBUI_URL`），请参阅专用参考指南：
 
-👉 [**HTTPS using Tailscale**](/reference/https/tailscale)
+👉 [**使用 Tailscale 启用 HTTPS**](/reference/https/tailscale)
 
-The short version:
+简要版本：
 
 ```bash
-# Proxy HTTPS traffic directly to Open WebUI
+# 将 HTTPS 流量直接代理到 Open WebUI
 sudo tailscale serve https / http://localhost:8080
 ```
 
-Your instance is now available at `https://my-server.tail1234.ts.net` with a valid TLS certificate.
+您的实例现在可通过 `https://my-server.tail1234.ts.net` 访问，并具有有效的 TLS 证书。
 
 ---
 

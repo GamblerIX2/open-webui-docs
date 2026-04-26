@@ -1,86 +1,86 @@
 ---
 sidebar_position: 3
-title: "Groups"
+title: "用户组"
 ---
 
 
-Groups in Open WebUI are a powerful mechanism for organizing users and managing access control at scale. They serve two primary purposes:
-1.  **Permission Management:** Assigning granular permissions to multiple users efficiently.
-2.  **Resource Access Control:** controlling who can access specific private resources (Models, Knowledge Bases, Tools).
+Open WebUI 中的用户组是大规模组织用户和管理访问控制的强大机制。它们有两个主要用途：
+1.  **权限管理：** 高效地向多个用户分配细粒度权限。
+2.  **资源访问控制：** 控制谁可以访问特定的私有资源（模型、知识库、工具）。
 
-:::info Permission Merging Logic
-Open WebUI permissions are **additive** (Union-based).
-*   If a user is in multiple groups, they receive the **superset** of all permissions.
-*   If *Group A* allows "Image Generation" and *Group B* does not, a user in both groups **WILL** have access to Image Generation.
-*   "Deny" permissions do not exist; you can only "Grant" permissions.
+:::info 权限合并逻辑
+Open WebUI 权限是**累加**的（基于并集）。
+*   如果用户属于多个用户组，他们会获得所有权限的**并集**。
+*   如果*用户组 A* 允许"图像生成"而*用户组 B* 不允许，同时属于这两个用户组的用户**将**拥有图像生成访问权限。
+*   "拒绝"权限不存在；您只能"授予"权限。
 :::
 
-## Group Management
+## 用户组管理
 
-Groups can be managed in the **Admin Panel > Groups** section.
+用户组可以在**管理面板 > 用户组**部分进行管理。
 
-### Group Configuration
-When creating or editing a group, you can configure its visibility in the system:
+### 用户组配置
+创建或编辑用户组时，您可以配置其在系统中的可见性：
 
-*   **Who can share to this group**: (Access Control setting)
-    *   **Anyone**: (Default) Any user on the platform can see this group in the "Access Control" menus for Sharing and share Chat items, Models, Prompts, or Knowledge Bases to it.
-    *   **Members**: Only users who are **already members** of this group will see it as an option in the "Access Control" menus for Sharing. This is the ideal setting for private team collaboration (e.g., a "Marketing" team), ensuring only teammates can share resources (Models, Prompts, Knowledge) with each other.
-    *   **No one**: The group is completely **hidden** from sharing menus for non-administrators. This is perfect for technical groups used exclusively for **RBAC Permission assignment** (e.g., a "High-Tier Users" group) where content sharing is not required.
+*   **谁可以向此用户组共享**：（访问控制设置）
+    *   **任何人**：（默认）平台上的任何用户都可以在"访问控制"菜单中看到此用户组，并可向其共享对话内容、模型、提示词或知识库。
+    *   **成员**：只有**已经是**该用户组成员的用户才会在"访问控制"菜单中看到它作为选项。这是私人团队协作（例如"市场营销"团队）的理想设置，确保只有队友可以相互共享资源（模型、提示词、知识库）。
+    *   **无人**：该用户组对非管理员用户完全**隐藏**于共享菜单中。这非常适合专门用于 **RBAC 权限分配**的技术用户组（例如"高级用户"组），不需要内容共享功能。
 
-:::tip Strategy: Permission Groups vs. Sharing Groups
-To maintain a clean and manageable system, consider separating your groups into two distinct categories using a naming scheme:
+:::tip 策略：权限用户组 vs 共享用户组
+为了维护一个干净且易管理的系统，考虑使用命名方案将用户组分为两类：
 
-1.  **Permission Groups** (e.g., prefix `[Perms]`, `Role-`, or `P-`)
-    *   **Purpose**: Exclusively for granting features (e.g., `[Perms] Image Gen`, `[Perms] Web Search`).
-    *   **Config**: Set "Who can share" to **No one**.
-    *   **Result**: Users get the features they need, but these technical groups don't clutter the "Share" menu.
+1.  **权限用户组**（例如前缀 `[权限]`、`角色-` 或 `P-`）
+    *   **目的**：专门用于授予功能（例如 `[权限] 图像生成`、`[权限] 网络搜索`）。
+    *   **配置**：将"谁可以共享"设置为**无人**。
+    *   **结果**：用户获得所需功能，但这些技术用户组不会影响"共享"菜单的简洁性。
 
-2.  **Sharing Groups** (e.g., prefix `Team-`, `Project-`, or normal names)
-    *   **Purpose**: Exclusively for organizing people (e.g., `Marketing`, `Engineering`, `Team Alpha`) to share resources.
-    *   **Config**: Set "Who can share" to **Members** or **Anyone**.
-    *   **Best Practice**: **Disable all permissions** in these groups.
-        *   Rely on *Global Default Permissions* (or separate *Permission Groups*) for feature rights.
-        *   *Why?* This ensures painless **Permission Revocation**. If you decide to disable a feature (e.g., "Web Search") globally, it will instantly take effect for everyone. If your Sharing Groups had "Web Search" enabled, you would have to manually update every single group to remove the right, as the Group's `True` status would override the Global `False`. Keep functional groups clean to maintain Global control.
+2.  **共享用户组**（例如前缀 `团队-`、`项目-` 或普通名称）
+    *   **目的**：专门用于组织人员（例如 `市场营销`、`工程`、`团队 Alpha`）以共享资源。
+    *   **配置**：将"谁可以共享"设置为**成员**或**任何人**。
+    *   **最佳实践**：**禁用这些用户组中的所有权限**。
+        *   依赖*全局默认权限*（或单独的*权限用户组*）来获得功能权限。
+        *   *为什么？* 这确保了轻松的**权限撤销**。如果您决定全局禁用某个功能（例如"网络搜索"），它将立即对所有人生效。如果您的共享用户组启用了"网络搜索"，您将需要手动更新每个用户组来移除该权限，因为用户组的 `True` 状态会覆盖全局的 `False`。保持功能用户组简洁以维护全局控制。
 :::
 
-### Creation Methods
-*   **Manual Creation:** Administrators can manually create groups and add users via the UI.
-*   **OAuth Synchronization:** If `ENABLE_OAUTH_GROUP_MANAGEMENT` is enabled, groups can be synced from your OAuth provider (e.g., Keycloak, Azure AD).
-    *   **Auto-Creation:** With `ENABLE_OAUTH_GROUP_CREATION`, groups that don't exist locally will be created automatically.
-    *   **Membership Sync:** Users are strictly added/removed from groups to match their OAuth claims.
+### 创建方式
+*   **手动创建：** 管理员可以通过 UI 手动创建用户组并添加用户。
+*   **OAuth 同步：** 如果启用了 `ENABLE_OAUTH_GROUP_MANAGEMENT`，用户组可以从您的 OAuth 提供商（例如 Keycloak、Azure AD）同步。
+    *   **自动创建：** 启用 `ENABLE_OAUTH_GROUP_CREATION` 后，本地不存在的用户组将自动创建。
+    *   **成员同步：** 用户会严格按照 OAuth claims 添加/移除到用户组。
 
-### Group Structure
-A group definition typically includes:
-*   **Name**: The display name of the group.
-*   **Description**: Purpose of the group.
-*   **Permissions**: A detailed JSON object overriding default user permissions (see [Permissions](./permissions.md)).
-*   **Members**: A list of User IDs belonging to the group.
+### 用户组结构
+用户组定义通常包括：
+*   **名称**：用户组的显示名称。
+*   **描述**：用户组的用途说明。
+*   **权限**：覆盖默认用户权限的详细 JSON 对象（参见[权限](./permissions.md)）。
+*   **成员**：属于该用户组的用户 ID 列表。
 
-## Assigning Permissions to Groups
+## 向用户组分配权限
 
-When editing a group, you can toggle specific permissions.
-*   **Default State**: By default, a group grants *no* extra permissions; members rely on the global defaults.
-*   **Granting Access**: Toggling a permission (e.g., "Web Search") to **ON** for a group means all members get that feature, even if it's disabled globally.
+编辑用户组时，您可以切换特定权限。
+*   **默认状态**：默认情况下，用户组不授予*额外*权限；成员依赖全局默认值。
+*   **授权访问**：将权限（例如"网络搜索"）切换为**开**意味着所有成员都能获得该功能，即使全局禁用了它。
 
-## Resource Access (RBAC)
+## 资源访问（RBAC）
 
-You can restrict access to specific objects (like a proprietary Model or sensitive Knowledge Base) using Groups or individual user grants.
+您可以使用用户组或单个用户授权来限制对特定对象（如专有模型或敏感知识库）的访问。
 
-1.  **Tag the Resource**: When creating/editing a Model or Knowledge Base, set its visibility to **Private** or **Restricted**.
-2.  **Grant Access**: Select the specific **Groups** or **individual users** that should have "Read" or "Write" access. The redesigned access control UI makes it easy to add multiple groups or users at once.
+1.  **标记资源**：创建/编辑模型或知识库时，将其可见性设置为**私有**或**受限**。
+2.  **授予访问**：选择应具有"读取"或"写入"访问权限的特定**用户组**或**单个用户**。重新设计的访问控制 UI 使同时添加多个用户组或用户变得非常方便。
 
-:::tip Knowledge Scoping for Models
-Beyond visibility, knowledge access is also scoped by model configuration. When a model has **attached knowledge bases**, it can only access those specific KBs (not all user-accessible KBs). See [Knowledge Scoping with Native Function Calling](/features/workspace/knowledge#scoped-access-keeps-things-organized) for details.
+:::tip 模型的知识库范围
+除可见性外，知识库访问也受模型配置限制。当模型附加了**特定知识库**时，它只能访问这些 KB（而非所有用户可访问的 KB）。详情请参阅[使用原生函数调用的知识库范围](/features/workspace/knowledge#scoped-access-keeps-things-organized)。
 :::
 
-### Access Grant System
-At a deeper level, resource access is managed through normalized **access grants** stored in the database. Each grant specifies:
+### 访问授权系统
+在更深层面，资源访问通过数据库中存储的标准化**访问授权**进行管理。每个授权指定：
 
-*   **Resource**: The type and ID of the resource (e.g., a specific model or knowledge base).
-*   **Principal**: Who receives access — either a **group** or an **individual user**.
-*   **Permission**: The level of access — `read` or `write`.
+*   **资源**：资源的类型和 ID（例如特定模型或知识库）。
+*   **主体**：谁获得访问权限——**用户组**或**单个用户**。
+*   **权限**：访问级别——`read`（读取）或 `write`（写入）。
 
-For example, granting the "Marketing" group read access and a specific editor user write access to a model would create two separate grant entries. Public access is represented by a user grant with a wildcard (`*`) principal.
+例如，授予"市场营销"用户组对某模型的读取访问权限，以及授予特定编辑用户写入访问权限，将创建两个独立的授权条目。公开访问由具有通配符（`*`）主体的用户授权表示。
 
-*   **Read**: Users can view and use the resource.
-*   **Write**: Users can update or delete the resource.
+*   **读取**：用户可以查看和使用资源。
+*   **写入**：用户可以更新或删除资源。

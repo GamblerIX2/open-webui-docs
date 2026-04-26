@@ -1,190 +1,190 @@
 ---
 sidebar_position: 2
-title: "Notes"
+title: "笔记"
 ---
 
-# 📝 Notes
+# 📝 笔记
 
-**Write, think, and refine with AI by your side.**
+**在 AI 陪伴下写作、思考与打磨内容。**
 
-You search, you discover, you synthesize. Notes is where that becomes lasting knowledge. It's a dedicated workspace for content that lives outside of any single conversation: drafts, cheat sheets, research findings, project briefs. Things you build up over time, refine with AI, and inject into future chats as context.
+您搜索、发现、综合。笔记让这些成为持久的知识。这是一个专为超越单次对话的内容而设计的工作空间：草稿、速查表、研究发现、项目简报。这些内容随时间积累、用 AI 打磨，并注入未来的对话作为上下文。
 
-Unlike standard chats, which are linear and ephemeral, Notes are persistent documents you can return to, edit, and share. Unlike Documents (RAG), which use vector search to find relevant chunks, Notes inject their full content directly into context, giving you precise control over what the AI sees.
-
----
-
-## Why Notes?
-
-### AI-assisted writing, built in
-
-Highlight text and click **Enhance** to let the AI rewrite it in place. Or open the **Chat sidebar** to brainstorm, critique, or expand on your content in a focused conversation without leaving the editor.
-
-### Precise context injection
-
-When you attach a Note to a chat, the AI reads the entire document, word for word. No chunking, no vector search, no guessing. You control exactly what the model sees.
-
-### Persistent, not disposable
-
-Notes exist outside of chats. Write a coding reference, refine it over weeks, and attach it to any conversation whenever you need it.
-
-### AI can read and write your notes
-
-With [native function calling](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models can search, read, create, and update your notes autonomously, turning Notes into a dynamic long-term memory.
+与线性且短暂的标准对话不同，笔记是持久文档，您可以随时返回、编辑和共享。与使用向量搜索查找相关片段的文档（RAG）不同，笔记将全部内容直接注入上下文，让您精确控制 AI 看到的内容。
 
 ---
 
-## Key Features
+## 为什么使用笔记？
+
+### 内置 AI 辅助写作
+
+选中文字并点击 **优化**，让 AI 就地改写。或打开 **对话侧边栏**，在不离开编辑器的情况下，针对您的内容进行头脑风暴、批评或扩展。
+
+### 精确的上下文注入
+
+当您将笔记附加到对话时，AI 会逐字阅读整个文档。无分块、无向量搜索、无猜测。您精确控制模型看到的内容。
+
+### 持久，而非一次性
+
+笔记独立于对话存在。写一个编码参考资料，花数周时间完善它，在需要时将其附加到任何对话中。
+
+### AI 可以读写您的笔记
+
+启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型可以自主搜索、读取、创建和更新您的笔记，将笔记转变为动态的长期记忆。
+
+---
+
+## 主要功能
 
 | | |
 | :--- | :--- |
-| ✍️ **Rich editor** | Markdown and Rich Text with a floating formatting toolbar |
-| 🤖 **AI Enhance** | Rewrite or improve selected text in place |
-| 💬 **Chat sidebar** | Have a focused AI conversation about your note's content |
-| 📎 **Context injection** | Attach notes to any chat for full-fidelity context |
-| 📌 **Pin to sidebar** | Pin frequently used notes for quick access from the sidebar |
-| 🔍 **Agentic access** | Models can search, read, and update notes autonomously |
-| 📤 **Export** | Download as `.txt`, `.md`, or `.pdf` |
+| ✍️ **富文本编辑器** | 带悬浮格式工具栏的 Markdown 和富文本 |
+| 🤖 **AI 优化** | 就地改写或改进选中文本 |
+| 💬 **对话侧边栏** | 针对笔记内容进行专注的 AI 对话 |
+| 📎 **上下文注入** | 将笔记附加到任何对话以获得完整精度的上下文 |
+| 📌 **固定到侧边栏** | 固定常用笔记，从侧边栏快速访问 |
+| 🔍 **智能体访问** | 模型可以自主搜索、读取和更新笔记 |
+| 📤 **导出** | 下载为 `.txt`、`.md` 或 `.pdf` |
 
 ---
 
-## The Editor
+## 编辑器
 
-Notes uses a context-aware **floating toolbar** for formatting:
+笔记使用上下文感知的**悬浮工具栏**进行格式化：
 
-* **Click on empty space** to start new headers, lists, or task lists
-* **Double-click text** to apply bold, italic, underline, strikethrough, or inline code
-* **Drag-and-drop** list items to reorder
+* **点击空白处**开始新的标题、列表或任务列表
+* **双击文本**可应用粗体、斜体、下划线、删除线或行内代码
+* **拖放**列表项以重新排序
 
-The top bar shows real-time **word and character counts**, and a **microphone icon** enables voice dictation.
+顶部栏显示实时**字数和字符数**，**麦克风图标**可启用语音听写。
 
-:::info Rich Text in Chats
-This editor can also be enabled for standard chats: **Settings > Interface > Rich Text Input for Chat** and **Show Formatting Toolbar**.
+:::info 对话中的富文本
+此编辑器也可用于标准对话：**设置 > 界面 > 对话富文本输入**和**显示格式工具栏**。
 :::
 
 ---
 
-## AI Integration
+## AI 集成
 
-Click the **AI button** (bottom right) to access:
+点击 **AI 按钮**（右下角）访问：
 
-### Enhance
+### 优化
 
-Select text (or leave nothing selected for the whole note) and click **Enhance**. The AI rewrites it in place using the model selected in the note's controls.
+选择文本（或不选以处理整个笔记），点击**优化**。AI 使用笔记控制栏中选定的模型就地改写内容。
 
-### Chat Sidebar
+### 对话侧边栏
 
-Opens a dedicated conversation focused on the note's content. Ask the AI to summarize, extract data, critique, or rewrite specific sections. Use the **Edit toggle** to manually modify the context sent to the AI before submitting.
+打开一个专注于笔记内容的专用对话。请 AI 总结、提取数据、批评或改写特定部分。使用**编辑切换**在提交前手动修改发送给 AI 的上下文。
 
-All AI changes are tracked by **Undo/Redo** (top right), so you can always revert.
-
----
-
-## Using Notes in Chat
-
-1. Go to the **Chat Input** bar
-2. Click the **+ (More)** button
-3. Select **Attach Notes**
-4. Choose the note(s) to attach
-
-The full content of the note is injected into the context window for that conversation.
+所有 AI 更改都通过**撤销/重做**（右上角）跟踪，因此您可以随时回滚。
 
 ---
 
-## Agentic Note Management
+## 在对话中使用笔记
 
-With [**native function calling**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models can work with your notes autonomously:
+1. 进入**对话输入**栏
+2. 点击 **+（更多）** 按钮
+3. 选择**附加笔记**
+4. 选择要附加的笔记
 
-| Tool | What it does |
+笔记的全部内容将注入到该对话的上下文窗口中。
+
+---
+
+## 智能体笔记管理
+
+启用[**原生函数调用**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型可以自主处理您的笔记：
+
+| 工具 | 功能 |
 |------|-------------|
-| `search_notes` | Search your notes by title and content |
-| `view_note` | Read the full content of a note |
-| `write_note` | Create a new note |
-| `replace_note_content` | Update an existing note |
+| `search_notes` | 按标题和内容搜索您的笔记 |
+| `view_note` | 读取笔记的完整内容 |
+| `write_note` | 创建新笔记 |
+| `replace_note_content` | 更新现有笔记 |
 
-> **You:** Search my "Project X" notes and find the database schema.
+> **您：** 搜索我的"Project X"笔记，找到数据库 schema。
 >
-> **You:** Add a new task to my "Weekly Todo" note to review the PR.
+> **您：** 在我的"每周待办"笔记中添加一项审查 PR 的任务。
 
 ---
 
-## Pinning Notes
+## 固定笔记
 
-Pin important notes to the sidebar for quick access. Pinned notes appear in a dedicated **Notes** folder in the sidebar, just like pinned chats.
+将重要笔记固定到侧边栏，便于快速访问。固定的笔记显示在侧边栏专用的**笔记**文件夹中，就像固定的对话一样。
 
-### How to pin
+### 如何固定
 
-* From the **Notes list**: click the **⋯** menu on any note and select **Pin to Sidebar**
-* From the **Note editor**: click the **⋯** menu in the top right and select **Pin to Sidebar**
+* 从**笔记列表**：点击任意笔记上的 **⋯** 菜单，选择**固定到侧边栏**
+* 从**笔记编辑器**：点击右上角的 **⋯** 菜单，选择**固定到侧边栏**
 
-### How to unpin
+### 如何取消固定
 
-* From the **sidebar**: hover over the pinned note and click the **✕** button
-* From the **Notes list** or **editor**: click the **⋯** menu and select **Unpin**
+* 从**侧边栏**：将鼠标悬停在固定笔记上，点击 **✕** 按钮
+* 从**笔记列表**或**编辑器**：点击 **⋯** 菜单，选择**取消固定**
 
-The sidebar Notes folder only appears when at least one note is pinned and the Notes feature is enabled.
+侧边栏笔记文件夹仅在至少有一个笔记被固定且笔记功能已启用时显示。
 
 ---
 
-## Management and Sharing
+## 管理与共享
 
-Access management options via the **More (...)** menu in the top right corner.
+通过右上角的**更多（...）**菜单访问管理选项。
 
-### Export
+### 导出
 
-* **Plain text (.txt)** or **Markdown (.md)** for raw content
-* **PDF (.pdf)** with visual formatting (dark mode detected automatically)
+* **纯文本（.txt）**或 **Markdown（.md）**，用于原始内容
+* **PDF（.pdf）**，带视觉格式（自动检测深色模式）
 
-### Sharing
+### 共享
 
-* **Copy Link** to share the note URL
-* **Copy to Clipboard** to paste the content elsewhere
+* **复制链接**以共享笔记 URL
+* **复制到剪贴板**以在其他地方粘贴内容
 
-Administrators can control sharing via environment variables or the Admin Panel:
+管理员可以通过环境变量或管理面板控制共享：
 
-* `USER_PERMISSIONS_NOTES_ALLOW_SHARING` for internal sharing
-* `USER_PERMISSIONS_NOTES_ALLOW_PUBLIC_SHARING` for public links
+* `USER_PERMISSIONS_NOTES_ALLOW_SHARING` 用于内部共享
+* `USER_PERMISSIONS_NOTES_ALLOW_PUBLIC_SHARING` 用于公开链接
 
-These can also be configured in **Admin Panel > Settings > Users > Default Permissions**.
+也可以在**管理面板 > 设置 > 用户 > 默认权限**中配置这些选项。
 
-### Quick creation
+### 快速创建
 
-* Navigate to `/notes/new` to open a blank note
-* Add query parameters: `/notes/new?title=My%20Title&content=Initial%20text`
-* Create from global search (`Cmd+K` / `Ctrl+K`) by selecting "Create a new note"
-* Import `.md` files by dragging them onto the Notes list
+* 导航到 `/notes/new` 打开空白笔记
+* 添加查询参数：`/notes/new?title=My%20Title&content=Initial%20text`
+* 从全局搜索（`Cmd+K` / `Ctrl+K`）选择"创建新笔记"
+* 将 `.md` 文件拖放到笔记列表上以导入
 
-### View options
+### 视图选项
 
-Toggle between **Created by you** and **Shared with you** filters, and switch between **List** and **Grid** layouts.
+在**我创建的**和**共享给我的**过滤器之间切换，以及在**列表**和**网格**布局之间切换。
 
-:::info Admin Visibility
-Notes are workspace items. By default (`BYPASS_ADMIN_ACCESS_CONTROL=True`), administrators can see all users' notes. Set `BYPASS_ADMIN_ACCESS_CONTROL` to `False` to restrict this. See [Environment Configuration](/reference/env-configuration#bypass_admin_access_control) for details.
+:::info 管理员可见性
+笔记是工作区项目。默认情况下（`BYPASS_ADMIN_ACCESS_CONTROL=True`），管理员可以看到所有用户的笔记。将 `BYPASS_ADMIN_ACCESS_CONTROL` 设置为 `False` 以限制此功能。详情请参阅[环境配置](/reference/env-configuration#bypass_admin_access_control)。
 :::
 
 ---
 
-## Use Cases
+## 使用场景
 
-### Living drafts
+### 不断演进的草稿
 
-Draft something in Notes, use **Enhance** to expand bullet points into paragraphs, and use the **Chat sidebar** to brainstorm titles. The Note is the final product, not just a reference.
+在笔记中起草内容，使用**优化**将要点扩展为段落，使用**对话侧边栏**头脑风暴标题。笔记是最终成果，而不仅仅是参考资料。
 
-### High-fidelity code context
+### 高精度代码上下文
 
-RAG uses vector search, which is probabilistic and might miss a crucial line. Paste specific functions into a Note and attach it so the model sees 100% of your code, exactly as arranged.
+RAG 使用向量搜索，概率性强，可能会漏掉关键代码行。将特定函数粘贴到笔记中并附加，这样模型就能看到 100% 的代码，完全按照您的排列方式。
 
-### Data sanitization
+### 数据脱敏
 
-Paste server logs containing sensitive data into a Note, redact the keys (or use Enhance to "Anonymize this text"), then attach the sanitized Note to a chat. This prevents leaking sensitive data into your chat history.
+将包含敏感数据的服务器日志粘贴到笔记中，编辑掉密钥（或使用"优化"功能"匿名化此文本"），然后将脱敏后的笔记附加到对话中。这样可以防止敏感数据泄露到您的对话历史中。
 
 ---
 
-## Limitations
+## 局限性
 
-### Context window usage
+### 上下文窗口占用
 
-Attaching a note injects the full text. A very large note attached to a model with a small context window may cause the model to lose earlier conversation context.
+附加笔记会注入全文。将非常大的笔记附加到上下文窗口较小的模型时，可能导致模型丢失早期对话上下文。
 
-### Write access
+### 写入访问
 
-When manually attached, notes are **read-only**. In **Native Mode** with the `replace_note_content` tool enabled, models can modify your notes. Review changes and use **Undo/Redo** if needed.
+手动附加时，笔记是**只读**的。在**原生模式**下，启用了 `replace_note_content` 工具后，模型可以修改您的笔记。如有需要，请检查更改并使用**撤销/重做**。

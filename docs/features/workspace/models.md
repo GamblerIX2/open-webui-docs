@@ -1,195 +1,195 @@
 ---
 sidebar_position: 2
-title: "Models"
-sidebar_label: "Models"
+title: "模型"
+sidebar_label: "模型"
 ---
 
-# 🤖 Models
+# 🤖 模型
 
-**Wrap any model with custom instructions, tools, and knowledge to build specialized agents.**
+**用自定义指令、工具和知识库包装任何模型，构建专属智能体。**
 
-The Models workspace lets you create configuration presets that sit on top of any base model. Pick GPT-4o, Claude, Llama 3, or anything else connected to Open WebUI, then bind a system prompt, knowledge bases, tools, skills, and parameter overrides to it. The result is a purpose-built agent that behaves exactly the way you need without modifying the underlying model.
+模型工作区让您创建叠加在任何基础模型之上的配置预设。选择 GPT-4o、Claude、Llama 3 或 Open WebUI 连接的任何其他模型，然后将系统提示词、知识库、工具、技能和参数覆盖绑定到它。结果是一个行为完全符合需求的专用智能体，无需修改底层模型。
 
-A "Python Tutor" that always uses your style guide. A "Meeting Summarizer" with your company's template. A "Code Reviewer" with your linting rules baked in. Every agent is a thin wrapper: pick a base model, configure it, and share it with your team.
-
----
-
-## Why Models?
-
-### One base model, many personas
-
-The same GPT-4o can power a coding assistant, a customer support bot, and a creative writer. Each preset has its own system prompt, tools, and knowledge, so the model behaves differently depending on which preset is selected.
-
-### Knowledge and tools come pre-attached
-
-Instead of manually attaching documents and enabling tools every chat, bind them once to the model preset. Users get a fully configured agent out of the box.
-
-### Granular access control
-
-Restrict models to specific users or groups. A finance team sees their models; engineering sees theirs. Admins control what's available instance-wide.
-
-### Dynamic system prompts
-
-Use Jinja2-style variables like `{{ USER_NAME }}` and `{{ CURRENT_DATE }}` so the system prompt adapts to each user and session automatically.
+一个始终使用您的风格指南的"Python 导师"。一个使用公司模板的"会议摘要助手"。一个内置了代码规范规则的"代码审查员"。每个智能体都是一个轻薄包装器：选择一个基础模型，配置它，然后与团队共享。
 
 ---
 
-## Key Features
+## 为什么使用模型？
+
+### 一个基础模型，多种角色
+
+同一个 GPT-4o 可以驱动编程助手、客户支持机器人和创意写作工具。每个预设都有自己的系统提示词、工具和知识库，因此根据所选预设，模型的行为会有所不同。
+
+### 知识库和工具预先附加
+
+不再需要每次对话都手动附加文档和启用工具，只需将它们一次性绑定到模型预设。用户开箱即可获得完全配置的智能体。
+
+### 细粒度访问控制
+
+将模型限制为特定用户或用户组。财务团队看到他们的模型；工程团队看到他们的模型。管理员控制实例范围内的可用内容。
+
+### 动态系统提示词
+
+使用 Jinja2 风格的变量，如 `{{ USER_NAME }}` 和 `{{ CURRENT_DATE }}`，使系统提示词自动适应每个用户和会话。
+
+---
+
+## 主要功能
 
 | | |
 | :--- | :--- |
-| 🧩 **Model presets** | System prompt, tools, knowledge, skills, and parameters in one package |
-| 🏷️ **Dynamic variables** | `{{ USER_NAME }}`, `{{ CURRENT_DATE }}`, `{{ CURRENT_TIME }}` injected automatically |
-| 🔧 **Bound tools** | Force-enable specific tools per model |
-| 📚 **Attached knowledge** | Knowledge bases and files always available via RAG or full context |
-| 🎭 **Skills** | Bind markdown instruction sets loaded on-demand via `view_skill` |
-| 👥 **Access control** | Restrict to specific users or groups |
-| 📊 **Global defaults** | Set baseline capabilities and parameters for all models at once |
-| 🔊 **Per-model TTS voice** | Give each persona its own voice |
+| 🧩 **模型预设** | 系统提示词、工具、知识库、技能和参数集于一体 |
+| 🏷️ **动态变量** | `{{ USER_NAME }}`、`{{ CURRENT_DATE }}`、`{{ CURRENT_TIME }}` 自动注入 |
+| 🔧 **绑定工具** | 按模型强制启用特定工具 |
+| 📚 **附加知识库** | 通过 RAG 或全文上下文始终可用的知识库和文件 |
+| 🎭 **技能** | 绑定 Markdown 指令集，通过 `view_skill` 按需加载 |
+| 👥 **访问控制** | 限制为特定用户或用户组 |
+| 📊 **全局默认值** | 一次性为所有模型设置基础能力和参数 |
+| 🔊 **每模型 TTS 声音** | 为每个角色设置专属语音 |
 
 ---
 
-## Creating a Model
+## 创建模型
 
-Click **+ New Model** in **Workspace > Models**, or click the ellipsis (**...**) on an existing model and select **Edit**.
+在**工作区 > 模型**中点击 **+ 新建模型**，或点击现有模型上的省略号（**...**）并选择**编辑**。
 
-### Core configuration
+### 核心配置
 
-| Field | Description |
+| 字段 | 说明 |
 | :--- | :--- |
-| **Avatar** | Upload a custom image. Animated GIF and WebP are supported |
-| **Name and ID** | Display name and unique identifier |
-| **Base Model** | The actual model that powers this agent |
-| **Description** | Short summary shown in the model selector |
-| **Tags** | Organize models in the dropdown |
-| **Visibility** | Private (specific users/groups) or public |
+| **头像** | 上传自定义图片。支持动态 GIF 和 WebP |
+| **名称和 ID** | 显示名称和唯一标识符 |
+| **基础模型** | 驱动此智能体的实际模型 |
+| **描述** | 模型选择器中显示的简短摘要 |
+| **标签** | 在下拉菜单中组织模型 |
+| **可见性** | 私有（特定用户/用户组）或公开 |
 
-### System prompt and variables
+### 系统提示词和变量
 
-The system prompt defines the behavior and persona. Use dynamic variables for context-aware instructions:
+系统提示词定义了行为和角色。使用动态变量实现上下文感知的指令：
 
-| Variable | Output example |
+| 变量 | 输出示例 |
 | :--- | :--- |
 | `{{ CURRENT_DATE }}` | `2024-10-27` |
 | `{{ CURRENT_TIME }}` | `14:30:05` |
 | `{{ USER_NAME }}` | `Admin` |
 
 ```
-You are a helpful assistant for {{ USER_NAME }}.
-The current date is {{ CURRENT_DATE }}.
+您是 {{ USER_NAME }} 的助手。
+当前日期是 {{ CURRENT_DATE }}。
 ```
 
-### Capabilities and bindings
+### 能力和绑定
 
-Toggle what the model can do and bind resources:
+切换模型可以执行的操作并绑定资源：
 
-| Setting | What it controls |
+| 设置 | 控制内容 |
 | :--- | :--- |
-| **Knowledge** | Bind collections or files. Click attached items to toggle between Focused Retrieval and Full Context. See [Retrieval Modes](/features/workspace/knowledge#retrieval-modes) |
-| **Tools** | Force-enable specific tools (e.g., Calculator for a Math Bot) |
-| **Skills** | Bind [Skills](/features/workspace/skills) so their manifests are always injected |
-| **Filters** | Attach pipeline filters (e.g., PII redaction) |
-| **Actions** | Attach action scripts (e.g., "Add to Memories") |
-| **Vision** | Enable image analysis (requires a vision-capable base model) |
-| **Web Search** | Enable the configured search provider |
-| **Code Interpreter** | Enable Python code execution |
-| **Image Generation** | Enable image generation |
-| **Builtin Tools** | Control which tool categories are available: Time, Memory, Chats, Notes, Knowledge, Channels, Task Management, Automations |
-| **File Context** | When enabled, attached files are processed via RAG. When disabled, no file content is extracted |
-| **TTS Voice** | Set a specific voice for this model's responses |
+| **知识库** | 绑定集合或文件。点击已附加项在专注检索和全文上下文之间切换。参见[检索模式](/features/workspace/knowledge#retrieval-modes) |
+| **工具** | 强制启用特定工具（例如为数学机器人启用计算器） |
+| **技能** | 绑定[技能](/features/workspace/skills)，使其清单始终被注入 |
+| **过滤器** | 附加流水线过滤器（例如 PII 脱敏） |
+| **操作** | 附加操作脚本（例如"添加到记忆"） |
+| **视觉** | 启用图像分析（需要支持视觉的基础模型） |
+| **网络搜索** | 启用已配置的搜索提供商 |
+| **代码解释器** | 启用 Python 代码执行 |
+| **图像生成** | 启用图像生成 |
+| **内置工具** | 控制可用的工具类别：时间、记忆、对话、笔记、知识库、频道、任务管理、自动化 |
+| **文件上下文** | 启用时，附加文件通过 RAG 处理。禁用时，不提取文件内容 |
+| **TTS 声音** | 为此模型的响应设置特定语音 |
 
-### Advanced parameters
+### 高级参数
 
-- **Stop Sequences**: Force-stop generation on specific strings (e.g., `<|end_of_text|>`, `User:`). Press Enter after each.
-- **Temperature, Top P, etc.**: Adjust creativity and determinism.
+- **停止序列**：在特定字符串处强制停止生成（例如 `<|end_of_text|>`、`User:`）。每个后按 Enter。
+- **温度、Top P 等**：调整创造力和确定性。
 
-### Prompt suggestions
+### 提示词建议
 
-Clickable starter chips that appear when a user opens a fresh chat with this model. Add phrases like "Explain this code step-by-step" or "Summarize this document" to guide users.
+用户使用此模型打开新对话时显示的可点击起始标签。添加诸如"逐步解释这段代码"或"总结这份文档"等短语，引导用户。
 
 ---
 
-## Model Management
+## 模型管理
 
-From the model list, click the ellipsis (**...**) on any model:
+从模型列表中，点击任意模型上的省略号（**...**）：
 
-| Action | Description |
+| 操作 | 说明 |
 | :--- | :--- |
-| **Edit** | Open the configuration panel |
-| **Hide** | Remove from the model selector without deleting |
-| **Clone** | Create a copy (appends `-clone`) |
-| **Copy Link** | Copy a direct URL to the model settings |
-| **Export** | Download the configuration as `.json` |
-| **Share** | Share to the Open WebUI community |
-| **Delete** | Permanently remove the preset |
+| **编辑** | 打开配置面板 |
+| **隐藏** | 从模型选择器中移除，不删除 |
+| **克隆** | 创建副本（附加 `-clone`） |
+| **复制链接** | 复制模型设置的直接 URL |
+| **导出** | 将配置下载为 `.json` |
+| **分享** | 分享到 Open WebUI 社区 |
+| **删除** | 永久删除预设 |
 
-### Import and export
+### 导入和导出
 
-- **Import**: From `.json` files or Open WebUI community links
-- **Export**: Download all custom model configurations as a single `.json`
-- **Discover**: Browse community presets at the bottom of the page
+- **导入**：从 `.json` 文件或 Open WebUI 社区链接导入
+- **导出**：将所有自定义模型配置下载为单个 `.json`
+- **发现**：在页面底部浏览社区预设
 
-:::info Downloading base models
-To download new base models, go to **Settings > Connections > Ollama** or type `ollama run hf.co/{username}/{repository}:{quantization}` in the model selector.
+:::info 下载基础模型
+要下载新的基础模型，请进入**设置 > 连接 > Ollama** 或在模型选择器中输入 `ollama run hf.co/{username}/{repository}:{quantization}`。
 :::
 
 ---
 
-## Global Model Defaults (Admin)
+## 全局模型默认值（管理员）
 
-Administrators can set baseline capabilities and parameters that apply to all models via **Admin Panel > Settings > Models > ⚙️ (gear icon)**.
+管理员可以通过**管理面板 > 设置 > 模型 > ⚙️（齿轮图标）**设置适用于所有模型的基础能力和参数。
 
-- **Default Model Metadata** (`DEFAULT_MODEL_METADATA`): Baseline capabilities (vision, web search, file context, code interpreter, builtin tools). Per-model overrides always win on conflicts.
-- **Default Model Params** (`DEFAULT_MODEL_PARAMS`): Baseline inference parameters (temperature, top_p, max_tokens, function_calling). Per-model values take precedence when explicitly set. This value is loaded from the environment as JSON; invalid JSON is ignored and falls back to `{}`.
+- **默认模型元数据**（`DEFAULT_MODEL_METADATA`）：基础能力（视觉、网络搜索、文件上下文、代码解释器、内置工具）。冲突时，按模型的覆盖始终优先。
+- **默认模型参数**（`DEFAULT_MODEL_PARAMS`）：基础推理参数（温度、top_p、max_tokens、function_calling）。明确设置时，按模型值优先。此值作为 JSON 从环境变量加载；无效 JSON 会被忽略，回退到 `{}`。
 
-### Merge behavior
+### 合并行为
 
-| Setting type | Strategy | Example |
+| 设置类型 | 策略 | 示例 |
 |---|---|---|
-| **Capabilities** | Deep merge | Global sets `file_context: false`, model sets `vision: true` > model gets both |
-| **Other metadata** | Fill-only | Global sets description, model has none > model gets the global value |
-| **Parameters** | Simple merge | Global sets `temperature: 0.7`, model sets `0.3` > model gets `0.3` |
+| **能力** | 深度合并 | 全局设置 `file_context: false`，模型设置 `vision: true` → 模型同时获得两者 |
+| **其他元数据** | 仅填充 | 全局设置描述，模型无描述 → 模型获得全局值 |
+| **参数** | 简单合并 | 全局设置 `temperature: 0.7`，模型设置 `0.3` → 模型获得 `0.3` |
 
-:::warning Knowledge base + function calling interaction
-Setting `function_calling: native` in global params changes how **all** models handle attached knowledge bases. In native mode, model-attached KBs are not auto-injected. The model must call builtin tools to retrieve knowledge. If your knowledge bases suddenly stop working, check global defaults first.
+:::warning 知识库 + 函数调用交互
+在全局参数中设置 `function_calling: native` 会改变**所有**模型处理附加知识库的方式。在原生模式下，绑定到模型的知识库不会自动注入。模型必须调用内置工具来检索知识。如果您的知识库突然停止工作，请先检查全局默认值。
 
-See [Knowledge Base troubleshooting](/troubleshooting/rag#13-knowledge-base-attached-to-model-not-working).
+参见[知识库故障排查](/troubleshooting/rag#13-knowledge-base-attached-to-model-not-working)。
 :::
 
-### Bulk management
+### 批量管理
 
-Filter the admin model list by status (Enabled, Disabled, Visible, Hidden) and use **Bulk Actions** to enable or disable all models in the current view at once. Useful when external providers expose hundreds of models.
-
----
-
-## Model Switching in Chat
-
-Switch models mid-conversation without losing context. Select up to two models simultaneously to compare responses side-by-side, using the arrow buttons to navigate between them.
+按状态（启用、禁用、可见、隐藏）过滤管理员模型列表，并使用**批量操作**一次性启用或禁用当前视图中的所有模型。当外部提供商暴露数百个模型时非常有用。
 
 ---
 
-## Use Cases
+## 对话中切换模型
 
-### Team-specific agents
-
-Create a "Sales Assistant" with your CRM knowledge base, objection-handling prompts, and email drafting tools. Share it with the sales group. Engineering never sees it.
-
-### Onboarding new users
-
-Build models with descriptive prompt suggestions ("Ask me about our company policies", "Help me set up my development environment") so new team members know exactly what to ask.
-
-### Enforcing organizational standards
-
-Set global defaults to disable code interpreter across all models, enforce a consistent temperature, or require function calling. Individual models can override when needed.
+在不丢失上下文的情况下切换模型。同时选择最多两个模型，并排比较响应，使用箭头按钮在它们之间导航。
 
 ---
 
-## Limitations
+## 使用场景
 
-### Preset, not fine-tune
+### 团队专属智能体
 
-Model presets configure behavior through system prompts and tool bindings. They do not modify the underlying model weights. For deep behavioral changes, you need actual fine-tuning.
+创建一个带有 CRM 知识库、异议处理提示词和邮件起草工具的"销售助手"。与销售用户组共享。工程团队永远看不到它。
 
-### Fallback requires configuration
+### 新用户引导
 
-If a base model becomes unavailable, the preset will fail unless `ENABLE_CUSTOM_MODEL_FALLBACK` is set to `True` and a default model is configured in Admin Panel > Settings > Models.
+构建带有描述性提示词建议的模型（"问我公司政策"、"帮我设置开发环境"），让新团队成员清楚地知道该问什么。
+
+### 强制执行组织标准
+
+设置全局默认值以禁用所有模型的代码解释器、强制执行一致的温度，或要求函数调用。需要时，各模型可以覆盖。
+
+---
+
+## 局限性
+
+### 预设而非微调
+
+模型预设通过系统提示词和工具绑定配置行为。它们不修改底层模型权重。对于深层行为更改，您需要实际的微调。
+
+### 回退需要配置
+
+如果基础模型不可用，预设将会失败，除非将 `ENABLE_CUSTOM_MODEL_FALLBACK` 设置为 `True` 并在管理面板 > 设置 > 模型中配置了默认模型。

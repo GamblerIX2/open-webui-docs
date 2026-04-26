@@ -1,84 +1,82 @@
 ---
 sidebar_position: 3
-title: "Build & Preview Websites"
+title: "构建和预览网站"
 ---
 
-# Build and Preview Websites
+# 构建和预览网站
 
-One of the most impressive things Open Terminal can do: the AI builds a website, starts a server, and you **see it live in a preview panel** — all inside Open WebUI. Then you tell it what to change, and the preview updates in real time.
-
----
-
-## How it works
-
-1. You ask the AI to create a website (or web app, or landing page, or anything web-based)
-2. The AI creates the files and starts a web server
-3. Open Terminal **automatically detects** the running server
-4. A **preview panel** appears in Open WebUI showing the live page
-5. You ask for changes → the AI edits the files → the preview updates
-
-![AI creating a landing page with file browser showing the created files](/images/open-terminal-ai-web-dev.png)
+Open Terminal 最令人印象深刻的功能之一：AI 构建网站、启动服务器，你**在预览面板中实时查看**——所有这些都在 Open WebUI 内完成。然后你告诉它要修改什么，预观实时更新。
 
 ---
 
-## "Make me a landing page"
+## 工作原理
 
-> **You:** Create a landing page for my photography business. Include a gallery, an about section, and a contact form.
+1. 你要求 AI 创建网站（或网应用、著陆页或任何基于 Web 的内容）
+2. AI 创建文件并启动 Web 服务器
+3. Open Terminal **自动检测**到运行中的服务器
+4. Open WebUI 中出现**预览面板**，显示实时页面
+5. 你说出修改要求 → AI 编辑文件 → 预览更新
 
-The AI creates the HTML, CSS, and JavaScript files, starts a web server, and the preview appears automatically. It looks professional and polished — not a skeleton wireframe.
+![AI 创建著陆页，文件浏览器显示已创建的文件](/images/open-terminal-ai-web-dev.png)
+
+---
+
+## “给我做一个著陆页”
+
+> **你：** 为我的摄影业务创建一个著陆页。包含相册、关于我的部分和联系表单。
+
+AI 创建 HTML、CSS 和 JavaScript 文件，启动 Web 服务器，预览自动出现。页面专业精致——不是简单的线框居。
 
 ![File browser showing the created HTML files](/images/open-terminal-ai-web-dev-files.png)
 
 ---
 
-## "Change the colors and layout"
+## “修改颜色和布局”
 
-Once the page is live, just keep talking to iterate:
+页面上线后，继续对话即可迭代修改：
 
-> **You:** Make the background dark and use a warmer color palette. Move the gallery above the about section.
+> **你：** 改成深色背景，使用更暖调的配色方案。将相册移到关于我的部分上方。
 
-The AI edits the files, and the preview updates.
-
-The AI edits the CSS and HTML files, and the preview updates instantly.
+AI 编辑 CSS 和 HTML 文件，预览立即更新。
 
 ---
 
-## "Build me something interactive"
+## “给我做一个交互式应用”
 
-The AI can create interactive web applications, not just static pages:
+AI 能创建交互式网应用，不仅仅是静态页面：
 
-> **You:** Build a simple calculator that runs in the browser.
+> **你：** 做一个可在浏览器里运行的简单计算器。
 
-![AI creating and running code for interactive applications](/images/open-terminal-ai-code-execution.png)
-
----
-
-## "Help me fix my website"
-
-Got an existing website that's broken or needs changes? Upload the files and ask:
-
-> **You:** *(uploads HTML/CSS files via the file browser)* <br/>
-> The contact form doesn't submit. Can you fix it?
-
-The AI reads your code, identifies the problem, fixes it, and you verify in the preview.
-
-![AI identifying and fixing code errors](/images/open-terminal-ai-debug-fix.png)
+![AI 创建并运行交互式应用的代码](/images/open-terminal-ai-code-execution.png)
 
 ---
 
-## How port detection works
+## “帮我修复我的网站”
 
-You don't need to do anything special for the preview to appear. Behind the scenes:
+已有网站出问题或需要修改？上传文件并说明情况：
 
-1. The AI starts a web server (like `python -m http.server 3000` or any other server)
-2. Open Terminal monitors for new network ports
-3. When it detects the server is running, it reports the port to Open WebUI
-4. Open WebUI displays the preview panel, proxying the traffic through its own connection
+> **你：** *（通过文件浏览器上传 HTML/CSS 文件）* <br/>
+> 联系表单无法提交。能修复吗？
 
-This means **you don't need to open extra ports** or change any firewall settings. It just works.
+AI 读取你的代码，找到问题，修复它，你在预览中验证。
 
-:::tip Multiple previews
-If the AI starts more than one server (say, a frontend on port 3000 and a backend API on port 5000), you can switch between them in the ports section.
+![AI 定位并修复代码错误](/images/open-terminal-ai-debug-fix.png)
+
+---
+
+## 端口检测原理
+
+预览出现不需要任何特殊操作。幕后的工作原理：
+
+1. AI 启动 Web 服务器（如 `python -m http.server 3000` 或其他服务器）
+2. Open Terminal 监控新的网络端口
+3. 检测到服务器运行后，向 Open WebUI 报告端口
+4. Open WebUI 通过自身的连接代理流量，展示预览面板
+
+这意味着**不需要开放额外端口**或更改防火墙设置。直接使用即可。
+
+:::tip 多个预览
+如果 AI 启动了多个服务器（例如前端在端口 3000，后端 API 在端口 5000），你可以在端口区域中切换它们。
 :::
 
 ## More things to try

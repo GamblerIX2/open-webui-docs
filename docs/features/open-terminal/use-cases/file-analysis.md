@@ -1,9 +1,95 @@
 ---
 sidebar_position: 2
-title: "Analyze Documents & Data"
+title: "分析文档和数据"
 ---
 
-# Analyze Your Documents and Data
+# 分析你的文档和数据
+
+有一大堆电子表格、PDF、Word 文档或邮件需要整理？将它们拖入文件浏览器，让 AI 替你阅读。Open Terminal 可以打开并理解所有这些格式——无需任何特殊设置。
+
+## 可以读取哪些文件类型？
+
+| 类型 | 格式 |
+| :--- | :--- |
+| **电子表格** | Excel（.xlsx、.xls）、OpenDocument（.ods）、CSV |
+| **文档** | Word（.docx）、OpenDocument（.odt）、RTF（.rtf）、PDF |
+| **演示文稿** | PowerPoint（.pptx）、OpenDocument（.odp） |
+| **其他** | 邮件（.eml）、电子书（.epub）、纯文本、HTML、Markdown、JSON、XML |
+
+AI 可以直接读取所有这些格式——无需将其上传到外部服务。文件内容存储在你的服务器上并在本地处理。
+
+---
+
+## “将这份报告总结一下”
+
+> **你：** *（拖挙一个 PDF 到文件浏览器）* <br/>
+> 你能读一下这份季度报告并给我列出重点吗？
+
+AI 打开 PDF，阅读全文，并给出简洁摘要——提取收入数据、重要决策、显著变化等关键信息。
+
+![AI 读取并分析文件内容](/images/open-terminal-ai-csv-analysis.png)
+
+---
+
+## “处理所有这些发票”
+
+> **你：** /invoices 文件夹里有大约 30 份发票。能否把它们都读一遍，并制作一个包含供应商名称、日期和金额的电子表格？
+
+AI 打开文件夹中的每个文件——即使是 PDF 和 Word 文档混合——提取信息，并创建一个整洁的电子表格供你下载。
+
+![AI 列出文件并提供结构化分析](/images/open-terminal-ai-file-listing.png)
+
+---
+
+## “这些邮件里提到了哪些截止日期？”
+
+> **你：** *（上传几个 .eml 文件）* <br/>
+> 读一下这些邮件，找出所有有关截止日期或到期日期的内容。
+
+AI 读取邮件文件——包括发件人、日期、主题和正文——并提取相关信息。
+
+![AI 读取文件并提取特定信息](/images/open-terminal-ai-file-listing.png)
+
+---
+
+## “分析这个数据并制作图表”
+
+> **你：** *（拖入 sales_data.xlsx 到文件浏览器）* <br/>
+> 按地区展示销售情况并制作饥形图。
+
+AI 读取电子表格、处理数据、创建图表，并保存为可预览和下载的图片。
+
+![AI 分析销售数据并按产品汇总](/images/open-terminal-ai-csv-analysis.png)
+
+---
+
+## “在所有文档中搜索”
+
+> **你：** 搜索 /contracts 文件夹中所有文件，找出所有提到“终止条款”或“取消”的内容。
+
+AI 搜索每个文件——PDF、Word 文档、电子表格，无论什么格式——并说明确切在哪里找到了匹配项。
+
+![AI 在文件中搜索特定内容](/images/open-terminal-ai-file-listing.png)
+
+:::tip 无需建索引
+与传统搜索或 RAG 系统不同，AI 每次为你实时读取文件。这意味着它看到的是磁盘上的当前版本——无需重建索引、无同步延迟、无需管理数据库。
+:::
+
+---
+
+## 处理大文件
+
+如果文档非常长，AI 会智能地分段读取，而不是一次性全部读入。你也可以要求它只关注特定部分：
+
+> “只读这份报告的执行摘要部分”
+
+> “显示这个电子表格的第 500 到 600 行”
+
+## 更多玩法
+
+- **[在对话中运行代码 →](./code-execution)** —— AI 编写、运行和调试代码
+- **[构建和预览网站 →](./web-development)** —— 创建并迭代网页
+- **[浏览文件浏览器 →](../file-browser)** —— 上传、预览、下载和编辑文件
 
 Got a pile of spreadsheets, PDFs, Word documents, or emails you need to make sense of? Drop them into the file browser and let the AI read them for you. Open Terminal can open and understand all of these formats — no special setup needed.
 

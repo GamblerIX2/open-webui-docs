@@ -1,31 +1,31 @@
 ---
 sidebar_position: 2
-title: "Database Analysis"
+title: "数据库分析"
 ---
 
-# 🗄️ Connect to a Database and Analyze It
+# 🗄️ 连接数据库并进行分析
 
-Connect to your PostgreSQL, MySQL, or SQLite database directly and let the AI explore the schema, run queries, and produce insights — all without writing SQL yourself.
+直接连接你的 PostgreSQL、MySQL 或 SQLite 数据库，让 AI 探索数据库结构、运行查询并产出洞察——无需自己编写 SQL。
 
-> **You:** $Database Analyst <br/>
-> Connect to my PostgreSQL database at `db.example.com` and analyze the `orders` table. What are our top-selling products this quarter? Any trends I should know about?
+> **你：** $Database Analyst <br/>
+> 连接到 `db.example.com` 的 PostgreSQL 数据库，分析 `orders` 表。本季度我们销售最好的产品是什么？有什么趋势需要特别关注？
 
-## What the AI does
+## AI 的工作流程
 
-1. Installs the database driver if needed (`pip install psycopg2-binary` or `pymysql`)
-2. Connects to the database using your credentials
-3. Explores the schema — lists tables, columns, relationships
-4. Writes and runs SQL queries to answer your question
-5. Pulls results into pandas for analysis
-6. Generates charts (revenue trends, top products, regional breakdowns)
-7. Saves everything as a report
+1. 如需安装数据库驱动（`pip install psycopg2-binary` 或 `pymysql`）
+2. 使用你的凭据连接数据库
+3. 探索数据库结构——列出表、列、关系
+4. 编写并运行 SQL 查询回答你的问题
+5. 将结果加载到 pandas 进行分析
+6. 生成图表（收入趋势、爆款产品、地区分布）
+7. 将所有内容保存为报告
 
 {/* TODO: Screenshot — Chat showing the AI connecting to a PostgreSQL database, listing tables, and then running a query. Results show a formatted table with product names, quantities sold, and revenue. */}
 
 {/* TODO: Screenshot — Charts generated from the database query: a bar chart of top 10 products by revenue, a line chart showing monthly order trends, and a pie chart of sales by region. */}
 
-:::tip Keep credentials safe
-Pass database credentials as environment variables when starting Open Terminal, or store them in a `.env` file in the container. Never paste passwords directly in chat — they get saved in chat history. Example:
+:::tip 保安凭据
+通过在启动 Open Terminal 时以环境变量传入数据库凭据，或将其存储在容器中的 `.env` 文件中。切勿在对话中直接粘贴密码——它们会被保存到聊天历史记录中。示例：
 
 ```bash
 docker run -d --name open-terminal \
@@ -36,22 +36,22 @@ docker run -d --name open-terminal \
   ghcr.io/open-webui/open-terminal
 ```
 
-Then tell the skill to read from environment variables.
+然后在技能中设置从环境变量读取凭据。
 :::
 
-## Supported databases
+## 支持的数据库
 
-| Database | Python driver | Install command |
+| 数据库 | Python 驱动 | 安装命令 |
 | :--- | :--- | :--- |
 | PostgreSQL | psycopg2 | `pip install psycopg2-binary` |
 | MySQL / MariaDB | pymysql | `pip install pymysql` |
-| SQLite | sqlite3 | Built-in (no install needed) |
+| SQLite | sqlite3 | 内置（无需安装） |
 | Microsoft SQL Server | pymssql | `pip install pymssql` |
 | MongoDB | pymongo | `pip install pymongo` |
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

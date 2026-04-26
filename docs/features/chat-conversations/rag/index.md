@@ -1,303 +1,303 @@
 ---
 sidebar_position: 1
-title: "Retrieval Augmented Generation (RAG)"
+title: "检索增强生成 (RAG)"
 ---
 
 :::warning
 
-If you're using **Ollama**, note that it **defaults to a 2048-token context length**. This severely limits **Retrieval-Augmented Generation (RAG) performance**, especially for web search, because retrieved data may **not be used at all** or only partially processed.
+如果你正在使用 **Ollama**，请注意它**默认的上下文长度为 2048 个 token**。这会严重限制**检索增强生成 (RAG) 的性能**，特别是对于网络搜索，因为检索到的数据可能**根本不会被使用**或仅被部分处理。
 
 :::
 
-Retrieval Augmented Generation (RAG) is a technique that enhances the conversational capabilities of chatbots by incorporating context from diverse sources. It works by retrieving relevant information from a wide range of sources such as local and remote documents, web content, and even multimedia sources like YouTube videos. The retrieved text is then combined with a predefined RAG template and prefixed to the user's prompt, providing a more informed and contextually relevant response.
+检索增强生成 (RAG) 是一种通过结合不同来源的上下文来增强聊天机器人对话能力的技术。它的工作原理是从广泛的来源检索相关信息，如本地和远程文档、网页内容，甚至像 YouTube 视频这样的多媒体来源。然后将检索到的文本与预定义的 RAG 模板结合，并作为用户提示词的前缀，从而提供更丰富且与上下文更相关的响应。
 
-One of the key advantages of RAG is its ability to access and integrate information from a variety of sources, making it an ideal solution for complex conversational scenarios. For instance, when a user asks a question related to a specific document or web page, RAG can retrieve and incorporate the relevant information from that source into the chat response. RAG can also retrieve and incorporate information from multimedia sources like YouTube videos. By analyzing the transcripts or captions of these videos, RAG can extract relevant information and incorporate it into the chat response.
+RAG 的主要优势之一是它能够访问并整合来自多种来源的信息，使其成为复杂对话场景的理想解决方案。例如，当用户提出与特定文档或网页相关的问题时，RAG 可以检索该来源的相关信息并将其融入到对话响应中。RAG 还可以检索并整合来自 YouTube 视频那么多媒体来源的信息。通过分析这些视频的转录或字幕，RAG 可以提取相关信息并将其整合到对话响应中。
 
-## Local and Remote RAG Integration
+## 本地和远程 RAG 集成
 
-Local documents must first be uploaded via the Documents section of the Workspace area to access them using the `#` symbol before a query. Click on the formatted URL in the that appears above the chat box. Once selected, a document icon appears above `Send a message`, indicating successful retrieval.
+首先必须通过工作区（Workspace）的“文档”（Documents）部分上传本地文档，然后才能在查询前使用 `#` 符号访问它们。点击聊天框上方出现的格式化 URL。选择后，`Send a message`（发送消息）上方会出现一个文档图标，表示检索成功。
 
-:::tip Bulk File Management
-Need to clean up multiple uploaded documents or audit your storage? You can now use the centralized **[File Manager](/features/chat-conversations/data-controls/files)** located in **Settings > Data Controls > Manage Files**. Deleting files there will automatically clean up their corresponding RAG embeddings.
+:::tip 批量文件管理
+需要清理多个已上传的文档或审计您的存储？您现在可以使用位于 **设置 > 数据控制 > 管理文件 (Settings > Data Controls > Manage Files)** 的集中式**[文件管理器](/features/chat-conversations/data-controls/files)**。在那里删除文件将自动清理其相应的 RAG 嵌入数据。
 :::
 
-You can also load documents into the workspace area with their access by starting a prompt with `#`, followed by a URL. This can help incorporate web content directly into your conversations.
+您还可以通过以 `#` 开头并紧跟一个 URL 来开始提示，将带有访问权限的文档加载到工作区。这有助于将网页内容直接融入到您的对话中。
 
-## Web Search for RAG
+## 用于 RAG 的网络搜索
 
 :::warning
-**Context Length Warning for Ollama Users:** Web pages typically contain 4,000-8,000+ tokens even after content extraction, including main content, navigation elements, headers, footers, and metadata. With only 2048 tokens available, you're getting less than half the page content, often missing the most relevant information. Even 4096 tokens is frequently insufficient for comprehensive web content analysis.
+**致 Ollama 用户的上下文长度警告：** 即使经过内容提取，网页通常包含 4,000-8,000 多个 token，包括主要内容、导航元素、页眉、页脚和元数据。如果只有 2048 个可用 token，您获得的内容不到页面内容的一半，通常会丢失最相关的信息。甚至 4096 个 token 对于全面的网页内容分析也常常是不够的。
 
-**To Fix This:** Navigate to **Admin Panel > Models > Settings** (of your Ollama model) > **Advanced Parameters** and **increase the context length to 8192+ (or rather, more than 16000) tokens**. This setting specifically applies to Ollama models. For OpenAI and other integrated models, ensure you're using a model with sufficient built-in context length (e.g., GPT-4 Turbo with 128k tokens).
+**修复方法：** 导航至（您的 Ollama 模型的）**管理面板 > 模型 > 设置 (Admin Panel > Models > Settings)** > **高级参数 (Advanced Parameters)**，并**将上下文长度增加到 8192+（或最好超过 16000）个 token**。此设置特别适用于 Ollama 模型。对于 OpenAI 和其他集成模型，请确保您使用的是具有足够内置上下文长度的模型（例如，具有 128k token 的 GPT-4 Turbo）。
 :::
 
-For web content integration, start a query in a chat with `#`, followed by the target URL. Click on the formatted URL in the box that appears above the chat box. Once selected, a document icon appears above `Send a message`, indicating successful retrieval. Open WebUI fetches and parses information from the URL if it can.
+对于网页内容的集成，在聊天中以 `#` 开头开始查询，并紧跟目标 URL。点击聊天框上方出现的方框中的格式化 URL。选择后，`Send a message` 上方会出现一个文档图标，表示检索成功。如果可以，Open WebUI 将从该 URL 获取并解析信息。
 
 :::tip
 
-Web pages often contain extraneous information such as navigation and footer. For better results, link to a raw or reader-friendly version of the page.
+网页通常包含诸如导航和页脚等无关信息。为了获得更好的结果，请链接到该页面的原始或适合阅读的版本。
 
 :::
 
-## RAG Template Customization
+## RAG 模板自定义
 
-Customize the RAG template from the `Admin Panel` > `Settings` > `Documents` menu.
+从 `管理面板 (Admin Panel)` > `设置 (Settings)` > `文档 (Documents)` 菜单自定义 RAG 模板。
 
-## Markdown Header Splitting
+## Markdown 标题拆分
 
-When enabled, documents are first split by markdown headers (H1-H6). This preserves document structure and ensures that sections under the same header are kept together when possible. The resulting chunks are then further processed by the standard character or token splitter.
+启用后，文档将首先按照 markdown 标题 (H1-H6) 进行拆分。这保留了文档结构，并确保尽可能将同一标题下的章节保存在一起。生成的语块然后由标准的字符或 token 拆分器进一步处理。
 
 :::tip
 
-Use the **Chunk Min Size Target** setting (found in **Admin Panel > Settings > Documents**) to intelligently merge small sections after markdown splitting, improving retrieval coherence and reducing the total number of vectors in your database.
+使用 **Chunk Min Size Target** 设置（位于 **管理面板 > 设置 > 文档** 中），在 markdown 拆分后智能合并较小的章节，从而提高检索的连贯性并减少数据库中的向量总数。
 
 :::
 
-## Chunking Configuration
+## Chunking (语块化) 配置
 
-Open WebUI allows you to fine-tune how documents are split into chunks for embedding. This is crucial for optimal retrieval performance.
+Open WebUI 允许您微调文档如何被拆分成块以进行嵌入。这对于获得最佳检索性能至关重要。
 
-- **Chunk Size**: Sets the maximum number of characters (or tokens) per chunk.
-- **Chunk Overlap**: Specifies how much content is shared between adjacent chunks to maintain context.
-- **Chunk Min Size Target**: Although [Markdown Header Splitting](#markdown-header-splitting) is excellent for preserving structure, it can often create tiny, fragmented chunks (e.g., a standalone sub-header, a table of contents entry, a single-sentence paragraph, or a short list item) that lack enough semantic context for high-quality embedding. You can counteract this by setting the **Chunk Min Size Target** to intelligently merge these small pieces with their neighbors.
+- **Chunk Size (语块大小)**：设置每个语块的最大字符（或 token）数。
+- **Chunk Overlap (语块重叠)**：指定相邻语块之间共享多少内容以维持上下文。
+- **Chunk Min Size Target (语块最小尺寸目标)**：尽管 [Markdown 标题拆分](#markdown-标题拆分) 在保留结构方面非常出色，但它通常会产生微小且碎片化的语块（例如，独立的副标题、目录条目、单句段落或短列表项），这些语块缺乏足够的语义上下文来进行高质量嵌入。您可以通过设置 **Chunk Min Size Target** 智能合并这些小片段及其相邻片段来解决此问题。
 
-### Why use a Chunk Min Size Target?
+### 为什么使用 Chunk Min Size Target？
 
-Intelligently merging small sections after markdown splitting provides several key advantages:
+在 markdown 拆分后智能合并较小的章节可提供几个主要优势：
 
-- **Improves RAG Quality**: Eliminates tiny, meaningless fragments, ensuring better semantic coherence in each retrieve chunk.
-- **Reduces Vector Database Size**: Fewer chunks mean fewer vectors to store, reducing storage costs and memory usage.
-- **Speeds Up Retrieval & Embedding**: A smaller index is faster to search, and fewer chunks require fewer embedding API calls (or less local compute). This significantly accelerates document processing when uploading files to chats or knowledge bases, as there is less data to vectorize.
-- **Efficiency & Impact**: Testing has shown that a well-configured threshold (e.g., 1000 for a chunk size of 2000) can reduce chunk counts by over 90% while **improving accuracy**, increasing embedding speed, and enhancing overall retrieval quality by maintaining semantic context.
+- **提高 RAG 质量**：消除微小、无意义的片段，确保每个检索到的语块都有更好的语义连贯性。
+- **减小向量数据库大小**：更少的语块意味着需要存储的向量更少，从而降低存储成本并减少内存使用。
+- **加快检索和嵌入速度**：较小的索引搜索速度更快，且较少的语块需要的嵌入 API 调用更少（或更少的本地计算资源）。这在向聊天或知识库上传文件时显着加速了文档处理，因为需要向量化的数据较少。
+- **效率和影响**：测试表明，良好配置的阈值（例如，针对 2000 的块大小设置 1000 的阈值）可以使语块数量减少 90% 以上，同时**提高准确性**，加快嵌入速度，并通过维护语义上下文提高整体检索质量。
 
 <details>
-<summary>How the merging algorithm works (technical details)</summary>
+<summary>合并算法的工作原理（技术细节）</summary>
 
-For most users, the explanation above is all you need: small chunks get merged with their neighbors, resulting in better retrieval with fewer vectors and other performance, cost and storage benefits. But if you're curious about the exact logic and design rationale, here's how it works under the hood.
+对于大多数用户，上述解释已足够：小语块与其邻居合并，可以用更少的向量获得更好的检索结果，并在性能、成本和存储方面带来好处。但如果您好奇确切的逻辑和设计理念，以下是它的内部工作机制。
 
-### Why header-based splitting needs merging
+### 为什么基于标题的拆分需要合并
 
-Markdown header splitting is one of the better structural approaches to chunking because headers are explicit semantic boundaries placed by the document author. You're leveraging human judgment about where one topic ends and another begins, which usually produces more coherent chunks than fixed-size windowing that might cut mid-paragraph or mid-thought.
+Markdown 标题拆分是一种较好的结构化分块方法，因为标题是文档作者放置的明确语义边界。您利用了人类对于一个主题在哪里结束和另一个主题在哪里开始的判断，这通常比可能在段落中间或思想中间切断的固定大小窗口化产生更连贯的块。
 
-However, real documents often have structural quirks: tables of contents, short introductory sections, single-sentence paragraphs under their own headers, or deeply nested subheadings with minimal content. These produce tiny chunks that cause problems:
+然而，真实的文档通常具有结构上的特性：目录、简短的介绍章节、在自己标题下的单句段落或内容极少的深层嵌套副标题。这些会产生造成问题的微小语块：
 
-- They lack sufficient context to be useful when retrieved in isolation
-- They can produce noisy retrieval results (matching on limited signal but contributing nothing useful)
-- Very short texts sometimes embed less reliably
-- They waste vector storage and slow down retrieval
-- Many chunks take longer to embed than fewer chunks (with the same total content)
-- More embedding operations means more API calls (cost) or more local compute
+- 它们缺乏足够的上下文，在被单独检索时用处不大
+- 它们会产生嘈杂的检索结果（在有限信号上匹配但没贡献什么有用信息）
+- 非常短的文本有时嵌入可靠性较低
+- 它们浪费向量存储空间并减慢检索速度
+- 许多语块的嵌入时间比具有相同总内容的更少语块的嵌入时间要长
+- 更多的嵌入操作意味着更多的 API 调用（成本）或更多的本地计算
 
-The merging algorithm addresses this by intelligently combining undersized chunks while respecting document structure and size limits.
+合并算法通过在遵守文档结构和大小限制的同时智能地组合过小的块来解决这个问题。
 
-### The algorithm: a single forward pass
+### 算法：单次前向传递
 
-The merging logic is deliberately simple—a single forward pass through all chunks:
+合并逻辑特意设计得很简单——对所有语块进行一次单向前向传递：
 
-1. Start with the first chunk as the "current" accumulator.
-2. For each **subsequent** chunk, check if it can be absorbed into the current chunk.
-3. A chunk can be absorbed if **all three conditions** are met:
-   - The current accumulated content is still below `CHUNK_MIN_SIZE_TARGET`
-   - Merging wouldn't exceed `CHUNK_SIZE` (the maximum)
-   - Both chunks belong to the same source document
-4. If absorption is possible, merge them (with `\n\n` separation to preserve visual structure) and continue checking the next chunk.
-5. If absorption isn't possible, finalize the current chunk and start fresh with the next one as the new accumulator.
-6. Repeat until all chunks are processed.
+1. 以第一个语块作为“当前”累加器开始。
+2. 对于每个**后续**语块，检查它是否可以被吸收到当前语块中。
+3. 如果满足**所有三个条件**，则可以吸收该语块：
+   - 当前累加的内容仍低于 `CHUNK_MIN_SIZE_TARGET`
+   - 合并不会超过 `CHUNK_SIZE`（最大值）
+   - 两个语块属于同一源文档
+4. 如果可以吸收，合并它们（使用 `\n\n` 分隔以保留视觉结构），然后继续检查下一个语块。
+5. 如果无法吸收，确定当前语块，并以下一个语块作为新的累加器重新开始。
+6. 重复，直到处理完所有语块。
 
-**Key point**: The size check is on the *accumulated* content, not individual chunks. This means multiple consecutive tiny chunks (like a table of contents with many small entries) will keep folding together until the combined size reaches the threshold or until merging the next chunk would exceed the maximum.
+**关键点**：大小检查是针对*累加*内容的，而不是单独的块。这意味着多个连续的微小块（如具有许多小条目的目录）将不断折叠在一起，直到合并后的大小达到阈值，或者直到合并下一个语块会超过最大值。
 
-### Design decisions and why they matter
+### 设计决策及其重要性
 
-**Forward-only merging**: Small chunks always merge into the *next* chunk, never backward. This keeps the logic simple and predictable, and preserves the natural "this section introduces what follows" relationship common in documents. A brief intro section merging forward into the content it introduces makes semantic sense.
+**仅向前合并**：小语块总是向*下一个*语块合并，从不向后。这使得逻辑简单且可预测，并保留了文档中常见的“本节介绍后续内容”的自然关系。向它引入的内容前向合并的一小段介绍语在语义上是合理的。
 
-**Why not backward merging?** Beyond added code complexity, backward merging would frequently fail anyway. By the time any chunk gets finalized, it's in one of two states: either it grew to meet or exceed `CHUNK_MIN_SIZE_TARGET` through absorption (so it's already "satisfied" with limited headroom), or it couldn't absorb the next chunk because that would exceed `CHUNK_SIZE` (so it's already bumping against the ceiling). Either way, a backward merge attempt would often fail the size check, meaning you'd add branching logic and state tracking for something that rarely succeeds.
+**为什么不向后合并？** 除了增加代码复杂性之外，向后合并无论如何经常会失败。在任何语块最终确定时，它处于两种状态之一：要么它通过吸收增加达到或超过 `CHUNK_MIN_SIZE_TARGET`（因此它已经“满足”了并且余量有限），要么它无法吸收下一个语块，因为那会超过 `CHUNK_SIZE`（因此它已经碰到了天花板）。无论哪种方式，向后合并尝试通常会在大小检查上失败，这意味着你要为一个很少成功的动作添加分支逻辑和状态跟踪。
 
-**No cross-document merging**: Chunks from different source files are never combined, even if both are small. This preserves clear document boundaries for citation, source attribution, and retrieval context.
+**没有跨文档合并**：不同源文件中的块从不合并，即使两者都很小。这保留了清晰的文档边界，以便引用、标明来源和提供检索上下文。
 
-**Respects maximum size**: If merging two chunks would exceed `CHUNK_SIZE`, both are kept separate. Content is never discarded to force a merge.
+**遵守最大大小**：如果合并两个语块会超过 `CHUNK_SIZE`，则两者保持独立。绝不通过丢弃内容来强制合并。
 
-**Metadata inheritance**: Merged chunks inherit metadata from the *first* chunk in the merge sequence. This is consistent with forward-merge semantics—source and header information reflects where the merged section "started," which is typically the right choice for retrieval and citation purposes.
+**元数据继承**：合并后的语块继承合并序列中*第一个*语块的元数据。这与向前合并的语义是一致的——源和标题信息反映了合并部分“开始”的位置，对于检索和引用目的，这通常是正确的选择。
 
-**The `\n\n` separator**: When chunks merge, they're joined with double newlines rather than concatenated directly. This preserves visual and structural separation in the combined text, which can matter for both embedding quality and human readability if you inspect your chunks.
+**`\n\n` 分隔符**：当语块合并时，它们通过两个换行符连接，而不是直接连接。这在组合文本中保留了视觉和结构上的分隔，如果您要检查块的话，这对嵌入质量和人类可读性都很重要。
 
-### Edge cases
+### 边缘情况
 
-**Consecutive tiny chunks**: Handled naturally. They keep accumulating into a single chunk until the threshold is met or max size would be exceeded.
+**连续的微小语块**：处理得很自然。它们不断积累成一个单一的语块，直到达到阈值或最大尺寸被超过。
 
-**Small chunk followed by large chunk**: If a small chunk is followed by a chunk large enough that merging would exceed `CHUNK_SIZE`, the small chunk gets finalized as-is, still undersized. This is unavoidable without backward merging or content splitting, but it's also rare in practice. It typically occurs at natural semantic boundaries (a brief transition before a dense section), and the small chunk being standalone at that boundary is arguably correct anyway.
+**小语块后跟大语块**：如果小语块后跟一个语块大到合并会超过 `CHUNK_SIZE`，那么小语块就会按原样确定下来，仍然不足尺寸。如果不向后合并或内容拆分，这是不可避免的，但在实践中也很罕见。它通常发生在自然的语义边界（密集章节前的简短过渡），并且在边界处将小语块独立保留其实也是正确的。
 
-**Last chunk in document**: If the final chunk is undersized, it stays undersized since there's nothing to merge forward into. Again, unavoidable and usually fine—document endings are natural boundaries.
+**文档中的最后一个语块**：如果最后一个语块尺寸不足，由于它没有可以向前合并的内容，它将保持较小尺寸。这同样也是不可避免且通常是可以接受的——文档的结尾是自然的边界。
 
-### Performance characteristics
+### 性能特征
 
-The algorithm is O(n) in the number of chunks—a single pass with no lookahead or backtracking. This makes it fast even for large document collections.
+该算法的复杂度为语块数量的 O(n)——一次遍历，不进行前瞻或回溯。这使得即使对于大量文档集合，它也能保持快速。
 
-The efficiency gains from merging scale non-linearly in some ways. Retrieval over 45 vectors versus 588 isn't just ~13x faster in raw compute—you're also getting much cleaner top-k results because you've eliminated the noise of near-empty chunks that might score well on partial keyword matches but contribute nothing useful to the LLM. The quality improvement often matters more than the speed improvement.
+在某些方面，合并带来的效率提升呈非线性扩展。在 45 个向量而不是 588 个向量中进行检索不只是计算速度加快约 13 倍，您还会获得更清晰的 top-k 结果，因为您已经消除了可能在部分关键字匹配中得分很高但对 LLM 没有有益贡献的近乎空白语块的噪音。质量的提升通常比速度的提升更重要。
 
-Testing has shown that a well-configured threshold (e.g., 1000 for a chunk size of 2000) can reduce chunk counts by over 90% while improving retrieval accuracy, because each remaining chunk carries meaningful semantic context rather than being a fragment that confuses both the embedding model and the retrieval ranking. As positive side effects, it also uses less storage space in the vector database and requires fewer embedding operations, which can be a significant cost saving if outsourcing to an embedding service.
+测试表明，良好配置的阈值（例如 2000 大小的块用 1000）可以减少超 90% 的语块数量并提升检索精度，因为每个剩余的语块携带了有意义的语义上下文，而不是使得嵌入模型和检索排名双双困惑的片段。作为附带的正面影响，它还在向量数据库中使用了更少的存储空间，需要更少的嵌入操作，如果是把嵌入请求外包给服务商，这将节约显著的开销。
 
 </details>
 
-## RAG Embedding Support
+## RAG 嵌入支持
 
-Change the RAG embedding model directly in the `Admin Panel` > `Settings` > `Documents` menu. This feature supports Ollama and OpenAI models, enabling you to enhance document processing according to your requirements.
+直接在 `管理面板 (Admin Panel)` > `设置 (Settings)` > `文档 (Documents)` 菜单中更改 RAG 嵌入模型。该功能支持 Ollama 和 OpenAI 模型，让您能够根据需求增强文档处理。
 
-## Changing RAG Settings After Initial Setup
+## 初始设置后更改 RAG 设置
 
-If you need to change your chunking configuration (chunk size, overlap) or embedding model after documents have already been indexed, it is important to understand what actions are required and what effects those changes will have.
+如果您需要在文件已经建立索引之后更改切块配置（语块大小、重叠）或嵌入模型，理解您需要采取的行动以及这些变更的后果非常重要。
 
-### Changing Chunk Size and Overlap
+### 更改 Chunk Size 和 Overlap
 
-New documents will **automatically** use the updated chunk size and overlap settings — no action is required for newly uploaded files.
+新文档将**自动**使用更新后的语块大小和重叠设置——新上传的文件无需执行任何操作。
 
-Existing documents in knowledge bases **retain their original chunking** until you run a re-index. Retrieval will still work for these old chunks (vector similarity search does not depend on chunk size), but you may notice inconsistent retrieval quality if old and new documents have very different chunk sizes.
+知识库中已有的文档会**保留它们原本的切块配置**，直到您执行一次重建索引 (re-index)。对于这些旧块来说，检索仍能正常工作（向量相似性搜索不依赖于语块大小），但如果新旧文档之间语块大小差异很大，您可能会注意到检索质量不一致。
 
 :::tip
-If you are only changing chunk settings and not the embedding model, a re-index is not strictly required — old documents will continue to work. However, for consistent retrieval quality across all documents, running a re-index is recommended.
+如果您仅更改了分块设置而未更改嵌入模型，则不强制要求重新索引——旧文档将继续起作用。然而，为确保所有文档之间的检索质量保持一致，建议运行重新索引。
 :::
 
-### Changing the Embedding Model
+### 更改嵌入模型 (Embedding Model)
 
-Changing the embedding model **requires a re-index** of all knowledge base documents. Embeddings from different models exist in different vector spaces and are not compatible with each other. Without re-indexing, retrieval against old embeddings will produce poor or nonsensical results.
+更改嵌入模型**需要对所有知识库文档进行重新索引**。不同模型产生的嵌入存在于不同的向量空间，互不兼容。不重新建立索引，针对旧嵌入进行检索将产生糟糕甚至荒谬的结果。
 
-After changing the embedding model in `Admin Panel` > `Settings` > `Documents`, navigate to `Admin Panel` > `Settings` > `Documents` and click the **Reindex** button to re-embed all knowledge base documents with the new model.
+在 `管理面板 (Admin Panel)` > `设置 (Settings)` > `文档 (Documents)` 更改嵌入模型后，导航至 `管理面板 (Admin Panel)` > `设置 (Settings)` > `文档 (Documents)` 并点击 **Reindex** 按钮，使用新模型重嵌所有知识库文档。
 
-### What Does Re-Indexing Do?
+### Re-Indexing (重建索引) 会做什么？
 
-The re-index process performs the following steps for each knowledge base:
+重建索引过程对每个知识库执行如下步骤：
 
-1. **Deletes** the existing vector collection for the knowledge base.
-2. **Re-chunks** all files using the current chunk size, overlap, and text splitter settings.
-3. **Re-embeds** all chunks using the currently configured embedding model.
+1. **删除**该知识库现有的向量集合。
+2. 使用当前的语块大小、重叠和文本分割设置，**重新切分**所有文件。
+3. 使用当前配置的嵌入模型，**重新生成嵌入**所有块。
 
-This means a single re-index applies both chunking setting changes and embedding model changes simultaneously.
+这意味着，一次重建索引能同时应用分块设置变更和嵌入模型变更。
 
-:::warning Re-indexing does not cover chat files
-The re-index operation only processes files that belong to **knowledge bases**. Files that were uploaded directly into a chat (without being added to a knowledge base) have their own per-file vector collections that are not touched by re-indexing.
+:::warning 重新索引不涵盖聊天文件
+重新索引操作仅处理属于**知识库**的文件。直接上传到对话中（而未加入任何知识库）的文件拥有单独的逐文件向量集合，这些集合不受重新索引操作的影响。
 
-If you change the embedding model, those standalone chat file embeddings will still use the old model and retrieval quality for those files will degrade. The only way to update them is to re-upload the files.
+如果您更改了嵌入模型，那些独立对话文件的嵌入依然使用旧模型，并且它们的检索质量会下降。更新它们的唯一方法就是重新上传文件。
 :::
 
-### Summary
+### 总结
 
-| Change | New Documents | Knowledge Base Documents (no re-index) | Knowledge Base Documents (after re-index) | Standalone Chat Files |
+| 变更项 | 新文档 | 知识库文档 (未重建索引) | 知识库文档 (重建索引后) | 独立聊天文件 |
 |---|---|---|---|---|
-| **Chunk Size / Overlap** | ✅ Uses new settings | ⚠️ Old chunks still work, but quality may vary | ✅ Re-chunked with new settings | ⚠️ Old chunks, re-upload to update |
-| **Embedding Model** | ✅ Uses new model | ❌ Old embeddings, incompatible vector space | ✅ Re-embedded with new model | ❌ Old embeddings, re-upload to update |
+| **Chunk Size / Overlap** | ✅ 使用新设置 | ⚠️ 旧块依然可用，但质量可能不一 | ✅ 使用新设置重新切块 | ⚠️ 仍为旧块，需重新上传更新 |
+| **Embedding Model** | ✅ 使用新模型 | ❌ 仍为旧嵌入，向量空间不兼容 | ✅ 使用新模型重嵌 | ❌ 仍为旧嵌入，需重新上传更新 |
 
-## Citations in RAG Feature
+## RAG 功能中的引用 (Citations)
 
-The RAG feature allows users to easily track the context of documents fed to LLMs with added citations for reference points. This ensures transparency and accountability in the use of external sources within your chats.
+RAG 功能允许用户轻松追踪投喂给 LLMs 的文档上下文，并带有用于参考定位的引用信息。这确保了在您的对话中使用外部来源信息的透明度和问责机制。
 
-## File Context vs Builtin Tools
+## File Context vs Builtin Tools (文件上下文 vs 内置工具)
 
-Open WebUI provides two separate capabilities that control how files are handled. Understanding the difference is important for configuring models correctly.
+Open WebUI 提供两项分别控制文件处理方式的能力。理解它们之间的区别对于正确配置模型很重要。
 
-### File Context Capability
+### File Context 能力
 
-The **File Context** capability controls whether Open WebUI performs RAG (Retrieval-Augmented Generation) on attached files:
+**文件上下文 (File Context)** 能力控制 Open WebUI 是否对附件文件执行 RAG（检索增强生成）：
 
-| File Context | Behavior |
+| File Context | 行为表现 |
 |--------------|----------|
-| ✅ **Enabled** (default) | Attached files are processed via RAG. Content is retrieved and injected into the conversation context. |
-| ❌ **Disabled** | File processing is **completely skipped**. No content extraction, no injection. The model receives no file content. |
+| ✅ **启用** (默认) | 通过 RAG 处理附加的文件。检索内容并将其注入到对话上下文中。 |
+| ❌ **禁用** | **完全跳过**文件处理。不提取内容，也不注入。模型接收不到任何文件内容。 |
 
-**When to disable File Context:**
-- **Bypassing RAG entirely**: When you don't want Open WebUI to process attached files at all.
-- **Using Builtin Tools only**: If you prefer the model to retrieve file content on-demand via tools like `query_knowledge_bases` rather than having content pre-injected.
-- **Debugging/testing**: To isolate whether issues are related to RAG processing.
+**何时禁用 File Context：**
+- **完全绕过 RAG**：当你不希望 Open WebUI 对附件进行任何处理时。
+- **仅使用内置工具**：如果您更倾向于让模型通过如 `query_knowledge_bases` 这样的工具按需检索文件内容，而不是拥有预先注入的内容。
+- **调试/测试**：用来隔离问题是否与 RAG 处理相关。
 
-:::warning File Context Disabled = No Pre-Injected Content
-When File Context is disabled, file content is **not automatically extracted or injected**. Open WebUI does not forward files to the model's native API. If you disable this, the only way the model can access file content is through builtin tools (if enabled) that query knowledge bases or retrieve attached files on-demand (agentic file processing).
+:::warning File Context 禁用 = 无预注入内容
+禁用 File Context 时，**不会自动提取或注入**文件内容。Open WebUI 不会将文件转发给模型的原生 API。如果禁用此项，模型获取文件内容的唯一方式是依靠内置工具（如果已启用），去查询知识库或按需检索附加文件（代理式文件处理）。
 :::
 
-:::tip Per-File Retrieval Mode
-Individual files and knowledge bases can also be set to bypass RAG entirely using the **"Using Entire Document"** toggle. This injects the full file content into every message regardless of native function calling settings. See [Full Context vs Focused Retrieval](/features/workspace/knowledge#retrieval-modes) for details.
+:::tip 基于单个文件的检索模式
+各个文件和知识库也可被设置为完全绕开 RAG 的模式——通过使用 **"Using Entire Document (使用整篇文档)"** 开关。它无视原生函数调用设置，将完整文件内容注入进每条消息里。参阅 [完全上下文 vs 重点检索](/features/workspace/knowledge#retrieval-modes) 以了解详情。
 :::
 
 :::info
-The File Context toggle only appears when **File Upload** is enabled for the model.
+仅当模型启用了**文件上传 (File Upload)** 时，File Context 切换开关才会出现。
 :::
 
-### Builtin Tools Capability
+### Builtin Tools 能力
 
-The **Builtin Tools** capability controls whether the model receives native function-calling tools for autonomous retrieval:
+**内置工具 (Builtin Tools)** 能力控制模型是否获得原生函数调用工具以实现自动检索：
 
-| Builtin Tools | Behavior |
+| Builtin Tools | 行为表现 |
 |---------------|----------|
-| ✅ **Enabled** (default) | In Native Function Calling mode, the model receives tools like `query_knowledge_bases`, `view_knowledge_file`, `search_chats`, etc. |
-| ❌ **Disabled** | No builtin tools are injected. The model works only with pre-injected context. |
+| ✅ **启用** (默认) | 在原生函数调用 (Native Function Calling) 模式下，模型会接收诸如 `query_knowledge_bases`, `view_knowledge_file`, `search_chats` 等工具。 |
+| ❌ **禁用** | 不注入任何内置工具。模型只能依赖预先注入的上下文工作。 |
 
-**When to disable Builtin Tools:**
-- **Model doesn't support function calling**: Smaller or older models may not handle the `tools` parameter.
-- **Predictable behavior needed**: You want the model to work only with what's provided upfront.
+**何时禁用 Builtin Tools：**
+- **模型不支持 function calling (函数调用)**：较小或旧版的模型可能无法处理 `tools` 参数。
+- **需要可预测的行为**：你只希望模型在给定的有限信息内发挥作用。
 
-### Combining the Two Capabilities
+### 结合使用两项能力
 
-These capabilities work independently, giving you fine-grained control:
+这些能力独立运作，赋予您精细化的控制权：
 
-| File Context | Builtin Tools | Result |
+| File Context | Builtin Tools | 结果 |
 |--------------|---------------|--------|
-| ✅ Enabled | ✅ Enabled | **Full Agentic Mode**: RAG content injected + model can autonomously query knowledge bases |
-| ✅ Enabled | ❌ Disabled | **Traditional RAG**: Content injected upfront, no autonomous retrieval tools |
-| ❌ Disabled | ✅ Enabled | **Tools-Only Mode**: No pre-injected content, but model can use tools to query knowledge bases or retrieve attached files on-demand |
-| ❌ Disabled | ❌ Disabled | **No File Processing**: Attached files are ignored, no content reaches the model |
+| ✅ 启用 | ✅ 启用 | **全能代理模式**：注入 RAG 内容 + 模型能自发查询知识库 |
+| ✅ 启用 | ❌ 禁用 | **传统 RAG**：前期注入内容，不支持自动检索工具 |
+| ❌ 禁用 | ✅ 启用 | **纯工具模式**：不预先注入内容，但模型可通过工具查询知识库或按需抓取附件文件 |
+| ❌ 禁用 | ❌ 禁用 | **无文件处理**：忽略附加文件，没有内容会传递给模型 |
 
-:::tip Choosing the Right Configuration
-- **Most models**: Keep both enabled (defaults) for full functionality.
-- **Small/local models**: Disable Builtin Tools if they don't support function calling.
-- **On-demand retrieval only**: Disable File Context, enable Builtin Tools if you want the model to decide what to retrieve rather than pre-injecting everything.
+:::tip 选择正确的配置
+- **多数模型**：二者均保持开启（默认设定）以获得完整体验。
+- **小型/本地模型**：如果它们不支持函数调用，请关闭 Builtin Tools。
+- **仅按需检索**：如果你希望由模型决定检索内容而非预先提供全部内容，则关闭 File Context，开启 Builtin Tools。
 :::
 
-## Enhanced RAG Pipeline
+## 增强的 RAG Pipeline
 
-The togglable hybrid search sub-feature for our RAG embedding feature enhances RAG functionality via `BM25`, with re-ranking powered by `CrossEncoder`, and configurable relevance score thresholds. This provides a more precise and tailored RAG experience for your specific use case.
+我们的 RAG 嵌入功能带有可切换的混合搜索子功能，通过 `BM25` 增强了 RAG，并借由 `CrossEncoder` 实现重排打分，其相关度阈值可以自由配置。这为您的特定用例提供了更精准、更个性化的 RAG 体验。
 
-## KV Cache Optimization (Performance Tip) 🚀
+## KV Cache 优化 (性能技巧) 🚀
 
-For professional and high-performance use cases—especially when dealing with long documents or frequent follow-up questions—you can significantly improve response times by enabling **KV Cache Optimization**.
+针对专业级和高性能用例——特别是在处理长文档或频繁进行跟进提问时——通过启用 **KV Cache Optimization (KV 缓存优化)**，您可以显着缩短响应时间。
 
-### The Problem: Cache Invalidation
-By default, Open WebUI injects retrieved RAG context into the **user message**. As the conversation progresses, follow-up messages shift the position of this context in the chat history. For many LLM engines—including local engines (like Ollama, llama.cpp, and vLLM) and cloud providers / Model-as-a-Service providers (like OpenAI and Vertex AI)—this shifting position invalidates the **KV (Key-Value) prefix cache** or **Prompt Cache**, forcing the model to re-process the entire context for every single response. This leads to increased latency and potentially higher costs as the conversation grows.
+### 痛点：缓存失效
+默认情况下，Open WebUI 会将检索到的 RAG 上下文注入到**用户消息 (user message)** 中。随着对话展开，后续的跟进消息会改变这个上下文在聊天记录里的位置。对众多大语言模型引擎（包括 Ollama、llama.cpp 和 vLLM 等本地引擎，以及 OpenAI、Vertex AI 等云厂商/MaaS 提供商）而言，上下文位置的移动使得 **KV（键值）前缀缓存**或**提示词缓存**失效，迫使模型在面对每一条响应时重新处理全部上下文。随着对话变长，这也带来了延迟增加及潜在的更高花费。
 
-### The Solution: `RAG_SYSTEM_CONTEXT`
-You can fix this behavior by enabling the `RAG_SYSTEM_CONTEXT` environment variable.
+### 解决方案：`RAG_SYSTEM_CONTEXT`
+您可通过启用环境变量 `RAG_SYSTEM_CONTEXT` 修复此行为。
 
-- **How it works**: When `RAG_SYSTEM_CONTEXT=True`, Open WebUI injects the RAG context into the **system message** instead of the user message. 
-- **The Result**: Since the system message stays at the absolute beginning of the prompt and its position never changes, the provider can effectively cache the processed context. Follow-up questions then benefit from **instant responses** and **cost savings** because the "heavy lifting" (processing the large RAG context) is only done once.
+- **工作机制**：当 `RAG_SYSTEM_CONTEXT=True` 时，Open WebUI 则是将 RAG 上下文注入到**系统消息 (system message)** 里，而不是用户消息。
+- **最终结果**：由于系统消息始终位于提示词的绝对开头并且其位置从未变动，供应商便能有效缓存处理好的上下文。后续提问因此享受到**即时响应**和**成本节约**的优势，因为“重负荷劳动”（处理庞大的 RAG 上下文）只需一次即可完成。
 
-:::tip recommended configuration
-If you are using **Ollama**, **llama.cpp**, **OpenAI**, or **Vertex AI** and frequently "chat with your documents," set `RAG_SYSTEM_CONTEXT=True` in your environment to experience drastically faster follow-up responses!
+:::tip 推荐配置
+如果您正使用 **Ollama**、**llama.cpp**、**OpenAI** 或 **Vertex AI** 并且经常“同你的文档聊天”，请在您的环境设置 `RAG_SYSTEM_CONTEXT=True` 以体验大幅加快的后续响应速度！
 :::
 
 ## YouTube RAG Pipeline
 
-The dedicated RAG pipeline for summarizing YouTube videos via video URLs enables smooth interaction with video transcriptions directly. This innovative feature allows you to incorporate video content into your chats, further enriching your conversation experience.
+通过视频 URL 总结 YouTube 视频的专用 RAG 流程让您能够顺畅地直接和视频转录文本互动。这项创新的特性允许您将视频内容纳入对话，进一步充实了您的聊天体验。
 
-## Document Parsing
+## Document Parsing (文档解析)
 
-A variety of parsers extract content from local and remote documents. For more, see the [`get_loader`](https://github.com/open-webui/open-webui/blob/2fa94956f4e500bf5c42263124c758d8613ee05e/backend/apps/rag/main.py#L328) function.
+多种不同的解析器能够提取本地及远程文档的内容。更多信息，请查阅 [`get_loader`](https://github.com/open-webui/open-webui/blob/2fa94956f4e500bf5c42263124c758d8613ee05e/backend/apps/rag/main.py#L328) 函数。
 
-:::warning Temporary Chat Limitations
-When using **Temporary Chat**, document processing is restricted to **frontend-only** operations to ensure your data stays private and is not stored on the server. Consequently, advanced backend parsing (used for formats like complex DOCX files) is disabled, which may result in raw data being seen instead of parsed text. For full document support, use a standard chat session.
+:::warning 临时聊天限制
+当使用**临时聊天 (Temporary Chat)** 时，为了保证数据私密且不在服务器驻留，文档处理受限在**纯前端**环节。由此，基于后端的高级解析功能（服务于如复杂的 DOCX 格式）会被停用，你可能会看到原始数据而不是整理好的解析文字。要获取完备的文档支持，请使用标准会话（Standard Chat）。
 :::
 
-## Google Drive Integration
+## Google Drive 集成
 
-When paired with a Google Cloud project that has the Google Picker API and Google Drive API enabled, this feature allows users to directly access their Drive files from the chat interface and upload documents, slides, sheets and more and uploads them as context to your chat. Can be enabled `Admin Panel` > `Settings` > `Documents` menu. Must set [`GOOGLE_DRIVE_API_KEY and GOOGLE_DRIVE_CLIENT_ID`](/reference/env-configuration) environment variables to use.
+当与一个开启了 Google Picker API 以及 Google Drive API 的 Google Cloud 项目共同配置时，此项特性可以让用户直接从聊天界面接入他们的 Drive 文件并上传文档、幻灯片、表格等作为您的对话上下文。这能够在 `管理面板 (Admin Panel)` > `设置 (Settings)` > `文档 (Documents)` 菜单下启用。使用它必须要设定 [`GOOGLE_DRIVE_API_KEY 以及 GOOGLE_DRIVE_CLIENT_ID`](/reference/env-configuration) 的环境变量。
 
-### Detailed Instructions
+### 详细说明
 
-1. Create an OAuth 2.0 client and configure both the Authorized JavaScript origins & Authorized redirect URI to be the URL (include the port if any) you use to access your Open-WebUI instance.
-2. Make a note of the Client ID associated with that OAuth client.
-3. Make sure that you enable both Google Drive API and Google Picker API for your project.
-4. Also set your app (project) as Testing and add your Google Drive email to the User List
-5. Set the permission scope to include everything those APIs have to offer. And because the app would be in Testing mode, no verification is required by Google to allow the app from accessing the data of the limited test users.
-6. Go to the Google Picker API page, and click on the create credentials button.
-7. Create an API key and under Application restrictions and choose Websites. Then add your Open-WebUI instance's URL, same as the Authorized JavaScript origins and Authorized redirect URIs settings in the step 1.
-8. Set up API restrictions on the API Key to only have access to Google Drive API & Google Picker API
-9. Set up the environment variable, `GOOGLE_DRIVE_CLIENT_ID` to the Client ID of the OAuth client from step 2.
-10. Set up the environment variable `GOOGLE_DRIVE_API_KEY` to the API Key value setup up in step 7 (NOT the OAuth client secret from step 2).
-11. Set up the `GOOGLE_REDIRECT_URI` to my Open-WebUI instance's URL (include the port, if any).
-12. Then relaunch your Open-WebUI instance with those three environment variables.
-13. After that, make sure Google Drive was enabled under `Admin Panel` < `Settings` < `Documents` < `Google Drive`
+1. 创建一个 OAuth 2.0 客户端并将授权的 JavaScript 来源与授权的重定向 URI 配置为访问你 Open WebUI 实例使用的 URL (包括可能的端口)。
+2. 记录下与该 OAuth 客户端绑定的客户端 ID (Client ID)。
+3. 确保你的项目启用了 Google Drive API 和 Google Picker API 两项服务。
+4. 同时将你的应用 (项目) 设定在测试状态 (Testing) 并将你的 Google Drive 邮箱增添至用户列表中。
+5. 配置权限作用域，涵盖这几个 API 所能提供的所有范畴。由于应用停留在测试模式，Google 不要求通过验证来让应用获取有限测试用户的相关数据。
+6. 前往 Google Picker API 的控制台，然后点击创建凭据 (create credentials) 按钮。
+7. 创建一个 API 密钥，并在应用限制 (Application restrictions) 中勾选网站 (Websites)。随后添入你的 Open-WebUI 实例 URL，内容等同于步骤 1 中的授权 JavaScript 来源和重定向 URI 的地址。
+8. 给该 API Key 配置 API 约束限制，使其只准存取 Google Drive API & Google Picker API。
+9. 配置环境变量，将 `GOOGLE_DRIVE_CLIENT_ID` 设置为步骤 2 里的 OAuth 客户端的客户端 ID。
+10. 将环境变量 `GOOGLE_DRIVE_API_KEY` 设为步骤 7 生成的 API Key 的值 (请注意**绝非**步骤 2 里的 OAuth client secret)。
+11. 建立 `GOOGLE_REDIRECT_URI` 设定为你 Open-WebUI 实例的 URL (包含端口)。
+12. 接着，在环境里携带着那三项变量重新启动你的 Open-WebUI。
+13. 完成之后，去确保 Google Drive 已经在 `管理面板 (Admin Panel)` < `设置 (Settings)` < `文档 (Documents)` < `Google Drive` 被开启。

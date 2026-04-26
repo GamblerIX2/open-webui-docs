@@ -1,31 +1,31 @@
 ---
 sidebar_position: 4
-title: "Email Processing"
+title: "邮件处理"
 ---
 
-# 📧 Process a Folder of Emails
+# 📧 处理一批邮件
 
-Drop a batch of `.eml` files and get a structured spreadsheet with action items and deadlines.
+上传一批 `.eml` 文件，获得一份包含待办事项和截止日期的结构化电子表格。
 
-> **You:** $Email Processor <br/>
-> Go through the /project-emails folder and extract all action items and deadlines.
+> **你：** $Email Processor <br/>
+> 处理 /project-emails 文件夹，提取所有待办事项和截止日期。
 
-## What the AI does
+## AI 的工作流程
 
-1. Lists all `.eml` files in the folder
-2. Reads each email: headers (from, to, subject, date) and body
-3. Identifies action items, deadlines, decisions, and open questions
-4. Creates a CSV with structured columns
-5. Flags overdue items
-6. Writes a summary of the most critical emails
+1. 列出文件夹中所有 `.eml` 文件
+2. 读取每封邮件：头部（发件人、收件人、主题、日期）和正文
+3. 识别待办事项、截止日期、决策和待解答的问题
+4. 创建带结构化列的 CSV
+5. 标记过期项目
+6. 撰写最关键邮件的摘要
 
 {/* TODO: Screenshot — Chat showing the AI processing 45 email files and producing a summary. File browser previews email_actions.csv as a formatted table with Date, From, Subject, Action Item, Deadline, Status columns. */}
 
 {/* TODO: Screenshot — The summary output listing the 5 most critical action items with their deadlines and which email they came from. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

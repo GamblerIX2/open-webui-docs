@@ -1,64 +1,62 @@
 ---
 sidebar_position: 40
-title: "Entra ID Group Name Sync"
+title: "Entra ID 群组名称同步"
 ---
 
-# Microsoft Entra ID Group Name Sync
+# Microsoft Entra ID 群组名称同步
 
 :::warning
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
+:::
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+默认情况下，当您为 Open WebUI 配置 Microsoft Entra ID OAuth 和自动群组创建时，安全组会使用其**群组 ID（GUID）**而非人类可读的群组名称进行同步。这是 Microsoft 的一个限制——ID 令牌默认不包含群组显示名称。
+
+本教程说明如何配置 Microsoft Entra ID 以返回群组**名称**而非 ID，从而在 Open WebUI 中使用群组时获得更好的用户体验。
+
+## 前提条件
+
+- 已配置 [Microsoft OAuth](/features/authentication-access/auth/sso#microsoft) 的 Open WebUI 实例
+- 具有修改应用注册权限的 Azure 账户
+- 可访问 Microsoft Entra 管理中心
+- 对 Microsoft Entra ID 应用程序配置有基本了解
+
+## 概述
+
+要在 Open WebUI 中获取人类可读的群组名称，需要：
+
+1. 配置应用注册以在令牌中包含群组
+2. 修改应用程序清单以使用 `cloud_displayname`
+3. 将 `groupMembershipClaims` 设置为仅 `ApplicationGroup`
+4. 将安全组分配给企业应用程序
+5. 为 [OAuth 群组管理](/features/authentication-access/auth/sso#oauth-group-management) 配置 Open WebUI 环境变量
+
+:::info 关键要求
+
+清单中的 `cloud_displayname` 属性**仅在** `groupMembershipClaims` 设置为 `ApplicationGroup` 时有效。如果包含其他选项（如 `SecurityGroup` 或 `All`），令牌将恢复使用群组 ID 而非名称。
 
 :::
 
-By default, when you configure Microsoft Entra ID OAuth and automatic group creation with Open WebUI, security groups are synced using their **Group IDs (GUIDs)** rather than human-readable group names. This is a Microsoft limitation where the ID token doesn't include group display names by default.
+## 步骤 1：在应用注册中配置令牌声明
 
-This tutorial explains how to configure Microsoft Entra ID to return group **names** instead of IDs, enabling a much better user experience when working with groups in Open WebUI.
+1. 导航至 **Microsoft Entra 管理中心** > **App registrations（应用注册）**
+2. 选择您的 Open WebUI 应用程序
+3. 在左侧菜单中转到 **Token configuration（令牌配置）**
+4. 点击 **Add groups claim（添加群组声明）**
+5. 选择 **Security groups（安全组）**（或适合您需求的群组类型）
+6. 在 **Customize token properties by type（按类型自定义令牌属性）** 下，确保为以下令牌类型添加群组：
+   - ID 令牌
+   - 访问令牌
+7. 点击 **Add（添加）**
 
-## Prerequisites
+## 步骤 2：修改应用程序清单
 
-- An Open WebUI instance configured with [Microsoft OAuth](/features/authentication-access/auth/sso#microsoft)
-- An Azure account with permissions to modify App Registrations
-- Access to the Microsoft Entra admin center
-- Basic understanding of Microsoft Entra ID application configuration
+这是启用群组名称而非 ID 的关键步骤。
 
-## Overview
+1. 在应用注册中，在左侧菜单中转到 **Manifest（清单）**
+2. 找到 `optionalClaims` 部分
+3. 为每种令牌类型在 `additionalProperties` 数组中添加 `cloud_displayname`
 
-To get human-readable group names in Open WebUI, you need to:
-
-1. Configure your App Registration to include groups in the token
-2. Modify the application manifest to use `cloud_displayname`
-3. Set `groupMembershipClaims` to `ApplicationGroup` only
-4. Assign security groups to the Enterprise Application
-5. Configure Open WebUI environment variables for [OAuth Group Management](/features/authentication-access/auth/sso#oauth-group-management)
-
-:::info Key Requirement
-
-The `cloud_displayname` property in the manifest **only works** when `groupMembershipClaims` is set to `ApplicationGroup`. If you include other options (like `SecurityGroup` or `All`), the token will revert to using Group IDs instead of names.
-
-:::
-
-## Step 1: Configure Token Claims in App Registration
-
-1. Navigate to the **Microsoft Entra admin center** > **App registrations**
-2. Select your Open WebUI application
-3. Go to **Token configuration** in the left menu
-4. Click **Add groups claim**
-5. Select **Security groups** (or the appropriate group type for your needs)
-6. Under **Customize token properties by type**, ensure groups are added for:
-   - ID token
-   - Access token
-7. Click **Add**
-
-## Step 2: Modify the Application Manifest
-
-This is the critical step that enables group names instead of IDs.
-
-1. In your App Registration, go to **Manifest** in the left menu
-2. Locate the `optionalClaims` section
-3. Add `cloud_displayname` to the `additionalProperties` array for each token type
-
-Your manifest should look like this:
+清单应如下所示：
 
 ```json
 "optionalClaims": {
@@ -95,7 +93,7 @@ Your manifest should look like this:
 }
 ```
 
-4. **Critical**: Set `groupMembershipClaims` to `ApplicationGroup` only:
+4. **关键**：将 `groupMembershipClaims` 设置为仅 `ApplicationGroup`：
 
 ```json
 "groupMembershipClaims": "ApplicationGroup"
@@ -103,98 +101,98 @@ Your manifest should look like this:
 
 :::warning
 
-If `groupMembershipClaims` includes other values like `SecurityGroup` or `All`, the `cloud_displayname` property will be ignored and the token will contain Group IDs instead of names. See [Microsoft's optional claims documentation](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims) for more details.
+如果 `groupMembershipClaims` 包含其他值（如 `SecurityGroup` 或 `All`），`cloud_displayname` 属性将被忽略，令牌将包含群组 ID 而非名称。有关更多详情，请参阅 [Microsoft 的可选声明文档](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims)。
 
 :::
 
-5. Click **Save**
+5. 点击 **Save（保存）**
 
-## Step 3: Assign Groups to the Enterprise Application
+## 步骤 3：将群组分配给企业应用程序
 
-When using `ApplicationGroup`, only groups explicitly assigned to the Enterprise Application will be included in the token.
+使用 `ApplicationGroup` 时，只有明确分配给企业应用程序的群组才会包含在令牌中。
 
-1. Navigate to **Microsoft Entra admin center** > **Enterprise applications**
-2. Find and select your Open WebUI application
-3. Go to **Users and groups** in the left menu
-4. Click **Add user/group**
-5. Select the security groups you want to sync with Open WebUI
-6. Click **Assign**
+1. 导航至 **Microsoft Entra 管理中心** > **Enterprise applications（企业应用程序）**
+2. 找到并选择您的 Open WebUI 应用程序
+3. 在左侧菜单中转到 **Users and groups（用户和群组）**
+4. 点击 **Add user/group（添加用户/群组）**
+5. 选择要与 Open WebUI 同步的安全组
+6. 点击 **Assign（分配）**
 
-:::warning Multiple Group Assignment
+:::warning 多群组分配
 
-When a user belongs to multiple groups, ensure all relevant groups are assigned to the Enterprise Application. Note that only groups explicitly assigned here will appear in the user's token and subsequently sync to Open WebUI.
+当用户属于多个群组时，确保所有相关群组都已分配给企业应用程序。请注意，只有在此处明确分配的群组才会出现在用户的令牌中，并随后同步到 Open WebUI。
 
 :::
 
-## Step 4: Configure API Permissions
+## 步骤 4：配置 API 权限
 
-Ensure your App Registration has the required Microsoft Graph permissions:
+确保您的应用注册具有所需的 Microsoft Graph 权限：
 
-1. In your App Registration, go to **API permissions**
-2. Click **Add a permission** > **Microsoft Graph** > **Delegated permissions**
-3. Add the following permissions from the OpenID section if not already present:
+1. 在应用注册中，转到 **API permissions（API 权限）**
+2. 点击 **Add a permission（添加权限）** > **Microsoft Graph** > **Delegated permissions（委托权限）**
+3. 如果尚未添加，请从 OpenID 部分添加以下权限：
    - `openid`
    - `email`
    - `profile`
-4. Click **Grant admin consent for [your organization]**
+4. 点击 **Grant admin consent for [your organization]（为 [您的组织] 授予管理员同意）**
 
-## Step 5: Configure Open WebUI Environment Variables
+## 步骤 5：配置 Open WebUI 环境变量
 
-Configure the following environment variables for your Open WebUI deployment. For more details on each variable, see the [environment variable documentation](/reference/env-configuration).
+为您的 Open WebUI 部署配置以下环境变量。有关每个变量的更多详情，请参阅[环境变量文档](/reference/env-configuration)。
 
 ```bash
-# Required: Your public WebUI address
+# 必填：您的 WebUI 公共地址
 WEBUI_URL=https://your-open-webui-domain
 
-# Microsoft OAuth Configuration (required)
+# Microsoft OAuth 配置（必填）
 MICROSOFT_CLIENT_ID=your_client_id
 MICROSOFT_CLIENT_SECRET=your_client_secret
 MICROSOFT_CLIENT_TENANT_ID=your_tenant_id
 MICROSOFT_REDIRECT_URI=https://your-open-webui-domain/oauth/microsoft/callback
 
-# Required for logout to work properly
+# 正确退出所需
 OPENID_PROVIDER_URL=https://login.microsoftonline.com/your_tenant_id/v2.0/.well-known/openid-configuration
 
-# Enable OAuth signup
+# 启用 OAuth 注册
 ENABLE_OAUTH_SIGNUP=true
 
-# OAuth Group Management
+# OAuth 群组管理
 OAUTH_GROUP_CLAIM=groups
 ENABLE_OAUTH_GROUP_MANAGEMENT=true
 ENABLE_OAUTH_GROUP_CREATION=true
 
-# Recommended: Set a consistent secret key
+# 推荐：设置一致的密钥
 WEBUI_SECRET_KEY=your_secure_secret_key
 ```
 
-### Environment Variable Reference
+### 环境变量参考
 
-| Variable                        | Default  | Description                                                                                                                                      |
+| 变量 | 默认值 | 描述 |
 | ------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `OAUTH_GROUP_CLAIM`             | `groups` | The claim in the ID/access token containing the user's group memberships.                                                                        |
-| `ENABLE_OAUTH_GROUP_MANAGEMENT` | `false`  | When `true`, user group memberships are synchronized with OAuth claims upon each login.                                                          |
-| `ENABLE_OAUTH_GROUP_CREATION`   | `false`  | When `true`, enables **Just-in-Time (JIT) group creation** - groups present in OAuth claims but not in Open WebUI will be created automatically. |
+| `OAUTH_GROUP_CLAIM`             | `groups` | ID/访问令牌中包含用户群组成员资格的声明。 |
+| `ENABLE_OAUTH_GROUP_MANAGEMENT` | `false`  | 设置为 `true` 时，每次登录时用户群组成员资格将与 OAuth 声明同步。 |
+| `ENABLE_OAUTH_GROUP_CREATION`   | `false`  | 设置为 `true` 时，启用**即时（JIT）群组创建**——OAuth 声明中存在但 Open WebUI 中不存在的群组将自动创建。 |
 
-:::warning Strict Group Synchronization
+:::warning 严格群组同步
 
-When `ENABLE_OAUTH_GROUP_MANAGEMENT` is set to `true`, a user's group memberships in Open WebUI are **strictly synchronized** with the groups received in their OAuth claims upon each login.
+当 `ENABLE_OAUTH_GROUP_MANAGEMENT` 设置为 `true` 时，用户在 Open WebUI 中的群组成员资格将在每次登录时与其 OAuth 声明中收到的群组**严格同步**。
 
-- Users will be **added** to Open WebUI groups that match their OAuth claims.
-- Users will be **removed** from any Open WebUI groups (including those manually assigned within Open WebUI) if those groups are **not** present in their OAuth claims for that login session.
+- 用户将被**添加**到与其 OAuth 声明匹配的 Open WebUI 群组中。
+- 如果某个 Open WebUI 群组（包括在 Open WebUI 中手动分配的群组）**不**存在于该登录会话的 OAuth 声明中，用户将被从该群组中**移除**。
 
 :::
 
-## Verification
+## 验证
 
-After completing the configuration:
+完成配置后：
 
-1. **Test the token**: Use [https://jwt.ms](https://jwt.ms) to decode your ID token and verify that the `groups` claim contains display names instead of GUIDs.
-2. **Log in as a non-admin user**: Admin users' group memberships are not automatically updated via OAuth group management. Use a standard user account for testing.
-3. **Check Open WebUI**: Navigate to the Admin Panel and verify that groups appear with readable names.
+1. **测试令牌**：使用 [https://jwt.ms](https://jwt.ms) 解码您的 ID 令牌，验证 `groups` 声明包含显示名称而非 GUID。
+2. **以非管理员用户身份登录**：管理员用户的群组成员资格不会通过 OAuth 群组管理自动更新。使用标准用户账户进行测试。
+3. **检查 Open WebUI**：导航至管理面板，验证群组显示的是可读名称。
 
-:::info Admin Users
+:::info 管理员用户
 
-Admin users' group memberships are **not** automatically updated via OAuth group management. If you need to test the configuration, use a non-admin user account.
+管理员用户的群组成员资格**不会**通过 OAuth 群组管理自动更新。如果需要测试配置，请使用非管理员用户账户。
 
 :::
 

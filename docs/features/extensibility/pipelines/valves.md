@@ -5,11 +5,11 @@ title: "Valves"
 
 ## Valves
 
-`Valves` (see the dedicated [Valves & UserValves](/features/extensibility/plugin/development/valves) page) can also be set for `Pipeline`. In short, `Valves` are input variables that are set per pipeline.
+`Valves`（参见专用的 [Valves & UserValves](/features/extensibility/plugin/development/valves) 页面）也可以为 `Pipeline` 设置。简而言之，`Valves` 是每个 Pipeline 单独设置的输入变量。
 
-`Valves` are set as a subclass of the `Pipeline` class, and initialized as part of the `__init__` method of the `Pipeline` class.
+`Valves` 作为 `Pipeline` 类的子类设置，并在 `Pipeline` 类的 `__init__` 方法中初始化。
 
-When adding valves to your pipeline, include a way to ensure that valves can be reconfigured by admins in the web UI. There are a few options for this:
+向 Pipeline 添加 Valve 时，请包含一种确保管理员可以在 Web UI 中重新配置 Valve 的方法。有以下几个选项：
 
 - Use `os.getenv()` to set an environment variable to use for the pipeline, and a default value to use if the environment variable isn't set. An example can be seen below:
 
@@ -23,7 +23,7 @@ self.valves = self.Valves(
 )
 ```
 
-- Set the valve to the `Optional` type, which will allow the pipeline to load even if no value is set for the valve.
+- 将 Valve 设置为 `Optional` 类型，即使未为 Valve 设置值，也允许 Pipeline 加载。
 
 ```python
 class Pipeline:
@@ -32,5 +32,5 @@ class Pipeline:
         max_turns: Optional[int] = None
 ```
 
-If you don't leave a way for valves to be updated in the web UI, you'll see the following error in the Pipelines server log after trying to add a pipeline to the web UI:
+如果你不提供在 Web UI 中更新 Valve 的方法，在尝试将 Pipeline 添加到 Web UI 后，你会在 Pipelines 服务器日志中看到以下错误：
 `WARNING:root:No Pipeline class found in <pipeline name>`

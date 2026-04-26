@@ -1,71 +1,71 @@
 ---
-title: "Dual OAuth Setup"
-sidebar_label: Dual OAuth Configuration
+title: "双 OAuth 配置"
+sidebar_label: 双 OAuth 配置
 sidebar_position: 30
-description: Learn how to configure both Microsoft and Google OAuth providers simultaneously in Open WebUI using an unofficial community workaround.
+description: 了解如何使用非官方社区变通方案，在 Open WebUI 中同时配置 Microsoft 和 Google 两个 OAuth 提供商。
 ---
 
-# 🔐 Dual OAuth Configuration (Microsoft & Google)
+# 🔐 双 OAuth 配置（Microsoft 与 Google）
 
-:::caution Unofficial Workaround
-This configuration is a community-contributed workaround and is **not officially supported** by the Open WebUI team. While it works in current versions, behavior may change in future updates. This tutorial serves as a demonstration for advanced users.
+:::caution 非官方变通方案
+此配置是社区贡献的变通方案，**Open WebUI 团队不提供官方支持**。虽然在当前版本中可用，但行为可能在未来版本中发生变化。本教程面向高级用户，仅作演示用途。
 :::
 
-## Overview
+## 概述
 
-While Open WebUI officially supports only one **OpenID Connect (OIDC)** provider at a time via the `OPENID_PROVIDER_URL` variable, it is possible to support both **Microsoft** and **Google** simultaneously.
+虽然 Open WebUI 官方仅通过 `OPENID_PROVIDER_URL` 变量一次支持一个 **OpenID Connect (OIDC)** 提供商，但可以同时支持 **Microsoft** 和 **Google**。
 
-The trick is to configure one provider (e.g., Microsoft) as the primary OIDC provider and the other (e.g., Google) as a standard OAuth provider by utilizing Open WebUI's built-in support for specific providers.
+技巧是将一个提供商（例如 Microsoft）配置为主 OIDC 提供商，将另一个（例如 Google）配置为标准 OAuth 提供商，利用 Open WebUI 对特定提供商的内置支持。
 
-## Prerequisites
+## 前提条件
 
-- Access to your Open WebUI environment variables (Docker or local).
-- Client IDs and Secrets from both [Google Cloud Console](https://console.cloud.google.com/) and [Microsoft Azure/Entra ID](https://entra.microsoft.com/).
-- `OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true` must be enabled to ensure users are mapped to the same account regardless of the provider used.
+- 访问您的 Open WebUI 环境变量（Docker 或本地）。
+- 来自 [Google Cloud Console](https://console.cloud.google.com/) 和 [Microsoft Azure/Entra ID](https://entra.microsoft.com/) 的 Client ID 和 Secret。
+- 必须启用 `OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true`，以确保用户无论使用哪个提供商登录都映射到同一账户。
 
-## Configuration logic
+## 配置逻辑
 
-Open WebUI uses `OPENID_PROVIDER_URL` as a generic "catch-all" for OIDC. However, it also has native modules for Google and Microsoft. By leaving the `OPENID_PROVIDER_URL` for Microsoft and providing only the Client IDs for Google, the system can internalize both flows.
+Open WebUI 使用 `OPENID_PROVIDER_URL` 作为 OIDC 的通用"兜底"方案。但它也为 Google 和 Microsoft 提供了原生模块。通过为 Microsoft 保留 `OPENID_PROVIDER_URL` 并仅为 Google 提供 Client ID，系统可以在内部处理这两个流程。
 
-## Environment Variables
+## 环境变量
 
-Add the following to your `docker-compose.yaml` or environment config:
+将以下内容添加到您的 `docker-compose.yaml` 或环境配置中：
 
 ```bash
-# Enable signup and account merging (CRITICAL)
+# 启用注册和账户合并（关键）
 ENABLE_OAUTH_SIGNUP=true
 OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
 
-# 1. Microsoft as the primary OIDC provider
-# This uses the generic OIDC flow via the OPENID_PROVIDER_URL
+# 1. Microsoft 作为主 OIDC 提供商
+# 通过 OPENID_PROVIDER_URL 使用通用 OIDC 流程
 MICROSOFT_CLIENT_ID=your_microsoft_client_id
 MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
 MICROSOFT_CLIENT_TENANT_ID=your_tenant_id
 MICROSOFT_REDIRECT_URI=https://your-webui.com/oauth/microsoft/callback
 OPENID_PROVIDER_URL=https://login.microsoftonline.com/your_tenant_id/v2.0/.well-known/openid-configuration
 
-# Optional: Custom scope for Microsoft OAuth (required if using custom API scopes)
+# 可选：Microsoft OAuth 的自定义 scope（在使用自定义 API scope 时必填）
 # MICROSOFT_OAUTH_SCOPE=openid email profile offline_access api://<Application ID URI>/<custom_scope>
 
-# Optional: Include scope in refresh token requests (required for some Azure AD configurations)
+# 可选：在刷新令牌请求中包含 scope（某些 Azure AD 配置需要）
 # OAUTH_REFRESH_TOKEN_INCLUDE_SCOPE=true
 
-# 2. Google as a secondary OAuth provider
-# Note: Do NOT provide an OPENID_PROVIDER_URL for Google.
-# The system will use its internal Google OAuth implementation.
+# 2. Google 作为辅助 OAuth 提供商
+# 注意：不要为 Google 提供 OPENID_PROVIDER_URL。
+# 系统将使用其内置的 Google OAuth 实现。
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
-## Why This Works
+## 工作原理
 
-1.  **Microsoft** is handled via the generic OIDC flow because `OPENID_PROVIDER_URL` is set to the Microsoft endpoint.
-2.  **Google** is handled via the dedicated internal Google OAuth module because the system detects `GOOGLE_CLIENT_ID` but sees that the global `OPENID_PROVIDER_URL` is already "claimed" by Microsoft or simply isn't needed for the built-in Google module.
-3.  **Account Merging**: Since both providers return the user's email, `OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true` ensures the user logs into the same profile whether they click "Sign in with Google" or "Sign in with Microsoft."
+1.  **Microsoft** 通过通用 OIDC 流程处理，因为 `OPENID_PROVIDER_URL` 已设置为 Microsoft 端点。
+2.  **Google** 通过专用的内置 Google OAuth 模块处理，因为系统检测到 `GOOGLE_CLIENT_ID`，而全局 `OPENID_PROVIDER_URL` 已被 Microsoft"占用"或内置 Google 模块根本不需要它。
+3.  **账户合并**：由于两个提供商都返回用户的邮箱，`OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true` 确保用户无论点击"使用 Google 登录"还是"使用 Microsoft 登录"都登录同一个账户。
 
-## Troubleshooting
+## 故障排查
 
-- **Redirect Mismatch**: Ensure your Redirect URIs in both consoles match your `WEBUI_URL`.
-- **Merge Failures**: Double-check that `OAUTH_MERGE_ACCOUNTS_BY_EMAIL` is set to `true`.
-- **Microsoft Logout**: Microsoft often requires the `OPENID_PROVIDER_URL` to handle the logout redirect correctly. If logout fails, ensure this URL is correct for your tenant.
-- **Azure AD Refresh Token Failures (`AADSTS90009`)**: If token refresh fails with the error "Application is requesting a token for itself", set `OAUTH_REFRESH_TOKEN_INCLUDE_SCOPE=true`. Azure AD requires the scope to be explicitly included in refresh token requests. You may also need to set `MICROSOFT_OAUTH_SCOPE` to include `offline_access` and any custom API scopes.
+- **重定向不匹配**：确保两个控制台中的重定向 URI 与您的 `WEBUI_URL` 匹配。
+- **合并失败**：仔细检查 `OAUTH_MERGE_ACCOUNTS_BY_EMAIL` 是否设置为 `true`。
+- **Microsoft 退出**：Microsoft 通常需要 `OPENID_PROVIDER_URL` 来正确处理退出重定向。如果退出失败，请确保该 URL 对您的租户是正确的。
+- **Azure AD 刷新令牌失败（`AADSTS90009`）**：如果令牌刷新时出现"应用程序正在为自身请求令牌"的错误，请设置 `OAUTH_REFRESH_TOKEN_INCLUDE_SCOPE=true`。Azure AD 要求在刷新令牌请求中明确包含 scope。您可能还需要将 `MICROSOFT_OAUTH_SCOPE` 设置为包含 `offline_access` 和任何自定义 API scope。

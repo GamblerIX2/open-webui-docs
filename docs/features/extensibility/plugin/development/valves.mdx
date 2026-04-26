@@ -5,11 +5,11 @@ title: "Valves"
 
 ## Valves
 
-Valves and UserValves are used to allow users to provide dynamic details such as an API key or a configuration option. These will create a fillable field or a bool switch in the GUI menu for the given function. They are always optional, but HIGHLY encouraged.
+Valves 和 UserValves 用于允许用户提供动态详情，如 API 密钥或配置选项。这些将在给定函数的 GUI 菜单中创建可填写字段或布尔开关。它们始终是可选的，但**强烈建议**使用。
 
-Hence, Valves and UserValves class can be defined in either a `Pipe`, `Pipeline`, `Filter` or `Tools` class.
+因此，Valves 和 UserValves 类可以在 `Pipe`、`Pipeline`、`Filter` 或 `Tools` 类中定义。
 
-Valves are configurable by admins alone via the Tools or Functions menus. On the other hand UserValves are configurable by any users directly from a chat session.
+Valves 只能由管理员通过 Tools 或 Functions 菜单进行配置。而 UserValves 可以由任何用户直接从对话会话中配置。
 
 <details>
 <summary>Commented example</summary>
@@ -76,7 +76,7 @@ class Filter:
 
 </details>
 
-## Input Types
+## 输入类型
 
 Valves support special input types that change how fields are rendered in the UI. You can configure these using `json_schema_extra` with the `input` key in your Pydantic `Field` definitions.
 

@@ -5,7 +5,7 @@ title: "Pipes"
 
 ## Pipes
 
-Pipes are standalone functions that process inputs and generate responses, possibly by invoking one or more LLMs or external services before returning results to the user. Examples of potential actions you can take with Pipes are Retrieval Augmented Generation (RAG), sending requests to non-OpenAI LLM providers (such as Anthropic, Azure OpenAI, or Google), or executing functions right in your web UI. Pipes can be hosted as a Function or on a Pipelines server. A list of examples is maintained in the [Pipelines repo](https://github.com/open-webui/pipelines/tree/main/examples/pipelines). The general workflow can be seen in the image below.
+Pipes 是处理输入并生成响应的独立函数，在向用户返回结果之前，可能会调用一个或多个 LLM 或外部服务。使用 Pipes 可以进行的操作示例包括：检索增强生成（RAG）、向非 OpenAI LLM 提供商（如 Anthropic、Azure OpenAI 或 Google）发送请求，或直接在 Web UI 中执行函数。Pipes 可以作为 Function 托管，也可以托管在 Pipelines 服务器上。示例列表维护在 [Pipelines 仓库](https://github.com/open-webui/pipelines/tree/main/examples/pipelines)中。一般工作流如下图所示。
 
 <div align="center">
   <a href="#">
@@ -13,7 +13,7 @@ Pipes are standalone functions that process inputs and generate responses, possi
   </a>
 </div>
 
-Pipes that are defined in your WebUI show up as a new model with an "External" designation attached to them. An example of two Pipe models, `Database RAG Pipeline` and `DOOM`, can be seen below next to two self-hosted models:
+在 WebUI 中定义的 Pipes 显示为带有"External"标识的新模型。以下是两个 Pipe 模型 `Database RAG Pipeline` 和 `DOOM` 与两个自托管模型并排的示例：
 
 <div align="center">
   <a href="#">
@@ -21,41 +21,41 @@ Pipes that are defined in your WebUI show up as a new model with an "External" d
   </a>
 </div>
 
-## Streaming response format
+## 流式响应格式
 
-Pipes can return either a single `str` or an iterator/generator. When streaming, each yielded item can be:
+Pipes 可以返回单个 `str` 或迭代器/生成器。流式传输时，每个 yield 的项可以是：
 
-- **A plain string** — treated as assistant-visible text content and appended to the message as it arrives. This is the simplest form and the one most agent pipelines should use for regular output.
-- **An OpenAI-compatible SSE chunk dict** — same shape as the `/v1/chat/completions` streaming response, i.e.
+- **纯字符串** — 被视为助手可见的文本内容，随到随追加到消息中。这是最简单的形式，也是大多数代理 Pipeline 应用于常规输出的形式。
+- **OpenAI 兼容的 SSE chunk 字典** — 与 `/v1/chat/completions` 流式响应形状相同，即：
 
   ```python
   {"choices": [{"delta": {"content": "..."}, "finish_reason": None}]}
   ```
 
-  Use this when you need to set fields other than `content` (for example `finish_reason` on the final chunk).
+  当你需要设置 `content` 以外的字段时使用（例如最终 chunk 上的 `finish_reason`）。
 
-For a self-contained stream, close it with a single terminating chunk:
+对于自包含流，使用单个终止 chunk 关闭它：
 
 ```python
 yield {"choices": [{"delta": {}, "finish_reason": "stop"}]}
 ```
 
-`finish_reason` should appear **exactly once**, at the end, and for a pipeline that handles its own tool execution it should always be `"stop"` — not `"tool_calls"` (see the next section).
+`finish_reason` 应**恰好出现一次**，在末尾，对于自行处理工具执行的 Pipeline，它应始终为 `"stop"` — 而不是 `"tool_calls"`（参见下一节）。
 
-## Self-contained agents and `delta.tool_calls`
+## 自包含代理与 `delta.tool_calls`
 
-This is the single biggest gotcha when building an agent pipeline (LangChain, LlamaIndex, a custom planner, anything that executes its own tools and streams the result back).
+这是构建代理 Pipeline（LangChain、LlamaIndex、自定义规划器，任何执行自己工具并流式返回结果的东西）时最大的陷阱。
 
 `delta.tool_calls` in a chunk means **"please execute this tool call for me, client"**. When Open WebUI's middleware sees it, the tool executor picks up the call, runs it, appends a `role: "tool"` message, and fires a continuation request back at the same pipeline. It does this in a loop capped by `CHAT_RESPONSE_MAX_TOOL_CALL_RETRIES` (≈30).
 
-If your pipeline already executed the tool internally, emitting `delta.tool_calls` makes Open WebUI try to execute it *again* — and since the pipeline keeps emitting the same call on every retry, you get 30 copies of the response stacked on top of each other before the retry cap trips. Same thing happens if you set `finish_reason: "tool_calls"` mid-stream.
+如果你的 Pipeline 已在内部执行了工具，发出 `delta.tool_calls` 会让 Open WebUI 再次尝试执行它——由于 Pipeline 在每次重试时都会发出相同的调用，在达到重试上限之前你会得到 30 份响应叠加在一起。如果你在流中途设置 `finish_reason: "tool_calls"` 也会发生同样的情况。
 
-**Rule of thumb:**
+**经验法则：**
 
-- The model is calling a tool Open WebUI should run → emit `delta.tool_calls`, terminate with `finish_reason: "tool_calls"`, let the middleware call the tool and re-enter your pipeline.
-- The pipeline is running an agent that owns its own tools → **do not** emit `delta.tool_calls` at all. Render the tool execution as content using the `<details type="tool_calls">` block described below.
+- 模型正在调用 Open WebUI 应该运行的工具 → 发出 `delta.tool_calls`，以 `finish_reason: "tool_calls"` 终止，让中间件调用工具并重新进入你的 Pipeline。
+- Pipeline 正在运行一个拥有自己工具的代理 → **不要**发出 `delta.tool_calls`。使用下面描述的 `<details type="tool_calls">` 块将工具执行渲染为内容。
 
-### Rendering tool execution as content
+### 将工具执行渲染为内容
 
 Open WebUI's own server-side tool path renders finished tool executions as `<details type="tool_calls">` blocks in the message content. You can emit the same block from an agent pipeline to get the identical "Called &lt;tool&gt;" chip with an expandable arguments + result view:
 
@@ -78,7 +78,7 @@ details_block = (
 )
 ```
 
-Yield `details_block` as content — either directly as a string (simplest on a Pipelines server) or inside a `delta.content` chunk:
+将 `details_block` 作为内容 yield——可以直接作为字符串（在 Pipelines 服务器上最简单），也可以放在 `delta.content` chunk 中：
 
 ```python
 # Simplest — works on Pipelines servers:
@@ -88,7 +88,7 @@ yield details_block
 yield {"choices": [{"delta": {"content": details_block}, "finish_reason": None}]}
 ```
 
-The final stream for a self-contained agent that ran one tool looks like this end-to-end:
+运行了一个工具的自包含代理的最终流从头到尾如下所示：
 
 ```python
 def pipe(self, user_message, model_id, messages, body):

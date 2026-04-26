@@ -1,6 +1,6 @@
 ---
 sidebar_position: 0
-title: "Terminals (Orchestrator)"
+title: "Terminals（编排器）"
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,12 +9,12 @@ import TabItem from '@theme/TabItem';
 import Docker from './tab-deployment/Docker.md';
 import Kubernetes from './tab-deployment/Kubernetes.md';
 
-# Terminals (Orchestrator)
+# Terminals（编排器）
 
-**Terminals** is an enterprise orchestration layer for [Open Terminal](/features/open-terminal) that provisions a fully isolated terminal container for every user. Instead of sharing a single container, each person gets their own, complete with separate files, processes, resource limits, and network isolation.
+**Terminals** 是 [Open Terminal](/features/open-terminal) 的企业级编排层，为每位用户提供完全隔离的终端容器。不再共享单一容器，每个人都有自己专属的容器，包括独立的文件、进程、资源限制和网络隔离。
 
-:::tip Quick navigation
-- **Need different environments per team?** → [Policies guide](./policies)
+:::tip 快速导航
+- **需要为不同团队提供不同环境？** → [策略指南](./policies)
 :::
 
 ```mermaid
@@ -22,9 +22,9 @@ flowchart LR
     OW["Open WebUI"]
     OR["Orchestrator"]
     OW -->|X-User-Id| OR
-    OR --> TA["Open Terminal<br/>User A"]
-    OR --> TB["Open Terminal<br/>User B"]
-    OR --> TC["Open Terminal<br/>User C"]
+    OR --> TA["Open Terminal<br/>用户 A"]
+    OR --> TB["Open Terminal<br/>用户 B"]
+    OR --> TC["Open Terminal<br/>用户 C"]
 
     style OW fill:#4a90d9,color:#fff
     style OR fill:#e67e22,color:#fff
@@ -35,21 +35,21 @@ flowchart LR
 
 ---
 
-## How it works
+## 工作原理
 
-The orchestrator sits between Open WebUI and the Open Terminal instances:
+编排器位于 Open WebUI 和 Open Terminal 实例之间：
 
-1. A user activates a terminal in Open WebUI.
-2. Open WebUI proxies the request to the **orchestrator**, a service that manages the lifecycle of terminal containers.
-3. The orchestrator provisions a personal Open Terminal container for that user (or reconnects to an existing one).
-4. All traffic is proxied through the orchestrator. The user never connects to their container directly.
-5. Idle containers are automatically cleaned up after a configurable timeout. Data optionally persists across sessions.
+1. 用户在 Open WebUI 中激活一个终端。
+2. Open WebUI 将请求代理到**编排器**——一个管理终端容器生命周期的服务。
+3. 编排器为该用户分配专属的 Open Terminal 容器（或重新连接到已有容器）。
+4. 所有流量均通过编排器代理。用户永远不会直接连接到自己的容器。
+5. 空闲容器在可配置的超时时间后自动清理。数据可选择性地在会话间持久化。
 
-The orchestrator also exposes the same OpenAPI-based tool interface as Open Terminal, so the AI can execute commands, read files, and run code, all scoped to the requesting user's container.
+编排器还暴露与 Open Terminal 相同的基于 OpenAPI 的工具接口，因此 AI 可以执行命令、读取文件和运行代码，所有操作都限定在发起请求的用户容器范围内。
 
 ---
 
-## Deployment
+## 部署
 
 <Tabs>
   <TabItem value="docker" label="Docker" default>
@@ -66,53 +66,53 @@ The orchestrator also exposes the same OpenAPI-based tool interface as Open Term
 
 ---
 
-## Authentication
+## 认证
 
-The orchestrator supports three authentication modes:
+编排器支持三种认证模式：
 
-| Mode | When to use | How to configure |
+| 模式 | 适用场景 | 配置方式 |
 | :--- | :--- | :--- |
-| **Open WebUI JWT** | Production. The orchestrator validates tokens against your Open WebUI instance. | Set `TERMINALS_OPEN_WEBUI_URL` on the orchestrator to your Open WebUI URL. |
-| **Shared API key** | Standard. Open WebUI includes a shared secret in every request. | Set `TERMINALS_API_KEY` to the same value on both Open WebUI and the orchestrator. |
-| **Open** | Development only. No authentication. Do not use in production. | Leave both `TERMINALS_OPEN_WEBUI_URL` and `TERMINALS_API_KEY` unset. |
+| **Open WebUI JWT** | 生产环境。编排器验证 Open WebUI 实例的 token。 | 在编排器上将 `TERMINALS_OPEN_WEBUI_URL` 设置为你的 Open WebUI URL。 |
+| **共享 API Key** | 标准方式。Open WebUI 在每个请求中携带共享密钥。 | 在 Open WebUI 和编排器上将 `TERMINALS_API_KEY` 设置为相同的值。 |
+| **开放模式** | 仅用于开发。无认证，不可在生产中使用。 | 将 `TERMINALS_OPEN_WEBUI_URL` 和 `TERMINALS_API_KEY` 都留空。 |
 
-When deployed via Docker Compose or Helm, the shared API key is configured automatically between Open WebUI and the orchestrator.
-
----
-
-## Troubleshooting
-
-### Terminal won't start
-
-1. **Check orchestrator logs.** The orchestrator logs the full provisioning flow, including image pull and container creation. Look for errors related to image availability or resource limits.
-2. **Verify the API key.** Ensure `TERMINALS_API_KEY` matches between Open WebUI and the orchestrator. A mismatch causes silent auth failures.
-3. **Check image pull access.** If using a private container registry, make sure the orchestrator (Docker) or cluster (Kubernetes) has pull credentials configured.
-
-### Authentication failures
-
-- If using **JWT mode**, confirm `TERMINALS_OPEN_WEBUI_URL` points to a reachable Open WebUI instance.
-- If using **API key mode**, confirm the key is set identically on both sides. Check for extra whitespace or newlines.
-- Check the orchestrator logs for `401` or `403` responses.
-
-### Container is reaped too quickly
-
-Increase `TERMINALS_IDLE_TIMEOUT_MINUTES` (or `idle_timeout_minutes` in a policy). The default is `0` (disabled), but if set too low, containers may be cleaned up while users are still working. A value of `30` is typical.
-
-### Connection refused
-
-- **Docker:** ensure `TERMINALS_NETWORK` is set so containers can communicate by name. Without it, containers use published ports and the `TERMINALS_DOCKER_HOST` address must be reachable.
-- **Kubernetes:** verify the orchestrator Service is accessible from the Open WebUI Pod. Run `kubectl get svc -n open-webui` to confirm the service exists.
+通过 Docker Compose 或 Helm 部署时，Open WebUI 和编排器之间的共享 API Key 会自动配置。
 
 ---
 
-## Further reading
+## 故障排除
 
-- [Multi-User Setup](../advanced/multi-user): comparison of isolation approaches
-- [Security best practices](../advanced/security)
-- [Configuration reference](../advanced/configuration): all Open Terminal container settings
+### 终端无法启动
+
+1. **检查编排器日志。** 编排器会记录完整的分配流程，包括镜像拉取和容器创建。查找与镜像可用性或资源限制相关的错误。
+2. **验证 API Key。** 确保 `TERMINALS_API_KEY` 在 Open WebUI 和编排器之间一致。不匹配会导致静默认证失败。
+3. **检查镜像拉取权限。** 如果使用私有容器镜像仓库，请确保编排器（Docker）或集群（Kubernetes）已配置拉取凭据。
+
+### 认证失败
+
+- 使用 **JWT 模式**时，确认 `TERMINALS_OPEN_WEBUI_URL` 指向可访问的 Open WebUI 实例。
+- 使用 **API Key 模式**时，确认两端的密钥完全一致。检查是否有多余的空格或换行。
+- 查看编排器日志中的 `401` 或 `403` 响应。
+
+### 容器被过快清理
+
+增大 `TERMINALS_IDLE_TIMEOUT_MINUTES`（或策略中的 `idle_timeout_minutes`）。默认值为 `0`（禁用），但如果设置过低，容器可能在用户还在工作时就被清理掉。`30` 是一个典型值。
+
+### 连接被拒绝
+
+- **Docker：** 确保设置了 `TERMINALS_NETWORK`，使容器可以通过名称互相通信。若未设置，容器使用已发布的端口，且 `TERMINALS_DOCKER_HOST` 地址必须可访问。
+- **Kubernetes：** 验证编排器 Service 是否可从 Open WebUI Pod 访问。运行 `kubectl get svc -n open-webui` 确认服务存在。
 
 ---
 
-## License
+## 延伸阅读
 
-Terminals requires an [Open WebUI Enterprise License](https://openwebui.com/enterprise) for production use. See the [Terminals repository](https://github.com/open-webui/terminals) for details.
+- [多用户配置](../advanced/multi-user)：隔离方式对比
+- [安全最佳实践](../advanced/security)
+- [配置参考](../advanced/configuration)：所有 Open Terminal 容器设置
+
+---
+
+## 许可证
+
+Terminals 在生产环境中使用需要 [Open WebUI 企业许可证](https://openwebui.com/enterprise)。详情请参阅 [Terminals 仓库](https://github.com/open-webui/terminals)。

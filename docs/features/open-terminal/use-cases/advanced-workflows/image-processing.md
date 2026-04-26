@@ -1,28 +1,28 @@
 ---
 sidebar_position: 7
-title: "Image Processing"
+title: "图像处理"
 ---
 
-# 📸 Batch Process Images
+# 📸 批量处理图像
 
-Resize, watermark, convert, or generate thumbnails for a folder of images.
+对一个文件夹的图像进行调整大小、添加水印、格式转换或生成缩略图。
 
-> **You:** $Image Processor <br/>
-> I have product photos in /photos. Resize them to 800x800, add a watermark, and make thumbnails.
+> **你：** $Image Processor <br/>
+> /photos 中有产品图片。将它们调整到 800x800，添加水印，并制作缩略图。
 
-## What the AI does
+## AI 的工作流程
 
-1. Processes all images with PIL/Pillow (pre-installed)
-2. Creates full-size versions with watermark
-3. Creates thumbnails at the requested size
-4. Generates a contact sheet (grid of all thumbnails)
-5. Reports file count and size savings
+1. 使用 PIL/Pillow（预装）处理所有图像
+2. 创建带水印的原始大小版本
+3. 按要求大小创建缩略图
+4. 生成联系表（所有缩略图的网格）
+5. 报告文件数量和大小节省情况
 
 {/* TODO: Screenshot — File browser showing three output folders: processed/ (watermarked), thumbnails/ (200x200), plus a contact_sheet.png previewed as a grid of product images. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

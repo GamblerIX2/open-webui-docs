@@ -1,32 +1,32 @@
 ---
 sidebar_position: 1
-title: "Migrating to 0.5.0"
+title: "迁移到 0.5.0"
 ---
 
-# 🚚 Migration Guide: Open WebUI 0.4 to 0.5
+# 🚚 迁移指南：Open WebUI 0.4 升级到 0.5
 
-Welcome to the Open WebUI 0.5 migration guide! If you're working on existing projects or building new ones, this guide will walk you through the key changes from **version 0.4 to 0.5** and provide an easy-to-follow roadmap for upgrading your Functions. Let's make this transition as smooth as possible! 😊
+欢迎使用 Open WebUI 0.5 迁移指南！无论你是在处理现有项目还是构建新项目，本指南都将引导你了解**从 0.4 到 0.5 版本**的关键变更，并提供升级 Functions 的易于遵循的路线图。让这次过渡尽可能顺畅！😊
 
 ---
 
-## 🧐 What Has Changed and Why?
+## 🧐 发生了什么变化，为什么？
 
 With Open WebUI 0.5, we’ve overhauled the architecture to make the project **simpler, more unified, and scalable**. Here's the big picture:
 
-- **Old Architecture:** 🎯 Previously, Open WebUI was built on a **sub-app architecture** where each app (e.g., `ollama`, `openai`) was a separate FastAPI application. This caused fragmentation and extra complexity when managing apps.
-- **New Architecture:** 🚀 With version 0.5, we have transitioned to a **single FastAPI app** with multiple **routers**. This means better organization, centralized flow, and reduced redundancy.
+- **旧架构：** 🎯 以前，Open WebUI 建立在**子应用架构**上，每个应用（如 `ollama`、`openai`）都是独立的 FastAPI 应用。这在管理应用时造成了碎片化和额外复杂性。
+- **新架构：** 🚀 在 0.5 版本中，我们过渡到了具有多个**路由器**的**单个 FastAPI 应用**。这意味着更好的组织结构、集中的流程和减少冗余。
 
-### Key Changes:
-Here’s an overview of what changed:
-1. **Apps have been moved to Routers.**
-   - Previous: `open_webui.apps`
-   - Now: `open_webui.routers`
+### 关键变更：
+以下是变更概述：
+1. **应用已迁移到路由器。**
+   - 之前：`open_webui.apps`
+   - 现在：`open_webui.routers`
 
-2. **Main app structure simplified.**
-   - The old `open_webui.apps.webui` has been transformed into `open_webui.main`, making it the central entry point for the project.
+2. **主应用结构简化。**
+   - 旧的 `open_webui.apps.webui` 已转换为 `open_webui.main`，使其成为项目的中央入口点。
 
-3. **Unified API Endpoint**
-   - Open WebUI 0.5 introduces a **unified function**, `chat_completion`, in `open_webui.main`, replacing separate functions for models like `ollama` and `openai`. This offers a consistent and streamlined API experience. However, the **direct successor** of these individual functions is `generate_chat_completion` from `open_webui.utils.chat`. If you prefer a lightweight POST request without handling additional parsing (e.g., files, tools, or misc), this utility function is likely what you want.
+3. **统一 API 端点**
+   - Open WebUI 0.5 在 `open_webui.main` 中引入了一个**统一函数** `chat_completion`，取代了 `ollama` 和 `openai` 等模型的独立函数。这提供了一致且简化的 API 体验。但是，这些独立函数的**直接继任者**是 `open_webui.utils.chat` 中的 `generate_chat_completion`。如果你希望进行轻量级 POST 请求而无需处理额外解析（如文件、工具或杂项），这个工具函数可能正是你所需要的。
 
 #### Example:
 ```python
@@ -40,9 +40,9 @@ from open_webui.utils.chat import generate_chat_completion
 
 Choose the approach that best fits your use case!
 
-4. **Updated Function Signatures.**
-   - Function signatures now adhere to a new format, requiring a `request` object.
-   - The `request` object can be obtained using the `__request__` parameter in the function signature. Below is an example:
+4. **更新函数签名。**
+   - 函数签名现在遵循新格式，需要一个 `request` 对象。
+   - `request` 对象可以通过函数签名中的 `__request__` 参数获取。以下是示例：
 
 ```python
 class Pipe:
@@ -58,24 +58,24 @@ class Pipe:
         # Write your function here
 ```
 
-📌 **Why did we make these changes?**
-- To simplify the codebase, making it easier to extend and maintain.
-- To unify APIs for a more streamlined developer experience.
-- To enhance performance by consolidating redundant elements.
+📌 **为什么进行这些变更？**
+- 为了简化代码库，使其更易于扩展和维护。
+- 为了统一 API，提供更简化的开发者体验。
+- 为了通过整合冗余元素来增强性能。
 
 ---
 
-## ✅ Step-by-Step Migration Guide
+## ✅ 逐步迁移指南
 
-Follow this guide to smoothly update your project.
+按照本指南顺利更新你的项目。
 
 ---
 
-### 🔄 1. Shifting from `apps` to `routers`
+### 🔄 1. 从 `apps` 迁移到 `routers`
 
-All apps have been renamed and relocated under `open_webui.routers`. This affects imports in your codebase.
+所有应用已重命名并迁移到 `open_webui.routers` 下。这会影响代码库中的导入语句。
 
-Quick changes for import paths:
+导入路径的快速变更：
 
 | **Old Path**                      | **New Path**                      |
 |-----------------------------------|-----------------------------------|

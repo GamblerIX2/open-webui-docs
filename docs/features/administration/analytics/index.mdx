@@ -1,312 +1,312 @@
 ---
 sidebar_position: 1050
-title: "Analytics"
+title: "Analytics（分析）"
 ---
 
-# Analytics
+# Analytics（分析）
 
-The **Analytics** feature in Open WebUI provides administrators with comprehensive insights into usage patterns, token consumption, and model performance across their instance. This powerful tool helps you understand how your users are interacting with AI models and make data-driven decisions about resource allocation and model selection.
+Open WebUI 中的 **Analytics** 功能为管理员提供了关于实例使用模式、Token 消耗和模型性能的全面洞察。这一强大工具帮助您了解用户与 AI 模型的交互方式，并基于数据做出资源分配和模型选择决策。
 
-:::info Admin-Only Feature
-Analytics is only accessible to users with **admin** role. Access it via **Admin Panel > Analytics**.
+:::info 仅管理员可用
+Analytics 仅供拥有 **admin** 角色的用户访问。通过 **管理面板 > Analytics** 进入。
 :::
 
-:::tip Disabling Analytics
+:::tip 禁用 Analytics
 
-If you don't need the Analytics tab, you can hide it entirely by setting the [`ENABLE_ADMIN_ANALYTICS`](/reference/env-configuration#enable_admin_analytics) environment variable to `False`. This prevents the analytics API router from being mounted and removes the tab from the admin navigation. A restart is required for this change to take effect.
+如果您不需要 Analytics 标签，可以通过将 [`ENABLE_ADMIN_ANALYTICS`](/reference/env-configuration#enable_admin_analytics) 环境变量设置为 `False` 来完全隐藏它。这会阻止挂载分析 API 路由，并从管理员导航中移除该标签。此更改需要重启才能生效。
 
 :::
 
-## Overview
+## 概述
 
-The Analytics dashboard gives you a bird's-eye view of your Open WebUI instance's activity, including:
+Analytics 仪表板为您提供 Open WebUI 实例活动的全局视图，包括：
 
-- **Message volume** across different models and time periods
-- **Token usage** tracking for cost estimation and resource planning
-- **User activity** patterns to understand engagement
-- **Time-series data** showing trends over hours, days, or months
+- 不同模型和时间段的**消息量**
+- 用于费用估算和资源规划的 **Token 使用量**跟踪
+- 了解参与度的**用户活动**模式
+- 展示小时、天或月趋势的**时间序列数据**
 
-All analytics data is derived from the message history stored in your instance's database. When the Analytics feature is enabled, Open WebUI automatically tracks and indexes messages to provide fast, queryable insights.
-
----
-
-## Accessing Analytics
-
-1. Log in with an **admin** account
-2. Navigate to **Admin Panel** (click your profile icon → Admin Panel)
-3. Click on the **Analytics** tab in the admin navigation
+所有分析数据均来源于实例数据库中存储的消息历史记录。启用 Analytics 功能后，Open WebUI 会自动跟踪和索引消息，以提供快速、可查询的洞察。
 
 ---
 
-## Dashboard Features
+## 访问 Analytics
 
-### Time Period Selection
+1. 使用 **admin** 账户登录
+2. 导航到 **管理面板**（点击个人资料图标 → 管理面板）
+3. 点击管理员导航中的 **Analytics** 标签
 
-At the top right of the Analytics dashboard, you can filter all data by time period:
+---
 
-- **Last 24 hours** - Hourly granularity for real-time monitoring
-- **Last 7 days** - Daily overview of the past week
-- **Last 30 days** - Monthly snapshot
-- **Last 90 days** - Quarterly trends
-- **All time** - Complete historical data
+## 仪表板功能
 
-Your selected time period is **automatically saved** and persists across browser sessions.
+### 时间段选择
 
-### Group Filtering
+在 Analytics 仪表板右上角，您可以按时间段筛选所有数据：
 
-If you have [user groups](/features/authentication-access/rbac/groups) configured, the Analytics dashboard allows filtering by group:
+- **最近 24 小时** - 实时监控的小时粒度
+- **最近 7 天** - 过去一周的每日概览
+- **最近 30 天** - 月度快照
+- **最近 90 天** - 季度趋势
+- **全部时间** - 完整历史数据
 
-- Use the **group dropdown** next to the time period selector
-- Select a specific group to view analytics **only for users in that group**
-- Choose "All Users" to see instance-wide analytics
+您选择的时间段会**自动保存**，并在浏览器会话之间持久存储。
 
-This is useful for:
-- **Department-level reporting** - Track usage for specific teams
-- **Cost allocation** - Attribute token consumption to business units
-- **Pilot programs** - Monitor adoption within test groups
+### 用户组过滤
 
-All metrics on the page update automatically when you change the time period or group filter.
+如果您配置了[用户组](/features/authentication-access/rbac/groups)，Analytics 仪表板支持按组过滤：
 
-### Summary Statistics
+- 使用时间段选择器旁边的**组下拉菜单**
+- 选择特定组，仅查看**该组用户**的分析数据
+- 选择"所有用户"查看全实例分析
 
-The dashboard header displays key metrics for the selected time period:
+适用场景：
+- **部门级报告** - 跟踪特定团队的使用情况
+- **成本分摊** - 将 Token 消耗归因于业务单元
+- **试点项目** - 监控测试组的推广情况
 
-- **Total Messages** - Number of assistant responses generated
-- **Total Tokens** - Sum of all input and output tokens processed
-- **Total Chats** - Number of unique conversations
-- **Total Users** - Number of users who sent messages
+更改时间段或组过滤器时，页面上的所有指标会自动更新。
 
-:::note Message Counting
-Analytics counts **assistant responses** rather than user messages. This provides a more accurate measure of AI model usage and token consumption.
+### 汇总统计
+
+仪表板标题显示所选时间段的关键指标：
+
+- **总消息数** - 生成的 AI 助手响应数量
+- **总 Token 数** - 处理的所有输入和输出 Token 之和
+- **总对话数** - 独立对话的数量
+- **总用户数** - 发送过消息的用户数量
+
+:::note 消息计数
+Analytics 统计的是 **AI 助手响应**而非用户消息。这能更准确地衡量 AI 模型使用情况和 Token 消耗。
 :::
 
-### Message Timeline Chart
+### 消息时间线图表
 
-The interactive timeline chart visualizes message volume over time, broken down by model. Key features:
+交互式时间线图表按模型分类展示消息量随时间的变化。主要功能：
 
-- **Hourly or Daily granularity** - Automatically adjusts based on selected time period
-- **Multi-model visualization** - Shows up to 8 models with distinct colors
-- **Hover tooltips** - Display exact counts and percentages for each model at any point in time
-- **Trend identification** - Quickly spot usage patterns, peak hours, and model adoption
+- **小时或每日粒度** - 根据所选时间段自动调整
+- **多模型可视化** - 最多显示 8 个具有不同颜色的模型
+- **悬停提示** - 显示任意时间点各模型的精确计数和百分比
+- **趋势识别** - 快速发现使用模式、高峰时段和模型推广情况
 
-This chart helps you:
-- Identify busy periods for capacity planning
-- Track model adoption after deployment
-- Detect unusual activity spikes
-- Monitor the impact of changes or announcements
+此图表帮助您：
+- 识别容量规划的繁忙时段
+- 跟踪部署后的模型推广情况
+- 检测异常活动峰值
+- 监控变更或公告的影响
 
-### Model Usage Table
+### 模型使用表格
 
-A detailed breakdown of how each model is being used:
+每个模型使用情况的详细分类：
 
-| Column | Description |
+| 列 | 说明 |
 |--------|-------------|
-| **#** | Rank by message count |
-| **Model** | Model name with icon |
-| **Messages** | Total assistant responses generated |
-| **Tokens** | Total tokens (input + output) consumed |
-| **%** | Percentage share of total messages |
+| **#** | 按消息数排名 |
+| **模型** | 带图标的模型名称 |
+| **消息数** | 生成的 AI 助手响应总数 |
+| **Token 数** | 消耗的总 Token 数（输入 + 输出） |
+| **%** | 占总消息数的百分比 |
 
-**Features:**
-- **Sortable columns** - Click column headers to sort by name or message count
-- **Model icons** - Visual identification with profile images
-- **Token tracking** - See which models consume the most resources
-- **Clickable rows** - Click any model to open the [Model Details Modal](#model-details-modal)
+**功能：**
+- **可排序列** - 点击列标题按名称或消息数排序
+- **模型图标** - 通过头像图片进行视觉识别
+- **Token 跟踪** - 查看哪些模型消耗资源最多
+- **可点击行** - 点击任意模型打开[模型详情模态框](#模型详情模态框)
 
-**Use cases:**
-- Identify your most popular models
-- Calculate cost per model (by multiplying tokens by provider rates)
-- Decide which models to keep or remove
-- Plan infrastructure upgrades based on usage
+**使用场景：**
+- 识别最受欢迎的模型
+- 计算每个模型的费用（将 Token 数乘以提供商价格）
+- 决定保留或移除哪些模型
+- 根据使用情况规划基础设施升级
 
-### Model Details Modal
+### 模型详情模态框
 
-Clicking on any model row opens a detailed modal with two tabs:
+点击任意模型行即可打开包含两个标签的详细模态框：
 
-#### Overview Tab
+#### 概览标签
 
-The Overview tab provides:
+概览标签提供：
 
-- **Feedback Activity Chart** - Visual history of user feedback (thumbs up/down) over time
-  - Toggle between **30 days**, **1 year**, or **All time** views
-  - Weekly aggregation for longer time ranges
-- **Tags** - Most common chat tags associated with this model (top 10)
+- **反馈活动图表** - 用户反馈（点赞/踩）随时间变化的可视化历史记录
+  - 在 **30 天**、**1 年**或**全部时间**视图之间切换
+  - 较长时间范围使用周粒度聚合
+- **标签** - 与此模型关联的最常见对话标签（前 10 个）
 
-This helps you understand:
-- How users perceive model quality over time
-- Which topics/use cases the model is handling
-- Trends in user satisfaction
+这有助于您了解：
+- 用户对模型质量的感知随时间的变化
+- 模型处理的主题/使用场景
+- 用户满意度趋势
 
-#### Chats Tab
+#### 对话标签
 
-:::info Admin Chat Access Required
-The Chats tab is only visible when [**`ENABLE_ADMIN_CHAT_ACCESS`**](/reference/env-configuration#enable_admin_chat_access) is enabled in your instance settings.
+:::info 需要管理员对话访问权限
+只有在实例设置中启用 [**`ENABLE_ADMIN_CHAT_ACCESS`**](/reference/env-configuration#enable_admin_chat_access) 时，对话标签才可见。
 :::
 
-The Chats tab shows conversations that used this model:
+对话标签显示使用此模型的对话：
 
-- **User info** - Who started each chat
-- **Preview** - First message of each conversation
-- **Timestamp** - When the chat was last updated
-- **Click to open** - Navigate directly to the shared chat view
+- **用户信息** - 发起每个对话的用户
+- **预览** - 每个对话的第一条消息
+- **时间戳** - 对话最后更新的时间
+- **点击打开** - 直接导航到共享对话视图
 
-This is useful for:
-- Understanding how users interact with specific models
-- Auditing model usage for quality assurance
-- Finding example conversations for training or documentation
+适用于：
+- 了解用户如何与特定模型交互
+- 审计模型使用情况以确保质量
+- 寻找用于培训或文档的示例对话
 
-### User Activity Table
+### 用户活动表格
 
-Track user engagement and token consumption per user:
+跟踪每个用户的参与度和 Token 消耗：
 
-| Column | Description |
+| 列 | 说明 |
 |--------|-------------|
-| **#** | Rank by activity |
-| **User** | Username with profile picture |
-| **Messages** | Total messages sent by this user |
-| **Tokens** | Total tokens consumed by this user |
+| **#** | 按活动排名 |
+| **用户** | 带头像的用户名 |
+| **消息数** | 该用户发送的总消息数 |
+| **Token 数** | 该用户消耗的总 Token 数 |
 
-**Features:**
-- **Sortable columns** - Organize by name or activity level
-- **User identification** - Profile pictures and display names
-- **Token attribution** - See resource consumption per user
+**功能：**
+- **可排序列** - 按名称或活动级别整理
+- **用户识别** - 头像和显示名称
+- **Token 归因** - 查看每个用户的资源消耗
 
-**Use cases:**
-- Monitor power users and their token consumption
-- Identify inactive or low-usage accounts
-- Plan user quotas or rate limits
-- Calculate per-user costs for billing purposes
+**使用场景：**
+- 监控高级用户及其 Token 消耗
+- 识别非活跃或低使用率账户
+- 规划用户配额或速率限制
+- 计算账单用途的每用户费用
 
 ---
 
-## Token Usage Tracking
+## Token 使用量跟踪
 
-### What Are Tokens?
+### 什么是 Token？
 
-Tokens are the units that language models use to process text. Both the **input** (your prompt) and **output** (the model's response) consume tokens. Most AI providers charge based on token usage, making token tracking essential for cost management.
+Token 是语言模型处理文本的单位。**输入**（您的提示词）和**输出**（模型的响应）都消耗 Token。大多数 AI 提供商按 Token 使用量收费，因此 Token 跟踪对于费用管理至关重要。
 
-### How Token Tracking Works
+### Token 跟踪的工作原理
 
-Open WebUI automatically captures token usage from model responses and stores it with each message. The Analytics feature aggregates this data to show:
+Open WebUI 自动从模型响应中捕获 Token 使用量，并与每条消息一起存储。Analytics 功能汇总这些数据以显示：
 
-- **Input tokens** - Tokens in user prompts and context
-- **Output tokens** - Tokens in model responses
-- **Total tokens** - Sum of input and output
+- **输入 Token** - 用户提示词和上下文中的 Token
+- **输出 Token** - 模型响应中的 Token
+- **总 Token** - 输入和输出之和
 
-Token data is normalized across different model providers (OpenAI, Ollama, llama.cpp, etc.) to provide consistent metrics regardless of which backend you're using.
+Token 数据在不同模型提供商（OpenAI、Ollama、llama.cpp 等）之间进行标准化，无论使用哪个后端都能提供一致的指标。
 
-### Token Usage Metrics
+### Token 使用量指标
 
-The **Token Usage** section (accessible via the Tokens endpoint or dashboard) provides:
+**Token 使用量**部分提供：
 
-- **Per-model token breakdown** - Input, output, and total tokens for each model
-- **Total token consumption** - Instance-wide token usage
-- **Message count correlation** - Tokens per message for efficiency analysis
+- **按模型的 Token 明细** - 每个模型的输入、输出和总 Token
+- **总 Token 消耗** - 全实例 Token 使用量
+- **每消息 Token 数** - 用于效率分析的每消息 Token 数
 
-:::tip Cost Estimation
-To estimate costs, multiply the token counts by your provider's pricing:
+:::tip 费用估算
+要估算费用，将 Token 数乘以您的提供商定价：
 ```
-Cost = (input_tokens × input_price) + (output_tokens × output_price)
+费用 = (输入_token 数 × 输入单价) + (输出_token 数 × 输出单价)
 ```
 
-Example for GPT-4:
-- Input: 1,000,000 tokens × $0.03/1K = $30
-- Output: 500,000 tokens × $0.06/1K = $30
-- **Total: $60**
+GPT-4 示例：
+- 输入：1,000,000 token × $0.03/1K = $30
+- 输出：500,000 token × $0.06/1K = $30
+- **合计：$60**
 :::
 
 ---
 
-## Use Cases
+## 使用场景
 
-### 1. Resource Planning
+### 1. 资源规划
 
-**Scenario:** You're running Open WebUI for a team and need to plan infrastructure capacity.
+**场景：** 您为团队运行 Open WebUI，需要规划基础设施容量。
 
-**How Analytics helps:**
-- View the **Message Timeline** to identify peak usage hours
-- Check **Model Usage** to see which models need more resources
-- Monitor **Token Usage** to estimate future costs
-- Track **User Activity** to plan for team growth
+**Analytics 的帮助：**
+- 查看**消息时间线**识别高峰使用时段
+- 检查**模型使用**了解哪些模型需要更多资源
+- 监控 **Token 使用量**估算未来费用
+- 跟踪**用户活动**为团队增长做规划
 
-### 2. Model Evaluation
+### 2. 模型评估
 
-**Scenario:** You've deployed several models and want to know which ones your users prefer.
+**场景：** 您已部署多个模型，想了解用户更喜欢哪些。
 
-**How Analytics helps:**
-- Compare **message counts** across models to see adoption rates
-- Check **token efficiency** (tokens per message) to identify verbose models
-- Monitor **trends** in the timeline chart after introducing new models
-- Combine with the [Evaluation feature](/features/administration/evaluation/) for quality insights
+**Analytics 的帮助：**
+- 比较各模型的**消息数**查看推广率
+- 检查 **Token 效率**（每消息 Token 数）识别冗长模型
+- 引入新模型后在时间线图表中监控**趋势**
+- 结合 [Evaluation 功能](/features/administration/evaluation/)获取质量洞察
 
-### 3. Cost Management
+### 3. 费用管理
 
-**Scenario:** You're using paid API providers and need to control costs.
+**场景：** 您使用付费 API 提供商，需要控制费用。
 
-**How Analytics helps:**
-- Track **total token consumption** by model and user
-- Identify **high-usage users** for quota discussions
-- Compare **token costs** across different model providers
-- Set up regular reviews using time-period filters
+**Analytics 的帮助：**
+- 按模型和用户跟踪**总 Token 消耗**
+- 识别**高使用量用户**以进行配额讨论
+- 比较不同模型提供商的 **Token 费用**
+- 使用时间段过滤器定期审查
 
-### 4. User Engagement
+### 4. 用户参与
 
-**Scenario:** You want to understand how your team is using AI tools.
+**场景：** 您想了解团队如何使用 AI 工具。
 
-**How Analytics helps:**
-- Monitor **active users** vs. registered accounts
-- Identify **power users** who might need support or training
-- Track **adoption trends** over time
-- Correlate usage with team initiatives or training sessions
+**Analytics 的帮助：**
+- 监控**活跃用户**与注册账户的对比
+- 识别可能需要支持或培训的**高级用户**
+- 随时间跟踪**推广趋势**
+- 将使用情况与团队计划或培训活动关联
 
-### 5. Compliance & Auditing
+### 5. 合规与审计
 
-**Scenario:** Your organization requires usage reporting for compliance.
+**场景：** 您的组织需要使用报告以满足合规要求。
 
-**How Analytics helps:**
-- Generate **activity reports** for specific time periods
-- Track **user attribution** for all AI interactions
-- Monitor **model usage** for approved vs. unapproved models
-- Export data via API for external reporting tools
+**Analytics 的帮助：**
+- 生成特定时间段的**活动报告**
+- 跟踪所有 AI 交互的**用户归因**
+- 监控已批准与未批准模型的**模型使用**
+- 通过 API 导出数据用于外部报告工具
 
 ---
 
-## Technical Details
+## 技术详情
 
-### Data Storage
+### 数据存储
 
-Analytics data is stored in the `chat_message` table, which contains:
+Analytics 数据存储在 `chat_message` 表中，包含：
 
-- **Message content** - User and assistant messages
-- **Metadata** - Model ID, user ID, timestamps
-- **Token usage** - Input, output, and total tokens
-- **Relationships** - Links to parent messages and chats
+- **消息内容** - 用户和 AI 助手的消息
+- **元数据** - 模型 ID、用户 ID、时间戳
+- **Token 使用量** - 输入、输出和总 Token
+- **关联关系** - 与父消息和对话的链接
 
-When you enable Analytics (via migration), Open WebUI:
-1. Creates the `chat_message` table with optimized indexes
-2. **Backfills existing messages** from your chat history
-3. **Dual-writes** new messages to both the chat JSON and the message table
+启用 Analytics（通过迁移）时，Open WebUI：
+1. 创建带有优化索引的 `chat_message` 表
+2. **回填**您对话历史中的现有消息
+3. **双写**新消息到对话 JSON 和消息表
 
-This dual-write approach ensures:
-- **Backward compatibility** - Existing features continue working
-- **Fast queries** - Analytics doesn't impact chat performance
-- **Data consistency** - All messages are captured
+这种双写方式确保：
+- **向后兼容** - 现有功能继续正常工作
+- **快速查询** - Analytics 不影响对话性能
+- **数据一致性** - 所有消息均被捕获
 
-### Database Indexes
+### 数据库索引
 
-The following indexes optimize analytics queries:
+以下索引优化分析查询：
 
-- `chat_id` - Fast lookup of all messages in a chat
-- `user_id` - Quick user activity reports
-- `model_id` - Efficient model usage queries
-- `created_at` - Time-range filtering
-- Composite indexes for common query patterns
+- `chat_id` - 快速查找对话中的所有消息
+- `user_id` - 快速用户活动报告
+- `model_id` - 高效的模型使用查询
+- `created_at` - 时间范围过滤
+- 常用查询模式的复合索引
 
-### API Endpoints
+### API 端点
 
-For advanced users and integrations, Analytics provides REST API endpoints:
+对于高级用户和集成，Analytics 提供 REST API 端点：
 
-**Dashboard Endpoints:**
+**仪表板端点：**
 ```
 GET /api/v1/analytics/summary
 GET /api/v1/analytics/models
@@ -316,22 +316,22 @@ GET /api/v1/analytics/daily
 GET /api/v1/analytics/tokens
 ```
 
-**Model Detail Endpoints:**
+**模型详情端点：**
 ```
-GET /api/v1/analytics/models/{model_id}/chats    # Get chats using this model
-GET /api/v1/analytics/models/{model_id}/overview # Get feedback history and tags
+GET /api/v1/analytics/models/{model_id}/chats    # 获取使用此模型的对话
+GET /api/v1/analytics/models/{model_id}/overview # 获取反馈历史和标签
 ```
 
-**Common Query Parameters:**
+**常用查询参数：**
 
-| Parameter | Type | Description |
+| 参数 | 类型 | 说明 |
 |-----------|------|-------------|
-| `start_date` | int | Unix timestamp (epoch seconds) - start of range |
-| `end_date` | int | Unix timestamp (epoch seconds) - end of range |
-| `group_id` | string | Filter to a specific user group (optional) |
+| `start_date` | int | Unix 时间戳（秒）- 范围开始 |
+| `end_date` | int | Unix 时间戳（秒）- 范围结束 |
+| `group_id` | string | 过滤到特定用户组（可选） |
 
-:::tip API Access
-All Analytics endpoints require admin authentication. Include your admin bearer token:
+:::tip API 访问
+所有 Analytics 端点均需要管理员身份验证。包含您的管理员 Bearer 令牌：
 ```bash
 curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   "https://your-instance.com/api/v1/analytics/summary?group_id=abc123"
@@ -340,74 +340,11 @@ curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
 
 ---
 
-## Privacy & Data Considerations
+## 隐私与数据注意事项
 
-### What Gets Tracked?
+### 哪些数据会被跟踪？
 
-Analytics tracks:
-- ✅ Message timestamps and counts
-- ✅ Token usage per message
-- ✅ Model IDs and user IDs
-- ✅ Chat IDs and message relationships
-
-Analytics **does not** track:
-- ❌ Message content display in the dashboard (only metadata)
-- ❌ External sharing or exports
-- ❌ Individual message content outside the database
-
-### Data Retention
-
-Analytics data follows your instance's chat retention policy. When you delete:
-- **A chat** - All associated messages are removed from analytics
-- **A user** - All their messages are disassociated
-- **Message history** - Analytics data is also cleared
-
----
-
-## Frequently Asked Questions
-
-### Why are message counts different from what I expected?
-
-Analytics counts **assistant responses**, not user messages. If a chat has 10 user messages and 10 assistant responses, the count is 10. This provides a more accurate measure of AI usage and token consumption.
-
-### How accurate is token tracking?
-
-Token accuracy depends on your model provider:
-- **OpenAI/Anthropic** - Exact counts from API responses
-- **Ollama** - Accurate for models with token reporting
-- **llama.cpp** - Reports tokens when available
-- **Custom providers** - Depends on implementation
-
-Missing token data appears as 0 in analytics.
-
-### Can I export analytics data?
-
-Yes, via the API endpoints. Use tools like `curl`, Python scripts, or BI tools to fetch and export data:
-
-```bash
-curl -H "Authorization: Bearer TOKEN" \
-  "https://instance.com/api/v1/analytics/summary?start_date=1704067200&end_date=1706745600" \
-  > analytics_export.json
-```
-
----
-
-## Summary
-
-Open WebUI's Analytics feature transforms your instance into a data-driven platform by providing:
-
-- 📊 **Real-time insights** into model and user activity
-- 💰 **Token tracking** for cost management and optimization  
-- 📈 **Trend analysis** to understand usage patterns over time
-- 👥 **User engagement** metrics for community building
-- 🔒 **Privacy-focused** design keeping all data on your instance
-
-Whether you're managing a personal instance or a large organizational deployment, Analytics gives you the visibility needed to optimize performance, control costs, and better serve your users.
-
----
-
-## Related Features
-
-- [**Evaluation**](/features/administration/evaluation/) - Measure model quality through user feedback
-- [**RBAC**](/features/authentication-access/rbac) - Control access to models and features per user
-- [**Data Controls**](/features/chat-conversations/data-controls/) - Manage chat history and exports
+Analytics 跟踪：
+- ✅ 消息时间戳和计数
+- ✅ 每条消息的 Token 使用量
+- ✅ 模型 ID 和用户 ID

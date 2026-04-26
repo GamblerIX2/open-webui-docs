@@ -1,30 +1,30 @@
 ---
 sidebar_position: 3
-title: "Research Assistant"
+title: "研究助手"
 ---
 
-# 🔍 Research and Summarize Any Topic
+# 🔍 研究并总结任何主题
 
-Give the AI a question, and it gathers information from the web, organizes it, and writes a structured briefing.
+给 AI 一个问题，它就会从网络收集信息、整理并撰写结构化简报。
 
-> **You:** $Research Assistant <br/>
-> What's the current state of solid-state batteries? Who are the key players and what's the timeline for commercialization?
+> **你：** $Research Assistant <br/>
+> 固态电池目前的现状是什么？主要参与者有哪些？商业化的时间线是什么？
 
-## What the AI does
+## AI 的工作流程
 
-1. Uses `curl` to fetch content from relevant tech news sites, company pages, and articles
-2. Parses HTML to extract the useful text
-3. Cross-references facts across multiple sources
-4. Creates a structured Markdown briefing with sections, source citations, and comparison tables
-5. Saves as both Markdown and PDF
+1. 使用 `curl` 从相关科技新闻网站、公司页面和文章中获取内容
+2. 解析 HTML 提取有用文本
+3. 对多个来源进行之客对比
+4. 创建带有小标题、来源引用和对比表格的结构化 Markdown 简报
+5. 保存为 Markdown 和 PDF 两种格式
 
 {/* TODO: Screenshot — Chat showing the AI gathering information from 6+ sources and producing a structured briefing document. The file browser shows research_briefing.md being previewed with headers, bullet points, and a comparison table. */}
 
 {/* TODO: Screenshot — The briefing document showing an executive summary, a comparison table of key companies and their technology approaches, and a source list with URLs. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

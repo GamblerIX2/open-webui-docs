@@ -1,327 +1,300 @@
----
+﻿---
 sidebar_position: 13
-title: "Customizable Banners"
+title: "可定制的横幅"
 ---
 
-## Overview
+## 概述
 
-Open WebUI allows administrators to display custom banners to logged-in users. Banners are useful for announcements, system-wide alerts, maintenance notices, and other important messages.
+Open WebUI 允许管理员向已登录用户展示自定义横幅。横幅适用于公告、全系统警报、维护通知及其他重要消息。
 
-Banners are persistent and can optionally be **dismissible** by users. You can configure banners in two ways:
+横幅会持久显示，用户可选择**关闭**（可配置）。您可以通过两种方式配置横幅：
 
-1. **Admin Panel** (recommended for quick edits and experimentation)
-2. **Environment variable (`WEBUI_BANNERS`)** (recommended for automated / GitOps-style deployments)
-
----
-
-## When to use banners
-
-Banners are best for short, high-visibility messages such as:
-
-- Scheduled maintenance and planned downtime windows
-- Incident notifications (degraded performance, partial outages)
-- Policy reminders (acceptable use, data handling, retention)
-- Major changes (new models, feature rollouts, UI changes)
-- Links to your internal comms channels for updates and Q&A
-
-**Tip:** Keep banners concise and link to more detailed information (status page, release notes, support channel).
+1. **管理面板**（推荐用于快速编辑和试验）
+2. **环境变量（`WEBUI_BANNERS`）**（推荐用于自动化/GitOps 风格部署）
 
 ---
 
-## Configuring banners
+## 横幅的适用场景
 
-### Option 1: Using the Admin Panel
+横幅最适合简短的高可见度消息，例如：
 
-This is the most straightforward way to manage banners:
+- 计划维护和预定停机窗口
+- 故障通知（性能降级、局部中断）
+- 政策提醒（可接受使用、数据处理、保留策略）
+- 重大变更（新模型、功能上线、界面变更）
+- 指向内部通讯频道的链接，用于更新和答疑
 
-1. Log in to your Open WebUI instance as an administrator.
-2. Navigate to **Admin Panel** → **Settings** → **General**.
-3. Locate the **Banners** section.
-4. Click the **+** icon to add a new banner.
-5. Click **Save** to apply your changes.
-
-You can configure the following options for each banner:
-
-- **Type:** The color and style of the banner:
-  - `info` (Blue)
-  - `success` (Green)
-  - `warning` (Yellow)
-  - `error` (Red)
-- **Title:** The main heading of the banner.
-- **Content:** The main message (HTML only).
-- **Dismissible:** If enabled, users can close the banner.
-
-#### How dismissing works
-
-Dismissed banners are stored in the user’s browser (client-side). This means:
-
-- A dismissed banner may reappear if the user clears site data / cache
-- A dismissed banner may reappear on a different device or browser
-- Dismissal is per-banner `id` (if the `id` changes, the banner is treated as new)
-
-If you need the banner to remain visible for everyone, set `dismissible: false`.
+**提示：** 保持横幅简洁，并链接到更详细的信息（状态页面、发布说明、支持频道）。
 
 ---
 
-### Option 2: Using environment variables (`WEBUI_BANNERS`)
+## 配置横幅
 
-For automated deployments, configure banners using the `WEBUI_BANNERS` environment variable. The value must be a **JSON string** representing a **list** (array) of banner objects.
+### 方式一：使用管理面板
 
-**Environment variable:**
+这是管理横幅最直接的方式：
+
+1. 以管理员身份登录 Open WebUI 实例。
+2. 导航到 **管理面板** → **设置** → **通用**。
+3. 找到 **横幅** 部分。
+4. 点击 **+** 图标添加新横幅。
+5. 点击 **保存** 应用更改。
+
+每个横幅可配置以下选项：
+
+- **类型：** 横幅的颜色和样式：
+  - `info`（蓝色）
+  - `success`（绿色）
+  - `warning`（黄色）
+  - `error`（红色）
+- **标题：** 横幅的主标题。
+- **内容：** 主要消息（仅支持 HTML）。
+- **可关闭：** 启用后，用户可以关闭横幅。
+
+#### 关闭横幅的机制
+
+已关闭的横幅存储在用户浏览器端（客户端）。这意味着：
+
+- 如果用户清除站点数据/缓存，已关闭的横幅可能重新出现
+- 在不同设备或浏览器上，已关闭的横幅可能重新出现
+- 关闭状态与横幅 `id` 绑定（若 `id` 变更，横幅将被视为新横幅）
+
+如果需要横幅对所有人持续可见，请设置 `dismissible: false`。
+
+---
+
+### 方式二：使用环境变量（`WEBUI_BANNERS`）
+
+对于自动化部署，可使用 `WEBUI_BANNERS` 环境变量配置横幅。该值必须是一个**JSON 字符串**，表示横幅对象的**列表**（数组）。
+
+**环境变量：**
 
 - `WEBUI_BANNERS`
-  - **Type:** `string` (containing a JSON list of objects)
-  - **Default:** `[]`
-  - **Description:** A list of banner objects to be displayed to users
+  - **类型：** `string`（包含 JSON 对象列表）
+  - **默认值：** `[]`
+  - **说明：** 要向用户展示的横幅对象列表
 
-#### Example (Docker Compose)
+#### 示例（Docker Compose）
 
 ```yaml
 services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     environment:
-      - 'WEBUI_BANNERS=[{"id":"maintenance-2026-03","type":"warning","title":"Maintenance","content":"A maintenance window is planned this week. Expect brief interruptions. <a href=\"https://intranet.example.com/status\" target=\"_blank\">See status page</a>.","dismissible":true,"timestamp":1772500000}]'
+      - 'WEBUI_BANNERS=[{"id":"maintenance-2026-03","type":"warning","title":"维护通知","content":"本周计划进行维护窗口，请预期短暂中断。<a href=\"https://intranet.example.com/status\" target=\"_blank\">查看状态页面</a>。","dismissible":true,"timestamp":1772500000}]'
 ```
 
-> Note: Because `WEBUI_BANNERS` is a JSON string inside YAML, you must ensure it remains valid JSON (see "Common pitfalls" below).
+> 注意：由于 `WEBUI_BANNERS` 是嵌入 YAML 内的 JSON 字符串，必须确保其始终是有效 JSON（参见下方"常见陷阱"）。
 
 ---
 
-## Banner object properties
+## 横幅对象属性
 
-Each banner object supports the following properties:
+每个横幅对象支持以下属性：
 
-- `id` (string, required): Unique identifier for the banner. Used to track whether a user has dismissed it.
-- `type` (string, required): Banner style. Must be one of: `info`, `success`, `warning`, `error`.
-- `title` (string, optional): Title text.
-- `content` (string, required): Main banner message (HTML only).
-- `dismissible` (boolean, required): Whether the user can dismiss the banner.
-- `timestamp` (integer, required): Present in configuration, but currently not used by the frontend to control display timing.
+- `id`（字符串，必填）：横幅的唯一标识符，用于跟踪用户是否已关闭。
+- `type`（字符串，必填）：横幅样式，必须为以下之一：`info`、`success`、`warning`、`error`。
+- `title`（字符串，可选）：标题文本。
+- `content`（字符串，必填）：横幅主要消息（仅支持 HTML）。
+- `dismissible`（布尔值，必填）：用户是否可以关闭横幅。
+- `timestamp`（整数，必填）：存在于配置中，但目前前端不使用该字段控制显示时间。
 
-### Recommended `id` strategy (important)
+### 推荐的 `id` 策略（重要）
 
-Pick an `id` format that supports safe updates and avoids accidental re-showing or permanent hiding:
+选择支持安全更新、避免意外重新显示或永久隐藏的 `id` 格式：
 
-- Stable `id` for small text edits: `policy-reminder`
-- Versioned `id` for "show again to everyone" updates: `incident-2026-03-06-v2`
-- Time-bucketed `id` for recurring events: `maintenance-2026-03`
+- 小幅文字修改用稳定 `id`：`policy-reminder`
+- 需要"再次向所有人显示"时用带版本号 `id`：`incident-2026-03-06-v2`
+- 周期性事件用按时间分桶 `id`：`maintenance-2026-03`
 
-If users dismissed a banner and you want them to see an updated message, change the `id`.
+如果用户已关闭横幅，而您希望他们看到更新后的消息，请修改 `id`。
 
 ---
 
-## Supported content formatting (HTML only)
+## 支持的内容格式（仅限 HTML）
 
-Banner `title` and `content` support a subset of **HTML only** — Markdown syntax is not rendered. Unsupported tags may render as plain text or break the layout.
+横幅的 `title` 和 `content` 支持**仅限 HTML** 的子集——Markdown 语法不会被渲染。不支持的标签可能以纯文本显示或破坏布局。
 
-### Text formatting
+### 文本格式
 
-| HTML | Effect |
+| HTML | 效果 |
 | --- | --- |
-| `<b>` / `<strong>` | Bold |
-| `<i>` / `<em>` | Italic |
-| `<u>` | Underline |
-| `<s>` / `<del>` | Strikethrough |
-| `<mark>` | Highlight |
-| `<small>` | Slightly smaller text |
-| `<sub>` / `<sup>` | Subscript / Superscript |
-| `<code>` / `<kbd>` | Monospace inline code |
-| `<abbr title="tooltip">` | Hover tooltip |
+| `<b>` / `<strong>` | 粗体 |
+| `<i>` / `<em>` | 斜体 |
+| `<u>` | 下划线 |
+| `<s>` / `<del>` | 删除线 |
+| `<mark>` | 高亮 |
+| `<small>` | 略小的文字 |
+| `<sub>` / `<sup>` | 下标 / 上标 |
+| `<code>` / `<kbd>` | 等宽内联代码 |
+| `<abbr title="提示">` | 悬停提示 |
 
-### Structure
+### 结构
 
-| HTML | Effect |
+| HTML | 效果 |
 | --- | --- |
-| `<br>` or literal newlines | Line break |
-| `<hr>` | Horizontal rule |
-| `<details><summary>Click</summary>...</details>` | Collapsible section |
+| `<br>` 或字面换行 | 换行 |
+| `<hr>` | 水平分隔线 |
+| `<details><summary>点击</summary>...</details>` | 可折叠区块 |
 
-### Links & media
+### 链接与媒体
 
-| HTML | Effect |
+| HTML | 效果 |
 | --- | --- |
-| `<a href="..." target="_blank">` | Clickable link |
-| `<img src="..." width="16" height="16">` | Inline image |
+| `<a href="..." target="_blank">` | 可点击链接 |
+| `<img src="..." width="16" height="16">` | 内联图片 |
 
-### Custom styling
+### 自定义样式
 
-Inline styles are supported on allowed tags:
+支持在允许的标签上使用内联样式：
 
 ```html
-<span style="color: #b91c1c;">Colored text</span>
-<span style="font-weight: 600;">Heavier weight</span>
-<span style="background: linear-gradient(90deg,#e0f2fe,#fef9c3);">Gradient background</span>
+<span style="color: #b91c1c;">彩色文字</span>
+<span style="font-weight: 600;">加重字体</span>
+<span style="background: linear-gradient(90deg,#e0f2fe,#fef9c3);">渐变背景</span>
 ```
 
-> Keep styling minimal. Overly large padding, font sizes, or complex layouts can cause banners to become tall or visually inconsistent across themes.
+> 保持样式简洁。过大的内边距、字体大小或复杂布局可能导致横幅过高，或在不同主题下视觉不一致。
 
 ---
 
-## Unsupported content
+## 不支持的内容
 
-The following are not supported in banners and may render as plain text or break the layout:
+以下内容在横幅中不受支持，可能以纯文本显示或破坏布局：
 
-- Headings (`<h1>`–`<h6>`)
-- Lists (`<ul>`, `<ol>`)
-- Tables
-- Blockquotes
-- Markdown syntax
+- 标题（`<h1>`–`<h6>`）
+- 列表（`<ul>`、`<ol>`）
+- 表格
+- 引用块
+- Markdown 语法
 
-If you need "list-like" content, use short lines separated by `<br>`.
+如果需要"列表式"内容，请使用 `<br>` 分隔的短行。
 
 ---
 
-## Common pitfalls (and how to avoid them)
+## 常见陷阱（及如何避免）
 
-### 1) Unexpected spacing from literal newlines
+### 1）字面换行导致意外间距
 
-Banner content treats **literal newlines** as line breaks. If you paste nicely formatted/indented HTML with many line breaks, the banner may appear much taller than expected.
+横幅内容将**字面换行**视为换行符。如果您粘贴了格式化/缩进良好的 HTML（含大量换行），横幅可能比预期高得多。
 
-**Recommendation:**
-- Use `<br>` deliberately, and keep the raw HTML relatively compact.
-- Avoid adding blank lines unless you truly want extra spacing.
+**建议：**
+- 有意使用 `<br>`，保持原始 HTML 相对紧凑。
+- 除非确实需要额外间距，否则不要添加空白行。
 
-### 2) Broken links in banner content
+### 2）横幅内容中的链接失效
 
-If a link appears "broken" or the rest of the banner becomes clickable, it’s usually due to invalid HTML.
+如果链接显示为"失效"或横幅其余部分变为可点击，通常是由于无效的 HTML。
 
-Use this exact pattern:
+请使用以下精确格式：
 
 ```html
-<a href="https://example.com" target="_blank">Open link</a>
+<a href="https://example.com" target="_blank">打开链接</a>
 ```
 
-**Recommendations:**
-- Always close anchor tags with `</a>`.
-- Use `target="_blank"` (underscore included).
-- If your URL contains query parameters, escape `&` as `&amp;` inside the `href` attribute:
+**建议：**
+- 始终用 `</a>` 关闭锚标签。
+- 使用 `target="_blank"`（含下划线）。
+- 如果 URL 包含查询参数，在 `href` 属性中将 `&` 转义为 `&amp;`：
   ```html
-  <a href="https://example.com/page?x=1&amp;y=2" target="_blank">Example</a>
+  <a href="https://example.com/page?x=1&amp;y=2" target="_blank">示例</a>
   ```
-- If you need guaranteed underlining, wrap link text with `<u>`:
+- 如需确保下划线，将链接文字包裹在 `<u>` 中：
   ```html
-  <a href="https://example.com" target="_blank"><u>Support</u></a>
+  <a href="https://example.com" target="_blank"><u>支持</u></a>
   ```
 
-### 3) JSON/YAML escaping issues in `WEBUI_BANNERS`
+### 3）`WEBUI_BANNERS` 中的 JSON/YAML 转义问题
 
-When using `WEBUI_BANNERS`, you are embedding JSON inside a YAML string (or a shell string). Common problems include:
+使用 `WEBUI_BANNERS` 时，您是在将 JSON 嵌入 YAML 字符串（或 Shell 字符串）中。常见问题包括：
 
-- Unescaped double quotes inside the JSON
-- Line breaks inserted into the JSON string
-- Copy/paste "smart quotes" (typographic quotes) instead of normal `"`
+- JSON 内部未转义的双引号
+- 插入 JSON 字符串的换行符
+- 复制粘贴时使用了"弯引号"（印刷引号）而非普通 `"`
 
-**Recommendations:**
-- Validate the JSON in a JSON validator before deploying.
-- Keep `content` strings simple; avoid unescaped `"` characters.
-- Prefer using `\"` for quotes inside JSON strings if needed.
-- Check server logs if the banner does not appear.
+**建议：**
+- 部署前在 JSON 验证工具中验证 JSON。
+- 保持 `content` 字符串简单；避免未转义的 `"` 字符。
+- 如有必要，在 JSON 字符串内部引号使用 `\"` 转义。
+- 如果横幅未出现，检查服务器日志。
 
-### 4) Overusing `<small>`
+### 4）过度使用 `<small>`
 
-`<small>` is useful for secondary text, but wrapping large parts of the banner in `<small>` can make content hard to read.
+`<small>` 适合次要文本，但将横幅的大部分内容包裹在 `<small>` 中会使内容难以阅读。
 
-**Recommendation:** Use normal text for the main message and reserve `<small>` for less important details.
+**建议：** 主要消息使用普通文本，将 `<small>` 保留用于不太重要的细节。
 
-### 5) External images
+### 5）外部图片
 
-Images can be embedded via `<img>`, but external images may:
-- Fail to load due to network restrictions
-- Create inconsistent sizes across devices if not constrained
-- Introduce privacy/security concerns if loaded from third-party domains
+图片可通过 `<img>` 嵌入，但外部图片可能：
+- 因网络限制无法加载
+- 未加约束时在不同设备上产生大小不一致
+- 从第三方域名加载时引入隐私/安全问题
 
-**Recommendations:**
-- Prefer internal/static assets when possible.
-- Always set explicit `width` and `height`.
-- Keep icons small (e.g., 16×16) to avoid increasing banner height.
+**建议：**
+- 尽可能使用内部/静态资源。
+- 始终设置明确的 `width` 和 `height`。
+- 保持图标较小（例如 16×16），避免增加横幅高度。
 
 ---
 
-## Reusable patterns (copy/paste snippets)
+## 可复用模式（可复制粘贴的片段）
 
-### Pattern: Minimal two-line announcement with a link
+### 模式：带链接的最简两行公告
 
 ```html
-<b>Notice</b><br>
-Service updates: <a href="https://example.com/status" target="_blank"><u>Status page</u></a>
+<b>通知</b><br>
+服务更新：<a href="https://example.com/status" target="_blank"><u>状态页面</u></a>
 ```
 
-### Pattern: Compact "label" chip (date/impact tag)
+### 模式：紧凑"标签"徽章（日期/影响标签）
 
 ```html
 <span style="display:inline-block;background:#fff3cd;color:#664d03;padding:2px 8px;border-radius:999px;">
-  Scheduled
+  计划中
 </span>
 ```
 
-### Pattern: Collapsible details (keep banners short)
+### 模式：可折叠详情（保持横幅简短）
 
 ```html
-<b>Planned update</b><br>
+<b>计划更新</b><br>
 <details>
-  <summary>More details</summary>
+  <summary>更多详情</summary>
   <br>
-  This update may cause brief interruptions during the deployment window.
+  此次更新可能在部署窗口期间造成短暂中断。
 </details>
 ```
 
 ---
 
-## Operational best practices
+## 运营最佳实践
 
-### Keep banners scannable
+### 保持横幅易于扫读
 
-A good banner is typically:
-- A short title
-- One sentence describing the situation
-- One link for details and one link for questions (if needed)
+一个好的横幅通常包含：
+- 简短的标题
+- 一句话描述情况
+- 一个详情链接和一个答疑链接（如有需要）
 
-### Use banner types consistently
+### 保持横幅类型的一致性
 
-To reduce alert fatigue, consider a consistent mapping:
-- `info`: general announcements
-- `success`: completed changes / resolved incidents
-- `warning`: planned maintenance or partial degradation
-- `error`: active incident / outage
+为减少告警疲劳，建议采用一致的映射：
+- `info`：一般公告
+- `success`：变更完成/故障已解决
+- `warning`：计划维护或局部降级
+- `error`：活跃故障/服务中断
 
-### Remove expired banners
+### 移除过期横幅
 
-If you keep adding banners without removing old ones, users may ignore them. Remove or replace banners after the event is over.
-
----
-
-## Troubleshooting
-
-### Banner not appearing
-
-- Ensure `WEBUI_BANNERS` is a valid JSON **array** of objects (not a single object).
-- Check the server logs for parsing errors related to `WEBUI_BANNERS`.
-- If using Admin Panel, confirm you clicked **Save**.
-
-### Banner cannot be dismissed
-
-- Verify that `dismissible` is set to `true`.
-- If `dismissible` is `false`, the banner is intentionally always visible.
-
-### Banner layout looks broken or too tall
-
-- Remove extra blank lines and indentation from the raw HTML.
-- Avoid unsupported HTML (lists, tables, headings).
-- Reduce aggressive inline styles (large `padding`, large `font-size`).
+如果不断添加横幅而不删除旧横幅，用户可能会忽略它们。事件结束后请移除或替换横幅。
 
 ---
 
-## FAQ
+## 故障排查
 
-### Can I use Markdown in banner content?
+### 横幅未显示
 
-No. Banner content supports **HTML only**. Markdown syntax is not rendered.
-
-### Does `timestamp` control when a banner shows?
-
-No. The `timestamp` field is currently not used by the frontend to control whether a banner is displayed. If you need time-based behavior, manage it via your deployment automation (add/remove banners on a schedule).
-
-### Can I show content in multiple languages?
-
-Yes. You can include multiple languages in `content`. If you want to keep the banner short, place the secondary language in a `<details>` block.
+- 确保 `WEBUI_BANNERS` 是有效的 JSON **数组**（不是单个对象）。
+- 检查服务器日志中与 `WEBUI_BANNERS` 相关的解析错误。
+- 如果使用管理面板，确认已点击 **保存**。

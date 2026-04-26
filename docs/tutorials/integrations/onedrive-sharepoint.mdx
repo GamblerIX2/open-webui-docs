@@ -5,186 +5,187 @@ title: "OneDrive & SharePoint"
 
 :::info
 
-This tutorial provides a step-by-step guide for integrating Open WebUI with **Microsoft OneDrive for Business & SharePoint**, as well as the separate, optional integration for **Personal Microsoft OneDrive** accounts. You can enable one or both integrations. This documentation is up to date as of Open WebUI v0.6.37.
+本教程提供了将 Open WebUI 与 **Microsoft OneDrive for Business 及 SharePoint** 集成的分步指南，以及可选的 **Microsoft 个人 OneDrive** 账户独立集成。您可以启用其中一个或两个集成。本文档基于 Open WebUI v0.6.37 更新。
 
 :::
 
 ---
 
-# Configuring OneDrive & SharePoint Integration
+# 配置 OneDrive & SharePoint 集成
 
-This guide will walk you through the entire process of configuring Open WebUI to allow users to attach files directly from their Microsoft accounts. This process involves creating one or two application registrations in the Microsoft Azure portal and setting the correct environment variables in your Open WebUI instance.
+本指南将带您完成配置 Open WebUI 的全过程，使用户能够直接从 Microsoft 账户附加文件。此过程需要在 Microsoft Azure 门户中创建一个或两个应用注册，并在 Open WebUI 实例中设置相应的环境变量。
 
-## Prerequisites
+## 前置条件
 
-To successfully complete this tutorial, you will need:
+要成功完成本教程，您需要：
 
--   An active Microsoft Azure account with administrative privileges to create and manage App Registrations.
--   Access to your Open WebUI instance's environment variables (e.g., via a `.env` file or Docker environment settings).
+-   一个具有创建和管理应用注册管理员权限的活跃 Microsoft Azure 账户。
+-   能够访问 Open WebUI 实例的环境变量（例如通过 `.env` 文件或 Docker 环境设置）。
 
-# Integration for OneDrive for Business & SharePoint (Work/School)
+# OneDrive for Business 及 SharePoint（工作/学校账户）集成
 
-This is the primary integration for organizational use. Follow these steps to allow users to access files from their work or school accounts.
+这是面向组织使用的主要集成。按照以下步骤允许用户从其工作或学校账户访问文件。
 
-## Step 1: Create the Azure App Registration
+## 第 1 步：创建 Azure 应用注册
 
-First, you need to register an application in your organization's Microsoft Entra ID (formerly Azure AD) tenant.
+首先，您需要在组织的 Microsoft Entra ID（原 Azure AD）租户中注册一个应用程序。
 
-1. Navigate to the [Microsoft Entra ID admin center](https://entra.microsoft.com/).
-2. Go to **Identity** > **Applications** > **App registrations**.
-3. Select **+ New registration**.
-4. Give your application a descriptive name, such as "Open WebUI Business Integration".
-5. Under "Supported account types," select **"Accounts in this organizational directory only (Single tenant)"** or **"Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)"**.
-6. Leave the "Redirect URI" section blank for now. Click **Register**.
+1. 导航至 [Microsoft Entra ID 管理中心](https://entra.microsoft.com/)。
+2. 进入 **Identity** > **Applications** > **App registrations**。
+3. 选择 **+ New registration**。
+4. 为应用程序提供一个描述性名称，例如"Open WebUI Business Integration"。
+5. 在"Supported account types"下，选择 **"Accounts in this organizational directory only (Single tenant)"** 或 **"Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)"**。
+6. 暂时留空"Redirect URI"部分，点击 **Register**。
 
-## Step 2: Configure the SPA Redirect URI
+## 第 2 步：配置 SPA 重定向 URI
 
-Open WebUI is a Single-Page Application (SPA) and uses the Microsoft Authentication Library (MSAL). It is critical to configure the Redirect URI correctly.
+Open WebUI 是一个单页应用程序（SPA），使用 Microsoft Authentication Library（MSAL）。正确配置重定向 URI 至关重要。
 
-1. From your new App Registration's overview page, go to the **Authentication** tab.
-2. Click **+ Add a platform** and select **Single-page application (SPA)**.
-3. Under "Redirect URIs", enter the base URL of your Open WebUI instance (e.g., `https://open-webui.yourdomain.com`).
-4. **Enable both "Access tokens" and "ID tokens"** under the "Implicit grant and hybrid flows" section.
-5. Click **Configure**.
+1. 从新建应用注册的概览页面，进入 **Authentication** 选项卡。
+2. 点击 **+ Add a platform** 并选择 **Single-page application (SPA)**。
+3. 在"Redirect URIs"下，输入 Open WebUI 实例的基础 URL（例如 `https://open-webui.yourdomain.com`）。
+4. 在"Implicit grant and hybrid flows"部分**同时启用"Access tokens"和"ID tokens"**。
+5. 点击 **Configure**。
 
-## Step 3: Configure API Permissions
+## 第 3 步：配置 API 权限
 
-Next, grant the application permission to read files from OneDrive and SharePoint on behalf of your users.
+接下来，授予应用程序代表用户读取 OneDrive 和 SharePoint 文件的权限。
 
-1. From the App Registration menu, go to the **API permissions** tab.
-2. Click **+ Add a permission** and select **Microsoft Graph**.
-3. Select **Delegated permissions**.
-4. In the search box, find and add the following permissions:
-    -   `Files.Read`: Allows the app to read files the signed-in user has access to.
-    -   `Files.Read.All`: Allows the app to read all files the signed-in user can access.
-    -   `Sites.Read.All`: Allows the app to read items in all site collections the signed-in user can access.
-    -   `User.Read`: Allows the app to read the signed-in user's profile.
-    -   `AllSites.Read`: Legacy SharePoint permission for reading site data.
-    -   `MyFiles.Read`: Allows the app to read the user's personal drive.
-    -   `Sites.Search.All`: Enables file search functionality across sites.
-5. If your organization uses SharePoint API permissions separately, repeat the process by selecting **SharePoint** instead of Microsoft Graph and add the applicable delegated permissions.
-6. After adding all permissions, you must grant admin consent. Click the **"Grant admin consent for [Your Tenant Name]"** button. The status for these permissions should change to "Granted".
+1. 从应用注册菜单，进入 **API permissions** 选项卡。
+2. 点击 **+ Add a permission** 并选择 **Microsoft Graph**。
+3. 选择 **Delegated permissions**。
+4. 在搜索框中找到并添加以下权限：
+    -   `Files.Read`：允许应用读取已登录用户有权访问的文件。
+    -   `Files.Read.All`：允许应用读取已登录用户可访问的所有文件。
+    -   `Sites.Read.All`：允许应用读取已登录用户可访问的所有网站集中的项目。
+    -   `User.Read`：允许应用读取已登录用户的个人资料。
+    -   `AllSites.Read`：用于读取网站数据的旧版 SharePoint 权限。
+    -   `MyFiles.Read`：允许应用读取用户的个人驱动器。
+    -   `Sites.Search.All`：启用跨网站的文件搜索功能。
+5. 如果您的组织单独使用 SharePoint API 权限，请重复该过程，选择 **SharePoint** 而不是 Microsoft Graph，并添加适用的委托权限。
+6. 添加所有权限后，必须授予管理员同意。点击 **"Grant admin consent for [Your Tenant Name]"** 按钮，这些权限的状态应变为"Granted"。
 
 :::warning
 
-Admin Consent is Mandatory
-Open WebUI uses the `.default` scope for a seamless enterprise experience, meaning it relies on pre-approved permissions. If admin consent is not granted here, non-admin users will be blocked from logging in with an "Admin approval required" error.
+管理员同意为必须项
+
+Open WebUI 使用 `.default` 范围以实现无缝企业体验，这意味着它依赖于预先批准的权限。如果此处未授予管理员同意，非管理员用户将会收到"Admin approval required"错误而被阻止登录。
 
 :::
 
-## Step 4: Gather Credentials for Business Integration
+## 第 4 步：收集企业集成凭据
 
-From the **Overview** page of the App Registration you just created, copy the following values:
+从刚刚创建的应用注册的 **Overview** 页面，复制以下值：
 
--   **Application (client) ID**: This will be your `ONEDRIVE_CLIENT_ID_BUSINESS`.
--   **Directory (tenant) ID**: This will be your `ONEDRIVE_SHAREPOINT_TENANT_ID`.
+-   **Application (client) ID**：这将是您的 `ONEDRIVE_CLIENT_ID_BUSINESS`。
+-   **Directory (tenant) ID**：这将是您的 `ONEDRIVE_SHAREPOINT_TENANT_ID`。
 
-## Step 5: Configure Environment Variables for Business Integration
+## 第 5 步：配置企业集成环境变量
 
-Set the following environment variables in your Open WebUI deployment to enable the work/school integration:
+在 Open WebUI 部署中设置以下环境变量以启用工作/学校账户集成：
 
 ```bash
-# Enable the OneDrive integration feature globally
+# 全局启用 OneDrive 集成功能
 ENABLE_ONEDRIVE_INTEGRATION=true
 
-# --- Business & SharePoint Configuration ---
+# --- 企业账户及 SharePoint 配置 ---
 
-# The Application (client) ID from your Business App Registration
+# 来自企业应用注册的 Application (client) ID
 ONEDRIVE_CLIENT_ID_BUSINESS="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
-# The Directory (tenant) ID from your Business App Registration
+# 来自企业应用注册的 Directory (tenant) ID
 ONEDRIVE_SHAREPOINT_TENANT_ID="yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 
-# The root URL of your SharePoint instance
+# SharePoint 实例的根 URL
 ONEDRIVE_SHAREPOINT_URL="https://your-tenant-name.sharepoint.com"
 ```
 
 :::info
 
-After setting these variables and restarting Open WebUI, you must also enable the OneDrive toggle in the admin panel. See the Final Step section below for details.
+设置这些变量并重启 Open WebUI 后，您还必须在管理面板中启用 OneDrive 开关。详情请参见下方"最后一步"部分。
 
 :::
 
 ---
 
-# Integration for Personal OneDrive (Optional)
+# 个人 OneDrive 集成（可选）
 
-To enable support for personal Microsoft accounts, you must create a **second, separate App Registration** configured for consumers.
+要启用对个人 Microsoft 账户的支持，您必须创建一个**第二个、独立的应用注册**，为消费者账户配置。
 
-## Step 1: Create a Separate App Registration for Personal Accounts
+## 第 1 步：为个人账户创建单独的应用注册
 
-1. Navigate back to **App registrations** in Microsoft Entra ID and select **+ New registration**.
-2. Give it a distinct name, like "Open WebUI Personal Integration".
-3. Under "Supported account types," select the option: **"Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant) and personal Microsoft accounts (e.g., Skype, Xbox)"**.
-4. Configure the **SPA Redirect URI** with your Open WebUI base URL, just as you did for the business app.
-5. **Enable both "Access tokens" and "ID tokens"** under the "Implicit grant and hybrid flows" section.
-6. For this personal registration, no special API permissions or admin consent are required, as users will consent to `OneDrive.ReadWrite` individually.
+1. 返回 Microsoft Entra ID 的 **App registrations** 并选择 **+ New registration**。
+2. 给它一个不同的名称，例如"Open WebUI Personal Integration"。
+3. 在"Supported account types"下，选择以下选项：**"Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant) and personal Microsoft accounts (e.g., Skype, Xbox)"**。
+4. 使用您的 Open WebUI 基础 URL 配置 **SPA 重定向 URI**，与企业应用的配置相同。
+5. 在"Implicit grant and hybrid flows"部分**同时启用"Access tokens"和"ID tokens"**。
+6. 对于此个人注册，无需特殊 API 权限或管理员同意，因为用户将单独同意 `OneDrive.ReadWrite`。
 
-## Step 2: Gather the Client ID for Personal Integration
+## 第 2 步：收集个人集成的 Client ID
 
-From the **Overview** page of this new "Personal" App Registration, copy the **Application (client) ID**. This will be used for a different environment variable.
+从这个新"Personal"应用注册的 **Overview** 页面，复制 **Application (client) ID**。这将用于不同的环境变量。
 
-## Step 3: Configure the Environment Variable for Personal Integration
+## 第 3 步：配置个人集成环境变量
 
-Add the following environment variable to your Open WebUI deployment:
+向 Open WebUI 部署添加以下环境变量：
 
 ```bash
 
-# --- Personal Account Configuration (Optional) ---
+# --- 个人账户配置（可选）---
 
-# The Application (client) ID from your *second*, Personal App Registration
+# 来自*第二个*个人应用注册的 Application (client) ID
 ONEDRIVE_CLIENT_ID_PERSONAL="zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz"
 ```
 
 ---
 
-## Final Step: Enable OneDrive Integration in Admin Settings
+## 最后一步：在管理设置中启用 OneDrive 集成
 
-After setting your environment variables and restarting your Open WebUI instance, you must explicitly enable the feature in the admin panel. **The environment variables alone do not activate the integration.**
+设置环境变量并重启 Open WebUI 实例后，您必须在管理面板中明确启用该功能。**仅凭环境变量无法激活集成。**
 
-1. Navigate to **Settings → Admin → Documents**.
-2. Toggle on the **"OneDrive"** switch.
-3. Refresh your browser or log out and log back in.
+1. 导航至 **Settings → Admin → Documents**。
+2. 打开 **"OneDrive"** 开关。
+3. 刷新浏览器或退出后重新登录。
 
 :::warning
 
-Admin Toggle is Required
+管理员开关为必须项
 
-This step is mandatory even though you've set `ENABLE_ONEDRIVE_INTEGRATION=true` in your environment. Some configuration options in Open WebUI are persistent database settings that are initialized on first startup but must be activated through the admin interface.
+即使您已在环境中设置了 `ENABLE_ONEDRIVE_INTEGRATION=true`，此步骤仍为必须操作。Open WebUI 中的某些配置选项是持久化的数据库设置，在首次启动时初始化，但必须通过管理界面激活。
 
 :::
 
-## Verifying the Integration
+## 验证集成
 
-After enabling the admin toggle and refreshing, verify the integration is working:
+启用管理员开关并刷新后，验证集成是否正常工作：
 
-1. In Open WebUI, open the attachment menu (+) in the chat input. You should see menu items for **"Microsoft OneDrive (work/school)"** and/or **"Microsoft OneDrive (personal)"**, depending on your configuration.
-2. Clicking either option should trigger a pop-up window for Microsoft authentication.
+1. 在 Open WebUI 中，打开聊天输入框的附件菜单（+）。根据您的配置，您应该看到 **"Microsoft OneDrive (work/school)"** 和/或 **"Microsoft OneDrive (personal)"** 菜单项。
+2. 点击任一选项应触发 Microsoft 身份验证的弹出窗口。
 
 :::caution
 
-Disable Pop-up Blockers!
+请禁用弹窗拦截器！
 
-The OneDrive file picker and authentication flow happen in a pop-up window. If nothing happens when you click a OneDrive option, your browser is almost certainly blocking pop-ups. **You must disable the pop-up blocker for your Open WebUI domain** for the integration to work. Note that some browsers (like Chrome) may have additional restrictions compared to others (like Edge).
+OneDrive 文件选择器和身份验证流程在弹出窗口中进行。如果点击 OneDrive 选项没有任何反应，您的浏览器几乎肯定在拦截弹窗。**您必须为 Open WebUI 域名禁用弹窗拦截器**才能使集成正常工作。请注意，某些浏览器（如 Chrome）与其他浏览器（如 Edge）相比可能有额外的限制。
 
 :::
 
-## Troubleshooting
+## 故障排除
 
-**OneDrive option not appearing in the attachment menu:**
-- Verify the admin toggle is enabled in Settings → Admin → Documents
-- Refresh your browser after enabling the toggle
-- Check that your environment variables are correctly set and the container has been restarted
+**附件菜单中未显示 OneDrive 选项：**
+- 验证 Settings → Admin → Documents 中的管理员开关是否已启用
+- 启用开关后刷新浏览器
+- 检查环境变量是否正确设置且容器已重启
 
-**Files not loading or folders not clickable:**
-- Log out of Open WebUI completely and log back in to refresh your authentication tokens
-- Verify the Azure App Registration permissions are correctly configured and admin consent is granted
-- Check browser console for any authentication errors
+**文件未加载或文件夹无法点击：**
+- 完全退出 Open WebUI 后重新登录以刷新身份验证令牌
+- 验证 Azure 应用注册权限是否已正确配置且已授予管理员同意
+- 检查浏览器控制台是否有身份验证错误
 
-**Authentication pop-up not appearing:**
-- Disable pop-up blockers for your Open WebUI domain
-- Try a different browser (Edge tends to work more reliably than Chrome for Microsoft authentication flows)
+**身份验证弹窗未出现：**
+- 为 Open WebUI 域名禁用弹窗拦截器
+- 尝试使用其他浏览器（Edge 在处理 Microsoft 身份验证流程时通常比 Chrome 更可靠）
 
 ---
 
-You have now successfully configured OneDrive integration, providing seamless file access for your users.
+您现在已成功配置 OneDrive 集成，为您的用户提供无缝的文件访问体验。

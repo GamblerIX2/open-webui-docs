@@ -5,7 +5,7 @@ title: "Filters"
 
 ## Filters
 
-Filters are used to perform actions against incoming user messages and outgoing assistant (LLM) messages. Potential actions that can be taken in a filter include sending messages to monitoring platforms (such as Langfuse or DataDog), modifying message contents, blocking toxic messages, translating messages to another language, or rate limiting messages from certain users. A list of examples is maintained in the [Pipelines repo](https://github.com/open-webui/pipelines/tree/main/examples/filters). Filters can be executed as a Function or on a Pipelines server. The general workflow can be seen in the image below.
+Filters 用于对传入的用户消息和传出的助手（LLM）消息执行操作。过滤器中可以执行的操作包括：将消息发送到监控平台（如 Langfuse 或 DataDog）、修改消息内容、屏蔽有毒消息、将消息翻译成另一种语言，或对特定用户的消息进行速率限制。示例列表维护在 [Pipelines 仓库](https://github.com/open-webui/pipelines/tree/main/examples/filters)中。Filters 可以作为 Function 执行，也可以在 Pipelines 服务器上执行。一般工作流如下图所示。
 
 <div align="center">
   <a href="#">
@@ -13,4 +13,4 @@ Filters are used to perform actions against incoming user messages and outgoing 
   </a>
 </div>
 
-When a filter pipeline is enabled on a model or pipe, the incoming message from the user (or "inlet") is passed to the filter for processing. The filter performs the desired action against the message before requesting the chat completion from the LLM model. Finally, the filter performs post-processing on the outgoing LLM message (or "outlet") before it is sent to the user.
+在模型或 Pipe 上启用过滤器 Pipeline 后，来自用户的传入消息（即"inlet"）会传递给过滤器进行处理。过滤器在向 LLM 模型请求对话完成之前对消息执行所需的操作。最后，过滤器在将传出的 LLM 消息（即"outlet"）发送给用户之前对其进行后处理。

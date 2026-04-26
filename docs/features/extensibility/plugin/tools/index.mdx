@@ -3,21 +3,21 @@ sidebar_position: 1
 title: "Tools"
 ---
 
-# What are Tools?
+# 什么是 Tools？
 
-:::danger ⚠️ Critical Security Warning
-**Workspace Tools and Functions execute arbitrary Python code on your server.** Only install from trusted sources, review code before importing, and restrict Workspace access to trusted administrators only. Granting a user the ability to create or import Tools is equivalent to giving them shell access to the server. For full details, see the [Plugin Security Warning](/features/extensibility/plugin/).
+:::danger ⚠️ 重要安全警告
+**Workspace Tools 和 Functions 在你的服务器上执行任意 Python 代码。** 只从受信任的来源安装，导入前审查代码，并将 Workspace 访问限制为受信任的管理员。授予用户创建或导入 Tools 的能力等同于给予他们服务器的 shell 访问权限。详情参见[插件安全警告](/features/extensibility/plugin/)。
 :::
 
-⚙️ Tools are the various ways you can extend an LLM's capabilities beyond simple text generation. When enabled, they allow your chatbot to do amazing things — like search the web, scrape data, generate images, talk back using AI voices, and more.
+Tools 是你扩展 LLM 能力、超越简单文本生成的各种方式。启用后，它们允许你的聊天机器人做惊人的事情——比如搜索网络、抓取数据、生成图像、使用 AI 语音回应等。
 
-Because there are several ways to integrate "Tools" in Open WebUI, it's important to understand which type you are using.
+由于在 Open WebUI 中有几种集成"Tools"的方式，了解你使用的是哪种类型非常重要。
 
 ---
 
-## Tooling Taxonomy: Which "Tool" are you using?
+## 工具分类：你使用的是哪种"Tool"？
 
-🧩 Users often encounter the term "Tools" in different contexts. Here is how to distinguish them:
+🧩 用户经常在不同上下文中遇到"Tools"这个术语。以下是区分它们的方法：
 
 | Type | Location in UI | Best For... | Source |
 | :--- | :--- | :--- | :--- |
@@ -28,31 +28,31 @@ Because there are several ways to integrate "Tools" in Open WebUI, it's importan
 | **OpenAPI Servers** | `Settings > Connections` | Standard REST/OpenAPI web services | External Web APIs |
 | **Open Terminal** | `Settings > Integrations` | Full shell access in an isolated Docker container (always-on) | [Open Terminal](https://github.com/open-webui/open-terminal) |
 
-### 1. Native Features (Built-in)
-These are deeply integrated into Open WebUI and generally don't require external scripts.
-- **Web Search**: Integrated via engines like SearXNG, Google, or Tavily.
-- **URL Fetching**: Extract text content directly from websites using `#` or native tools.
-- **Image Generation**: Integrated with DALL-E, ComfyUI, or Automatic1111.
-- **Memory**: The ability for models to remember facts about you across chats.
-- **RAG (Knowledge)**: The ability to query uploaded documents (`#`).
+### 1. 原生功能（内置）
+这些深度集成在 Open WebUI 中，通常不需要外部脚本。
+- **网络搜索**：通过 SearXNG、Google 或 Tavily 等引擎集成。
+- **URL 获取**：使用 `#` 或原生工具直接从网站提取文本内容。
+- **图像生成**：与 DALL-E、ComfyUI 或 Automatic1111 集成。
+- **记忆**：模型在对话之间记住关于你的事实的能力。
+- **RAG（知识）**：查询上传文档的能力（`#`）。
 
-In [**Native Mode**](#built-in-system-tools-nativeagentic-mode), these features are exposed as **Tools** that the model can call independently.
+在[**原生模式**](#built-in-system-tools-nativeagentic-mode)下，这些功能作为模型可独立调用的 **Tools** 暴露。
 
-### 2. Workspace Tools (Custom Plugins)
-These are **Python scripts** that run directly within the Open WebUI environment.
-- **Capability**: Can do anything Python can do (web scraping, complex math, API calls).
-- **Access**: Managed via the `Workspace` menu. 
-- **Safety**: Always review code before importing, as these run on your server.
-- **⚠️ Security Warning**: Normal or untrusted users should **not** be given permission to access the Workspace Tools section. This access allows a user to upload and execute arbitrary Python code on your server, which could lead to a full system compromise.
+### 2. Workspace Tools（自定义插件）
+这些是直接在 Open WebUI 环境中运行的 **Python 脚本**。
+- **能力**：可以做 Python 能做的任何事情（网络抓取、复杂数学、API 调用）。
+- **访问**：通过 `Workspace` 菜单管理。
+- **安全**：始终在导入前审查代码，因为这些在你的服务器上运行。
+- **⚠️ 安全警告**：普通或不受信任的用户**不应**被授予访问 Workspace Tools 部分的权限。此访问允许用户在你的服务器上上传和执行任意 Python 代码，可能导致全系统被入侵。
 
-### 3. MCP (Model Context Protocol)
+### 3. MCP（模型上下文协议）
 
-🔌 MCP is an open standard that allows LLMs to interact with external data and tools.
-- **Native HTTP MCP**: Open WebUI can connect directly to any MCP server that exposes an HTTP/SSE endpoint.
-- **MCPO (Proxy)**: Most community MCP servers use `stdio` (local command line). To use these in Open WebUI, you use the [**MCPO Proxy**](../../plugin/tools/openapi-servers/mcp.mdx) to bridge the connection.
+🔌 MCP 是一个允许 LLM 与外部数据和工具交互的开放标准。
+- **原生 HTTP MCP**：Open WebUI 可以直接连接到任何暴露 HTTP/SSE 端点的 MCP 服务器。
+- **MCPO（代理）**：大多数社区 MCP 服务器使用 `stdio`（本地命令行）。要在 Open WebUI 中使用这些，你可以使用 [**MCPO 代理**](../../plugin/tools/openapi-servers/mcp.mdx)来桥接连接。
 
-### 4. OpenAPI / Function Calling Servers
-Generic web servers that provide an OpenAPI (`.json` or `.yaml`) specification. Open WebUI can ingest these specs and treat every endpoint as a tool.
+### 4. OpenAPI / 函数调用服务器
+提供 OpenAPI（`.json` 或 `.yaml`）规范的通用 Web 服务器。Open WebUI 可以摄取这些规范并将每个端点视为工具。
 
 ---
 
@@ -71,90 +71,90 @@ Never import a Tool you don’t recognize or trust. These are Python scripts and
 
 ---
 
-## How to Use Tools in Chat
+## 如何在对话中使用 Tools
 
-🔧 Once installed or connected, here’s how to enable them for your conversations:
+🔧 安装或连接后，以下是为对话启用它们的方法：
 
-### Option 1: Enable on-the-fly (Specific Chat)
-While chatting, click the **➕ (plus)** icon in the input area. You’ll see a list of available Tools — you can enable them specifically for that session.
+### 选项 1：即时启用（特定对话）
+聊天时，点击输入区域中的 **➕（加号）** 图标。你将看到可用 Tools 列表——你可以专门为该会话启用它们。
 
-### Option 2: Enable by Default (Global/Model Level)
-1. Go to **Workspace ➡️ Models**.
-2. Choose the model you’re using and click the ✏️ edit icon.
-3. Scroll to the **Tools** section.
-4. ✅ Check the Tools you want this model to always have access to by default.
-5. Click **Save**.
+### 选项 2：默认启用（全局/模型级别）
+1. 前往 **Workspace ➡️ 模型**。
+2. 选择你使用的模型并点击 ✏️ 编辑图标。
+3. 滚动到 **Tools** 部分。
+4. ✅ 勾选你希望此模型默认始终访问的 Tools。
+5. 点击**保存**。
 
-For models that support it, **Native tool calling mode** (see [Tool Calling Modes](#tool-calling-modes-default-vs-native) below) lets the model itself decide which of the attached tools to call on each turn. This replaces the older prompt-injection "auto-tool" filter approach and is the recommended way to let the model auto-select tools.
+对于支持的模型，**原生工具调用模式**（见下方[工具调用模式](#tool-calling-modes-default-vs-native)）让模型自己决定每轮调用哪些附加工具。这取代了旧的基于提示注入的"auto-tool"过滤方法，是让模型自动选择工具的推荐方式。
 
-:::caution Attached Tools Still Require User Access
-Attaching a workspace tool to a model does **not** bypass access control. When a user chats with the model, Open WebUI checks whether **that specific user** has read access to each attached tool. Tools the user cannot access are silently skipped — the model won't be able to call them.
+:::caution 附加的 Tools 仍然需要用户访问权限
+将 Workspace Tool 附加到模型**不会**绕过访问控制。当用户与模型聊天时，Open WebUI 会检查**该特定用户**是否有每个附加工具的读取权限。用户无法访问的工具会被静默跳过——模型将无法调用它们。
 
-**Example scenario**: An admin creates a private tool and attaches it to a model shared with all users. Regular users chatting with this model will **not** have the tool available because they don't have read access to the tool itself.
+**示例场景**：管理员创建一个私有工具并将其附加到与所有用户共享的模型。与此模型聊天的普通用户将**无法使用**该工具，因为他们没有工具本身的读取权限。
 
-**Solution**: Make sure users who need the model's tools also have read access to each tool (via access grants, group permissions, or by making the tool public). The "Workspace → Tools" permission controls whether users can *create and manage* tools — it does **not** affect whether model-attached tools work for them.
+**解决方案**：确保需要模型工具的用户也对每个工具有读取权限（通过访问授权、组权限或将工具设为公开）。"Workspace → Tools"权限控制用户是否可以*创建和管理*工具——它**不影响**模型附加的工具是否对他们有效。
 :::
 
 ---
 
-## Tool Calling Modes: Default vs. Native
+## 工具调用模式：Default 模式与 Native 模式
 
-:::danger Default Mode Is Legacy and No Longer Supported — Use Native Mode
-**All models should be configured for Native (Agentic) Mode.** Default Mode is a legacy prompt-injection fallback that predates widespread native function-calling support in LLMs. It is **no longer supported**: it will not receive feature work, bug fixes, or built-in system tools, and it is incompatible with modern Open WebUI features (Agentic Research, Interleaved Thinking, built-in Memory/Notes/Knowledge/Channels tools, web-search/image-gen/code-interpreter tool injection).
+:::danger Default 模式已过时且不再受支持——请使用 Native 模式
+**所有模型都应配置为 Native（Agentic）模式。** Default 模式是一种遗留的提示注入回退，早于 LLM 中普遍的原生函数调用支持。它**不再受支持**：不会收到功能工作、错误修复或内置系统工具，并且与现代 Open WebUI 功能不兼容（Agentic Research、交错思考、内置 Memory/Notes/Knowledge/Channels 工具、网络搜索/图像生成/代码解释器工具注入）。
 
-Default Mode still exists in the dropdown only so that instances with older tool code paths keep running while admins migrate. If your deployment is still on Default Mode, switch every model to Native Mode (see [How to Enable Native Mode](#how-to-enable-native-mode-agentic-mode) below). If a specific model has trouble with Native Mode, the correct fix is to pick a better model for tool calling — not to fall back to Default.
+Default 模式仍然存在于下拉菜单中，只是为了让具有旧工具代码路径的实例在管理员迁移时继续运行。如果你的部署仍在 Default 模式下，将每个模型切换到 Native 模式（见下方[如何启用 Native 模式](#how-to-enable-native-mode-agentic-mode)）。如果特定模型在 Native 模式下有问题，正确的解决方法是选择更好的工具调用模型——而不是回退到 Default。
 :::
 
-Open WebUI exposes two modes in **Model Settings → Advanced Params → Function Calling**: **Native Mode (Agentic Mode)** — the only supported mode — and **Default Mode**, kept in the UI for backwards compatibility only.
+Open WebUI 在**模型设置 → 高级参数 → 函数调用**中提供两种模式：**Native 模式（Agentic 模式）**——唯一受支持的模式——以及 **Default 模式**，仅为向后兼容性保留在 UI 中。
 
-### 🔴 Default Mode (Prompt-based) — Legacy / Unsupported
+### 🔴 Default 模式（基于提示）— 遗留/不受支持
 
-:::warning Unsupported
-Default Mode is **legacy and no longer supported**. It is documented here for reference only. New deployments must use Native Mode; existing deployments should migrate. Bug reports, feature requests, and support questions about Default Mode behavior will not be actioned.
+:::warning 不受支持
+Default 模式**已过时且不再受支持**。此处仅供参考。新部署必须使用 Native 模式；现有部署应迁移。关于 Default 模式行为的错误报告、功能请求和支持问题将不会被处理。
 :::
 
-In Default Mode, Open WebUI manages tool selection by injecting a long prompt template that guides the model to output a tool request in a bespoke format. It was a reasonable approach in 2023; it has been obsolete since mainstream providers and open-weights models gained proper function-calling APIs.
+在 Default 模式下，Open WebUI 通过注入一个长提示模板来管理工具选择，引导模型以定制格式输出工具请求。这在 2023 年是合理的方法；自主流提供商和开放权重模型获得适当的函数调用 API 以来，它已经过时了。
 
-Why it is legacy:
-- **Breaks KV cache.** The injected prompt changes every turn, preventing LLM engines from reusing cached key-value pairs. Every message pays the full prefill cost again.
-- **Higher latency and token cost.** Bulky tool-description prompts on every turn.
-- **Unreliable for multi-step chaining.** Parsing natural-language tool requests is fragile compared to structured tool calls.
-- **Cannot access built-in system tools.** Memory, Notes, Knowledge, Channels, Agentic Research, Interleaved Thinking, and the tool-injected Web Search / Image Generation / Code Interpreter features are **Native-only**.
-- **Does not support modern capabilities.** Every new feature shipped since 2024 targets Native Mode.
+为什么它已过时：
+- **破坏 KV 缓存。** 注入的提示每轮都会改变，阻止 LLM 引擎重用缓存的键值对。每条消息都要再次支付完整的预填充成本。
+- **更高的延迟和令牌成本。** 每轮都有大量工具描述提示。
+- **对多步骤链接不可靠。** 解析自然语言工具请求比结构化工具调用更脆弱。
+- **无法访问内置系统工具。** 记忆、笔记、知识、频道、Agentic Research、交错思考以及工具注入的网络搜索/图像生成/代码解释器功能都是**仅 Native 模式**可用的。
+- **不支持现代能力。** 2024 年以来发布的每个新功能都针对 Native 模式。
 
-### 🟢 Native Mode (Agentic Mode / System Function Calling) — The Only Supported Mode
-Native Mode (also called **Agentic Mode**) leverages the model's built-in capability to handle tool definitions and return structured tool calls (JSON). This is the **recommended mode** for all models that support it — which includes the vast majority of modern models (2024+).
+### 🟢 Native 模式（Agentic 模式/系统函数调用）— 唯一受支持的模式
+Native 模式（也称为 **Agentic 模式**）利用模型内置的能力处理工具定义并返回结构化工具调用（JSON）。这是所有支持它的模型的**推荐模式**——包括绝大多数现代模型（2024+）。
 
-:::warning Model Quality Matters
-**Agentic tool calling requires high-quality models to work reliably.** While small local models may technically support function calling, they often struggle with the complex reasoning required for multi-step tool usage. For best results, use frontier models like **GPT-5**, **Claude 4.5 Sonnet**, **Gemini 3 Flash**, or **MiniMax M2.5**. Small local models may produce malformed JSON or fail to follow the strict state management required for agentic behavior.
+:::warning 模型质量很重要
+**Agentic 工具调用需要高质量模型才能可靠工作。** 虽然小型本地模型在技术上可能支持函数调用，但它们通常难以完成多步骤工具使用所需的复杂推理。为获得最佳结果，使用前沿模型如 **GPT-5**、**Claude 4.5 Sonnet**、**Gemini 3 Flash** 或 **MiniMax M2.5**。小型本地模型可能产生格式错误的 JSON 或无法遵循 Agentic 行为所需的严格状态管理。
 :::
 
-#### Why use Native Mode (Agentic Mode)?
-- **Speed & Efficiency**: Lower latency as it avoids bulky prompt-based tool selection.
-- **KV Cache Friendly**: Tool definitions are sent as structured parameters (not injected into the prompt), so they don't invalidate the KV cache between turns. This can significantly reduce latency and token costs.
-- **Reliability**: Higher accuracy in following tool schemas (with quality models).
-- **Multi-step Chaining**: Essential for **Agentic Research** and **Interleaved Thinking** where a model needs to call multiple tools in succession.
-- **Autonomous Decision-Making**: Models can decide when to search, which tools to use, and how to combine results.
-- **System Tools**: Only Native Mode unlocks the [built-in system tools](#built-in-system-tools-nativeagentic-mode) (memory, notes, knowledge, channels, etc.).
+#### 为什么使用 Native 模式（Agentic 模式）？
+- **速度与效率**：避免大量基于提示的工具选择，延迟更低。
+- **KV 缓存友好**：工具定义作为结构化参数发送（而不是注入提示中），因此不会使轮次间的 KV 缓存失效。这可以显著降低延迟和令牌成本。
+- **可靠性**：遵循工具模式的准确性更高（使用质量模型）。
+- **多步骤链接**：对于需要连续调用多个工具的 **Agentic Research** 和**交错思考**至关重要。
+- **自主决策**：模型可以决定何时搜索、使用哪些工具以及如何组合结果。
+- **系统工具**：只有 Native 模式才能解锁[内置系统工具](#built-in-system-tools-nativeagentic-mode)（记忆、笔记、知识、频道等）。
 
-#### How to Enable Native Mode (Agentic Mode)
-Native Mode can be enabled at two levels:
+#### 如何启用 Native 模式（Agentic 模式）
+Native 模式可以在两个级别启用：
 
-1.  **Universal Default for Every Model (Fastest — Recommended)**:
-    *   Navigate to **Admin Panel → Settings → Models**.
-    *   Click the **Settings** button at the **top right** of the models list — this opens **global model parameters**, which apply to *every* model in your instance (current and future) unless a specific model overrides them.
-    *   Under **Model Parameters**, set **Function Calling** to `Native`.
-    *   Save. All existing models that haven't explicitly set their own value, and all models you add later, inherit `Native`. You do **not** need to edit them one by one.
-2.  **Per-Model Override**:
-    *   In **Admin Panel → Settings → Models**, pick a specific model and click its edit button.
-    *   Under **Model Parameters**, set **Function Calling** to `Native`. This value overrides the global default for that model only.
-    *   Use this when a specific model needs different parameters — otherwise prefer the global setting.
-3.  **Per-Chat Override**:
-    *   Inside a chat, open **Chat Controls** (right sidebar).
-    *   Under **Advanced Params**, set **Function Calling** to `Native`. Applies to that chat only.
+1.  **所有模型的通用默认值（最快——推荐）**：
+    *   导航到**管理面板 → 设置 → 模型**。
+    *   点击模型列表**右上角**的**设置**按钮——这将打开**全局模型参数**，适用于你实例中的*每个*模型（当前和未来），除非特定模型覆盖它们。
+    *   在**模型参数**下，将**函数调用**设置为 `Native`。
+    *   保存。所有尚未明确设置自己值的现有模型以及你之后添加的所有模型都继承 `Native`。你**不需要**逐一编辑它们。
+2.  **按模型覆盖**：
+    *   在**管理面板 → 设置 → 模型**中，选择特定模型并点击其编辑按钮。
+    *   在**模型参数**下，将**函数调用**设置为 `Native`。此值仅覆盖该模型的全局默认值。
+    *   当特定模型需要不同参数时使用此选项——否则优先使用全局设置。
+3.  **按对话覆盖**：
+    *   在对话中，打开**对话控制**（右侧边栏）。
+    *   在**高级参数**下，将**函数调用**设置为 `Native`。仅适用于该对话。
 
-:::tip Set Function Calling Globally — Once, For All Models
-Tired of switching every model to Native one at a time? The **global model parameters** panel (the **Settings** button at the top right of **Admin Panel → Settings → Models**) lets you configure any model parameter — `function_calling`, temperature, top_p, max_tokens, etc. — **once, for every model in your Open WebUI instance**. Values set there become the default for every existing model that hasn't overridden them *and* every model you add later. Set `Function Calling = Native` there, save, done.
+:::tip 全局设置函数调用——一次性，适用于所有模型
+厌倦了逐个将每个模型切换到 Native？**全局模型参数**面板（**管理面板 → 设置 → 模型**右上角的**设置**按钮）让你配置任何模型参数——`function_calling`、temperature、top_p、max_tokens 等——**一次性，适用于 Open WebUI 实例中的每个模型**。在那里设置的值成为每个尚未覆盖它们的现有模型*和*你之后添加的每个模型的默认值。在那里设置 `Function Calling = Native`，保存，完成。
 :::
 
 ![Chat Controls](/images/features/plugin/tools/chat-controls.png)
@@ -213,9 +213,9 @@ Default Mode is **not** a supported workaround even for DeepSeek — it is legac
 | **Complex Chaining** | ⚠️ Unreliable | ✅ Excellent |
 | **Future development** | ❌ None | ✅ All new features target this mode |
 
-### Built-in System Tools (Native/Agentic Mode)
+### 内置系统工具（Native/Agentic 模式）
 
-🛠️ When **Native Mode (Agentic Mode)** is enabled, Open WebUI automatically injects powerful system tools. This unlocks truly agentic behaviors where capable models (like GPT-5, Claude 4.5 Sonnet, Gemini 3 Flash, or MiniMax M2.5) can perform multi-step research, explore knowledge bases, or manage user memory autonomously.
+🛠️ 当启用 **Native 模式（Agentic 模式）** 时，Open WebUI 自动注入强大的系统工具。这解锁了真正的 Agentic 行为，使有能力的模型（如 GPT-5、Claude 4.5 Sonnet、Gemini 3 Flash 或 MiniMax M2.5）能够自主执行多步骤研究、探索知识库或管理用户记忆。
 
 | Tool | Purpose |
 |------|---------|
@@ -291,7 +291,7 @@ Use this quick matrix instead of memorizing per-row caveats.
 | `view_knowledge_file` | ✅ (when attached items include files/collections) | ✅ |
 | `view_note` | ✅ (when attached items include notes) | ❌ |
 
-Quick rule: `list_knowledge` and `list_knowledge_bases` are mutually exclusive.
+快速规则：`list_knowledge` 和 `list_knowledge_bases` 是互斥的。
 
 #### Tool Reference
 
@@ -353,22 +353,22 @@ Quick rule: `list_knowledge` and `list_knowledge_bases` are mutually exclusive.
 | `get_current_timestamp` | None | `{current_timestamp, current_iso}` |
 | `calculate_timestamp` | `days_ago`, `weeks_ago`, `months_ago`, `years_ago` (all default: 0) | `{current_timestamp, current_iso, calculated_timestamp, calculated_iso}` |
 
-:::info Automatic Timezone Detection
-Open WebUI automatically detects and stores your timezone when you log in. This allows time-related tools and features to provide accurate local times without any manual configuration. Your timezone is determined from your browser settings.
+:::info 自动时区检测
+Open WebUI 在你登录时自动检测并存储你的时区。这允许与时间相关的工具和功能提供准确的本地时间，无需任何手动配置。你的时区由浏览器设置确定。
 :::
 
-:::warning Knowledge Tool Injection Depends on Attachments
-Knowledge tool availability changes based on whether the model has attached knowledge. Use the **Knowledge Tool Availability** matrix above as the source of truth.
+:::warning 知识工具注入取决于附件
+知识工具的可用性根据模型是否有附加知识而变化。使用上面的**知识工具可用性**矩阵作为参考依据。
 
-- With attachments: the model gets scoped knowledge tools.
-- Without attachments: the model gets KB discovery tools.
-- `list_knowledge` and `list_knowledge_bases` are mutually exclusive.
+- 有附件时：模型获得范围限定的知识工具。
+- 无附件时：模型获得 KB 发现工具。
+- `list_knowledge` 和 `list_knowledge_bases` 是互斥的。
 :::
 
-:::caution Attached Knowledge Still Requires User Access
-Attaching a knowledge base to a custom model does **not** bypass access control. When a user chats with the model, `query_knowledge_files` checks whether **that specific user** has permission to access each attached knowledge item. Items the user cannot access are silently excluded from search results.
+:::caution 附加的知识仍然需要用户访问权限
+将知识库附加到自定义模型**不会**绕过访问控制。当用户与模型聊天时，`query_knowledge_files` 会检查**该特定用户**是否有权访问每个附加的知识项目。用户无法访问的项目会被静默排除在搜索结果之外。
 
-**Access requirements by knowledge type:**
+**按知识类型的访问要求：**
 
 | Attached Type | User Needs |
 |---------------|-----------|
@@ -381,22 +381,22 @@ Attaching a knowledge base to a custom model does **not** bypass access control.
 **Solution**: Make sure users who need access to the model's knowledge also have read access to the underlying knowledge base (via access grants or group permissions in the Knowledge settings).
 :::
 
-:::info Recommended KB Tool Workflow
-**With attached knowledge:**
-1. First call `list_knowledge` to discover attached KBs, files, and notes
-2. Use `query_knowledge_files` to search file contents (auto-scoped to attachments)
-3. Use `view_file` or `view_knowledge_file` to read specific files — use `offset` and `max_chars` for large files
+:::info 推荐的 KB 工具工作流
+**有附加知识时：**
+1. 首先调用 `list_knowledge` 发现附加的 KB、文件和笔记
+2. 使用 `query_knowledge_files` 搜索文件内容（自动范围限定为附件）
+3. 使用 `view_file` 或 `view_knowledge_file` 读取特定文件——对大文件使用 `offset` 和 `max_chars`
 
-**Without attached knowledge:**
-1. First call `list_knowledge_bases` to discover what knowledge is available
-2. Then use `query_knowledge_files` to search file contents within relevant KBs
-3. If still empty, the files may not be embedded yet, or you may have **Full Context mode enabled** which bypasses the vector store
+**无附加知识时：**
+1. 首先调用 `list_knowledge_bases` 发现可用的知识
+2. 然后使用 `query_knowledge_files` 在相关 KB 中搜索文件内容
+3. 如果仍然为空，文件可能尚未嵌入，或者你可能启用了**全文上下文模式**，该模式绕过向量存储
 
-**Do NOT use Full Context mode with knowledge tools** — Full Context injects file content directly and doesn't store embeddings, so `query_knowledge_files` will return empty. Use Focused Retrieval (default) for tool-based access.
+**不要将全文上下文模式与知识工具一起使用**——全文上下文直接注入文件内容而不存储嵌入，因此 `query_knowledge_files` 将返回空。使用聚焦检索（默认）进行基于工具的访问。
 :::
 
-:::tip Knowledge Base Tools and Hybrid Search
-The native `query_knowledge_files` tool uses **hybrid search + reranking** when `ENABLE_RAG_HYBRID_SEARCH` is enabled in admin settings, giving you the same search quality as the standard RAG pipeline. When hybrid search is disabled, it falls back to simple vector search.
+:::tip 知识库工具和混合搜索
+当在管理设置中启用 `ENABLE_RAG_HYBRID_SEARCH` 时，原生 `query_knowledge_files` 工具使用**混合搜索 + 重排序**，为你提供与标准 RAG 管道相同的搜索质量。当混合搜索禁用时，它回退到简单的向量搜索。
 :::
 
 :::warning Knowledge is NOT Auto-Injected in Native Mode

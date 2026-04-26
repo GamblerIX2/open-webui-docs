@@ -1,15 +1,15 @@
 ---
 sidebar_position: 2
-title: "LDAP Authentication"
+title: "LDAP 身份认证"
 ---
 
-# OpenLDAP Integration
+# OpenLDAP 集成
 
-This guide provides a comprehensive walkthrough for setting up OpenLDAP authentication with Open WebUI. It covers creating a test OpenLDAP server using Docker, seeding it with sample users, configuring Open WebUI to connect to it, and troubleshooting common issues.
+本指南提供了为 Open WebUI 设置 OpenLDAP 身份认证的完整演练。内容涵盖使用 Docker 创建测试 OpenLDAP 服务器、用示例用户进行初始化、配置 Open WebUI 连接，以及常见问题排查。
 
-## 1. Setting Up OpenLDAP with Docker
+## 1. 使用 Docker 设置 OpenLDAP
 
-The easiest way to get a test OpenLDAP server running is by using Docker. This `docker-compose.yml` file will create an OpenLDAP container and an optional phpLDAPadmin container for a web-based GUI.
+运行测试 OpenLDAP 服务器最简单的方式是使用 Docker。以下 `docker-compose.yml` 文件将创建一个 OpenLDAP 容器和一个可选的 phpLDAPadmin 容器（提供基于 Web 的管理界面）。
 
 ```yaml title="docker-compose.yml"
 version: "3.9"
@@ -42,14 +42,14 @@ networks:
     driver: bridge
 ```
 
-- The `osixia/openldap` image automatically creates a basic organization structure with just `LDAP_DOMAIN` and `LDAP_ADMIN_PASSWORD`.
-- The `osixia/phpldapadmin` image provides a web interface for managing your LDAP directory, accessible at `https://localhost:6443`.
+- `osixia/openldap` 镜像仅通过 `LDAP_DOMAIN` 和 `LDAP_ADMIN_PASSWORD` 就能自动创建基础组织结构。
+- `osixia/phpldapadmin` 镜像提供管理 LDAP 目录的 Web 界面，可在 `https://localhost:6443` 访问。
 
-Run `docker-compose up -d` to start the containers. Confirm that the LDAP server has started by checking the logs: `docker logs openldap`. You should see a "started slapd" message.
+运行 `docker-compose up -d` 启动容器。通过检查日志验证 LDAP 服务器已启动：`docker logs openldap`。您应该能看到"started slapd"消息。
 
-## 2. Seeding a Sample User (LDIF)
+## 2. 添加示例用户（LDIF）
 
-To test the login, you need to add a sample user to the LDAP directory. Create a file named `seed.ldif` with the following content:
+要测试登录，您需要向 LDAP 目录添加一个示例用户。创建名为 `seed.ldif` 的文件，内容如下：
 
 ```ldif title="seed.ldif"
 dn: ou=users,dc=example,dc=org
@@ -65,29 +65,28 @@ mail: jdoe@example.org
 userPassword: {PLAIN}password123
 ```
 
-**Note on Passwords:** The `userPassword` field is set to a plain text value for simplicity in this test environment. In production, you should always use a hashed password. You can generate a hashed password using `slappasswd` or `openssl passwd`. For example:
+**关于密码：** `userPassword` 字段在此测试环境中设置为明文值，方便操作。在生产环境中，应始终使用哈希密码。可以使用 `slappasswd` 或 `openssl passwd` 生成哈希密码，例如：
 
 ```bash
-
-# Using slappasswd (inside the container)
+# 使用 slappasswd（在容器内部）
 docker exec openldap slappasswd -s your_password
 
-# Using openssl
+# 使用 openssl
 openssl passwd -6 your_password
 ```
 
-Copy the LDIF file into the container and use `ldapadd` to add the entry:
+将 LDIF 文件复制到容器并使用 `ldapadd` 添加条目：
 
 ```bash
 docker cp seed.ldif openldap:/seed.ldif
 docker exec openldap ldapadd -x -D "cn=admin,dc=example,dc=org" -w admin -f /seed.ldif
 ```
 
-A successful operation will show an "adding new entry" message.
+操作成功会显示"adding new entry"消息。
 
-## 3. Verifying the LDAP Connection
+## 3. 验证 LDAP 连接
 
-Before configuring Open WebUI, verify that the LDAP server is accessible and the user exists.
+在配置 Open WebUI 之前，验证 LDAP 服务器可访问且用户存在。
 
 ```bash
 ldapsearch -x -H ldap://localhost:389 \
@@ -95,71 +94,70 @@ ldapsearch -x -H ldap://localhost:389 \
   -b "dc=example,dc=org" "(uid=jdoe)"
 ```
 
-If the command returns the `jdoe` user entry, your LDAP server is ready.
+如果命令返回 `jdoe` 用户条目，则 LDAP 服务器已就绪。
 
-## 4. Configuring Open WebUI
+## 4. 配置 Open WebUI
 
-Now, configure your Open WebUI instance to use the LDAP server for authentication.
+现在，配置您的 Open WebUI 实例以使用 LDAP 服务器进行身份认证。
 
-### Environment Variables
+### 环境变量
 
-Set the following environment variables for your Open WebUI instance.
+为您的 Open WebUI 实例设置以下环境变量。
 
 :::info
 
-Open WebUI reads these environment variables only on the first startup. Subsequent changes must be made in the Admin settings panel of the UI unless you have `ENABLE_PERSISTENT_CONFIG=false`.
+Open WebUI 仅在首次启动时读取这些环境变量。后续更改必须在 UI 的管理设置面板中进行，除非您设置了 `ENABLE_PERSISTENT_CONFIG=false`。
 
 :::
 
 ```env
-
-# Enable LDAP
+# 启用 LDAP
 ENABLE_LDAP="true"
 
-# --- Server Settings ---
+# --- 服务器设置 ---
 LDAP_SERVER_LABEL="OpenLDAP"
-LDAP_SERVER_HOST="localhost"  # Or the IP/hostname of your LDAP server
-LDAP_SERVER_PORT="389"        # Use 389 for plaintext/StartTLS, 636 for LDAPS
-LDAP_USE_TLS="false"          # Set to "true" for LDAPS or StartTLS
-LDAP_VALIDATE_CERT="false"    # Set to "true" in production with valid certs
+LDAP_SERVER_HOST="localhost"  # 或您的 LDAP 服务器 IP/主机名
+LDAP_SERVER_PORT="389"        # 明文/StartTLS 使用 389，LDAPS 使用 636
+LDAP_USE_TLS="false"          # LDAPS 或 StartTLS 设置为 "true"
+LDAP_VALIDATE_CERT="false"    # 生产环境使用有效证书时设置为 "true"
 
-# --- Bind Credentials ---
+# --- 绑定凭据 ---
 LDAP_APP_DN="cn=admin,dc=example,dc=org"
 LDAP_APP_PASSWORD="admin"
 
-# --- User Schema ---
+# --- 用户 Schema ---
 LDAP_SEARCH_BASE="dc=example,dc=org"
 LDAP_ATTRIBUTE_FOR_USERNAME="uid"
 LDAP_ATTRIBUTE_FOR_MAIL="mail"
-# LDAP_SEARCH_FILTER is optional and used for additional filtering conditions.
-# The username filter is automatically added by Open WebUI, so do NOT include 
-# user placeholder syntax like %(user)s or %s - these are not supported.
-# Leave empty for simple setups, or add group membership filters, e.g.:
+# LDAP_SEARCH_FILTER 是可选项，用于附加过滤条件。
+# Open WebUI 会自动添加用户名过滤器，因此请勿包含
+# %(user)s 或 %s 等用户占位符语法——这些不受支持。
+# 简单设置可留空，或添加组成员过滤器，例如：
 # LDAP_SEARCH_FILTER="(memberOf=cn=allowed-users,ou=groups,dc=example,dc=org)"
 ```
 
-### UI Configuration
+### UI 配置
 
-Alternatively, you can configure these settings directly in the UI:
+也可以直接在 UI 中配置这些设置：
 
-1. Log in as an administrator.
-2. Navigate to **Settings** > **General**.
-3. Enable **LDAP Authentication**.
-4. Fill in the fields corresponding to the environment variables above.
-5. Save the settings and restart Open WebUI.
+1. 以管理员身份登录。
+2. 导航到 **设置** > **通用**。
+3. 启用 **LDAP 身份认证**。
+4. 填写与上述环境变量对应的字段。
+5. 保存设置并重启 Open WebUI。
 
-## 5. Logging In
+## 5. 登录
 
-Open a new incognito browser window and navigate to your Open WebUI instance.
+打开一个新的隐身浏览器窗口并导航到您的 Open WebUI 实例。
 
--   **Login ID:** `jdoe`
--   **Password:** `password123` (or the password you set)
+-   **登录 ID：** `jdoe`
+-   **密码：** `password123`（或您设置的密码）
 
-Upon successful login, a new user account with "User" role will be created automatically in Open WebUI. An administrator can later elevate the user's role if needed.
+登录成功后，Open WebUI 会自动创建一个具有"用户"角色的新用户账户。管理员可以稍后根据需要提升用户角色。
 
-## 6. Troubleshooting Common Errors
+## 6. 常见错误排查
 
-Here are solutions to common errors encountered during LDAP integration.
+以下是 LDAP 集成过程中常见错误的解决方案。
 
 ### `port must be an integer`
 
@@ -167,11 +165,11 @@ Here are solutions to common errors encountered during LDAP integration.
 ERROR | open_webui.routers.auths:ldap_auth:447 - LDAP authentication error: port must be an integer - {}
 ```
 
-**Cause:** The `LDAP_SERVER_PORT` environment variable is being passed as a string with quotes (e.g., `"389"`).
+**原因：** `LDAP_SERVER_PORT` 环境变量以带引号的字符串传递（例如 `"389"`）。
 
-**Solution:**
--   Ensure the `LDAP_SERVER_PORT` value in your `.env` file or export command has no quotes: `LDAP_SERVER_PORT=389`.
--   Remove the protocol (`http://`, `ldap://`) from `LDAP_SERVER_HOST`. It should just be the hostname or IP (e.g., `localhost`).
+**解决方案：**
+-   确保 `.env` 文件或 export 命令中的 `LDAP_SERVER_PORT` 值没有引号：`LDAP_SERVER_PORT=389`。
+-   从 `LDAP_SERVER_HOST` 中删除协议（`http://`、`ldap://`）。它应该只是主机名或 IP（例如 `localhost`）。
 
 ### `[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred`
 
@@ -179,39 +177,22 @@ ERROR | open_webui.routers.auths:ldap_auth:447 - LDAP authentication error: port
 ERROR | LDAP authentication error: ("('socket ssl wrapping error: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1016)',)",) - {}
 ```
 
-**Cause:** This is a TLS handshake failure. The client (Open WebUI) is trying to initiate a TLS connection, but the server (OpenLDAP) is not configured for it or is expecting a different protocol.
+**原因：** TLS 握手失败。客户端（Open WebUI）正在尝试启动 TLS 连接，但服务器（OpenLDAP）未为其配置或期望不同的协议。
 
-**Solution:**
--   **If you don't intend to use TLS:** Set `LDAP_USE_TLS="false"` and connect to the standard plaintext port `389`.
--   **If you intend to use LDAPS:** Ensure your LDAP server is configured for TLS and listening on port `636`. Set `LDAP_SERVER_PORT="636"` and `LDAP_USE_TLS="true"`.
--   **If you intend to use StartTLS:** Your LDAP server must support the StartTLS extension. Connect on port `389` and set `LDAP_USE_TLS="true"`.
+**解决方案：**
+-   **如果不打算使用 TLS：** 设置 `LDAP_USE_TLS="false"` 并连接到标准明文端口 `389`。
+-   **如果打算使用 LDAPS：** 确保您的 LDAP 服务器已配置 TLS 并监听端口 `636`。设置 `LDAP_SERVER_PORT="636"` 和 `LDAP_USE_TLS="true"`。
+-   **如果打算使用 StartTLS：** 您的 LDAP 服务器必须支持 StartTLS 扩展。在端口 `389` 上连接并设置 `LDAP_USE_TLS="true"`。
 
-### `err=49 text=` (Invalid Credentials)
+### `err=49 text=`（凭据无效）
 
 ```
 openldap | ... conn=1001 op=0 RESULT tag=97 err=49 text=
 ```
 
-**Cause:** The LDAP server rejected the bind attempt because the distinguished name (DN) or the password was incorrect. This happens during the second bind attempt, where Open WebUI tries to authenticate with the user's provided credentials.
+**原因：** LDAP 服务器拒绝了绑定尝试，因为识别名（DN）或密码不正确。这发生在第二次绑定尝试时，Open WebUI 尝试使用用户提供的凭据进行身份认证。
 
-**Solution:**
-1. **Verify the Password:** Ensure you are using the correct plaintext password. The `userPassword` value in the LDIF file is what the server expects. If it's a hash, you must provide the original plaintext password.
-2. **Check the User DN:** The DN used for the bind (`uid=jdoe,ou=users,dc=example,dc=org`) must be correct.
-3. **Test with `ldapwhoami`:** Verify the credentials directly against the LDAP server to isolate the issue from Open WebUI.
-    ```bash
-    ldapwhoami -x -H ldap://localhost:389 \
-      -D "uid=jdoe,ou=users,dc=example,dc=org" -w "password123"
-    ```
-    If this command fails with `ldap_bind: Invalid credentials (49)`, the problem is with the credentials or the LDAP server's password configuration, not Open WebUI.
-4. **Reset the Password:** If you don't know the password, reset it using `ldapmodify` or `ldappasswd`. It's often easiest to use a `{PLAIN}` password for initial testing and then switch to a secure hash like `{SSHA}`.
-
-    **Example LDIF to change password:**
-    ```ldif title="change_password.ldif"
-    dn: uid=jdoe,ou=users,dc=example,dc=org
-    changetype: modify
-    replace: userPassword
-    userPassword: {PLAIN}newpassword
-    ```
-    Apply it with:
-    ```bash
-    docker exec openldap ldapmodify -x -D "cn=admin,dc=example,dc=org" -w admin -f /path/to/change_password.ldif
+**解决方案：**
+1. **验证密码：** 确保使用的是正确的明文密码。LDIF 文件中的 `userPassword` 值就是服务器期望的。如果是哈希值，必须提供原始明文密码。
+2. **检查用户 DN：** 用于绑定的 DN（`uid=jdoe,ou=users,dc=example,dc=org`）必须正确。
+3. **使用 `ldapwhoami` 测试：** 直接对 LDAP 服务器验证凭据，将问题与 Open WebUI 隔离。

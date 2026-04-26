@@ -3,11 +3,11 @@ sidebar_position: 7
 title: "OpenTelemetry"
 ---
 
-Open WebUI supports **distributed tracing and metrics** export via the OpenTelemetry (OTel) protocol (OTLP). This enables integration with modern observability stacks such as **Grafana LGTM (Loki, Grafana, Tempo, Mimir)**, as well as **Jaeger**, **Tempo**, and **Prometheus** to monitor requests, database/Redis queries, response times, and more in real-time.
+Open WebUI 支持通过 OpenTelemetry (OTel) 协议 (OTLP) 导出**分布式追踪和指标**。这使得可以与现代可观测性技术栈（如 **Grafana LGTM (Loki, Grafana, Tempo, Mimir)**）以及 **Jaeger**、**Tempo** 和 **Prometheus** 集成，从而实时监控请求、数据库/Redis 查询、响应时间等。
 
 :::warning Additional Dependencies
 
-If you are running Open WebUI from source or via `pip` (outside of the official Docker images), OpenTelemetry dependencies **may not be installed by default**. You may need to install them manually:
+如果你是从源码或通过 `pip` 运行 Open WebUI（在官方 Docker 镜像之外），OpenTelemetry 依赖项**可能不会默认安装**。你可能需要手动安装它们：
 
 ```bash
 pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
@@ -15,44 +15,44 @@ pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 
 :::
 
-## 🚀 Quick Start with Docker Compose
+## 🚀 使用 Docker Compose 快速开始
 
-The fastest way to get started with observability is with the pre-configured Docker Compose:
+开始使用可观测性的最快方法是使用预配置的 Docker Compose：
 
 ```bash
 
-# Spin up Open WebUI and the latest Grafana LGTM stack, all-in-one
+# 启动 Open WebUI 和最新的 Grafana LGTM 栈，一体化运行
 docker compose -f docker-compose.otel.yaml up -d
 ```
 
-The `docker-compose.otel.yaml` file sets up these components:
+`docker-compose.otel.yaml` 文件设置了以下组件：
 
-| Service     | Port(s)                                   | Description                                          |
+| 服务     | 端口                                   | 描述                                          |
 |-------------|------------------------------------------|------------------------------------------------------|
-| **grafana** | 3000 (UI), 4317 (OTLP/gRPC), 4318 (HTTP) | Grafana LGTM (Loki+Grafana+Tempo+Mimir) all-in-one   |
-| **open-webui** | 8088 (default) → 8080                     | WebUI, OTEL enabled, exposes on host port 8088          |
+| **grafana** | 3000 (UI), 4317 (OTLP/gRPC), 4318 (HTTP) | Grafana LGTM (Loki+Grafana+Tempo+Mimir) 一体化   |
+| **open-webui** | 8088 (默认) → 8080                     | 启用了 OTEL 的 WebUI，暴露在宿主机端口 8088          |
 
-After startup, access the Grafana dashboard at [http://localhost:3000](http://localhost:3000)
-Login: `admin` / `admin`
+启动后，请访问 [http://localhost:3000](http://localhost:3000) 上的 Grafana 仪表板
+登录：`admin` / `admin`
 
-## ⚙️ Environment Variables
+## ⚙️ 环境变量
 
-You can configure OpenTelemetry in Open WebUI with these environment variables (as used in the Compose file):
+你可以使用以下环境变量（如 Compose 文件中所用）在 Open WebUI 中配置 OpenTelemetry：
 
-| Variable                            | Default                         | Description                                         |
+| 变量                            | 默认值                         | 描述                                         |
 |--------------------------------------|---------------------------------|-----------------------------------------------------|
-| `ENABLE_OTEL`                       | **true** in Compose             | Master switch to enable OpenTelemetry setup         |
-| `ENABLE_OTEL_TRACES`                | **true** in Compose             | Enable distributed tracing export                   |
-| `ENABLE_OTEL_METRICS`                | **true** in Compose             | Enable FastAPI HTTP metrics export                  |
-| `OTEL_EXPORTER_OTLP_ENDPOINT`        | `http://grafana:4317` in Compose| OTLP gRPC/HTTP Collector endpoint URL               |
-| `OTEL_EXPORTER_OTLP_INSECURE`        | **true** in Compose             | Insecure (no TLS) connection for OTLP               |
-| `OTEL_SERVICE_NAME`                  | `open-webui`                    | Service name (tagged in traces and metrics)         |
-| `OTEL_METRICS_EXPORT_INTERVAL_MILLIS`| `10000`                         | Metrics export interval in ms (10s = ~6 DPM; set `60000` for ~1 DPM) |
-| `OTEL_BASIC_AUTH_USERNAME` / `OTEL_BASIC_AUTH_PASSWORD` | *(empty)*      | Basic Auth credentials if Collector requires them   |
+| `ENABLE_OTEL`                       | 在 Compose 中为 **true**             | 启用 OpenTelemetry 设置的主开关         |
+| `ENABLE_OTEL_TRACES`                | 在 Compose 中为 **true**             | 启用分布式追踪导出                   |
+| `ENABLE_OTEL_METRICS`                | 在 Compose 中为 **true**             | 启用 FastAPI HTTP 指标导出                  |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`        | 在 Compose 中为 `http://grafana:4317` | OTLP gRPC/HTTP 收集器端点 URL               |
+| `OTEL_EXPORTER_OTLP_INSECURE`        | 在 Compose 中为 **true**             | OTLP 的不安全（无 TLS）连接               |
+| `OTEL_SERVICE_NAME`                  | `open-webui`                    | 服务名称（在追踪和指标中标记）         |
+| `OTEL_METRICS_EXPORT_INTERVAL_MILLIS`| `10000`                         | 指标导出间隔（毫秒）（10s = ~6 DPM；设置为 `60000` 则为 ~1 DPM） |
+| `OTEL_BASIC_AUTH_USERNAME` / `OTEL_BASIC_AUTH_PASSWORD` | *(为空)*      | 基本认证凭据（如果收集器需要）   |
 
 :::tip
 
-Override defaults in your `.env` file or Compose file as needed.
+根据需要在你的 `.env` 文件或 Compose 文件中覆盖默认值。
 
 :::
 
@@ -68,37 +68,37 @@ Override defaults in your `.env` file or Compose file as needed.
       # You may set OTEL_BASIC_AUTH_USERNAME/PASSWORD here if needed
 ```
 
-## 📊 Data Collection
+## 📊 数据收集
 
-### Distributed Tracing
+### 分布式追踪
 
-The Open WebUI backend automatically instruments:
+Open WebUI 后端自动检测：
 
-- **FastAPI** (routes)
-- **SQLAlchemy** (database queries)
+- **FastAPI** (路由)
+- **SQLAlchemy** (数据库查询)
 - **Redis**
-- **requests**, **httpx**, **aiohttp** (external calls)
+- **requests**, **httpx**, **aiohttp** (外部调用)
 
-Each trace span includes rich data such as:
+每个追踪跨度包括丰富的数据，例如：
 
 - `db.instance`, `db.statement`, `redis.args`
 - `http.url`, `http.method`, `http.status_code`
-- Error details (`error.message`, `error.kind`) on exceptions
+- 异常时的错误详情 (`error.message`, `error.kind`)
 
-### Metrics Collection
+### 指标收集
 
-WebUI exports the following metrics via OpenTelemetry:
+WebUI 通过 OpenTelemetry 导出以下指标：
 
-| Instrument             | Type      | Unit | Labels                               |
+| 仪表             | 类型      | 单位 | 标签                               |
 |------------------------|-----------|------|--------------------------------------|
-| `http.server.requests` | Counter   | 1    | `http.method`, `http.route`, `http.status_code` |
-| `http.server.duration` | Histogram | ms   | (same as above)                      |
+| `http.server.requests` | 计数器   | 1    | `http.method`, `http.route`, `http.status_code` |
+| `http.server.duration` | 直方图 | ms   | (同上)                      |
 
-Metrics are sent via OTLP (default every 10 seconds, configurable via `OTEL_METRICS_EXPORT_INTERVAL_MILLIS`) and can be visualized in **Grafana** (via Prometheus/Mimir).
+指标通过 OTLP 发送（默认每 10 秒一次，可通过 `OTEL_METRICS_EXPORT_INTERVAL_MILLIS` 配置），并可以在 **Grafana**（通过 Prometheus/Mimir）中可视化。
 
-## 🔧 Custom Collector Setup
+## 🔧 自定义收集器设置
 
-To use a different (external) OpenTelemetry Collector/Stack:
+要使用不同的（外部）OpenTelemetry 收集器/技术栈：
 
 ```bash
 docker run -d --name open-webui \
@@ -113,17 +113,17 @@ docker run -d --name open-webui \
   ghcr.io/open-webui/open-webui:main
 ```
 
-## 🚨 Troubleshooting
+## 🚨 故障排除
 
-**Traces/metrics not appearing in Grafana?**
+**追踪/指标未显示在 Grafana 中？**
 
-- Double-check `ENABLE_OTEL`, `ENABLE_OTEL_TRACES`, and `ENABLE_OTEL_METRICS` are all set to `true`
-- Is the endpoint correct? (`OTEL_EXPORTER_OTLP_ENDPOINT`)
-- Inspect logs from Open WebUI (`docker logs open-webui`) for OTLP errors
-- Collector's OTLP port (`4317`) should be open and reachable. Try:
-  `curl http://localhost:4317` (replace host as needed)
+- 仔细检查 `ENABLE_OTEL`、`ENABLE_OTEL_TRACES` 和 `ENABLE_OTEL_METRICS` 是否都设置为 `true`
+- 端点正确吗？(`OTEL_EXPORTER_OTLP_ENDPOINT`)
+- 检查 Open WebUI 的日志 (`docker logs open-webui`) 以查找 OTLP 错误
+- 收集器的 OTLP 端口 (`4317`) 应该开放且可达。尝试：
+  `curl http://localhost:4317` (根据需要替换主机)
 
-**Authentication required?**
+**需要认证？**
 
-- Set `OTEL_BASIC_AUTH_USERNAME` and `OTEL_BASIC_AUTH_PASSWORD` for auth-protected collectors
-- If using SSL/TLS, adjust or remove `OTEL_EXPORTER_OTLP_INSECURE` as appropriate
+- 为受认证保护的收集器设置 `OTEL_BASIC_AUTH_USERNAME` 和 `OTEL_BASIC_AUTH_PASSWORD`
+- 如果使用 SSL/TLS，请适当调整或删除 `OTEL_EXPORTER_OTLP_INSECURE`

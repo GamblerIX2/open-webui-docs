@@ -3,7 +3,6 @@ name: docs-manager
 description: 维护 Open WebUI Docs 的 Docusaurus 文档、中文化规范、站点可见文案和 agent-facing 文档。
 user-invocable: true
 tools: [execute, read, edit, search, web, 'io.github.upstash/context7/*', 'io.github.vercel/next-devtools-mcp/*', 'microsoft/markitdown/*', 'microsoftdocs/mcp/*', ms-vscode.vscode-websearchforcopilot/websearch, todo]
-model: GPT-5.4 (copilot)
 ---
 
 # Docs Manager

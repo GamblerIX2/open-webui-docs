@@ -1,46 +1,46 @@
 ---
 sidebar_position: 400
-title: "API Endpoints"
+title: "API 接口"
 ---
 
-This guide provides essential information on how to interact with the API endpoints effectively to achieve seamless integration and automation using our models. Please note that this is an experimental setup and may undergo future updates for enhancement.
+本指南提供了有效使用 API 接口所需的关键信息，帮助你实现与模型的无缝集成和自动化。请注意，该配置目前处于实验阶段，未来可能会有更新和改进。
 
-## Authentication
+## 认证
 
-To ensure secure access to the API, authentication is required 🛡️. You can authenticate your API requests using the Bearer Token mechanism. Obtain your API key from **Settings > Account** in the Open WebUI, or alternatively, use a JWT (JSON Web Token) for authentication. For full instructions on enabling and generating API keys - including the admin toggle and group permissions required for non-admin users - see [API Keys](/features/authentication-access/api-keys).
+为确保 API 的安全访问，需要进行身份认证 🛡️。你可以使用 Bearer Token 机制对 API 请求进行认证。在 Open WebUI 的**设置 > 账户**中获取你的 API Key，或者使用 JWT（JSON Web Token）进行认证。有关启用和生成 API Key 的完整说明（包括管理员开关和非管理员用户所需的群组权限），请参阅 [API 密钥](/features/authentication-access/api-keys)。
 
-## Swagger Documentation Links
+## Swagger 文档链接
 
 :::important
 
-Make sure to set the `ENV` environment variable to `dev` in order to access the Swagger documentation for any of these services. Without this configuration, the documentation will not be available.
+请确保将 `ENV` 环境变量设置为 `dev`，以访问这些服务的 Swagger 文档。没有此配置，文档将不可用。
 
 :::
 
-Access detailed API documentation for different services provided by Open WebUI:
+访问 Open WebUI 提供的各服务的详细 API 文档：
 
-| Application | Documentation Path      |
+| 应用 | 文档路径 |
 |-------------|-------------------------|
-| Main        | `/docs`                 |
+| 主应用 | `/docs` |
 
-## Notable API Endpoints
+## 主要 API 接口
 
-### 📜 Retrieve All Models
+### 📜 获取所有模型
 
-- **Endpoint**: `GET /api/models`
-- **Description**: Fetches all models created or added via Open WebUI.
-- **Example**:
+- **接口**：`GET /api/models`
+- **说明**：获取通过 Open WebUI 创建或添加的所有模型。
+- **示例**：
 
   ```bash
   curl -H "Authorization: Bearer YOUR_API_KEY" http://localhost:3000/api/models
   ```
 
-### 💬 Chat Completions
+### 💬 聊天补全
 
-- **Endpoint**: `POST /api/chat/completions`
-- **Description**: Serves as an OpenAI API compatible chat completion endpoint for models on Open WebUI including Ollama models, OpenAI models, and Open WebUI Function models.
+- **接口**：`POST /api/chat/completions`
+- **说明**：作为兼容 OpenAI API 的聊天补全接口，支持 Open WebUI 上的所有模型，包括 Ollama 模型、OpenAI 模型和 Open WebUI Function 模型。
 
-- **Curl Example**:
+- **Curl 示例**：
 
   ```bash
   curl -X POST http://localhost:3000/api/chat/completions \
@@ -57,7 +57,7 @@ Access detailed API documentation for different services provided by Open WebUI:
       }'
   ```
 
-- **Python Example**:
+- **Python 示例**：
 
   ```python
   import requests
@@ -81,16 +81,16 @@ Access detailed API documentation for different services provided by Open WebUI:
       return response.json()
   ```
 
-### 🔮 Anthropic Messages API
+### 🔮 Anthropic 消息 API
 
-Open WebUI provides an Anthropic Messages API compatible endpoint. This allows tools, SDKs, and applications built for the Anthropic API to work directly against Open WebUI — routing requests through all configured models, filters, and pipelines.
+Open WebUI 提供兼容 Anthropic 消息 API 的接口。这允许为 Anthropic API 构建的工具、SDK 和应用程序直接与 Open WebUI 配合工作——通过所有已配置的模型、过滤器和流水线路由请求。
 
-Internally, the endpoint converts the Anthropic request format to OpenAI Chat Completions format, routes it through the existing chat completion pipeline, and converts the response back to Anthropic format. Both streaming and non-streaming requests are supported.
+在内部，该接口将 Anthropic 请求格式转换为 OpenAI 聊天补全格式，通过现有的聊天补全流水线路由，并将响应转换回 Anthropic 格式。支持流式和非流式请求。
 
-- **Endpoints**: `POST /api/message`, `POST /api/v1/messages`
-- **Authentication**: Supports both `Authorization: Bearer YOUR_API_KEY` and Anthropic's `x-api-key: YOUR_API_KEY` header
+- **接口**：`POST /api/message`，`POST /api/v1/messages`
+- **认证**：支持 `Authorization: Bearer YOUR_API_KEY` 和 Anthropic 的 `x-api-key: YOUR_API_KEY` 头
 
-- **Curl Example** (non-streaming):
+- **Curl 示例**（非流式）：
 
   ```bash
   curl -X POST http://localhost:3000/api/v1/messages \
@@ -108,7 +108,7 @@ Internally, the endpoint converts the Anthropic request format to OpenAI Chat Co
       }'
   ```
 
-- **Curl Example** (streaming):
+- **Curl 示例**（流式）：
 
   ```bash
   curl -X POST http://localhost:3000/api/v1/messages \
@@ -127,7 +127,7 @@ Internally, the endpoint converts the Anthropic request format to OpenAI Chat Co
       }'
   ```
 
-- **Python Example** (using the Anthropic SDK):
+- **Python 示例**（使用 Anthropic SDK）：
 
   ```python
   from anthropic import Anthropic
@@ -148,23 +148,23 @@ Internally, the endpoint converts the Anthropic request format to OpenAI Chat Co
   ```
 
   :::warning
-  The `base_url` must be `http://localhost:3000/api` (not `/api/v1`). The Anthropic SDK automatically appends `/v1/messages` to the base URL.
+  `base_url` 必须是 `http://localhost:3000/api`（而非 `/api/v1`）。Anthropic SDK 会自动将 `/v1/messages` 附加到 base URL 后面。
   :::
 
-- **Claude Code Configuration**:
+- **Claude Code 配置**：
 
-  To use [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with Open WebUI as a proxy, configure it to point at your Open WebUI instance:
+  要将 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 与 Open WebUI 作为代理一起使用，请将其配置为指向你的 Open WebUI 实例：
 
   ```bash
-  # Set environment variables for Claude Code
+  # 设置 Claude Code 的环境变量
   export ANTHROPIC_BASE_URL="http://localhost:3000/api"
   export ANTHROPIC_API_KEY="YOUR_OPEN_WEBUI_API_KEY"
 
-  # Then run Claude Code as normal
+  # 然后正常运行 Claude Code
   claude
   ```
 
-  Alternatively, create or edit `~/.claude/settings.json`:
+  或者，创建或编辑 `~/.claude/settings.json`：
 
   ```json
   {
@@ -175,59 +175,59 @@ Internally, the endpoint converts the Anthropic request format to OpenAI Chat Co
   }
   ```
 
-  This routes all Claude Code requests through Open WebUI's authentication and access control layer, letting you use any configured model (including local models via Ollama or vLLM) with Claude Code's interface.
+  这会将所有 Claude Code 请求通过 Open WebUI 的认证和访问控制层路由，让你可以使用任何已配置的模型（包括通过 Ollama 或 vLLM 的本地模型）与 Claude Code 的界面配合使用。
 
 :::info
-All models configured in Open WebUI are accessible through this endpoint — including Ollama models, OpenAI models, and any custom function models. The `model` field should use the model ID as it appears in Open WebUI. Filters (inlet/stream) apply to these requests just as they do for the OpenAI-compatible endpoint.
+Open WebUI 中配置的所有模型都可以通过此接口访问——包括 Ollama 模型、OpenAI 模型和任何自定义 Function 模型。`model` 字段应使用模型在 Open WebUI 中显示的模型 ID。过滤器（inlet/stream）应用于这些请求，与兼容 OpenAI 的接口相同。
 
-**Tool Use:** The Anthropic Messages endpoint supports tool use (`tools` and `tool_choice` parameters). Tool calls from the upstream model are translated into Anthropic-format `tool_use` content blocks in both streaming and non-streaming responses.
+**工具使用：** Anthropic 消息接口支持工具使用（`tools` 和 `tool_choice` 参数）。来自上游模型的工具调用会被转换为流式和非流式响应中的 Anthropic 格式 `tool_use` 内容块。
 :::
 
-### 🔧 Filter and Function Behavior with API Requests
+### 🔧 API 请求中的过滤器和 Function 行为
 
-When using the API endpoints directly, filters (Functions) behave differently than when requests come from the web interface.
+直接使用 API 接口时，过滤器（Functions）的行为与通过 Web 界面发出请求时有所不同。
 
-:::info Authentication Note
-Open WebUI accepts both **API keys** (prefixed with `sk-`) and **JWT tokens** for API authentication. This is intentional—the web interface uses JWT tokens internally for the same API endpoints. Both authentication methods provide equivalent API access.
+:::info 认证说明
+Open WebUI 同时接受 **API Key**（以 `sk-` 为前缀）和 **JWT Token** 进行 API 认证。这是有意为之的——Web 界面在内部对相同的 API 接口使用 JWT Token。两种认证方式提供同等的 API 访问权限。
 :::
 
-#### Filter Execution
+#### 过滤器执行
 
-| Filter Function | WebUI Request | Direct API — stable (`main`) | Direct API — pre-release (`dev`) |
+| 过滤器 Function | WebUI 请求 | 直接 API — 稳定版（`main`） | 直接 API — 预发布版（`dev`） |
 |----------------|--------------|------------------------------|-----------------------------------|
-| `inlet()` | ✅ Runs | ✅ Runs | ✅ Runs |
-| `stream()` | ✅ Runs | ✅ Runs | ✅ Runs |
-| `outlet()` | ✅ Runs | ❌ Not called by `/api/chat/completions` — use `/api/chat/completed` | ⚠️ Runs inline only under narrow conditions (see below) |
+| `inlet()` | ✅ 执行 | ✅ 执行 | ✅ 执行 |
+| `stream()` | ✅ 执行 | ✅ 执行 | ✅ 执行 |
+| `outlet()` | ✅ 执行 | ❌ `/api/chat/completions` 不调用——使用 `/api/chat/completed` | ⚠️ 仅在特定条件下内联执行（见下文） |
 
-The `inlet()` function always executes, making it ideal for:
-- **Rate limiting** - Track and limit requests per user
-- **Request logging** - Log all API usage for monitoring
-- **Input validation** - Reject invalid requests before they reach the model
+`inlet()` 函数始终执行，非常适合用于：
+- **速率限制** - 追踪并限制每用户的请求数
+- **请求日志** - 记录所有 API 使用情况以供监控
+- **输入验证** - 在请求到达模型之前拒绝无效请求
 
-:::danger Outlet Behavior for Direct API Calls — Read Carefully
-Earlier versions of this page said `outlet()` runs inline during `/api/chat/completions` for both WebUI and API requests. That was wrong. The accurate picture, verified in the backend source, is:
+:::danger 直接 API 调用的 Outlet 行为——请仔细阅读
+本页面的早期版本称 `outlet()` 会在 `/api/chat/completions` 的 WebUI 和 API 请求中内联运行。这是错误的。以下是经后端源码验证的准确情况：
 
-**On tagged releases / `main`:** `outlet()` is **not** invoked inline by `/api/chat/completions` at all. It only runs if the caller performs the second POST to `/api/chat/completed`. For now, if your integration needs `outlet()`, you must still do that second call.
+**标记发布版本 / `main`**：`outlet()` 根本**不会**被 `/api/chat/completions` 内联调用。只有当调用方向 `/api/chat/completed` 发送第二次 POST 请求时，它才会运行。目前，如果你的集成需要 `outlet()`，仍然必须发起那次第二步调用。
 
-**On `dev` / pre-release builds:** `outlet()` can run inline after `/api/chat/completions`, but only when **all** of the following are true:
+**`dev` / 预发布版本**：`outlet()` 可以在 `/api/chat/completions` 后内联运行，但仅当**以下所有条件都满足**时：
 
-1. The request body includes **both** `chat_id` **and** `id` (the assistant message id). If either is missing, the backend has no `event_emitter` and silently skips the outlet block.
-2. The `chat_id` is a chat the authenticated user already **owns**, otherwise the request 404s before the outlet path is reached. (Alternatively, send `parent_id: null` without a `chat_id` to trigger new-chat creation on the server.)
-3. The request is **non-streaming**. Streaming requests that satisfy (1) and (2) hit a code path designed for the WebUI: the server consumes the upstream stream itself and routes content to the user's WebSocket, so the HTTP response to a streaming API caller is effectively empty. Outlet runs, but you won't see its effect over HTTP.
+1. 请求体中**同时包含** `chat_id` **和** `id`（助手消息 ID）。如果缺少任一项，后端将没有 `event_emitter`，并静默跳过 outlet 块。
+2. `chat_id` 是经认证用户已经**拥有的**对话，否则请求将在到达 outlet 路径之前返回 404。（或者，发送不带 `chat_id` 的 `parent_id: null`，以触发服务器端新对话的创建。）
+3. 请求为**非流式**。满足条件 (1) 和 (2) 的流式请求会走一条专为 WebUI 设计的代码路径：服务器自行消费上游流并通过 WebSocket 将内容路由给用户，因此流式 API 调用者收到的 HTTP 响应实际上为空。Outlet 会运行，但你无法通过 HTTP 看到其效果。
 
-Even in the non-streaming case, **`outlet()` does not rewrite the HTTP response body**. It updates the persisted chat message and emits a `chat:outlet` WebSocket event, but the JSON your client receives is the pre-outlet content. If you need the outlet-filtered text, read it back from the chat record, subscribe to the WebSocket, or keep using `/api/chat/completed`.
+即使在非流式情况下，**`outlet()` 也不会重写 HTTP 响应体**。它会更新已持久化的聊天消息并发出 `chat:outlet` WebSocket 事件，但你的客户端收到的 JSON 是 outlet 处理前的内容。如果你需要 outlet 过滤后的文本，请从聊天记录中读取、订阅 WebSocket，或继续使用 `/api/chat/completed`。
 
-**Practical guidance:** if you are a pure API consumer (Continue.dev, Claude Code, custom scripts, Langfuse pipelines, etc.), treat `/api/chat/completed` as the supported way to run `outlet()` today. Inline execution on `dev` is primarily for WebUI-shaped clients that are already listening on the WebSocket.
+**实用建议**：如果你是纯 API 消费者（Continue.dev、Claude Code、自定义脚本、Langfuse 流水线等），请将 `/api/chat/completed` 作为当前运行 `outlet()` 的受支持方式。`dev` 上的内联执行主要面向已在 WebSocket 上监听的 WebUI 形态客户端。
 :::
 
-#### Legacy / Supported-for-API Endpoint: `/api/chat/completed`
+#### 旧版/API 支持接口：`/api/chat/completed`
 
-`POST /api/chat/completed` is the endpoint that reliably runs `outlet()` for direct API integrations. On `dev` it is marked deprecated in favor of inline execution, but as described above, inline execution does not currently return the filtered payload to pure API callers — so in practice `/api/chat/completed` remains the right call for most API integrations today.
+`POST /api/chat/completed` 是为直接 API 集成可靠运行 `outlet()` 的接口。在 `dev` 版本中，它被标记为已弃用，以支持内联执行，但如上所述，内联执行目前不会向纯 API 调用者返回过滤后的响应体——因此在实践中，`/api/chat/completed` 仍是当今大多数 API 集成的正确选择。
 
-- **Endpoint**: `POST /api/chat/completed`
-- **Description**: Runs `outlet()` filters (and pipeline outlet filters) unconditionally over a completed chat payload. Returns the filtered payload.
+- **接口**：`POST /api/chat/completed`
+- **说明**：对已完成的聊天载荷无条件运行 `outlet()` 过滤器（以及流水线 outlet 过滤器）。返回过滤后的载荷。
 
-- **Curl Example**:
+- **Curl 示例**：
 
   ```bash
   curl -X POST http://localhost:3000/api/chat/completed \
@@ -251,11 +251,11 @@ Even in the non-streaming case, **`outlet()` does not rewrite the HTTP response 
 
   def complete_chat_with_outlet(token, model, messages, chat_id=None):
       """
-      Second-step call that actually runs outlet() for direct API callers.
-      On tagged releases /api/chat/completions does not run outlet inline at all.
-      On dev it runs inline only under narrow conditions and does not rewrite
-      the HTTP response body, so this endpoint is still the right call for
-      most API integrations that want outlet's output over HTTP.
+      第二步调用，为直接 API 调用者真正运行 outlet()。
+      在标记版本中，/api/chat/completions 根本不会内联运行 outlet。
+      在 dev 版本中，它仅在特定条件下内联运行且不重写
+      HTTP 响应体，因此对于大多数需要通过 HTTP 获取 outlet 输出
+      的 API 集成来说，这个接口仍然是正确的选择。
       """
       url = 'http://localhost:3000/api/chat/completed'
       headers = {
@@ -264,7 +264,7 @@ Even in the non-streaming case, **`outlet()` does not rewrite the HTTP response 
       }
       payload = {
           'model': model,
-          'messages': messages  # Include the full conversation with assistant response
+          'messages': messages  # 包含完整对话记录（含助手回复）
       }
       if chat_id:
           payload['chat_id'] = chat_id
@@ -274,17 +274,17 @@ Even in the non-streaming case, **`outlet()` does not rewrite the HTTP response 
   ```
 
 :::tip
-If you need `outlet()` output over HTTP today, call `/api/chat/completions` followed by `/api/chat/completed`. Inline execution on `dev` is primarily for WebUI-shaped clients that read from the WebSocket. For more details on filter behavior, see the [Filter Function documentation](/features/extensibility/plugin/functions/filter#-filter-behavior-with-api-requests).
+如果你今天需要通过 HTTP 获取 `outlet()` 的输出，请先调用 `/api/chat/completions`，再调用 `/api/chat/completed`。`dev` 版本上的内联执行主要面向从 WebSocket 读取数据的 WebUI 形态客户端。有关过滤器行为的更多详情，请参阅[过滤器 Function 文档](/features/extensibility/plugin/functions/filter#-filter-behavior-with-api-requests)。
 :::
 
-### 🦙 Ollama API Proxy Support
+### 🦙 Ollama API 代理支持
 
-If you want to interact directly with Ollama models—including for embedding generation or raw prompt streaming—Open WebUI offers a transparent passthrough to the native Ollama API via a proxy route.
+如果你想直接与 Ollama 模型交互——包括生成嵌入向量或原始提示词流式传输——Open WebUI 通过代理路由提供对原生 Ollama API 的透明直通。
 
-- **Base URL**: `/ollama/<api>`
-- **Reference**: [Ollama API Documentation](https://github.com/ollama/ollama/blob/main/docs/api.md)
+- **基础 URL**：`/ollama/<api>`
+- **参考**：[Ollama API 文档](https://github.com/ollama/ollama/blob/main/docs/api.md)
 
-#### 🔁 Generate Completion (Streaming)
+#### 🔁 生成补全（流式）
 
 ```bash
 curl http://localhost:3000/ollama/api/generate \
@@ -296,14 +296,14 @@ curl http://localhost:3000/ollama/api/generate \
 }'
 ```
 
-#### 📦 List Available Models
+#### 📦 列出可用模型
 
 ```bash
 curl http://localhost:3000/ollama/api/tags \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
-#### 🧠 Generate Embeddings
+#### 🧠 生成嵌入向量
 
 ```bash
 curl -X POST http://localhost:3000/ollama/api/embed \
@@ -316,12 +316,12 @@ curl -X POST http://localhost:3000/ollama/api/embed \
 ```
 
 :::info
-When using the Ollama Proxy endpoints, you **must** include the `Content-Type: application/json` header for POST requests, or the API may fail to parse the body. Authorization headers are also required if your instance is secured.
+使用 Ollama 代理接口时，POST 请求**必须**包含 `Content-Type: application/json` 头部，否则 API 可能无法解析请求体。如果实例已配置安全认证，还需要包含授权头部。
 :::
 
-#### 🔮 Responses API (OpenAI-Compatible)
+#### 🔮 Responses API（兼容 OpenAI）
 
-Ollama supports the OpenAI Responses API format. Open WebUI proxies this through the Ollama router with the same model resolution, access control, and prefix handling used by chat completions.
+Ollama 支持 OpenAI Responses API 格式。Open WebUI 通过 Ollama 路由器代理路由，使用与聊天补全相同的模型解析、访问控制和前缀处理。
 
 ```bash
 curl -X POST http://localhost:3000/ollama/v1/responses \
@@ -333,35 +333,30 @@ curl -X POST http://localhost:3000/ollama/v1/responses \
 }'
 ```
 
-This allows API consumers (Codex, Claude Code, etc.) to use the Responses API directly with Ollama-hosted models without configuring a separate OpenAI-compatible connection.
+这允许 API 消费者（Codex、Claude Code 等）直接将 Responses API 与 Ollama 托管模型配合使用，无需配置单独的兼容 OpenAI 连接。
 
-This is ideal for building search indexes, retrieval systems, or custom pipelines using Ollama models behind the Open WebUI.
+这非常适合使用 Ollama 模型在 Open WebUI 后端构建搜索索引、检索系统或自定义流水线。
 
-### 🧩 Retrieval Augmented Generation (RAG)
+### 🧩 检索增强生成（RAG）
 
-The Retrieval Augmented Generation (RAG) feature allows you to enhance responses by incorporating data from external sources. Below, you will find the methods for managing files and knowledge collections via the API, and how to use them in chat completions effectively.
+检索增强生成（RAG）功能允许你将外部数据源内容融入到响应中。以下介绍如何通过 API 管理文件和知识库集合，以及如何在聊天补全中有效使用它们。
 
-#### Uploading Files
+#### 上传文件
 
-To utilize external data in RAG responses, you first need to upload the files. The content of the uploaded file is automatically extracted and stored in a vector database.
+要在 RAG 响应中使用外部数据，首先需要上传文件。上传文件的内容会自动提取并存储到向量数据库中。
 
-- **Endpoint**: `POST /api/v1/files/`
-- **Query Parameters**:
-  - `process` (boolean, default: `true`): Whether to extract content and compute embeddings
-  - `process_in_background` (boolean, default: `true`): Whether to process asynchronously
-- **Curl Example**:
+- **接口**：`POST /api/v1/files/`
+- **查询参数**：
+  - `process`（布尔型，默认：`true`）：是否提取内容并计算嵌入向量
+  - `process_in_background`（布尔型，默认：`true`）：是否异步处理
+- **Curl 示例**：
 
   ```bash
   curl -X POST -H "Authorization: Bearer YOUR_API_KEY" -H "Accept: application/json" \
   -F "file=@/path/to/your/file" http://localhost:3000/api/v1/files/
   ```
 
-- **Python Example**:
-
-  ```python
-  import requests
-
-  def upload_file(token, file_path):
+- **Python 示例**:
       url = 'http://localhost:3000/api/v1/files/'
       headers = {
           'Authorization': f'Bearer {token}',
@@ -372,36 +367,36 @@ To utilize external data in RAG responses, you first need to upload the files. T
       return response.json()
   ```
 
-:::warning Async Processing and Race Conditions
+:::warning 异步处理与竞争条件
 
-By default, file uploads are processed **asynchronously**. The upload endpoint returns immediately with a file ID, but content extraction and embedding computation continue in the background. 
+默认情况下，文件上传为**异步处理**。上传接口会立即返回文件 ID，内容提取和嵌入向量计算在后台继续进行。
 
-If you attempt to add the file to a knowledge base before processing completes, you will receive a `400` error:
+如果在处理完成之前尝试将文件添加到知识库，你会收到 `400` 错误：
 
 ```
 The content provided is empty. Please ensure that there is text or data present before proceeding.
 ```
 
-**You must wait for file processing to complete before adding files to knowledge bases.** See the [Checking File Processing Status](#checking-file-processing-status) section below.
+**在将文件添加到知识库之前，必须等待文件处理完成。** 详见下方[检查文件处理状态](#检查文件处理状态)部分。
 
 :::
 
-#### Checking File Processing Status
+#### 检查文件处理状态
 
-Before adding a file to a knowledge base, verify that processing has completed using the status endpoint.
+将文件添加到知识库之前，请通过状态接口验证处理已完成。
 
-- **Endpoint**: `GET /api/v1/files/{id}/process/status`
-- **Query Parameters**:
-  - `stream` (boolean, default: `false`): If `true`, returns a Server-Sent Events (SSE) stream
+- **接口**：`GET /api/v1/files/{id}/process/status`
+- **查询参数**：
+  - `stream`（布尔型，默认：`false`）：如果为 `true`，则返回服务器发送事件（SSE）流
 
-**Status Values:**
-| Status | Description |
+**状态値：**
+| 状态 | 说明 |
 |--------|-------------|
-| `pending` | File is still being processed |
-| `completed` | Processing finished successfully |
-| `failed` | Processing failed (check `error` field for details) |
+| `pending` | 文件仍在处理中 |
+| `completed` | 处理成功完成 |
+| `failed` | 处理失败（查看 `error` 字段了解详情） |
 
-- **Python Example** (Polling):
+- **Python 示例**（轮询）：
 
   ```python
   import requests
@@ -436,7 +431,7 @@ Before adding a file to a knowledge base, verify that processing has completed u
       raise TimeoutError(f"File processing did not complete within {timeout} seconds")
   ```
 
-- **Python Example** (SSE Streaming):
+- **Python 示例**（SSE 流式）：
 
   ```python
   import requests
@@ -466,16 +461,16 @@ Before adding a file to a knowledge base, verify that processing has completed u
       raise Exception("Stream ended unexpectedly")
   ```
 
-#### Adding Files to Knowledge Collections
+#### 将文件添加到知识库集合
 
-After uploading, you can group files into a knowledge collection or reference them individually in chats.
+上传完成后，你可以将文件分组到知识库集合中，或在聊天中单独引用。
 
 :::important
-**Always wait for file processing to complete before adding files to a knowledge base.** Files that are still processing will have empty content, causing a `400` error. Use the status endpoint described above to verify the file status is `completed`.
+**将文件添加到知识库之前，必须等待文件处理完成。** 仍在处理中的文件内容为空，会导致 `400` 错误。使用上方的状态接口验证文件状态为 `completed`。
 :::
 
-- **Endpoint**: `POST /api/v1/knowledge/{id}/file/add`
-- **Curl Example**:
+- **接口**：`POST /api/v1/knowledge/{id}/file/add`
+- **Curl 示例**：
 
   ```bash
   curl -X POST http://localhost:3000/api/v1/knowledge/{knowledge_id}/file/add \
@@ -484,7 +479,7 @@ After uploading, you can group files into a knowledge collection or reference th
   -d '{"file_id": "your-file-id-here"}'
   ```
 
-- **Python Example**:
+- **Python 示例**:
 
   ```python
   import requests
@@ -501,25 +496,25 @@ After uploading, you can group files into a knowledge collection or reference th
   ```
 
 
-#### Processing Web URLs into Knowledge Collections
+#### 将网页 URL 处理入知识库集合
 
-Use this endpoint to fetch a webpage, extract content, and store the resulting chunks in a knowledge collection.
+使用此接口获取网页、提取内容，并将生成的块存入知识库集合中。
 
-- **Endpoint**: `POST /api/v1/retrieval/process/web`
-- **Query Parameters**:
-  - `process` (boolean, default: `true`): If `false`, only fetches and returns extracted content without saving vectors
-  - `overwrite` (boolean, default: `true`): Whether to replace existing vectors in the target collection before saving new chunks, effectively emptying the given collection and replacing it with the content of the given URL
-- **Request Body**:
-  - `url` (string, required): Web URL to fetch and parse
-  - `collection_name` (string, optional): Target collection name. If omitted, Open WebUI generates one from the URL
+- **接口**：`POST /api/v1/retrieval/process/web`
+- **查询参数**：
+  - `process`（布尔型，默认：`true`）：如果为 `false`，仅获取并返回提取的内容而不保存向量
+  - `overwrite`（布尔型，默认：`true`）：是否在保存新块之前替换目标集合中现有的向量，即清空给定集合并用给定 URL 的内容替换它
+- **请求体**：
+  - `url`（字符串，必需）：要获取和解析的网页 URL
+  - `collection_name`（字符串，可选）：目标集合名称。如果省略， Open WebUI 会根据 URL 自动生成
 
-**`overwrite` behavior:**
-| Value | Result |
+**`overwrite` 行为：**
+| 値 | 结果 |
 |-------|--------|
-| `true` (default) | Existing vectors in the target collection are replaced before inserting the new URL chunks |
-| `false` | Existing vectors are preserved and new URL chunks are added to the same collection |
+| `true`（默认） | 插入新 URL 块之前，目标集合中现有的向量被替换 |
+| `false` | 保留现有向量，新 URL 块被添加到同一集合中 |
 
-- **Curl Example** (preserve existing vectors):
+- **Curl 示例**（保留现有向量）：
 
   ```bash
   curl -X POST 'http://localhost:3000/api/v1/retrieval/process/web?process=true&overwrite=false' \
@@ -556,12 +551,12 @@ Use this endpoint to fetch a webpage, extract content, and store the resulting c
   ```
 
 :::tip
-If `ENV=dev` is enabled, this endpoint schema (including query params like `overwrite`) is also visible in Swagger at `/docs`.
+如果启用了 `ENV=dev`，此接口的 schema（包括 `overwrite` 等查询参数）也可在 Swagger 的 `/docs` 中查看。
 :::
 
-#### Complete Workflow Example
+#### 完整工作流程示例
 
-Here's a complete example that uploads a file, waits for processing, and adds it to a knowledge base:
+以下是一个完整示例，展示如何上传文件、等待处理并将其添加到知识库：
 
 ```python
 import requests
@@ -572,15 +567,15 @@ TOKEN = 'your-api-key-here'
 
 def upload_and_add_to_knowledge(file_path, knowledge_id, timeout=300):
     """
-    Upload a file and add it to a knowledge base.
-    Properly waits for processing to complete before adding.
+    上传文件并将其添加到知识库。
+    在添加之前正确等待处理完成。
     """
     headers = {
         'Authorization': f'Bearer {TOKEN}',
         'Accept': 'application/json'
     }
     
-    # Step 1: Upload the file
+    # 第一步：上传文件
     with open(file_path, 'rb') as f:
         response = requests.post(
             f'{WEBUI_URL}/api/v1/files/',
@@ -595,8 +590,8 @@ def upload_and_add_to_knowledge(file_path, knowledge_id, timeout=300):
     file_id = file_data['id']
     print(f"File uploaded with ID: {file_id}")
     
-    # Step 2: Wait for processing to complete
-    print("Waiting for file processing...")
+    # 第二步：等待处理完成
+    print("正在等待文件处理...")
     start_time = time.time()
     
     while time.time() - start_time < timeout:
@@ -608,16 +603,16 @@ def upload_and_add_to_knowledge(file_path, knowledge_id, timeout=300):
         status = status_data.get('status')
         
         if status == 'completed':
-            print("File processing completed!")
+            print("文件处理完成！")
             break
         elif status == 'failed':
             raise Exception(f"Processing failed: {status_data.get('error')}")
         
         time.sleep(2)  # Poll every 2 seconds
     else:
-        raise TimeoutError("File processing timed out")
+        raise TimeoutError("文件处理超时")
     
-    # Step 3: Add to knowledge base
+    # 第三步：添加到知识库
     add_response = requests.post(
         f'{WEBUI_URL}/api/v1/knowledge/{knowledge_id}/file/add',
         headers={**headers, 'Content-Type': 'application/json'},
@@ -627,23 +622,23 @@ def upload_and_add_to_knowledge(file_path, knowledge_id, timeout=300):
     if add_response.status_code != 200:
         raise Exception(f"Failed to add to knowledge: {add_response.text}")
     
-    print(f"File successfully added to knowledge base!")
+    print(f"文件成功添加到知识库！")
     return add_response.json()
 
-# Usage
+# 使用方式
 result = upload_and_add_to_knowledge('/path/to/document.pdf', 'your-knowledge-id')
 ```
 
-#### Using Files and Collections in Chat Completions
+#### 在聊天补全中使用文件和集合
 
-You can reference both individual files or entire collections in your RAG queries for enriched responses.
+你可以在 RAG 查询中引用单个文件或整个集合，以丰富响应内容。
 
-##### Using an Individual File in Chat Completions
+##### 在聊天补全中使用单个文件
 
-This method is beneficial when you want to focus the chat model's response on the content of a specific file.
+当你希望肊天模型的响应聚焦在特定文件的内容上时，此方法非常适用。
 
-- **Endpoint**: `POST /api/chat/completions`
-- **Curl Example**:
+- **接口**：`POST /api/chat/completions`
+- **Curl 示例**：
 
   ```bash
   curl -X POST http://localhost:3000/api/chat/completions \
@@ -680,12 +675,12 @@ This method is beneficial when you want to focus the chat model's response on th
       return response.json()
   ```
 
-##### Using a Knowledge Collection in Chat Completions
+##### 在聊天补全中使用知识库集合
 
-Leverage a knowledge collection to enhance the response when the inquiry may benefit from a broader context or multiple documents.
+当查询可能需要更广泛的上下文或多个文档时，利用知识库集合来增强响应。
 
-- **Endpoint**: `POST /api/chat/completions`
-- **Curl Example**:
+- **接口**：`POST /api/chat/completions`
+- **Curl 示例**：
 
   ```bash
   curl -X POST http://localhost:3000/api/chat/completions \
@@ -702,7 +697,7 @@ Leverage a knowledge collection to enhance the response when the inquiry may ben
       }'
   ```
 
-- **Python Example**:
+- **Python 示例**:
 
   ```python
   import requests
@@ -722,13 +717,13 @@ Leverage a knowledge collection to enhance the response when the inquiry may ben
       return response.json()
   ```
 
-These methods enable effective utilization of external knowledge via uploaded files and curated knowledge collections, enhancing chat applications' capabilities using the Open WebUI API. Whether using files individually or within collections, you can customize the integration based on your specific needs.
+这些方法可以通过上传的文件和粿展的知识库集合有效利用外部知识，增强聊天应用的能力。无论是单独使用文件还是将其纳入集合，你都可以根据具体需要自定义集成方式。
 
-## Advantages of Using Open WebUI as a Unified LLM Provider
+## 将 Open WebUI 作为统一 LLM 提供商的优势
 
-Open WebUI offers a myriad of benefits, making it an essential tool for developers and businesses alike:
+Open WebUI 提供了许多优势，使其成为开发者和企业的重要工具：
 
-- **Unified Interface**: Simplify your interactions with different LLMs through a single, integrated platform.
-- **Ease of Implementation**: Quick start integration with comprehensive documentation and community support.
+- **统一界面**：通过单一的集成平台，简化与不同 LLM 的交互。
+- **实现简便**：配合全面的文档和社区支持，快速开始集成。
 
-By following these guidelines, you can swiftly integrate and begin utilizing the Open WebUI API. Should you encounter any issues or have questions, feel free to reach out through our Discord Community or consult the FAQs. Happy coding! 🌟
+按照这些指南，你可以迅速集成并开始使用 Open WebUI API。如果遇到任何问题，请透过我们的 Discord 社区进行反馈，或查阅 FAQ。祝编程愉快！🌟

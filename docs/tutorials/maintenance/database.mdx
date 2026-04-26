@@ -1,103 +1,101 @@
 ---
 sidebar_position: 310
-title: "Exporting & Importing DB"
+title: "导出与导入数据库"
 ---
 
 :::warning
-
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
-
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 :::
 
 
-If you need to migrate your **Open WebUI** data (e.g., chat histories, configurations, etc.) from one server to another or back it up for later use, you can export and import the database. This guide assumes you're running Open WebUI using the internal SQLite database (not PostgreSQL).
+如果您需要将 **Open WebUI** 的数据（例如聊天历史记录、配置等）从一台服务器迁移到另一台，或者备份以供将来使用，可以通过导出和导入数据库来实现。本指南假设您使用 Open WebUI 内置的 SQLite 数据库（而非 PostgreSQL）。
 
-Follow the steps below to export and import the `webui.db` file, which contains your database.
+按照以下步骤导出和导入 `webui.db` 文件，该文件包含您的数据库。
 
 ---
 
-### Exporting Database
+### 导出数据库
 
-To export the database from your current Open WebUI instance:
+从当前 Open WebUI 实例中导出数据库：
 
-1. **Use `docker cp` to copy the database file**:
-   The `webui.db` file is located in the container inside the directory `/app/backend/data`. Run the following command to copy it into your local machine:
+1. **使用 `docker cp` 复制数据库文件**：
+   `webui.db` 文件位于容器内的 `/app/backend/data` 目录中。运行以下命令将其复制到本地机器：
    ```bash
    docker cp open-webui:/app/backend/data/webui.db ./webui.db
    ```
 
-2. **Transfer the exported file to the new server**:
-   You can use **FileZilla** or any other file transfer tool of your choice to move the `webui.db` file to the new server.
+2. **将导出的文件传输到新服务器**：
+   您可以使用 **FileZilla** 或任何其他文件传输工具将 `webui.db` 文件移动到新服务器。
 
    :::info
-   FileZilla is recommended for its ease of use when transferring files to the new server.
+   推荐使用 FileZilla，它在将文件传输到新服务器时操作简便。
    :::
 
 ---
 
-### Importing Database
+### 导入数据库
 
-After moving the `webui.db` file to the new server, follow these steps:
+将 `webui.db` 文件移动到新服务器后，按照以下步骤操作：
 
-1. **Install and Run Open WebUI on the New Server**:
-   Set up and run Open WebUI using a Docker container. Follow the instructions provided in the [🚀 Getting Started](/getting-started) to install and start the Open WebUI container. Once it's running, stop it before performing the import step.
+1. **在新服务器上安装并运行 Open WebUI**：
+   使用 Docker 容器安装并运行 Open WebUI。请按照[🚀 入门指南](/getting-started)中的说明安装并启动 Open WebUI 容器。容器启动后，在执行导入步骤之前先停止它。
    ```bash
    docker stop open-webui
    ```
 
-2. **Use `docker cp` to copy the database file to the container**:
-   Assuming the exported `webui.db` file is in your current working directory, copy it into the container:
+2. **使用 `docker cp` 将数据库文件复制到容器中**：
+   假设导出的 `webui.db` 文件在当前工作目录中，将其复制到容器：
    ```bash
    docker cp ./webui.db open-webui:/app/backend/data/webui.db
    ```
 
-3. **Start the Open WebUI container**:
-   Start the container again to use the imported database.
+3. **启动 Open WebUI 容器**：
+   再次启动容器以使用导入的数据库。
    ```bash
    docker start open-webui
    ```
 
-   The new server should now be running Open WebUI with your imported database.
+   新服务器现在应该运行着带有您导入数据库的 Open WebUI。
 
 ---
 
-### Notes
+### 注意事项
 
-- This export/import process **only works if you're using the internal SQLite database (`webui.db`)**.
-- If you're using an external PostgreSQL database, this method is not applicable because the database is managed outside the container. For PostgreSQL, you'd need to follow PostgreSQL-specific tools and procedures to back up and restore your database.
+- 此导出/导入过程**仅适用于使用内置 SQLite 数据库（`webui.db`）的情况**。
+- 如果您使用的是外部 PostgreSQL 数据库，此方法不适用，因为数据库是在容器外部管理的。对于 PostgreSQL，需要使用 PostgreSQL 专用工具和流程来备份和恢复数据库。
 
 ---
 
-### Why It's Important
+### 为什么这很重要
 
-This approach is particularly useful when:
+以下情况特别适合使用此方法：
 
-- Migrating your Open WebUI data to a new server or machine.
-- Creating backups of your data before an update or modification.
-- Testing Open WebUI on multiple servers with the same setup.
+- 将 Open WebUI 数据迁移到新服务器或新机器。
+- 在更新或修改之前创建数据备份。
+- 在多台服务器上使用相同配置测试 Open WebUI。
 
 ```bash
 
-# Quick commands summary for export and import
+# 导出和导入的快捷命令汇总
 
-# Export:
+# 导出：
 docker cp open-webui:/app/backend/data/webui.db ./webui.db
 
-# Stop container on the new server:
+# 在新服务器上停止容器：
 docker stop open-webui
 
-# Import:
+# 导入：
 docker cp ./webui.db open-webui:/app/backend/data/webui.db
 
-# Start container:
+# 启动容器：
 docker start open-webui
 ```
 
-With these steps, you can easily manage your Open WebUI migration or backup process. Keep in mind the database format you're using to ensure compatibility.
+通过以上步骤，您可以轻松管理 Open WebUI 的迁移或备份流程。请注意您使用的数据库格式，以确保兼容性。
 
 ---
 
-## Related Guides
+## 相关指南
 
 - [SQLite Database Overview](/reference/database-schema) - Detailed database schema and SQLCipher encryption setup
 - [Backups](/tutorials/maintenance/backups) - Comprehensive backup strategies for your instance

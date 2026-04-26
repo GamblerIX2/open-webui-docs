@@ -1,181 +1,181 @@
 ---
 sidebar_position: 3
-title: "Permissions"
+title: "权限"
 ---
 
 
-Open WebUI provides a flexible permissions system that allows administrators to configure access controls and feature availability for users. This enables fine-grained control over what users can access and modify within the application.
+Open WebUI 提供了一个灵活的权限系统，允许管理员为用户配置访问控制和功能可用性。这实现了对用户在应用程序中可以访问和修改的内容的细粒度控制。
 
-Administrators can manage permissions in two primary ways:
-1.  **Default Permissions:** Set the baseline permissions that apply to all users (including admins) via **Admin Panel > Users > Groups > Default Permissions**.
-2.  **Group Permissions:** Create groups with specific permission overrides via **Admin Panel > Users > Groups** (e.g., a "Power Users" group with access to image generation).
+管理员可以通过两种主要方式管理权限：
+1.  **默认权限：** 通过**管理面板 > 用户 > 用户组 > 默认权限**设置适用于所有用户（包括管理员）的基础权限。
+2.  **用户组权限：** 通过**管理面板 > 用户 > 用户组**创建具有特定权限覆盖的用户组（例如，拥有图像生成访问权限的"高级用户"组）。
 
-Users with the `Pending` role have no access until approved, `Admin` users have full administrative access, and `User` accounts are subject to the permission system described below.
+拥有 `Pending` 角色的用户在获得批准之前没有访问权限，`Admin` 用户拥有完整的管理员访问权限，而 `User` 账户受下面描述的权限系统约束。
 
-:::warning RBAC Scope Boundary
-RBAC permissions control what users can do inside Open WebUI.
+:::warning RBAC 范围边界
+RBAC 权限控制用户在 Open WebUI 内部能做什么。
 
-RBAC does not replace provider-side least-privilege design. For OpenAI-compatible providers/proxies (including LiteLLM), configure credentials with the minimum required scope for your deployment.
+RBAC 不替代提供商端的最小权限设计。对于 OpenAI 兼容的提供商/代理（包括 LiteLLM），请使用部署所需最小范围的凭据进行配置。
 :::
 
-:::info Permission Logic
-Permissions in Open WebUI are **additive**.
-*   A user's effective permissions are the combination of **Global Defaults** and all their **Group Memberships**.
-*   **True takes precedence over False**: If *any* source (Global Default or *any* single Group) grants a permission, the user **will** have that permission.
-*   **No "Deny" ability**: You cannot use a specific group to "take away" a permission that is granted by another group or by the global defaults. To restrict a feature, it must be disabled in the Global Defaults *and* disabled in **all** groups the user belongs to.
+:::info 权限逻辑
+Open WebUI 中的权限是**累加**的。
+*   用户的有效权限是**全局默认值**和其所有**用户组成员资格**的组合。
+*   **True 优先于 False**：如果*任何*来源（全局默认值或*任何*单个用户组）授予了某个权限，用户**将**拥有该权限。
+*   **不存在"拒绝"功能**：您不能使用特定用户组来"取消"另一个用户组或全局默认值授予的权限。要限制某个功能，必须在全局默认值*和*用户所属的**所有**用户组中将其禁用。
 :::
 
-:::tip Best Practice: Principle of Least Privilege
-Since permissions are **additive**, the recommended security strategy is to start with **Restriction**:
-1.  **minimize Global Default Permissions**: Configure the default permissions (**Admin Panel > Users > Groups > Default Permissions**) to include *only* what absolutely every user should have.
-2.  **Grant via Groups**: Create specific groups (e.g., "Creators", "Power Users") to explicitly **grant** advanced features like Image Generation or File Uploads.
+:::tip 最佳实践：最小权限原则
+由于权限是**累加**的，推荐的安全策略是从**限制**开始：
+1.  **最小化全局默认权限**：将默认权限（**管理面板 > 用户 > 用户组 > 默认权限**）配置为仅包含*所有用户绝对必须*拥有的内容。
+2.  **通过用户组授权**：创建特定用户组（例如"创作者"、"高级用户"）来明确**授予**高级功能，如图像生成或文件上传。
 
-This approach ensures that new users don't accidentally get access to sensitive features, while allowing you to easily promote users by simply adding them to the relevant group.
+这种方式确保新用户不会意外获得敏感功能的访问权限，同时允许您通过简单地将用户添加到相关用户组来轻松提升权限。
 :::
 
-## Permission Categories
+## 权限类别
 
-Permissions are organized into five main categories: **Workspace**, **Sharing**, **Chat**, **Features**, and **Settings**.
+权限分为五个主要类别：**工作区**、**共享**、**对话**、**功能**和**设置**。
 
-### 1. Workspace Permissions
-Controls access to the "Workspace" section where users create and manage resources.
-Some permissions are **dependent** on others (e.g., you cannot import models if you cannot access the Models workspace).
+### 1. 工作区权限
+控制对"工作区"部分的访问，用户在此创建和管理资源。
+某些权限**依赖**于其他权限（例如，如果无法访问模型工作区，就无法导入模型）。
 
-| Permission | Description |
+| 权限 | 说明 |
 | :--- | :--- |
-| **Models Access** | **(Parent)** Access the **Models** workspace to create or edit custom models. |
-| **Models Import** | *(Requires Models Access)* Ability to import models from JSON/files. |
-| **Models Export** | *(Requires Models Access)* Ability to export models to files. |
-| **Knowledge Access** | Access the **Knowledge** workspace to manage knowledge bases. |
-| **Prompts Access** | **(Parent)** Access the **Prompts** workspace to manage custom system prompts. |
-| **Prompts Import** | *(Requires Prompts Access)* Ability to import prompts. |
-| **Prompts Export** | *(Requires Prompts Access)* Ability to export prompts. |
-| **Tools Access** | **(Parent)** Access the **Tools** workspace to manage functions/tools. |
-| **Tools Import** | *(Requires Tools Access)* Ability to import tools. |
-| **Tools Export** | *(Requires Tools Access)* Ability to export tools. |
+| **模型访问** | **（父级）** 访问**模型**工作区以创建或编辑自定义模型。 |
+| **模型导入** | *（需要模型访问）* 从 JSON/文件导入模型的能力。 |
+| **模型导出** | *（需要模型访问）* 将模型导出到文件的能力。 |
+| **知识库访问** | 访问**知识库**工作区以管理知识库。 |
+| **提示词访问** | **（父级）** 访问**提示词**工作区以管理自定义系统提示词。 |
+| **提示词导入** | *（需要提示词访问）* 导入提示词的能力。 |
+| **提示词导出** | *（需要提示词访问）* 导出提示词的能力。 |
+| **工具访问** | **（父级）** 访问**工具**工作区以管理函数/工具。 |
+| **工具导入** | *（需要工具访问）* 导入工具的能力。 |
+| **工具导出** | *（需要工具访问）* 导出工具的能力。 |
 
-:::danger ⚠️ Tools Access = Root-Equivalent Access
-**Treat the Tools Access permission as root-equivalent access.** Granting a user access to create or import Tools is equivalent to giving them shell access to your server, because Tools and Functions execute arbitrary Python code. Only grant this permission to users you would trust with direct access to your server. If you enable this permission for untrusted users, you are accepting the risk of arbitrary code execution on your host. For full details, see the [Plugin Security Warning](/features/extensibility/plugin/).
+:::danger ⚠️ 工具访问 = 等同 Root 级别的访问权限
+**将工具访问权限视为等同 root 的访问权限。** 授予用户创建或导入工具的访问权限等同于给予其服务器的 shell 访问权限，因为工具和函数会执行任意 Python 代码。只将此权限授予您信任能直接访问服务器的用户。如果您为不受信任的用户启用此权限，则是在接受在主机上任意执行代码的风险。有关完整详情，请参阅[插件安全警告](/features/extensibility/plugin/)。
 :::
 
-| **Skills Access** | Access the **Skills** workspace to create and manage reusable instruction sets. |
+| **技能访问** | 访问**技能**工作区以创建和管理可复用指令集。 |
 
-### 2. Sharing Permissions
-Controls what users can share with the community or make public.
+### 2. 共享权限
+控制用户可以与社区共享或公开的内容。
 
-| Permission | Description |
+| 权限 | 说明 |
 | :--- | :--- |
-| **Share Models** | **(Parent)** Ability to share models (make them accessible to others). |
-| **Public Models** | *(Requires Share Models)* Ability to make models publicly discoverable. |
-| **Share Knowledge** | **(Parent)** Ability to share knowledge bases. |
-| **Public Knowledge** | *(Requires Share Knowledge)* Ability to make knowledge bases public. |
-| **Share Prompts** | **(Parent)** Ability to share prompts. |
-| **Public Prompts** | *(Requires Share Prompts)* Ability to make prompts public. |
-| **Share Tools** | **(Parent)** Ability to share tools. |
-| **Public Tools** | *(Requires Share Tools)* Ability to make tools public. |
-| **Share Skills** | **(Parent)** Ability to share skills. |
-| **Public Skills** | *(Requires Share Skills)* Ability to make skills public. |
-| **Share Notes** | **(Parent)** Ability to share Notes. |
-| **Public Notes** | *(Requires Share Notes)* Ability to make Notes public. |
+| **共享模型** | **（父级）** 共享模型（使其他人可访问）的能力。 |
+| **公开模型** | *（需要共享模型）* 使模型可公开发现的能力。 |
+| **共享知识库** | **（父级）** 共享知识库的能力。 |
+| **公开知识库** | *（需要共享知识库）* 使知识库公开的能力。 |
+| **共享提示词** | **（父级）** 共享提示词的能力。 |
+| **公开提示词** | *（需要共享提示词）* 使提示词公开的能力。 |
+| **共享工具** | **（父级）** 共享工具的能力。 |
+| **公开工具** | *（需要共享工具）* 使工具公开的能力。 |
+| **共享技能** | **（父级）** 共享技能的能力。 |
+| **公开技能** | *（需要共享技能）* 使技能公开的能力。 |
+| **共享笔记** | **（父级）** 共享笔记的能力。 |
+| **公开笔记** | *（需要共享笔记）* 使笔记公开的能力。 |
 
-### 3. Chat Permissions
-Controls the features available to the user inside the chat interface.
+### 3. 对话权限
+控制对话界面中用户可用的功能。
 
-| Permission | Description |
+| 权限 | 说明 |
 | :--- | :--- |
-| **Chat Controls** | **(Parent)** Access to advanced chat settings. Required for Valves, System Prompt, and Parameters. |
-| **Model Valves** | *(Requires Chat Controls)* Access to model-specific configuration "valves". |
-| **System Prompt** | *(Requires Chat Controls)* Ability to edit the system prompt for a conversation. |
-| **Parameters** | *(Requires Chat Controls)* Ability to adjust LLM parameters (e.g., temperature, top_k). |
-| **File Upload** | Ability to upload files to the chat. |
-| **Delete Chat** | Ability to delete entire chat conversations. |
-| **Delete Message** | Ability to delete individual messages. |
-| **Edit Message** | Ability to edit messages. |
-| **Continue Response** | Ability to use the "Continue" feature for truncated responses. |
-| **Regenerate Response**| Ability to regenerate an AI response. |
-| **Rate Response** | Ability to thumbs up/down responses. |
-| **Share Chat** | Ability to generate a share link for a chat. |
-| **Export Chat** | Ability to export chat history. |
-| **Speech-to-Text (STT)**| Ability to use voice input. |
-| **Text-to-Speech (TTS)**| Ability to use voice output. |
-| **Audio Call** | Ability to use the real-time audio call feature. |
-| **Multiple Models** | Ability to select multiple models for a simultaneous response. |
-| **Temporary Chat** | **(Parent)** Ability to toggle "Temporary Chat" (incognito mode/history off). **Note:** Backend document parsing is disabled in this mode for privacy. |
-| **Enforced Temporary** | *(Requires Temporary Chat)* **Restricts** the user to *always* use temporary chat (history disabled). |
+| **对话控制** | **（父级）** 访问高级对话设置。Valves、系统提示词和参数所必需。 |
+| **模型 Valves** | *（需要对话控制）* 访问模型特定的配置"valves"。 |
+| **系统提示词** | *（需要对话控制）* 编辑对话系统提示词的能力。 |
+| **参数** | *（需要对话控制）* 调整 LLM 参数（如温度、top_k）的能力。 |
+| **文件上传** | 向对话上传文件的能力。 |
+| **删除对话** | 删除整个对话的能力。 |
+| **删除消息** | 删除单条消息的能力。 |
+| **编辑消息** | 编辑消息的能力。 |
+| **继续响应** | 对截断的响应使用"继续"功能的能力。 |
+| **重新生成响应** | 重新生成 AI 响应的能力。 |
+| **评价响应** | 为响应点赞/踩的能力。 |
+| **分享对话** | 生成对话分享链接的能力。 |
+| **导出对话** | 导出对话历史的能力。 |
+| **语音转文字（STT）** | 使用语音输入的能力。 |
+| **文字转语音（TTS）** | 使用语音输出的能力。 |
+| **音频通话** | 使用实时音频通话功能的能力。 |
+| **多模型** | 选择多个模型进行同步响应的能力。 |
+| **临时对话** | **（父级）** 切换"临时对话"（隐身模式/关闭历史记录）的能力。**注意：** 为保护隐私，此模式下后端文档解析被禁用。 |
+| **强制临时** | *（需要临时对话）* **限制**用户*始终*使用临时对话（禁用历史记录）。 |
 
-### 4. Features Permissions
-Controls access to broad platform capabilities.
+### 4. 功能权限
+控制对广泛平台能力的访问。
 
-| Permission | Description |
+| 权限 | 说明 |
 | :--- | :--- |
-| **API Keys** | Ability for non-admin users to generate Personal Access Tokens (API Keys) in User Settings. |
-| **Notes** | Access to the "Notes" feature. |
-| **Channels** | Access to the "Channels" feature. |
-| **Folders** | Ability to use folders for organizing chats. |
-| **Web Search** | Ability to use Web Search integration. |
-| **Image Generation** | Ability to use Image Generation tools. |
-| **Code Interpreter** | Ability to use the Python Code Interpreter. |
-| **Direct Tool Servers** | Ability to connect to custom Tool Servers in settings. |
-| **Memories** | Access to the Memories feature for persistent user context. |
-| **Automations** | Ability for non-admin users to access the Automations page and create, edit, run, pause, or delete their own scheduled automations. |
-| **Calendar** | Access to the Calendar feature for creating calendars, managing events, and viewing shared calendars. |
+| **API Keys** | 非管理员用户在用户设置中生成个人访问令牌（API Keys）的能力。 |
+| **笔记** | 访问"笔记"功能。 |
+| **频道** | 访问"频道"功能。 |
+| **文件夹** | 使用文件夹整理对话的能力。 |
+| **网络搜索** | 使用网络搜索集成的能力。 |
+| **图像生成** | 使用图像生成工具的能力。 |
+| **代码解释器** | 使用 Python 代码解释器的能力。 |
+| **直连工具服务器** | 在设置中连接自定义工具服务器的能力。 |
+| **记忆** | 访问用于持久用户上下文的记忆功能。 |
+| **自动化** | 非管理员用户访问自动化页面并创建、编辑、运行、暂停或删除自己的定时自动化的能力。 |
+| **日历** | 访问日历功能，用于创建日历、管理事件和查看共享日历。 |
 
-:::info Automations Permission Scope
+:::info 自动化权限范围
 
-For Automations access:
+对于自动化访问：
 
-1. **Permission Check for Non-Admins**: Users with the `user` role need **Features > Automations** (`features.automations`).
-2. **Admins Are Exempt from `features.automations`**: Users with the `admin` role can access Automations without that specific permission.
+1. **非管理员的权限检查**：拥有 `user` 角色的用户需要 **功能 > 自动化**（`features.automations`）权限。
+2. **管理员免于 `features.automations`**：拥有 `admin` 角色的用户无需该特定权限即可访问自动化。
 
-Default permission can be configured via [`USER_PERMISSIONS_FEATURES_AUTOMATIONS`](/reference/env-configuration#user_permissions_features_automations).
-
-:::
-
-:::info Calendar Permission Scope
-
-For Calendar access:
-
-1. **Permission Check for Non-Admins**: Users with the `user` role need **Features > Calendar** (`features.calendar`).
-2. **Admins Are Exempt from `features.calendar`**: Users with the `admin` role can access Calendar without that specific permission.
-
-Default permission can be configured via [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar).
+默认权限可通过 [`USER_PERMISSIONS_FEATURES_AUTOMATIONS`](/reference/env-configuration#user_permissions_features_automations) 进行配置。
 
 :::
 
-### 5. Settings Permissions
-Controls access to user settings areas.
+:::info 日历权限范围
 
-| Permission | Description |
+对于日历访问：
+
+1. **非管理员的权限检查**：拥有 `user` 角色的用户需要 **功能 > 日历**（`features.calendar`）权限。
+2. **管理员免于 `features.calendar`**：拥有 `admin` 角色的用户无需该特定权限即可访问日历。
+
+默认权限可通过 [`USER_PERMISSIONS_FEATURES_CALENDAR`](/reference/env-configuration#user_permissions_features_calendar) 进行配置。
+
+:::
+
+### 5. 设置权限
+控制对用户设置区域的访问。
+
+| 权限 | 说明 |
 | :--- | :--- |
-| **Interface Settings Access** | Ability to access and modify interface settings in user settings. |
+| **界面设置访问** | 在用户设置中访问和修改界面设置的能力。 |
 
-:::info API Keys Permission Scope
+:::info API Keys 权限范围
 
-For API key creation:
+对于 API Key 创建：
 
-1.  **Global Toggle Required**: The feature must be enabled globally in **Admin Settings > General > Enable API Keys**. If this is off, *no one* can generate keys.
-2.  **Permission Check for Non-Admins**: Users with the `user` role must have the `features.api_keys` permission.
-3.  **Admins Are Exempt from `features.api_keys`**: Users with the `admin` role can generate API keys when API keys are globally enabled, even without that specific permission.
-
-:::
-
-:::tip Best Practice: Create an Admin Group
-
-**To prepare for future permission changes, create a dedicated group for administrators:**
-
-1.  **Create an "Administrators" group** via **Admin Panel > Users > Groups**
-2.  **Add all admin users** to this group
-3.  **Grant user-facing feature permissions** to the group as needed (for example, API Keys for non-admin group members)
-
-This approach ensures that when new permissions are added that apply to admins, you can easily grant them to all administrators via the group rather than modifying individual user settings. It also provides fine-grained control over which admins have access to which features.
+1.  **需要全局开关**：必须在**管理设置 > 通用 > 启用 API Keys** 中全局启用该功能。如果此项关闭，*任何人*都无法生成密钥。
+2.  **非管理员的权限检查**：拥有 `user` 角色的用户必须具有 `features.api_keys` 权限。
+3.  **管理员免于 `features.api_keys`**：当 API Keys 全局启用时，拥有 `admin` 角色的用户可以生成 API Keys，无需该特定权限。
 
 :::
 
-## Environment Variables
+:::tip 最佳实践：创建管理员用户组
 
-While the UI is the recommended way to manage permissions, initial defaults can be set via environment variables. These are typically prefixed with `USER_PERMISSIONS_`.
+**为应对未来的权限变更，请为管理员创建专用用户组：**
+
+1.  通过**管理面板 > 用户 > 用户组****创建"管理员"用户组**
+2.  将所有管理员用户**添加到此用户组**
+3.  根据需要向该用户组**授予用户可见功能权限**（例如，为非管理员组成员授予 API Keys 权限）
+
+这种方式确保当新增的权限适用于管理员时，您可以通过用户组轻松授予所有管理员，而无需修改各个用户设置。它还提供了对哪些管理员可以访问哪些功能的细粒度控制。
+
+:::
+
+## 环境变量
+
+虽然推荐通过 UI 管理权限，但初始默认值可以通过环境变量设置。这些变量通常以 `USER_PERMISSIONS_` 为前缀。
 *   `ENABLE_IMAGE_GENERATION=True`
 *   `ENABLE_WEB_SEARCH=True`
 *   `USER_PERMISSIONS_CHAT_FILE_UPLOAD=True`
 
-See the [Environment Configuration](/reference/env-configuration) guide for a complete list of valid variables.
+有关有效变量的完整列表，请参阅[环境配置](/reference/env-configuration)指南。

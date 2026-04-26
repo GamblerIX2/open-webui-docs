@@ -1,189 +1,189 @@
 ---
 sidebar_position: 200
-title: "⭐ Features"
+title: "⭐ 功能特性"
 ---
 
-# What You Can Do with Open WebUI
+# 使用 Open WebUI 能做什么
 
-**One interface for every AI model. Private, extensible, and built for teams.**
+**面向所有 AI 模型的统一界面。私有、可扩展，专为团队构建。**
 
-Open WebUI replaces the patchwork of AI tools your team juggles daily - ChatGPT for writing, a separate app for image generation, another for document search, spreadsheets full of prompts nobody can find. Everything lives in one place: conversations, knowledge, tools, and the models that power them.
+Open WebUI 旨在取代团队日常繁杂的各种 AI 工具——用来写作的 ChatGPT、独立运行的图像生成应用、专用的文档搜索工具、以及塞满提示词却无人问津的电子表格。现在，所有内容都汇聚于此：对话、知识库、工具，以及驱动它们的各个模型。
 
 ---
 
-## 💬 Chat & Conversations
+## 💬 聊天与对话
 
-**Talk to any model, switch mid-conversation, and keep your context intact.**
+**与任何模型对话，中途无缝切换，并保持完整的上下文。**
 
-Your conversations are the core of Open WebUI. Chat with Ollama, OpenAI, Anthropic, or any OpenAI-compatible provider from a single interface. Attach files, search the web, execute code, and let the AI use tools - all without leaving the chat.
+对话是 Open WebUI 的核心。在一个统一界面中与 Ollama、OpenAI、Anthropic 或任何兼容 OpenAI 接口的提供商进行聊天。附带文件、搜索网页、执行代码、让 AI 调用工具——这一切都无需离开聊天界面。
 
 | | |
 | :--- | :--- |
-| 🔀 **Multi-model chats** | Run two models side-by-side and compare responses |
-| 📎 **File & image uploads** | Attach documents, images, and code for the AI to analyze |
-| 🔍 **Web search** | AI searches the web and cites sources in real time |
-| 🐍 **Code execution** | Run Python directly in the browser or via [Open Terminal](/features/open-terminal) |
-| 📝 **Message queue** | Keep typing while the AI responds - messages send automatically |
-| 🧠 **Memory** | The AI remembers facts about you across conversations |
-| 🗂️ **Folders, tags, pins** | Organize conversations however you work |
-| 🎤 **Voice & audio** | Speech-to-text, text-to-speech, hands-free voice & video calls |
-| 🖼️ **Image generation** | Create and edit images with DALL-E, Gemini, ComfyUI, and more |
-| ⏱️ **Automations** | Schedule prompts to run automatically on recurring schedules |
-| ✅ **Task management** | Models maintain structured task lists for multi-step workflows |
+| 🔀 **多模型聊天** | 并排运行两个模型并比较它们的响应 |
+| 📎 **文件与图像上传** | 附加文档、图像和代码供 AI 分析 |
+| 🔍 **网页搜索** | AI 实时搜索网页并引用信息来源 |
+| 🐍 **代码执行** | 直接在浏览器中运行 Python，或通过 [Open Terminal](/features/open-terminal) 运行 |
+| 📝 **消息队列** | 在 AI 回复时继续输入——消息将自动排队发送 |
+| 🧠 **记忆** | AI 能够跨对话记住关于你的事实 |
+| 🗂️ **文件夹、标签、固定** | 按照你的工作方式组织对话 |
+| 🎤 **语音与音频** | 语音转文本、文本转语音、免提语音与视频通话 |
+| 🖼️ **图像生成** | 使用 DALL-E、Gemini、ComfyUI 等生成和编辑图像 |
+| ⏱️ **自动化** | 安排提示词在设定的循环时间自动运行 |
+| ✅ **任务管理** | 模型可维护结构化任务列表以处理多步骤工作流 |
 
-[**Explore chat features →**](/features/chat-conversations/chat-features) · [**Audio →**](/features/chat-conversations/audio) · [**Image Generation →**](/features/chat-conversations/image-generation-and-editing)
-
----
-
-## 📚 Knowledge & RAG
-
-**Give your AI access to your documents - and let it find what matters.**
-
-Upload files, build knowledge bases, and let the AI retrieve exactly the information it needs. Choose between vector search (RAG) for large collections or full-content injection for precision. With native function calling, models autonomously search, browse, and synthesize across your entire knowledge base.
-
-| | |
-| :--- | :--- |
-| 📄 **9 vector databases** | ChromaDB and PGVector (officially maintained), plus community options: Qdrant, Milvus, Elasticsearch, and more |
-| 🔍 **Hybrid search** | BM25 + vector search with cross-encoder reranking |
-| 📑 **5 extraction engines** | Tika, Docling, Azure, Mistral OCR, custom loaders |
-| 🤖 **Agentic retrieval** | Models search and read your documents autonomously |
-| 📄 **Full context mode** | Inject entire documents - no chunking, no guessing |
-
-[**Learn about Knowledge →**](/features/workspace/knowledge)
+[**探索聊天功能 →**](/features/chat-conversations/chat-features) · [**音频 →**](/features/chat-conversations/audio) · [**图像生成 →**](/features/chat-conversations/image-generation-and-editing)
 
 ---
 
-## 🤖 Models & Agents
+## 📚 知识库与 RAG
 
-**Wrap any model with custom instructions, tools, and knowledge to build specialized agents.**
+**让你的 AI 访问文档——并让它自己找到重点。**
 
-Create a "Python Tutor" that always uses your style guide. A "Meeting Summarizer" with your company's template. A "Code Reviewer" with your linting rules baked in. Every agent is a configuration wrapper - pick any base model, bind knowledge, tools, and a system prompt.
+上传文件、构建知识库，让 AI 准确检索所需信息。在面对海量集合时选择向量搜索（RAG），或者在需要精确度时注入完整内容。借助原生的函数调用功能，模型能够自主在你的整个知识库中搜索、浏览并整合信息。
 
 | | |
 | :--- | :--- |
-| 🧩 **Model presets** | System prompts, tools, knowledge, and parameters in one package |
-| 🏷️ **Dynamic variables** | `{{ USER_NAME }}`, `{{ CURRENT_DATE }}` injected automatically |
-| 🔧 **Bound tools** | Force-enable specific tools per model |
-| 👥 **Access control** | Restrict models to specific users or groups |
-| 📊 **Global defaults** | Set baseline capabilities and parameters for all models |
+| 📄 **9 种向量数据库** | 官方维护 ChromaDB 和 PGVector，另有社区支持选项：Qdrant、Milvus、Elasticsearch 等 |
+| 🔍 **混合搜索** | BM25 + 带有交叉编码器重排的向量搜索 |
+| 📑 **5 种提取引擎** | Tika、Docling、Azure、Mistral OCR 以及自定义加载器 |
+| 🤖 **Agent 检索** | 模型自主搜索并阅读你的文档 |
+| 📄 **完整上下文模式** | 注入完整文档——无需切块，无需猜测 |
 
-[**Learn about Models →**](/features/workspace/models)
+[**了解知识库 →**](/features/workspace/knowledge)
 
 ---
 
-## 📝 Notes
+## 🤖 模型与 Agent
 
-**Write, think, and refine with AI by your side.**
+**用自定义指令、工具和知识库包装任何模型，打造专属 Agent。**
 
-A dedicated workspace for content that lives outside of any single conversation. Draft with a rich editor, use AI to rewrite text in place, and attach notes to any chat for precise context injection - no chunking, no vector search.
+创建一个始终遵循你的代码规范的“Python 导师”。一个带有公司模板的“会议总结助手”。一个内置代码检查规则的“代码审查员”。每个 Agent 都是一个配置包装器——只需选择任意基础模型，绑定知识库、工具和系统提示词即可。
 
 | | |
 | :--- | :--- |
-| ✍️ **Rich editor** | Markdown and Rich Text with a floating formatting toolbar |
-| 🤖 **AI Enhance** | Rewrite or improve selected text in place |
-| 📎 **Context injection** | Attach notes to any chat for full-fidelity context |
-| 🔍 **Agentic access** | Models can search, read, and update notes autonomously |
+| 🧩 **模型预设** | 将系统提示词、工具、知识库和参数打包为一体 |
+| 🏷️ **动态变量** | 自动注入 `{{ USER_NAME }}`、`{{ CURRENT_DATE }}` 等变量 |
+| 🔧 **绑定工具** | 为特定模型强制启用特定工具 |
+| 👥 **访问控制** | 限制特定用户或群组对模型的访问权限 |
+| 📊 **全局默认值** | 为所有模型设置基础能力和参数 |
 
-[**Learn about Notes →**](/features/notes)
+[**了解模型 →**](/features/workspace/models)
 
 ---
 
-## 💬 Channels
+## 📝 笔记 (Notes)
 
-**Where your team and AI think together, in real time.**
+**在 AI 的陪伴下写作、思考和完善。**
 
-Persistent, shared spaces where humans and AI models participate in the same conversation. Tag `@gpt-4o` to draft a plan, then tag `@claude` to critique it - your whole team sees both responses in one timeline.
+这是一个专门为不属于单一对话的内容提供的专用工作区。使用富文本编辑器起草，让 AI 原地重写文本，或将笔记作为精确的上下文注入任何聊天中——无需分块，无需向量检索。
 
 | | |
 | :--- | :--- |
-| 🤖 **@model tagging** | Summon any AI model into the conversation on demand |
-| 🧵 **Threads & reactions** | Replies, pins, and emoji reactions |
-| 🔒 **Access control** | Public, private, group-based, and direct message channels |
-| 🧠 **AI channel awareness** | Models search and synthesize across channels autonomously |
+| ✍️ **富文本编辑器** | 支持 Markdown 和富文本，带有悬浮格式化工具栏 |
+| 🤖 **AI 增强** | 原地重写或改进所选文本 |
+| 📎 **上下文注入** | 将笔记附加到任何聊天中，提供全保真的上下文 |
+| 🔍 **Agent 访问** | 模型可自主搜索、阅读并更新笔记 |
 
-[**Learn about Channels →**](/features/channels)
+[**了解笔记 →**](/features/notes)
+
+---
+
+## 💬 频道 (Channels)
+
+**你的团队和 AI 在此实时共同思考。**
+
+这是一个持久的共享空间，人类和 AI 模型可以在同一个对话中互动。呼叫 `@gpt-4o` 起草计划，然后呼叫 `@claude` 进行点评——你的整个团队可以在同一时间线上看到这两者的回复。
+
+| | |
+| :--- | :--- |
+| 🤖 **@模型 标签** | 随时按需将任何 AI 模型召唤到对话中 |
+| 🧵 **话题与互动** | 回复、固定和表情符号互动 |
+| 🔒 **访问控制** | 公共、私有、基于群组和直接消息频道 |
+| 🧠 **AI 频道感知** | 模型可自主跨频道搜索并综合信息 |
+
+[**了解频道 →**](/features/channels)
 
 ---
 
 ## ⚡ Open Terminal
 
-**Give your AI a real computer to work on.**
+**为你的 AI 提供一台真正的计算机去工作。**
 
-Connect a real computing environment to Open WebUI. The AI writes code, executes it, reads the output, fixes errors, and iterates - all from the chat. Handles files, installs packages, runs servers, and returns results.
+将一个真正的计算环境连接到 Open WebUI。AI 可以编写代码、执行代码、读取输出、修复错误并进行迭代——这一切都在聊天中完成。它可以处理文件、安装包、运行服务器并返回结果。
 
 | | |
 | :--- | :--- |
-| 🖥️ **Code execution** | Runs real commands and returns output |
-| 📁 **File browser** | Browse, upload, download, and edit files in the sidebar |
-| 🌐 **Website preview** | Live preview of web projects inside Open WebUI |
-| 🔒 **Isolation optional** | Docker container or bare metal |
+| 🖥️ **代码执行** | 运行真实的命令并返回输出 |
+| 📁 **文件浏览器** | 在侧边栏中浏览、上传、下载和编辑文件 |
+| 🌐 **网站预览** | 在 Open WebUI 中实时预览 Web 项目 |
+| 🔒 **可选的隔离机制** | Docker 容器或裸机 |
 
-[**Learn about Open Terminal →**](/features/open-terminal)
+[**了解 Open Terminal →**](/features/open-terminal)
 
 ---
 
-## 🔌 Extensibility
+## 🔌 扩展能力 (Extensibility)
 
-**Add any capability with Python tools, pipelines, MCP, or OpenAPI servers.**
+**通过 Python 工具、Pipelines、MCP 或 OpenAPI 服务器添加任何功能。**
 
-Open WebUI is a platform, not a locked-down product. Write Python tools that run inside the chat. Connect external services via OpenAPI or MCP. Build pipelines that filter, transform, or route every message. Import community-built extensions with one click.
+Open WebUI 是一个平台，而不是一个封闭的产品。编写可以在聊天中运行的 Python 工具。通过 OpenAPI 或 MCP 连接外部服务。构建可以过滤、转换或路由每条消息的 Pipeline。一键导入社区构建的扩展程序。
 
 | | |
 | :--- | :--- |
-| 🐍 **Tools & Functions** | Python scripts that run in the chat - built-in code editor included |
-| 🔧 **Pipelines** | Modular plugin framework for filters, providers, and custom logic |
-| 🔗 **MCP support** | Native Streamable HTTP for Model Context Protocol servers |
-| 🌐 **OpenAPI servers** | Auto-discover tools from any OpenAPI-compatible endpoint |
-| 📝 **Skills** | Markdown instruction sets that teach models how to approach tasks |
-| ⚡ **Prompts** | Slash-command templates with typed input variables and versioning |
+| 🐍 **工具与函数 (Tools & Functions)** | 在聊天中运行的 Python 脚本——包含内置代码编辑器 |
+| 🔧 **Pipelines** | 用于过滤器、提供商和自定义逻辑的模块化插件框架 |
+| 🔗 **MCP 支持** | 原生支持模型上下文协议 (Model Context Protocol) 服务器的流式 HTTP |
+| 🌐 **OpenAPI 服务器** | 自动发现并接入任何兼容 OpenAPI 端点的工具 |
+| 📝 **技能 (Skills)** | Markdown 指令集，教导模型如何处理特定任务 |
+| ⚡ **提示词 (Prompts)** | 带有类型化输入变量和版本控制的斜杠命令模板 |
 
-[**Learn about Extensibility →**](/features/extensibility)
+[**了解扩展能力 →**](/features/extensibility)
 
 ---
 
-## 🔐 Authentication & Access
+## 🔐 认证与访问
 
-**Control who gets in, what they can do, and how it connects to your identity stack.**
+**控制谁能进入、他们能做什么，以及如何连接到你的身份系统。**
 
-Open WebUI is multi-user from day one. Define roles, create user groups, set per-model access, and integrate with your identity provider. From a solo install to an organization with thousands of seats.
+Open WebUI 从第一天起就支持多用户。定义角色、创建用户组、设置每个模型的访问权限，并与你的身份提供商集成。从单人安装到数千席位的组织均可适用。
 
 | | |
 | :--- | :--- |
-| 👥 **RBAC** | Roles, groups, and per-resource permissions |
-| 🔐 **SSO/OIDC/LDAP** | Federated authentication with any identity provider |
-| 📋 **SCIM 2.0** | Automated user and group provisioning |
-| 🔑 **API Keys** | Programmatic access for scripts, bots, and integrations |
+| 👥 **RBAC** | 角色、组和针对特定资源的权限控制 |
+| 🔐 **SSO/OIDC/LDAP** | 与任何身份提供商联合认证 |
+| 📋 **SCIM 2.0** | 自动化的用户和群组预配 |
+| 🔑 **API Keys** | 脚本、机器人和集成的编程式访问 |
 
-[**Learn about Authentication & Access →**](/features/authentication-access)
+[**了解认证与访问 →**](/features/authentication-access)
 
 ---
 
-## 🔧 Administration
+## 🔧 管理 (Administration)
 
-**Monitor usage, evaluate models, and communicate with your users.**
+**监控使用情况、评估模型，并与你的用户进行沟通。**
 
 | | |
 | :--- | :--- |
-| 📊 **Analytics** | Usage dashboards with message volume, token consumption, and cost tracking |
-| 🏆 **Evaluation** | Model arena, A/B testing, and ELO-based leaderboards |
-| 📢 **Banners** | Customizable system-wide announcements |
-| 🔔 **Webhooks** | Notifications for sign-ups, chat completion, and external integrations |
+| 📊 **Analytics (分析)** | 提供消息量、Token 消耗和费用跟踪的使用情况仪表板 |
+| 🏆 **Evaluation (评估)** | 模型竞技场、A/B 测试和基于 ELO 的排行榜 |
+| 📢 **Banners (公告横幅)** | 可定制的全系统公告 |
+| 🔔 **Webhooks** | 用于注册、对话完成和外部集成的通知 |
 
-[**Learn about Administration →**](/features/administration)
+[**了解管理功能 →**](/features/administration)
 
 ---
 
-## 🏗️ Deploy Anywhere
+## 🏗️ 随处部署
 
-**Docker, Kubernetes, pip, bare metal - with horizontal scaling and production observability.**
+**Docker、Kubernetes、pip、裸机——支持横向扩展与生产级可观测性。**
 
 | | |
 | :--- | :--- |
-| 🐳 **Docker & Compose** | One-command deploy with GPU support |
-| ☸️ **Kubernetes & Helm** | Production-ready orchestration |
-| 📦 **pip install** | `pip install open-webui && open-webui serve` |
-| ☁️ **Cloud storage** | S3, GCS, Azure Blob for stateless instances |
-| 📊 **OpenTelemetry** | Traces, metrics, and logs to your observability stack |
-| ⚖️ **Horizontal scaling** | Redis-backed sessions, multi-worker, multi-node |
+| 🐳 **Docker & Compose** | 支持 GPU 的单命令部署 |
+| ☸️ **Kubernetes & Helm** | 生产级编排方案 |
+| 📦 **pip 安装** | `pip install open-webui && open-webui serve` |
+| ☁️ **云存储** | 适用于无状态实例的 S3、GCS、Azure Blob |
+| 📊 **OpenTelemetry** | 链路追踪、指标和日志输出至你的可观测性堆栈 |
+| ⚖️ **横向扩展** | 由 Redis 支持的会话、多 worker、多节点 |
 
-[**Quick Start →**](/getting-started/quick-start) · [**Advanced Topics →**](/getting-started/advanced-topics)
+[**快速开始 →**](/getting-started/quick-start) · [**高级主题 →**](/getting-started/advanced-topics)

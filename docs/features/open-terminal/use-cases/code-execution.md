@@ -1,83 +1,83 @@
 ---
 sidebar_position: 1
-title: "Code Execution"
+title: "代码执行"
 ---
 
-# Code Execution
+# 代码执行
 
-Open Terminal allows the AI to write, execute, and debug code in real time. It handles the full cycle — writing the script, running it, reading errors, and iterating until the result is correct.
-
----
-
-## Data visualization
-
-> **You:** Create a chart showing the top 10 most populated countries.
-
-The AI writes a Python script, executes it, and saves the output. Results are available in the file browser.
-
-![AI creating and running a Python script with output](/images/open-terminal-ai-code-execution.png)
+Open Terminal 让 AI 能够实时编写、执行和调试代码。它处理完整的循环——编写脚本、运行它、读取错误，并不断迭代，直到得到正确结果。
 
 ---
 
-## Downloading and processing files
+## 数据可视化
 
-> **You:** Download the images from this webpage and sort them by size.
+> **你：** 创建一张展示全球人口最多的前 10 个国家的图表。
 
-The AI installs required packages, writes the script, downloads files, and organizes them:
+AI 编写 Python 脚本、执行它并保存输出。结果在文件浏览器中可用。
 
-![AI installing a library and running a script](/images/open-terminal-ai-install-run.png)
+![AI 创建并运行带输出的 Python 脚本](/images/open-terminal-ai-code-execution.png)
 
-:::tip Automatic dependency installation
-In Docker mode, the AI can install packages as needed. If a task requires a library that isn't pre-installed, it installs it automatically before proceeding.
+---
+
+## 下载和处理文件
+
+> **你：** 从这个网页下载图片并按大小排序。
+
+AI 安装所需软件包、编写脚本、下载文件并整理：
+
+![AI 安装库并运行脚本](/images/open-terminal-ai-install-run.png)
+
+:::tip 自动安装依赖
+在 Docker 模式下，AI 可以按需安装软件包。如果一项任务需要未预装的库，它会在执行之前自动安装。
 :::
 
 ---
 
-## Self-correcting errors
+## 自动纠错
 
-When code fails, the AI reads the error output and adjusts:
+代码失败时，AI 读取错误输出并进行调整：
 
-> **You:** Scrape all the article titles from this news website.
+> **你：** 抓取这个新闻网站的所有文章标题。
 
-The AI writes a scraper, hits an unexpected page layout, reads the `AttributeError` traceback, adjusts the CSS selectors, and re-runs successfully.
+AI 编写一个爬虫程序，遇到意外的页面布局，读取 `AttributeError` 跟踪，调整 CSS 选择器，并成功重运行。
 
-![AI detecting an error, fixing the script, and running it successfully](/images/open-terminal-ai-debug-fix.png)
-
----
-
-## Multi-step project scaffolding
-
-> **You:** Create a to-do list app with a web interface and a database.
-
-The AI:
-1. Creates project files (HTML, CSS, JavaScript, Python backend)
-2. Installs dependencies
-3. Sets up the database
-4. Starts the server
-5. Verifies the result in the web preview
-
-![AI listing files and describing the project structure](/images/open-terminal-ai-file-listing.png)
-
-
+![AI 检测到错误、修复脚本并成功运行](/images/open-terminal-ai-debug-fix.png)
 
 ---
 
-## System queries
+## 多步项目脆核
 
-> **You:** Check what's using the most disk space.
+> **你：** 创建一个带 Web 界面和数据库的待办事应用。
 
-![AI analyzing disk usage and identifying large files](/images/open-terminal-ai-disk-usage.png)
+AI：
+1. 创建项目文件（HTML、CSS、JavaScript、Python 后端）
+2. 安装依赖
+3. 设置数据库
+4. 启动服务器
+5. 在 Web 预览中验证结果
+
+![AI 列出文件并描述项目结构](/images/open-terminal-ai-file-listing.png)
+
+
 
 ---
 
-## Available languages
+## 系统查询
 
-| Language | Status |
+> **你：** 检查谁占用了最多的磁盘空间。
+
+![AI 分析磁盘使用情况并定位大文件](/images/open-terminal-ai-disk-usage.png)
+
+---
+
+## 可用语言
+
+| 语言 | 状态 |
 | :--- | :--- |
-| Python | Pre-installed |
-| JavaScript (Node.js) | Pre-installed |
-| Bash | Always available |
-| Ruby | Pre-installed |
+| Python | 预装 |
+| JavaScript (Node.js) | 预装 |
+| Bash | 始终可用 |
+| Ruby | 预装 |
 | C / C++ | Compiler pre-installed |
 
 Additional languages (Rust, Go, Java, etc.) can be installed on the fly.

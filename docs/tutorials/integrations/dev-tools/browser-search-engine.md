@@ -1,34 +1,34 @@
 ---
 sidebar_position: 50
-title: "Browser Search Engine"
+title: "浏览器搜索引擎"
 ---
 
-# Browser Search Engine Integration
+# 浏览器搜索引擎集成
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程由社区贡献，不属于 Open WebUI 团队官方支持范围。内容仅用于演示如何根据你的特定场景自定义 Open WebUI。想参与贡献？请查看贡献教程。
 
 :::
 
-Open WebUI allows you to integrate directly into your web browser. This tutorial will guide you through the process of setting up Open WebUI as a custom search engine, enabling you to execute queries easily from your browser's address bar.
+Open WebUI 支持直接集成到浏览器。本教程将指导你把 Open WebUI 配置为自定义搜索引擎，让你可以直接在地址栏中发起查询。
 
-## Setting Up Open WebUI as a Search Engine
+## 将 Open WebUI 配置为搜索引擎
 
-### Prerequisites
+### 前置条件
 
-Before you begin, ensure that:
+开始前请确认：
 
-- You have Chrome or another supported browser installed.
-- The `WEBUI_URL` environment variable is set correctly, either using Docker environment variables or in the `.env` file as specified in the [Getting Started](https://docs.openwebui.com/reference/env-configuration) guide.
+- 你已安装 Chrome 或其他受支持浏览器。
+- `WEBUI_URL` 环境变量已正确设置，可通过 Docker 环境变量或 `.env` 文件配置，参见[环境变量指南](https://docs.openwebui.com/reference/env-configuration)。
 
-### Step 1: Set the WEBUI_URL Environment Variable
+### 第 1 步：设置 WEBUI_URL 环境变量
 
-Setting the `WEBUI_URL` environment variable ensures your browser knows where to direct queries.
+设置 `WEBUI_URL` 能让浏览器知道查询请求应发送到哪里。
 
-#### Using Docker Environment Variables
+#### 使用 Docker 环境变量
 
-If you are running Open WebUI using Docker, you can set the environment variable in your `docker run` command:
+如果你通过 Docker 运行 Open WebUI，可在 `docker run` 命令中设置该环境变量：
 
 ```bash
 docker run -d \
@@ -41,45 +41,45 @@ docker run -d \
   ghcr.io/open-webui/open-webui:main
 ```
 
-Alternatively, you can add the variable to your `.env` file:
+你也可以把该变量写入 `.env` 文件：
 
 ```plaintext
 WEBUI_URL=https://<your-open-webui-url>
 ```
 
-### Step 2: Add Open WebUI as a Custom Search Engine
+### 第 2 步：将 Open WebUI 添加为自定义搜索引擎
 
-### For Chrome
+### 在 Chrome 中配置
 
-1. Open Chrome and navigate to **Settings**.
-2. Select **Search engine** from the sidebar, then click on **Manage search engines**.
-3. Click **Add** to create a new search engine.
-4. Fill in the details as follows:
-    - **Search engine**: Open WebUI Search
-    - **Keyword**: webui (or any keyword you prefer)
-    - **URL with %s in place of query**:
+1. 打开 Chrome 并进入 **Settings**。
+2. 在侧栏选择 **Search engine**，点击 **Manage search engines**。
+3. 点击 **Add** 新建搜索引擎。
+4. 按如下填写：
+  - **Search engine**：Open WebUI Search
+  - **Keyword**：webui（或你喜欢的任意关键词）
+  - **URL with %s in place of query**：
 
       ```txt
       https://<your-open-webui-url>/?q=%s
       ```
 
-5. Click **Add** to save the configuration.
+5. 点击 **Add** 保存配置。
 
-### For Firefox
+### 在 Firefox 中配置
 
-1. Go to Open WebUI in Firefox.
-2. Expand the address bar by clicking on it.
-3. Click the plus icon that is enclosed in a green circle at the bottom of the expanded address bar. This adds Open WebUI's search to the search engines in your preferences.
+1. 在 Firefox 中打开 Open WebUI。
+2. 点击地址栏展开搜索区域。
+3. 点击展开后底部绿色圆圈中的加号图标，将 Open WebUI 搜索添加到浏览器搜索引擎列表。
 
-Alternatively:
+或使用以下方式：
 
-1. Go to Open WebUI in Firefox.
-2. Right-click on the address bar.
-3. Select "Add Open WebUI" (or similar) from the context menu.
+1. 在 Firefox 中打开 Open WebUI。
+2. 右键地址栏。
+3. 在菜单中选择 “Add Open WebUI”（或类似选项）。
 
-### Optional: Using Specific Models
+### 可选：指定模型
 
-If you wish to utilize a specific model for your search, modify the URL format to include the model ID:
+如果你希望搜索时使用指定模型，可将模型 ID 加入 URL：
 
 ```txt
 https://<your-open-webui-url>/?models=<model_id>&q=%s
@@ -87,24 +87,24 @@ https://<your-open-webui-url>/?models=<model_id>&q=%s
 
 :::note
 
-**Note:** The model ID will need to be URL-encoded. Special characters like spaces or slashes need to be encoded (e.g., `my model` becomes `my%20model`).
+**说明：** 模型 ID 需要进行 URL 编码。空格、斜杠等特殊字符都要编码（例如 `my model` 需写成 `my%20model`）。
 
 :::
 
-## Example Usage
+## 使用示例
 
-Once the search engine is set up, you can perform searches directly from the address bar. Simply type your chosen keyword followed by your query:
+配置完成后，你可以直接在地址栏发起搜索。输入你设置的关键词，再加查询内容：
 
 ```txt
 webui your search query
 ```
 
-This command will redirect you to the Open WebUI interface with your search results.
+该命令会跳转到 Open WebUI 并显示对应搜索结果。
 
-## Troubleshooting
+## 故障排查
 
-If you encounter any issues, check the following:
+如果遇到问题，请检查：
 
-- Ensure the `WEBUI_URL` is correctly configured and points to a valid Open WebUI instance.
-- Double-check that the search engine URL format is correctly entered in your browser settings.
-- Confirm your internet connection is active and that the Open WebUI service is running smoothly.
+- 确认 `WEBUI_URL` 配置正确，并指向可访问的 Open WebUI 实例。
+- 再次核对浏览器中的搜索引擎 URL 格式是否填写正确。
+- 确认网络连接正常，且 Open WebUI 服务正在运行。

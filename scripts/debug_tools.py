@@ -1,0 +1,7 @@
+content = open('d:/Github/open-webui-docs/docs/features/extensibility/plugin/tools/index.mdx', encoding='utf-8').read()
+idx = content.find('Tools are the various ways')
+print(repr(content[idx-5:idx+200]))
+idx2 = content.find('How to Install')
+print(repr(content[idx2-5:idx2+100]))
+idx3 = content.find('How to Use Tools')
+print(repr(content[idx3-5:idx3+100]))

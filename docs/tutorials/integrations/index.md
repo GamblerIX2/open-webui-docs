@@ -1,51 +1,51 @@
 ---
 sidebar_position: 0
-title: "Integrations"
+title: "集成"
 ---
 
-# 🔌 Integration Tutorials
+# 🔌 集成教程
 
-**Connect Open WebUI to LLM providers, developer tools, monitoring platforms, and external services.**
+**将 Open WebUI 连接到 LLM 提供商、开发工具、监控平台与外部服务。**
 
-These community-contributed guides cover specific integration scenarios with step-by-step instructions. For authentication and SSO integrations, see [Authentication & SSO](../auth-sso).
+这些由社区贡献的指南覆盖了具体集成场景，并提供分步说明。关于认证与 SSO 集成，请参阅 [认证与 SSO](../auth-sso)。
 
 ---
 
-### LLM Providers
+### LLM 提供商
 
-| Tutorial | What you'll achieve | Details |
+| 教程 | 你将完成什么 | 详情 |
 |----------|-------------------|---------|
-| [Azure OpenAI (Entra ID)](./llm-providers/azure-openai) | Keyless authentication to Azure OpenAI via Entra ID | 👤 Admin · ⏱️ 30–60 min |
-| [DeepSeek R1 Dynamic](./llm-providers/deepseekr1-dynamic) | Run the full 671B DeepSeek-R1 model via llama.cpp | 👤 Developer · ⏱️ 45 min |
-| [Intel GPU (IPEX-LLM)](./llm-providers/ipex_llm) | Accelerate Ollama with IPEX-LLM on Intel GPUs | 👤 Developer · ⏱️ 20 min |
+| [Azure OpenAI（Entra ID）](./llm-providers/azure-openai) | 通过 Entra ID 对 Azure OpenAI 实现无密钥认证 | 👤 管理员 · ⏱️ 30–60 分钟 |
+| [DeepSeek R1 Dynamic](./llm-providers/deepseekr1-dynamic) | 通过 llama.cpp 运行完整 671B DeepSeek-R1 模型 | 👤 开发者 · ⏱️ 45 分钟 |
+| [Intel GPU（IPEX-LLM）](./llm-providers/ipex_llm) | 在 Intel GPU 上使用 IPEX-LLM 加速 Ollama | 👤 开发者 · ⏱️ 20 分钟 |
 
 ---
 
-### Monitoring & Observability
+### 监控与可观测性
 
-| Tutorial | What you'll achieve | Details |
+| 教程 | 你将完成什么 | 详情 |
 |----------|-------------------|---------|
-| [Helicone](./monitoring/helicone) | Log and monitor LLM API calls, costs, and latency | 👤 Admin · ⏱️ 15 min |
-| [Langfuse](./monitoring/langfuse) | Trace LLM usage and evaluate prompt quality | 👤 Admin · ⏱️ 20 min · ⚠️ Outdated |
+| [Helicone](./monitoring/helicone) | 记录并监控 LLM API 调用、成本与延迟 | 👤 管理员 · ⏱️ 15 分钟 |
+| [Langfuse](./monitoring/langfuse) | 追踪 LLM 使用情况并评估提示词质量 | 👤 管理员 · ⏱️ 20 分钟 · ⚠️ 可能过时 |
 
 ---
 
-### Developer Tools
+### 开发工具
 
-| Tutorial | What you'll achieve | Details |
+| 教程 | 你将完成什么 | 详情 |
 |----------|-------------------|---------|
-| [Continue.dev](./dev-tools/continue-dev) | Use Open WebUI as a backend for the Continue VS Code extension | 👤 Developer · ⏱️ 15 min |
-| [Jupyter Notebooks](./dev-tools/jupyter) | Run code and create notebooks via Open WebUI's code interpreter | 👤 Developer · ⏱️ 20 min |
-| [iTerm2](./dev-tools/iterm2) | Query Open WebUI models from your macOS terminal | 👤 Developer · ⏱️ 10 min |
-| [Firefox Sidebar](./dev-tools/firefox-sidebar) | Pin Open WebUI in Firefox's built-in AI sidebar | 👤 User · ⏱️ 5 min |
-| [Browser Search Engine](./dev-tools/browser-search-engine) | Add Open WebUI as a custom browser search engine | 👤 User · ⏱️ 5 min |
+| [Continue.dev](./dev-tools/continue-dev) | 将 Open WebUI 作为 Continue VS Code 扩展的后端 | 👤 开发者 · ⏱️ 15 分钟 |
+| [Jupyter Notebooks](./dev-tools/jupyter) | 通过 Open WebUI 代码解释器运行代码并创建 Notebook | 👤 开发者 · ⏱️ 20 分钟 |
+| [iTerm2](./dev-tools/iterm2) | 在 macOS 终端中调用 Open WebUI 模型 | 👤 开发者 · ⏱️ 10 分钟 |
+| [Firefox Sidebar](./dev-tools/firefox-sidebar) | 将 Open WebUI 固定到 Firefox 内置 AI 侧栏 | 👤 用户 · ⏱️ 5 分钟 |
+| [Browser Search Engine](./dev-tools/browser-search-engine) | 将 Open WebUI 添加为自定义浏览器搜索引擎 | 👤 用户 · ⏱️ 5 分钟 |
 
 ---
 
-### External Services
+### 外部服务
 
-| Tutorial | What you'll achieve | Details |
+| 教程 | 你将完成什么 | 详情 |
 |----------|-------------------|---------|
-| [Notion (MCP)](./mcp-notion) | Connect Notion via Model Context Protocol | 👤 User · ⏱️ 5 min |
-| [OneDrive & SharePoint](./onedrive-sharepoint) | Pull Microsoft 365 documents into Open WebUI | 👤 Admin · ⏱️ 30 min |
-| [LibreTranslate](./libre-translate) | Add self-hosted translation capabilities | 👤 Admin · ⏱️ 15 min |
+| [Notion（MCP）](./mcp-notion) | 通过 Model Context Protocol 连接 Notion | 👤 用户 · ⏱️ 5 分钟 |
+| [OneDrive 与 SharePoint](./onedrive-sharepoint) | 将 Microsoft 365 文档接入 Open WebUI | 👤 管理员 · ⏱️ 30 分钟 |
+| [LibreTranslate](./libre-translate) | 增加自托管翻译能力 | 👤 管理员 · ⏱️ 15 分钟 |

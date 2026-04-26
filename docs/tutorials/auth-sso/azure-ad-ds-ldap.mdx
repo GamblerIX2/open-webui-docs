@@ -3,68 +3,66 @@ title: "Azure AD LDAP"
 ---
 
 :::warning
-
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
-
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 :::
 
-This guide explains how to integrate Open WebUI with Azure AD Domain Services (AAD DS) for secure LDAP (LDAPS) authentication.
+本指南说明如何将 Open WebUI 与 Azure AD 域服务（AAD DS）集成，实现安全 LDAP（LDAPS）认证。
 
-## 1. Prerequisites
+## 1. 前提条件
 
-| Item                | Description                                                              |
+| 条目 | 描述 |
 | ------------------- | ------------------------------------------------------------------------ |
-| **Azure Account**   | An account with permissions to deploy AAD DS and modify NSGs. |
-| **OpenSSL 3.x**     | Required to generate a self-signed PFX for testing. |
-| **Domain Name**     | We'll use `openwebui.onmicrosoft.com` as an example (your AAD primary domain). |
-| **Open WebUI Server** | A running instance of Open WebUI, deployed via Docker or bare-metal. |
+| **Azure 账户** | 具有部署 AAD DS 和修改 NSG 权限的账户。 |
+| **OpenSSL 3.x** | 用于生成自签名 PFX 以进行测试。 |
+| **域名** | 示例使用 `openwebui.onmicrosoft.com`（您的 AAD 主域名）。 |
+| **Open WebUI 服务器** | 正在运行的 Open WebUI 实例，通过 Docker 或裸机部署。 |
 
 :::caution
 
-In a production environment, use a PFX certificate issued by a public Certificate Authority (CA) and set `LDAP_VALIDATE_CERT=true`.
+在生产环境中，请使用公共证书颁发机构（CA）颁发的 PFX 证书，并设置 `LDAP_VALIDATE_CERT=true`。
 
 :::
 
-## 2. Deploy Azure AD Domain Services
+## 2. 部署 Azure AD 域服务
 
-1. In the Azure Portal, search for and select **Azure AD Domain Services**.
-2. Click **Create**.
-3. Select your **Subscription** and **Resource Group** (or create a new one).
-4. For **DNS domain name**, enter your domain (e.g., `openwebui.onmicrosoft.com`). This value will be used for `LDAP_SEARCH_BASE` later.
-5. Keep the default settings for **SKU**, **Replica Set**, etc., and click **Review + create**.
+1. 在 Azure 门户中，搜索并选择 **Azure AD Domain Services**。
+2. 点击 **Create（创建）**。
+3. 选择您的**订阅**和**资源组**（或创建新的）。
+4. 在 **DNS domain name（DNS 域名）** 中输入您的域名（例如 `openwebui.onmicrosoft.com`）。此值稍后将用于 `LDAP_SEARCH_BASE`。
+5. 保留 **SKU**、**Replica Set** 等的默认设置，点击 **Review + create（审查 + 创建）**。
 
-    ![Azure AD DS Creation - Basics Tab](/images/tutorials/ldap/azure-ad-ds-create-basics.png)
+    ![Azure AD DS 创建 - 基本信息标签](/images/tutorials/ldap/azure-ad-ds-create-basics.png)
 
-6. After deployment, navigate to the Azure AD DS blade and note the **Virtual network / Subnet**. If your Open WebUI server is not in the same VNet, you must create an NSG rule to allow traffic on port 636.
+6. 部署完成后，导航至 Azure AD DS 页面，记录**虚拟网络/子网**。如果您的 Open WebUI 服务器不在同一 VNet 中，则必须创建 NSG 规则以允许端口 636 上的流量。
 
-## 3. Find the Secure LDAP External IP
+## 3. 查找安全 LDAP 外部 IP
 
-1. Navigate to your AAD DS Blade → **Overview**.
-2. Under **Secure LDAP**, find the **External IP addresses**.
-3. This IP (e.g., `1.222.222.222`) will be your `LDAP_SERVER_HOST` value in the `.env` file.
+1. 导航至 AAD DS 页面 → **Overview（概述）**。
+2. 在 **Secure LDAP（安全 LDAP）** 下，查找**外部 IP 地址**。
+3. 该 IP（例如 `1.222.222.222`）将是 `.env` 文件中的 `LDAP_SERVER_HOST` 值。
 
-    ![Find Secure LDAP External IP](/images/tutorials/ldap/azure-ad-ds-secure-ldap-ip.png)
+    ![查找安全 LDAP 外部 IP](/images/tutorials/ldap/azure-ad-ds-secure-ldap-ip.png)
 
-## 4. Enable Secure LDAP (LDAPS)
+## 4. 启用安全 LDAP（LDAPS）
 
-### 4.1. Certificate (PFX) Requirements
+### 4.1. 证书（PFX）要求
 
-| Attribute                  | Requirement                                                              |
+| 属性 | 要求 |
 | -------------------------- | ------------------------------------------------------------------------ |
-| **Format**                 | PKCS #12 (.pfx)                                                          |
-| **Encryption**             | RSA 2048 / SHA-256                                                       |
-| **Subject Alternative Name (SAN)** | Must include wildcards: `*.{your_domain}.onmicrosoft.com` and `{your_domain}.onmicrosoft.com`. |
-| **Password**               | Required for upload. Make sure to remember it. |
+| **格式** | PKCS #12 (.pfx) |
+| **加密** | RSA 2048 / SHA-256 |
+| **主题备用名称（SAN）** | 必须包含通配符：`*.{your_domain}.onmicrosoft.com` 和 `{your_domain}.onmicrosoft.com`。 |
+| **密码** | 上传时需要，请务必记住。 |
 
 :::info
 
-For production, we recommend using Let’s Encrypt or another public CA. The self-signed process below is for testing purposes only.
+在生产环境中，我们建议使用 Let's Encrypt 或其他公共 CA。以下自签名流程仅用于测试目的。
 
 :::
 
-### 4.2. Generate a Wildcard PFX with OpenSSL (for testing)
+### 4.2. 使用 OpenSSL 生成通配符 PFX（用于测试）
 
-1. **Create `openssl_wildcard.cnf`:**
+1. **创建 `openssl_wildcard.cnf`：**
 
     ```ini
     [ req ]
@@ -99,67 +97,67 @@ For production, we recommend using Let’s Encrypt or another public CA. The sel
     DNS.1 = *.{your_domain}.onmicrosoft.com
     DNS.2 = {your_domain}.onmicrosoft.com
     ```
-    *Replace `{your_domain}` with your actual domain.*
+    *将 `{your_domain}` 替换为您的实际域名。*
 
-2. **Generate Key & Certificate:**
+2. **生成密钥和证书：**
 
     ```bash
-    # Generate a private key
+    # 生成私钥
     openssl genrsa -out privatekey_wildcard.key 2048
 
-    # Create a Certificate Signing Request (CSR)
+    # 创建证书签名请求（CSR）
     openssl req -new -key privatekey_wildcard.key \
       -out wildcard.csr -config openssl_wildcard.cnf
 
-    # Create a self-signed certificate (valid for 365 days)
+    # 创建自签名证书（有效期 365 天）
     openssl x509 -req -days 365 -in wildcard.csr \
       -signkey privatekey_wildcard.key \
       -out certificate_wildcard.crt \
       -extensions v3_req -extfile openssl_wildcard.cnf
 
-    # Package into a PFX file
+    # 打包为 PFX 文件
     openssl pkcs12 -export -out certificate_wildcard.pfx \
       -inkey privatekey_wildcard.key -in certificate_wildcard.crt
     ```
 
-3. **Upload to AAD DS:**
-    1. Navigate to your AAD DS Blade → **Secure LDAP**.
-    2. Click the **Upload certificate** button, select `certificate_wildcard.pfx`, and enter the password.
-    3. Toggle **Secure LDAP** to **Enabled** and click **Save**.
+3. **上传到 AAD DS：**
+    1. 导航至 AAD DS 页面 → **Secure LDAP（安全 LDAP）**。
+    2. 点击 **Upload certificate（上传证书）** 按钮，选择 `certificate_wildcard.pfx`，并输入密码。
+    3. 将 **Secure LDAP** 切换为 **Enabled（已启用）** 并点击 **Save（保存）**。
 
-    ![Enable Secure LDAP](/images/tutorials/ldap/azure-ad-ds-ldaps-enabled.png)
+    ![启用安全 LDAP](/images/tutorials/ldap/azure-ad-ds-ldaps-enabled.png)
 
-## 5. Configure Network Security Group (NSG)
+## 5. 配置网络安全组（NSG）
 
-| Setting        | Example Value |
+| 设置 | 示例值 |
 | -------------- | ------------- |
-| **Name**       | `Allow-LDAPS` |
-| **Priority**   | `310`         |
-| **Source**     | `Any`         |
-| **Destination Port** | `636`   |
-| **Protocol**   | `TCP`         |
-| **Action**     | `Allow`       |
+| **名称** | `Allow-LDAPS` |
+| **优先级** | `310` |
+| **源** | `Any` |
+| **目标端口** | `636` |
+| **协议** | `TCP` |
+| **操作** | `Allow` |
 
-![NSG Inbound Rule for LDAPS](/images/tutorials/ldap/azure-nsg-inbound-rule-ldaps.png)
+![LDAPS 的 NSG 入站规则](/images/tutorials/ldap/azure-nsg-inbound-rule-ldaps.png)
 
 :::warning
 
-If allowing access from the internet, restrict the source IP range to the minimum required for security. If Open WebUI is in the same VNet, this step can be skipped.
+如果允许从互联网访问，请将源 IP 范围限制为安全所需的最小范围。如果 Open WebUI 在同一 VNet 中，可以跳过此步骤。
 
 :::
 
-## 6. Create a Service Account in Entra ID
+## 6. 在 Entra ID 中创建服务账户
 
-1. In the Azure Portal, navigate to **Entra ID** → **Users** → **New user**.
-2. Set the username (e.g., `ldap@{your_domain}.onmicrosoft.com`).
-3. Set a strong password and uncheck **User must change password at next sign-in**.
-4. Go to the **Groups** tab and add the user to the **AAD DC Administrators** group (required for querying all users).
+1. 在 Azure 门户中，导航至 **Entra ID** → **Users（用户）** → **New user（新建用户）**。
+2. 设置用户名（例如 `ldap@{your_domain}.onmicrosoft.com`）。
+3. 设置强密码并取消选中 **User must change password at next sign-in（用户必须在下次登录时更改密码）**。
+4. 转到 **Groups（群组）** 标签，将用户添加到 **AAD DC Administrators** 群组（查询所有用户所必需）。
 
-    ![Create Entra ID Service Account](/images/tutorials/ldap/entra-id-create-service-account.png)
+    ![创建 Entra ID 服务账户](/images/tutorials/ldap/entra-id-create-service-account.png)
 
-## 7. Configure Open WebUI Environment Variables (.env)
+## 7. 配置 Open WebUI 环境变量（.env）
 
-Here is an example configuration for your `.env` file:
+以下是您的 `.env` 文件的示例配置：
 
 ```env
 
@@ -173,23 +171,23 @@ LDAP_SERVER_LABEL="Azure AD DS"
 LDAP_SERVER_HOST="1.222.222.222"
 LDAP_SERVER_PORT="636"
 
-# TLS Options
+# TLS 选项
 LDAP_USE_TLS="true"
-LDAP_VALIDATE_CERT="false"          # Set to true for a public CA
+LDAP_VALIDATE_CERT="false"          # 公共 CA 请设置为 true
 
 #LDAP_CA_CERT_FILE="/etc/ssl/certs/openwebui_ca.crt"
 
-# Bind Account
+# 绑定账户
 LDAP_APP_DN="ldap@{your_domain}.onmicrosoft.com"
 LDAP_APP_PASSWORD="<STRONG-PASSWORD>"
 
-# Search Scope
+# 搜索范围
 LDAP_SEARCH_BASE="DC={your_domain},DC=onmicrosoft,DC=com"
 LDAP_ATTRIBUTE_FOR_USERNAME="sAMAccountName"
 LDAP_ATTRIBUTE_FOR_MAIL="userPrincipalName"
 LDAP_SEARCH_FILTER="(&(objectClass=user)(objectCategory=person))"
 
-# Group Synchronization (Optional)
+# 群组同步（可选）
 
 # ENABLE_LDAP_GROUP_MANAGEMENT="true"
 
@@ -197,38 +195,38 @@ LDAP_SEARCH_FILTER="(&(objectClass=user)(objectCategory=person))"
 
 # LDAP_ATTRIBUTE_FOR_GROUPS="memberOf"
 ```
-*Replace placeholders like `{your_domain}` and `<STRONG-PASSWORD>` with your actual values.*
+*将 `{your_domain}` 和 `<STRONG-PASSWORD>` 等占位符替换为您的实际值。*
 
-## 8. Configure Group Synchronization (Optional)
+## 8. 配置群组同步（可选）
 
-Open WebUI can synchronize group memberships directly from your LDAP directory. When a user logs in, their group information is fetched and updated within Open WebUI.
+Open WebUI 可以直接从您的 LDAP 目录同步群组成员资格。当用户登录时，将获取并更新其在 Open WebUI 中的群组信息。
 
-To enable this feature, add the following environment variables:
+要启用此功能，请添加以下环境变量：
 
--   `ENABLE_LDAP_GROUP_MANAGEMENT="true"`: Enables the group management feature.
--   `ENABLE_LDAP_GROUP_CREATION="true"`: If a group from LDAP does not exist in Open WebUI, it will be created automatically.
--   `LDAP_ATTRIBUTE_FOR_GROUPS="memberOf"`: Specifies the LDAP attribute that contains the user's group memberships. `memberOf` is a standard attribute for this purpose in Active Directory environments.
+-   `ENABLE_LDAP_GROUP_MANAGEMENT="true"`：启用群组管理功能。
+-   `ENABLE_LDAP_GROUP_CREATION="true"`：如果 LDAP 中的群组在 Open WebUI 中不存在，将自动创建。
+-   `LDAP_ATTRIBUTE_FOR_GROUPS="memberOf"`：指定包含用户群组成员资格的 LDAP 属性。`memberOf` 是 Active Directory 环境中此目的的标准属性。
 
-## 9. Add CA Certificate to Server (Optional)
+## 9. 将 CA 证书添加到服务器（可选）
 
-To enable full TLS validation (`LDAP_VALIDATE_CERT="true"`):
+要启用完整的 TLS 验证（`LDAP_VALIDATE_CERT="true"`）：
 
 ```bash
 sudo cp certificate_wildcard.crt /usr/local/share/ca-certificates/openwebui.crt
 sudo update-ca-certificates
 ```
-Restart Open WebUI after making this change.
+进行此更改后重启 Open WebUI。
 
-## 10. Test LDAPS Connection
+## 10. 测试 LDAPS 连接
 
-### 10.1. OpenSSL Handshake Check
+### 10.1. OpenSSL 握手测试
 
 ```bash
 openssl s_client -connect 1.222.222.222:636 -showcerts
 ```
-Look for `Verify return code: 0 (ok)` to confirm the certificate is trusted.
+查找 `Verify return code: 0 (ok)` 以确认证书可信。
 
-### 10.2. ldapsearch (Bind Test)
+### 10.2. ldapsearch（绑定测试）
 
 ```bash
 ldapsearch -H ldaps://1.222.222.222 \
@@ -236,4 +234,4 @@ ldapsearch -H ldaps://1.222.222.222 \
   -b "DC=openwebui,DC=onmicrosoft,DC=com" \
   -s sub "(sAMAccountName=<test_user_id>)"
 ```
-A successful search will return the details of the specified user.
+搜索成功将返回指定用户的详细信息。

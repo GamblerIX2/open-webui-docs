@@ -1,29 +1,29 @@
 ---
 sidebar_position: 1
-title: "Installation"
+title: "安装"
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Installation
+# 安装
 
-Choose an installation method based on your needs:
+根据你的需求选择安装方式：
 
-| Method | When to use |
+| 方式 | 适用场景 |
 | :--- | :--- |
-| **Docker** | Runs in an isolated container, separated from your host system. |
-| **Bare Metal** | The AI works directly on your machine — your real files, tools, and environment. |
-| **Docker Compose** | You already run Open WebUI with Docker Compose and want to add Open Terminal to it. |
+| **Docker** | 在隔离容器中运行，与宿主系统完全分离。 |
+| **裸机** | AI 直接在你的机器上工作——使用真实的文件、工具和环境。 |
+| **Docker Compose** | 你已在使用 Docker Compose 运行 Open WebUI，并希望将 Open Terminal 添加进去。 |
 
-Select your method below, then follow the steps.
+在下方选择你的方式，然后按步骤操作。
 
 <Tabs>
   <TabItem value="docker" label="Docker" default>
 
-Requires [Docker](https://www.docker.com/products/docker-desktop/).
+需要安装 [Docker](https://www.docker.com/products/docker-desktop/)。
 
-### 1. Start the container
+### 1. 启动容器
 
 ```bash
 docker run -d \
@@ -35,53 +35,53 @@ docker run -d \
   ghcr.io/open-webui/open-terminal
 ```
 
-Replace `your-secret-key` with a password of your choice.
+将 `your-secret-key` 替换为你自己的密码。
 
 {/* TODO: Screenshot — Terminal showing the docker run command with Docker pulling the image. */}
 
 <details>
-<summary><b>Command breakdown</b></summary>
+<summary><b>参数说明</b></summary>
 
-| Flag | Purpose |
+| 参数 | 用途 |
 | :--- | :--- |
-| `-d` | Run in background |
-| `--name open-terminal` | Container name for reference |
-| `--restart unless-stopped` | Auto-restart on reboot |
-| `-p 8000:8000` | Expose on `http://localhost:8000` |
-| `-v open-terminal:/home/user` | Persist files across restarts |
-| `-e OPEN_TERMINAL_API_KEY=...` | Authentication key |
+| `-d` | 在后台运行 |
+| `--name open-terminal` | 容器名称，便于引用 |
+| `--restart unless-stopped` | 重启时自动启动 |
+| `-p 8000:8000` | 在 `http://localhost:8000` 暴露服务 |
+| `-v open-terminal:/home/user` | 在重启间保持文件持久化 |
+| `-e OPEN_TERMINAL_API_KEY=...` | 认证密钥 |
 
 </details>
 
-### 2. Verify
+### 2. 验证
 
-Open `http://localhost:8000/docs` in your browser. You should see the Open Terminal API page.
+在浏览器中打开 `http://localhost:8000/docs`，你应该能看到 Open Terminal API 页面。
 
-:::tip Auto-generated API key
-If no API key was set, one is generated automatically. Find it with:
+:::tip 自动生成的 API Key
+如果未设置 API Key，系统会自动生成一个。通过以下命令查看：
 ```bash
 docker logs open-terminal
 ```
 :::
 
   </TabItem>
-  <TabItem value="bare-metal" label="Bare Metal">
+  <TabItem value="bare-metal" label="裸机">
 
 :::warning
-In this mode, the AI can do anything your user account can do, including modifying and deleting files.
+在此模式下，AI 能执行你用户账户权限范围内的任何操作，包括修改和删除文件。
 :::
 
-### 1. Run Open Terminal
+### 1. 运行 Open Terminal
 
-**Option A — Run without installing:**
+**方式 A — 免安装直接运行：**
 
 ```bash
 uvx open-terminal run --host 0.0.0.0 --port 8000 --api-key your-secret-key
 ```
 
-Downloads and runs via [uv](https://docs.astral.sh/uv/) with no permanent installation.
+通过 [uv](https://docs.astral.sh/uv/) 下载并运行，无需永久安装。
 
-**Option B — Install with pip:**
+**方式 B — 通过 pip 安装：**
 
 ```bash
 pip install open-terminal
@@ -90,9 +90,9 @@ open-terminal run --host 0.0.0.0 --port 8000 --api-key your-secret-key
 
 {/* TODO: Screenshot — Terminal showing Open Terminal starting up with server address and API key. */}
 
-### 2. Working directory
+### 2. 工作目录
 
-Open Terminal serves files from the current directory. To scope it to a specific project:
+Open Terminal 从当前目录提供文件服务。若要将其限定在特定项目：
 
 ```bash
 cd /path/to/your/project
@@ -101,14 +101,14 @@ uvx open-terminal run --host 0.0.0.0 --port 8000 --api-key your-secret-key
 
 ### Windows
 
-Supported via [pywinpty](https://github.com/andfoy/pywinpty). Full PowerShell support with colored output and interactive programs.
+通过 [pywinpty](https://github.com/andfoy/pywinpty) 支持 Windows。完整支持 PowerShell，包括彩色输出和交互式程序。
 
   </TabItem>
   <TabItem value="compose" label="Docker Compose">
 
-Add Open Terminal as a service in your existing `docker-compose.yml`:
+在你现有的 `docker-compose.yml` 中添加 Open Terminal 服务：
 
-### 1. Update your Compose file
+### 1. 更新 Compose 文件
 
 ```yaml title="docker-compose.yml"
 services:
@@ -133,7 +133,7 @@ volumes:
   open-terminal:
 ```
 
-### 2. Start the services
+### 2. 启动服务
 
 ```bash
 docker compose up -d
@@ -141,12 +141,12 @@ docker compose up -d
 
 {/* TODO: Screenshot — Terminal showing docker compose up -d with both containers starting. */}
 
-:::tip Connection URL
-When both services share a Docker Compose network, use the service name as the host:
+:::tip 连接 URL
+当两个服务共享同一个 Docker Compose 网络时，使用服务名称作为主机：
 ```
 http://open-terminal:8000
 ```
-`localhost` won't resolve between containers.
+`localhost` 在容器之间无法解析。
 :::
 
   </TabItem>
@@ -154,6 +154,6 @@ http://open-terminal:8000
 
 ---
 
-## Next step
+## 下一步
 
-[**Connect to Open WebUI →**](./connecting)
+[**连接到 Open WebUI →**](./connecting)

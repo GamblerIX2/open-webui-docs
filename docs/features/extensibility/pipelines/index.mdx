@@ -10,7 +10,7 @@ title: "Pipelines"
   </a>
 </div>
 
-# Pipelines: UI-Agnostic OpenAI API Plugin Framework
+# Pipelines：与 UI 无关的 OpenAI API 插件框架
 
 :::warning
 
@@ -20,25 +20,25 @@ If your goal is simply to add support for additional providers like Anthropic or
 
 :::
 
-Welcome to **Pipelines**, an [Open WebUI](https://github.com/open-webui) initiative. Pipelines bring modular, customizable workflows to any UI client supporting OpenAI API specs – and much more! Easily extend functionalities, integrate unique logic, and create dynamic workflows with just a few lines of code.
+欢迎使用 **Pipelines**，这是 [Open WebUI](https://github.com/open-webui) 的一项计划。Pipelines 为任何支持 OpenAI API 规范的 UI 客户端带来模块化、可定制的工作流——以及更多功能！只需几行代码，即可轻松扩展功能、集成独特逻辑并创建动态工作流。
 
-## 🚀 Why Choose Pipelines?
+## 🚀 为什么选择 Pipelines？
 
-- **Flexible Extensibility:** Easily add custom logic and integrate Python libraries, from AI agents to home automation APIs.
-- **Seamless Integration:** Compatible with any UI/client supporting OpenAI API specs. (Only pipe-type pipelines are supported; filter types require clients with Pipelines support.)
-- **Custom Hooks:** Build and integrate custom pipelines.
+- **灵活的可扩展性：** 轻松添加自定义逻辑并集成 Python 库，从 AI 代理到智能家居 API。
+- **无缝集成：** 与任何支持 OpenAI API 规范的 UI/客户端兼容。（仅支持 pipe 类型的 Pipeline；filter 类型需要具有 Pipelines 支持的客户端。）
+- **自定义钩子：** 构建并集成自定义 Pipeline。
 
-### Examples of What You Can Achieve:
+### 你可以实现的示例：
 
-- [**Function Calling Pipeline**](https://github.com/open-webui/pipelines/blob/main/examples/filters/function_calling_filter_pipeline.py): Easily handle function calls and enhance your applications with custom logic.
-- [**Custom RAG Pipeline**](https://github.com/open-webui/pipelines/blob/main/examples/pipelines/rag/llamaindex_pipeline.py): Implement sophisticated Retrieval-Augmented Generation pipelines tailored to your needs.
-- [**Message Monitoring Using Langfuse**](https://github.com/open-webui/pipelines/blob/main/examples/filters/langfuse_filter_pipeline.py): Monitor and analyze message interactions in real-time using Langfuse.
-- [**Rate Limit Filter**](https://github.com/open-webui/pipelines/blob/main/examples/filters/rate_limit_filter_pipeline.py): Control the flow of requests to prevent exceeding rate limits.
-- [**Real-Time Translation Filter with LibreTranslate**](https://github.com/open-webui/pipelines/blob/main/examples/filters/libretranslate_filter_pipeline.py): Seamlessly integrate real-time translations into your LLM interactions.
-- [**Toxic Message Filter**](https://github.com/open-webui/pipelines/blob/main/examples/filters/detoxify_filter_pipeline.py): Implement filters to detect and handle toxic messages effectively.
-- **And Much More!**: The sky is the limit for what you can accomplish with Pipelines and Python. [Check out our scaffolds](https://github.com/open-webui/pipelines/blob/main/examples/scaffolds) to get a head start on your projects and see how you can streamline your development process!
+- [**函数调用 Pipeline**](https://github.com/open-webui/pipelines/blob/main/examples/filters/function_calling_filter_pipeline.py)：轻松处理函数调用，用自定义逻辑增强你的应用程序。
+- [**自定义 RAG Pipeline**](https://github.com/open-webui/pipelines/blob/main/examples/pipelines/rag/llamaindex_pipeline.py)：实现根据你的需求定制的复杂检索增强生成 Pipeline。
+- [**使用 Langfuse 进行消息监控**](https://github.com/open-webui/pipelines/blob/main/examples/filters/langfuse_filter_pipeline.py)：使用 Langfuse 实时监控和分析消息交互。
+- [**速率限制过滤器**](https://github.com/open-webui/pipelines/blob/main/examples/filters/rate_limit_filter_pipeline.py)：控制请求流量，防止超出速率限制。
+- [**使用 LibreTranslate 的实时翻译过滤器**](https://github.com/open-webui/pipelines/blob/main/examples/filters/libretranslate_filter_pipeline.py)：将实时翻译无缝集成到你的 LLM 交互中。
+- [**有毒消息过滤器**](https://github.com/open-webui/pipelines/blob/main/examples/filters/detoxify_filter_pipeline.py)：实现过滤器以有效检测和处理有毒消息。
+- **以及更多！** 使用 Pipelines 和 Python 可以实现的功能没有上限。[查看我们的脚手架](https://github.com/open-webui/pipelines/blob/main/examples/scaffolds)，为你的项目抢先一步，了解如何简化开发流程！
 
-## 🔧 How It Works
+## 🔧 工作原理
 
 <div align="center">
   <a href="#">
@@ -48,7 +48,7 @@ Welcome to **Pipelines**, an [Open WebUI](https://github.com/open-webui) initiat
 
 Integrating Pipelines with any OpenAI API-compatible UI client is simple. Launch your Pipelines instance and set the OpenAI URL on your client to the Pipelines URL. That's it! You're ready to leverage any Python library for your needs.
 
-## ⚡ Quick Start with Docker
+## ⚡ 使用 Docker 快速开始
 
 :::danger ⚠️ Security Warning
 
@@ -56,41 +56,41 @@ Pipelines are a plugin system with arbitrary code execution — **don't fetch ra
 
 :::
 
-For a streamlined setup using Docker:
+使用 Docker 进行简化设置：
 
-1. **Run the Pipelines container:**
+1. **运行 Pipelines 容器：**
 
    ```sh
    docker run -d -p 9099:9099 --add-host=host.docker.internal:host-gateway -v pipelines:/app/pipelines --name pipelines --restart always ghcr.io/open-webui/pipelines:main
    ```
 
-2. **Connect to Open WebUI:**
+2. **连接到 Open WebUI：**
 
-   - Navigate to the **Admin Panel > Settings > Connections** section in Open WebUI.
+   - 在 Open WebUI 中导航到**管理面板 > 设置 > 连接**部分。
    - When you're on this page, you can press the `+` button to add another connection.
-   - Set the API URL to `http://localhost:9099` and the API key to `0p3n-w3bu!`.
+   - 将 API URL 设置为 `http://localhost:9099`，API 密钥设置为 `0p3n-w3bu!`。
    - Once you've added your pipelines connection and verified it, you will see an icon appear within the API Base URL field for the added connection. When hovered over, the icon itself will be labeled `Pipelines`. Your pipelines should now be active.
 
 :::info
 
-If your Open WebUI is running in a Docker container, replace `localhost` with `host.docker.internal` in the API URL.
+如果你的 Open WebUI 运行在 Docker 容器中，请将 API URL 中的 `localhost` 替换为 `host.docker.internal`。
 
 :::
 
-3. **Manage Configurations:**
+3. **管理配置：**
 
-   - In the admin panel, go to **Admin Panel > Settings > Pipelines** tab.
-   - Select your desired pipeline and modify the valve values directly from the WebUI.
+   - 在管理面板中，转到**管理面板 > 设置 > Pipelines** 标签页。
+   - 选择所需的 Pipeline，直接从 WebUI 修改 Valve 值。
 
 :::tip
 
-If you are unable to connect, it is most likely a Docker networking issue. We encourage you to troubleshoot on your own and share your methods and solutions in the discussions forum.
+如果无法连接，很可能是 Docker 网络问题。我们鼓励你自行排查，并在讨论论坛中分享你的方法和解决方案。
 
 :::
 
-If you need to install a custom pipeline with additional dependencies:
+如果你需要安装具有额外依赖项的自定义 Pipeline：
 
-- **Run the following command:**
+- **运行以下命令：**
 
   ```sh
   docker run -d -p 9099:9099 --add-host=host.docker.internal:host-gateway -e PIPELINES_URLS="https://github.com/open-webui/pipelines/blob/main/examples/filters/detoxify_filter_pipeline.py" -v pipelines:/app/pipelines --name pipelines --restart always ghcr.io/open-webui/pipelines:main

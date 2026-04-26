@@ -1,50 +1,50 @@
 ---
 sidebar_position: 900
-title: "Contributing to Docs"
+title: "参与文档贡献"
 ---
 
-# Contributing to Documentation
+# 文档贡献指南
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程由社区贡献，不属于 Open WebUI 团队官方支持范围。内容仅用于演示如何根据你的特定场景自定义 Open WebUI。想参与贡献？请查看贡献教程。
 
 :::
 
-We appreciate your interest in contributing tutorials to the Open WebUI documentation. Follow the steps below to set up your environment and submit your tutorial.
+感谢你对 Open WebUI 文档教程贡献的兴趣。请按照以下步骤完成环境准备并提交你的教程。
 
-## Contributing Steps
+## 贡献步骤
 
-1. **Fork the `open-webui/docs` GitHub Repository**
+1. **Fork `open-webui/docs` GitHub 仓库**
 
-   - Navigate to the [Open WebUI Docs Repository](https://github.com/open-webui/docs) on GitHub.
-   - Click the **Fork** button at the top-right corner to create a copy under your GitHub account.
+   - 在 GitHub 打开 [Open WebUI Docs Repository](https://github.com/open-webui/docs)。
+   - 点击右上角 **Fork** 按钮，在你的 GitHub 账号下创建副本。
 
-2. **Enable GitHub Actions**
+2. **启用 GitHub Actions**
 
-   - In your forked repository, navigate to the **Actions** tab.
-   - If prompted, enable GitHub Actions by following the on-screen instructions.
+   - 在你 Fork 的仓库中进入 **Actions** 标签页。
+   - 若页面提示未启用，请按页面指引开启 GitHub Actions。
 
-3. **Enable GitHub Pages**
+3. **启用 GitHub Pages**
 
-   - Go to **Settings** > **Pages** in your forked repository.
-   - Under **Source**, select the branch you want to deploy (e.g., `main`) and the folder (e.g.,`/docs`).
-   - Click **Save** to enable GitHub Pages.
+   - 在你 Fork 的仓库进入 **Settings** > **Pages**。
+   - 在 **Source** 中选择部署分支（如 `main`）和目录（如 `/docs`）。
+   - 点击 **Save** 启用 GitHub Pages。
 
-4. **Configure GitHub Environment Variables**
+4. **配置 GitHub 环境变量**
 
-   - In your forked repository, go to **Settings** > **Secrets and variables** > **Actions** > **Variables**.
-   - Add the following environment variables:
-     - `BASE_URL` set to `/docs` (or your chosen base URL for the fork).
-     - `SITE_URL` set to `https://<your-github-username>.github.io/`.
+   - 在你 Fork 的仓库进入 **Settings** > **Secrets and variables** > **Actions** > **Variables**。
+   - 添加以下环境变量：
+     - `BASE_URL` 设置为 `/docs`（或你为 Fork 站点选择的 base URL）。
+     - `SITE_URL` 设置为 `https://<your-github-username>.github.io/`。
 
-### 📝 Updating the GitHub Pages Workflow and Config File
+### 📝 更新 GitHub Pages 工作流与配置文件
 
-If you need to adjust deployment settings to fit your custom setup, here’s what to do:
+如果你需要按自定义部署方式调整设置，可按以下步骤处理：
 
-a. **Update `.github/workflows/gh-pages.yml`**
+a. **更新 `.github/workflows/gh-pages.yml`**
 
-- Add environment variables for `BASE_URL` and `SITE_URL` to the build step if necessary:
+- 如有需要，在构建步骤中加入 `BASE_URL` 与 `SITE_URL` 环境变量：
 
      ```yaml
        - name: Build
@@ -54,9 +54,9 @@ a. **Update `.github/workflows/gh-pages.yml`**
          run: npm run build
      ```
 
-b. **Modify `docusaurus.config.ts` to Use Environment Variables**
+b. **修改 `docusaurus.config.ts` 以使用环境变量**
 
-- Update `docusaurus.config.ts` to use these environment variables, with default values for local or direct deployment:
+- 更新 `docusaurus.config.ts`，改为读取这些环境变量，并保留本地或直连部署的默认值：
 
      ```typescript
      const config: Config = {
@@ -69,40 +69,40 @@ b. **Modify `docusaurus.config.ts` to Use Environment Variables**
      };
      ```
 
-- This setup ensures consistent deployment behavior for forks and custom setups.
+- 这样可确保 Fork 仓库和自定义部署场景下的行为一致。
 
-5. **Run the `gh-pages` GitHub Workflow**
+5. **运行 `gh-pages` GitHub 工作流**
 
-   - In the **Actions** tab, locate the `gh-pages` workflow.
-   - Trigger the workflow manually if necessary, or it may run automatically based on your setup.
+   - 在 **Actions** 标签页找到 `gh-pages` 工作流。
+   - 视你的配置而定，可手动触发，也可能自动运行。
 
-6. **Browse to Your Forked Copy**
+6. **访问你的 Fork 站点**
 
-   - Visit `https://<your-github-username>.github.io/<BASE_URL>` to view your forked documentation.
+   - 访问 `https://<your-github-username>.github.io/<BASE_URL>` 查看你的文档副本。
 
-7. **Draft Your Changes**
+7. **编写你的变更**
 
-   - In your forked repository, navigate to the appropriate directory (e.g., `docs/tutorial/`).
-   - Create a new markdown file for your tutorial or edit existing ones.
-   - Ensure that your tutorial includes the unsupported warning banner.
+   - 在你 Fork 的仓库中进入对应目录（如 `docs/tutorial/`）。
+   - 新建教程 Markdown 文件，或编辑现有教程。
+   - 确保你的教程包含“非官方支持”警告横幅。
 
-8. **Submit a Pull Request**
+8. **提交 Pull Request**
 
-   - Once your tutorial is ready, commit your changes to your forked repository.
-   - Navigate to the original `open-webui/docs` repository.
-   - Click **New Pull Request** and select your fork and branch as the source.
-   - Provide a descriptive title and description for your PR.
-   - Submit the pull request for review.
+   - 教程准备完成后，将变更提交到你的 Fork 仓库。
+   - 前往原始 `open-webui/docs` 仓库。
+   - 点击 **New Pull Request**，选择你的 Fork 和分支作为来源。
+   - 为 PR 填写清晰的标题与说明。
+   - 提交 Pull Request 等待审核。
 
-## Important
+## 重要说明
 
-Community-contributed tutorials must include the the following:
+社区贡献教程必须包含以下内容：
 
 ```txt
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程由社区贡献，不属于 Open WebUI 团队官方支持范围。内容仅用于演示如何根据你的特定场景自定义 Open WebUI。想参与贡献？请查看贡献教程。
 
 :::
 
@@ -112,15 +112,15 @@ This tutorial is a community contribution and is not supported by the Open WebUI
 
 :::tip
 
-How to Test Docusaurus Locally
-You can test your Docusaurus site locally with the following commands:
+如何在本地测试 Docusaurus
+你可以使用以下命令在本地测试 Docusaurus 站点：
 
 ```bash
-npm install   # Install dependencies
-npm run build # Build the site for production
+npm install   # 安装依赖
+npm run build # 构建生产版本站点
 ```
 
-This will help you catch any issues before deploying
+这样可以在部署前尽早发现问题。
 
 :::
 

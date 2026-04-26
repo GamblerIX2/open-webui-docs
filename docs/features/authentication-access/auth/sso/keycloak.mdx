@@ -4,156 +4,155 @@ title: "Keycloak"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程为社区贡献内容，不受 Open WebUI 团队官方支持，仅作为如何针对特定使用场景自定义 Open WebUI 的演示。想要贡献内容？请查看贡献教程。
 
 :::
 
-This guide explains how to integrate Open WebUI with Keycloak for OIDC Single Sign-On (SSO).
+本指南介绍如何将 Open WebUI 与 Keycloak 集成以实现 OIDC 单点登录（SSO）。
 
-## 1. Environment Preparation and Port Change
+## 1. 环境准备与端口更改
 
-### Open WebUI Server Port
-- **Default Port**: `8080`
+### Open WebUI 服务器端口
+- **默认端口**：`8080`
 
-### Keycloak Port Conflict Issue
-Keycloak also uses port `8080` by default, which causes a conflict. Change the Keycloak port to `9090`.
+### Keycloak 端口冲突问题
+Keycloak 默认也使用 `8080` 端口，导致冲突。请将 Keycloak 端口更改为 `9090`。
 
 ```bash
 bin/kc.sh start-dev --http-port=9090
 ```
-{/* TODO: Insert image of Keycloak port change console output */}
+{/* TODO: 插入 Keycloak 端口更改控制台输出图片 */}
 
-## 2. Create a Keycloak Realm
+## 2. 创建 Keycloak Realm
 
-1. Open your browser and go to `http://localhost:9090`. Create an administrator account.
-2. Log in to the admin console at `http://localhost:9090/admin`.
-3. From the realm dropdown at the top, click **Add realm**.
-4. Enter `openwebui` as the **Realm name** and click **Create**.
+1. 打开浏览器访问 `http://localhost:9090`，创建管理员账户。
+2. 在 `http://localhost:9090/admin` 登录管理控制台。
+3. 从顶部的 realm 下拉菜单中，点击 **Add realm**。
+4. 输入 `openwebui` 作为 **Realm name**，点击 **Create**。
 
-![create-realm](/images/features/auth/keycloak/create-realm.png)
+![创建 realm](/images/features/auth/keycloak/create-realm.png)
 
-## 3. Create an OpenID Connect Client
+## 3. 创建 OpenID Connect 客户端
 
 :::info
 
-Make sure you have selected the `openwebui` realm. The default is `master`.
+确保已选中 `openwebui` realm。默认为 `master`。
 
 :::
 
-![select-realm](/images/features/auth/keycloak/select-realm.png)
+![选择 realm](/images/features/auth/keycloak/select-realm.png)
 
-1. Ensure the `openwebui` realm you just created is selected.
-2. In the left menu, click **Clients** → **Create client**.
-3. Set **Client ID** to `open-webui`.
-4. Keep **Client protocol** as `openid-connect`.
-5. Set **Access Type** to `confidential` and click **Save**.
+1. 确保已选中刚创建的 `openwebui` realm。
+2. 在左侧菜单中，点击 **Clients** → **Create client**。
+3. 将 **Client ID** 设置为 `open-webui`。
+4. 保持 **Client protocol** 为 `openid-connect`。
+5. 将 **Access Type** 设置为 `confidential`，点击 **Save**。
 
-![access-setting-client](/images/features/auth/keycloak/access-setting-client.png)
+![访问设置客户端](/images/features/auth/keycloak/access-setting-client.png)
 
-## 4. Enable Client Authentication and Get Credentials
+## 4. 启用客户端认证并获取凭据
 
-By default, Keycloak 26.x sets Client Authentication to "None", so it needs to be configured manually.
+默认情况下，Keycloak 26.x 将客户端认证设置为"None"，需要手动配置。
 
-1. Go to **Clients** → **open-webui** → **Settings**.
-2. Check the **Client Authenticator** dropdown.
-3. Change "None" to **Client ID and secret** and click **Save**.
-4. Click the **Advanced** tab.
-5. In the **Client authentication** section, click **Reveal secret** and copy the secret.
-6. Paste this secret into the `OAUTH_CLIENT_SECRET` variable in your `.env` file.
+1. 进入 **Clients** → **open-webui** → **Settings**。
+2. 检查 **Client Authenticator** 下拉菜单。
+3. 将"None"更改为 **Client ID and secret**，点击 **Save**。
+4. 点击 **Advanced** 选项卡。
+5. 在 **Client authentication** 部分，点击 **Reveal secret** 并复制密钥。
+6. 将此密钥粘贴到 `.env` 文件中的 `OAUTH_CLIENT_SECRET` 变量。
 
-{/* TODO: Insert image of Advanced tab Client Authenticator settings */}
+{/* TODO: 插入高级选项卡客户端认证器设置图片 */}
 
-## 5. Create a Test User
+## 5. 创建测试用户
 
-1. In the left menu, go to **Users** → **Add user**.
-2. Fill in the **Username**, **Email**, etc., and click **Save**.
-3. Click on the newly created user, then go to the **Credentials** tab.
-4. Enter a new password, uncheck **Temporary**, and click **Set Password**.
-    -   *Example: Username `testuser`, Password `Test1234!`*
+1. 在左侧菜单中，进入 **Users** → **Add user**。
+2. 填写 **Username**、**Email** 等信息，点击 **Save**。
+3. 点击新创建的用户，进入 **Credentials** 选项卡。
+4. 输入新密码，取消勾选 **Temporary**，点击 **Set Password**。
+    - *示例：用户名 `testuser`，密码 `Test1234!`*
 
-## 6. Configure Open WebUI .env
+## 6. 配置 Open WebUI .env 文件
 
-Add or modify the following variables in your `.env` file.
+在 `.env` 文件中添加或修改以下变量。
 
 ```env
-
-# Enable OAuth2/OIDC Login
+# 启用 OAuth2/OIDC 登录
 ENABLE_OAUTH_SIGNUP=true
 
-# Keycloak Client Information
+# Keycloak 客户端信息
 OAUTH_CLIENT_ID=open-webui
 OAUTH_CLIENT_SECRET=<YOUR_COPIED_SECRET>
 
 # OIDC Discovery Document URL
 OPENID_PROVIDER_URL=http://localhost:9090/realms/openwebui/.well-known/openid-configuration
 
-# (Optional) SSO Button Label
+# （可选）SSO 按钮标签
 OAUTH_PROVIDER_NAME=Keycloak
 
-# (Optional) OAuth Callback URL
+# （可选）OAuth 回调 URL
 OPENID_REDIRECT_URI=http://localhost:8080/oauth/oidc/callback
 ```
-**Restart the Open WebUI server after modifying the `.env` file.**
+**修改 `.env` 文件后，重启 Open WebUI 服务器。**
 
-## 7. HTTP vs. HTTPS
+## 7. HTTP 与 HTTPS
 
--   **HTTP (Development/Test)**:
-    -   Scheme: `http://`
-    -   Example: `http://localhost:9090`
--   **HTTPS (Production Recommended)**:
-    -   Requires Keycloak TLS setup or a reverse proxy with SSL termination.
+-   **HTTP（开发/测试环境）**：
+    -   协议：`http://`
+    -   示例：`http://localhost:9090`
+-   **HTTPS（生产环境推荐）**：
+    -   需要 Keycloak TLS 设置或带 SSL 终止的反向代理。
     ```bash
     bin/kc.sh start --https-port=9090 \
       --https-key-store=keystore.jks \
       --https-key-store-password=<password>
     ```
 
-## 8. Test the Integration
+## 8. 测试集成
 
-1. Go to `http://localhost:8080`. You should see a "Continue with Keycloak" button.
-2. Click the button. You should be redirected to the Keycloak login page.
-3. Log in with `testuser` / `Test1234!`. You should be successfully redirected back to Open WebUI.
+1. 访问 `http://localhost:8080`，您应该会看到"Continue with Keycloak"按钮。
+2. 点击该按钮，应该会重定向到 Keycloak 登录页面。
+3. 使用 `testuser` / `Test1234!` 登录，应该成功重定向回 Open WebUI。
 
-{/* TODO: Insert image of the actual login screen */}
+{/* TODO: 插入实际登录界面图片 */}
 
-## 9. Configure Keycloak Group Mapping
+## 9. 配置 Keycloak 用户组映射
 
-### 9.1. Overview
-By default, Keycloak clients do not include group information in tokens. Follow these steps to pass group information.
+### 9.1. 概述
+默认情况下，Keycloak 客户端不在 token 中包含用户组信息。按照以下步骤传递用户组信息。
 
-### 9.2. Locate Mapper Creation
-1. Go to the Keycloak Admin Console: `http://localhost:9090/admin`.
-2. Select the `openwebui` realm.
-3. Navigate to **Clients** and select the `open-webui` client.
-4. Go to the **Client scopes** tab.
-5. Select the scope that will contain the group information (e.g., `profile` or `open-webui-dedicated`).
+### 9.2. 找到 Mapper 创建入口
+1. 进入 Keycloak 管理控制台：`http://localhost:9090/admin`。
+2. 选择 `openwebui` realm。
+3. 导航到 **Clients**，选择 `open-webui` 客户端。
+4. 进入 **Client scopes** 选项卡。
+5. 选择将包含用户组信息的 scope（例如 `profile` 或 `open-webui-dedicated`）。
 
-    ![scope-client](/images/features/auth/keycloak/scope-client.png)
+    ![scope 客户端](/images/features/auth/keycloak/scope-client.png)
 
-6. In the selected scope's details, go to the **Mappers** tab.
+6. 在所选 scope 的详情中，进入 **Mappers** 选项卡。
 
-### 9.3. Create Mapper
-Click **Create** or **Add builtin** to start creating a new mapper.
+### 9.3. 创建 Mapper
+点击 **Create** 或 **Add builtin** 开始创建新 mapper。
 
-### 9.4. Mapper Settings
-Configure the mapper with the appropriate settings to include group membership.
+### 9.4. Mapper 设置
+使用适当的设置配置 mapper，以包含用户组成员资格。
 
-![mappers-setting-group-client](/images/features/auth/keycloak/mappers-setting-group-client.png)
+![mapper 设置用户组客户端](/images/features/auth/keycloak/mappers-setting-group-client.png)
 
-### 9.5. Save and Apply
--   **Save** the mapper configuration.
--   **Restart** the Open WebUI server to apply the changes.
+### 9.5. 保存并应用
+-   **保存** mapper 配置。
+-   **重启** Open WebUI 服务器以应用更改。
 
-### 9.6. Configure Open WebUI Environment Variables
-Add or modify these variables in your `.env` file:
+### 9.6. 配置 Open WebUI 环境变量
+在 `.env` 文件中添加或修改以下变量：
 
 ```env
-
-# Enable group synchronization
+# 启用用户组同步
 ENABLE_OAUTH_GROUP_MANAGEMENT=true
 
-# (Optional) Enable Just-In-Time group creation
+# （可选）启用即时用户组创建
 ENABLE_OAUTH_GROUP_CREATION=true
 
-# The claim key for groups in the token
+# token 中用户组的 claim 键
 OAUTH_GROUP_CLAIM=groups
+```

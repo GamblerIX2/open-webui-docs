@@ -1,23 +1,23 @@
 ---
 sidebar_position: 999
-title: "Reserved Arguments"
+title: "保留参数"
 ---
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程是社区贡献，不受 Open WebUI 团队官方支持。它仅作为如何为特定使用场景自定义 Open WebUI 的演示。想要贡献？请查看贡献教程。
 
 :::
 
-# 🪄 Special Arguments
+# 🪄 特殊参数
 
-When developping your own `Tools`, `Functions` (`Filters`, `Pipes` or `Actions`), `Pipelines` etc, you can use special arguments explore the full spectrum of what Open-WebUI has to offer.
+在开发自己的 `Tools`、`Functions`（`Filters`、`Pipes` 或 `Actions`）、`Pipelines` 等时，你可以使用特殊参数探索 Open WebUI 提供的全部功能。
 
-This page aims to detail the type and structure of each special argument as well as provide an example.
+本页面旨在详细说明每个特殊参数的类型和结构，并提供示例。
 
 ### `body`
 
-A `dict` usually destined to go almost directly to the model. Although it is not strictly a special argument, it is included here for easier reference and because it contains itself some special arguments.
+一个 `dict`，通常几乎直接发送给模型。虽然它严格来说不是特殊参数，但为了便于参考而包含在此，因为它本身包含一些特殊参数。
 
 <details>
 <summary>Example</summary>
@@ -68,9 +68,9 @@ A `dict` usually destined to go almost directly to the model. Although it is not
 
 ### `__user__`
 
-A `dict` with user information.
+包含用户信息的 `dict`。
 
-Note that if the `UserValves` class is defined, its instance has to be accessed via `__user__["valves"]`. Otherwise, the `valves` keyvalue is missing entirely from `__user__`.
+注意，如果定义了 `UserValves` 类，其实例必须通过 `__user__["valves"]` 访问。否则，`valves` 键值将完全从 `__user__` 中缺失。
 
 <details>
 <summary>Example</summary>

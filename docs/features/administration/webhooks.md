@@ -1,47 +1,47 @@
----
+﻿---
 sidebar_position: 17
-title: "Webhook Integrations"
+title: "Webhook 集成"
 ---
 
-## Overview
+## 概述
 
-Open WebUI offers three distinct webhook integrations to help you stay informed about events happening within your instance and enable external integrations. These webhooks allow you to receive automated notifications in external services like Discord, Slack, or any other application that supports incoming webhooks, as well as post messages from external services into Open WebUI channels.
+Open WebUI 提供三种不同的 Webhook 集成，帮助您随时了解实例内发生的事件，并支持外部服务集成。这些 Webhook 允许您在 Discord、Slack 或任何支持传入 Webhook 的应用程序等外部服务中接收自动通知，也可以让外部服务向 Open WebUI 频道发送消息。
 
-There are three types of webhooks available:
+共有三种类型的 Webhook：
 
-1.  **Admin Webhook:** A system-wide webhook that notifies administrators about new user sign-ups.
-2.  **User Webhook:** A personal webhook that notifies individual users when a response to their chat is ready, especially useful for long-running tasks.
-3.  **Channel Webhooks:** Incoming webhooks that allow external services to post messages into specific channels.
+1.  **管理员 Webhook：** 当新用户注册时通知管理员的系统级 Webhook。
+2.  **用户 Webhook：** 当对话响应就绪时通知单个用户的个人 Webhook，对于长时间运行的任务特别有用。
+3.  **频道 Webhooks：** 允许外部服务向特定频道发送消息的传入 Webhook。
 
-## 1. Admin Webhook: New User Notifications
+## 1. 管理员 Webhook：新用户通知
 
-This webhook is designed for administrators to monitor new user registration on the Open WebUI instance.
+此 Webhook 专为管理员设计，用于监控 Open WebUI 实例上的新用户注册情况。
 
-### Use Case
+### 使用场景
 
-- **User Registration Tracking:** Receive a real-time notification in a dedicated Slack or Discord channel whenever a new user creates an account. This helps you keep track of your user base and welcome new members.
+- **用户注册跟踪：** 每当有新用户创建账户时，在专用的 Slack 或 Discord 频道中接收实时通知。这有助于您跟踪用户群并欢迎新成员。
 
-### Configuration
+### 配置
 
-You can configure the admin webhook in two ways:
+您可以通过两种方式配置管理员 Webhook：
 
-#### Option 1: Through the Admin Panel
+#### 方式一：通过管理面板
 
-1.  Log in as an administrator.
-2.  Navigate to **Admin Panel > Settings > General**.
-3.  Locate the **"Webhook URL"** field.
-4.  Enter the webhook URL provided by your external service (e.g., Discord, Slack).
-5.  Click **"Save"**.
+1.  以管理员身份登录。
+2.  导航到 **管理面板 > 设置 > 通用**。
+3.  找到 **"Webhook URL"** 字段。
+4.  输入您的外部服务（例如 Discord、Slack）提供的 Webhook URL。
+5.  点击 **"保存"**。
 
-#### Option 2: Through Environment Variables
+#### 方式二：通过环境变量
 
-You can also set the webhook URL using the `WEBHOOK_URL` environment variable. For more details, refer to the [Environment Variable Configuration](https://docs.openwebui.com/reference/env-configuration/#webhook_url) documentation.
+您也可以使用 `WEBHOOK_URL` 环境变量设置 Webhook URL。更多详情请参阅[环境变量配置](https://docs.openwebui.com/reference/env-configuration/#webhook_url)文档。
 
-### Payload Format
+### 负载格式
 
-When a new user signs up, Open WebUI will send a `POST` request to the configured URL with a JSON payload containing the new user's details.
+当新用户注册时，Open WebUI 将向配置的 URL 发送包含新用户详情的 JSON `POST` 请求。
 
-**Payload Example:**
+**负载示例：**
 
 ```json
 {
@@ -53,161 +53,161 @@ When a new user signs up, Open WebUI will send a `POST` request to the configure
 }
 ```
 
-## 2. User Webhook: Chat Response Notifications
+## 2. 用户 Webhook：对话响应通知
 
-This webhook allows individual users to receive a notification when a model has finished generating a response to their prompt. It's particularly useful for long-running tasks where you might navigate away from the Open WebUI tab.
+此 Webhook 允许单个用户在模型完成响应时收到通知。对于可能需要数分钟处理的长时间运行任务特别有用，即使您已离开 Open WebUI 标签页也能收到通知。
 
-### Use Case
+### 使用场景
 
-- **Long-Running Task Alerts:** If you submit a complex prompt that takes several minutes to process, you can close the browser tab and still be notified the moment the response is ready. This allows you to work on other tasks without having to constantly check the Open WebUI interface.
+- **长时间任务提醒：** 如果您提交了需要数分钟处理的复杂提示词，可以关闭浏览器标签页，仍会在响应就绪时立即收到通知。这让您可以处理其他任务，无需不断查看 Open WebUI 界面。
 
-### How it Works
+### 工作原理
 
-The notification is only sent if you are **not actively using the WebUI**. If you have the tab open and focused, the webhook will not be triggered, preventing unnecessary notifications.
+仅当您**未主动使用 WebUI** 时才会发送通知。如果您已打开并聚焦该标签页，则不会触发 Webhook，避免不必要的通知。
 
-### Enabling/Disabling User Webhooks
+### 启用/禁用用户 Webhook
 
-User webhooks are disabled by default. Administrators can enable this feature for all users when needed, or keep it disabled to prevent external requests.
+用户 Webhook 默认禁用。管理员可以在需要时为所有用户启用此功能，也可以保持禁用以防止外部请求。
 
-This can be done in two ways:
+可通过两种方式操作：
 
-1.  **Directly in the Admin Panel:**
-    - Go to **Admin Panel > Settings > General > Features**.
-    - Toggle the switch for **"User Webhooks"**.
+1.  **直接在管理面板中：**
+    - 转到 **管理面板 > 设置 > 通用 > 功能**。
+    - 切换 **"用户 Webhook"** 开关。
 
-2.  **Using Environment Variables:**
-    - Set the environment variable `ENABLE_USER_WEBHOOKS` to `False` in your backend configuration. This will globally disable the feature and hide the setting from user profiles.
+2.  **使用环境变量：**
+    - 在后端配置中将环境变量 `ENABLE_USER_WEBHOOKS` 设置为 `False`。这将全局禁用该功能并从用户个人资料中隐藏该设置。
 
-### Configuration
+### 配置
 
-1.  Click on your profile picture in the bottom-left corner to open the settings menu.
-2.  Navigate to **Settings > Account**.
-3.  Locate the **"Notification Webhook"** field.
-4.  Enter your personal webhook URL.
-5.  Click **"Save"**.
+1.  点击左下角的个人头像打开设置菜单。
+2.  导航到 **设置 > 账户**。
+3.  找到 **"通知 Webhook"** 字段。
+4.  输入您的个人 Webhook URL。
+5.  点击 **"保存"**。
 
-### Payload Format
+### 负载格式
 
-When a chat response is ready and you are inactive, Open WebUI will send a `POST` request to your webhook URL with a JSON payload containing details about the chat.
+当对话响应就绪且您处于非活跃状态时，Open WebUI 将向您的 Webhook URL 发送包含对话详情的 JSON `POST` 请求。
 
-**Payload Example:**
+**负载示例：**
 
 ```json
 {
   "event": "chat_response",
   "chat": {
     "id": "abc-123-def-456",
-    "title": "My Awesome Conversation",
-    "last_message": "This is the prompt I submitted."
+    "title": "我的精彩对话",
+    "last_message": "这是我提交的提示词内容。"
   }
 }
 ```
 
-## 3. Channel Webhooks: External Message Integration
+## 3. 频道 Webhooks：外部消息集成
 
-Channel Webhooks allow external services, automation tools, or scripts to post messages directly into Open WebUI channels. This enables seamless integration with monitoring systems, CI/CD pipelines, notification services, or any custom automation.
+频道 Webhooks 允许外部服务、自动化工具或脚本直接向 Open WebUI 频道发送消息。这支持与监控系统、CI/CD 流水线、通知服务或任何自定义自动化工具的无缝集成。
 
-### Use Cases
+### 使用场景
 
-- **System Monitoring:** Post alerts from monitoring tools (Prometheus, Grafana, Nagios) directly into team channels.
-- **CI/CD Integration:** Send build status notifications from GitHub Actions, GitLab CI, or Jenkins to development channels.
-- **Custom Automation:** Integrate with n8n, Zapier, or custom scripts to automate message posting.
-- **External Notifications:** Forward notifications from external services into your Open WebUI workspace.
+- **系统监控：** 将监控工具（Prometheus、Grafana、Nagios）的告警直接发送到团队频道。
+- **CI/CD 集成：** 将来自 GitHub Actions、GitLab CI 或 Jenkins 的构建状态通知发送到开发频道。
+- **自定义自动化：** 与 n8n、Zapier 或自定义脚本集成，自动化消息发送。
+- **外部通知：** 将外部服务的通知转发到您的 Open WebUI 工作空间。
 
-### How it Works
+### 工作原理
 
-Each channel can have multiple webhooks. Each webhook has:
-- A unique **webhook URL** that external services can POST to
-- A **display name** shown as the message author
-- An optional **profile image** to visually identify the webhook source
-- A **last used timestamp** to track webhook activity
+每个频道可以有多个 Webhook。每个 Webhook 具有：
+- 外部服务可向其 `POST` 的唯一 **Webhook URL**
+- 显示为消息作者的**显示名称**
+- 可选的**头像图片**，用于直观识别 Webhook 来源
+- **最后使用时间戳**，用于跟踪 Webhook 活动
 
-Messages posted via webhooks appear in the channel with the webhook's identity, making it clear they came from an external source rather than a user.
+通过 Webhook 发送的消息会以 Webhook 的身份显示在频道中，清楚表明它来自外部来源而非用户。
 
-### Managing Channel Webhooks
+### 管理频道 Webhooks
 
-Only **channel managers** and **administrators** can create and manage webhooks for a channel.
+只有**频道管理员**和**系统管理员**才能为频道创建和管理 Webhook。
 
-#### Creating a Webhook
+#### 创建 Webhook
 
-1.  Navigate to the channel where you want to add a webhook.
-2.  Click the channel menu (⋮) and select **Edit Channel**.
-3.  In the channel settings modal, locate the **Webhooks** section.
-4.  Click **Manage** to open the Webhooks modal.
-5.  Click **New Webhook** to create a new webhook.
-6.  Configure the webhook:
-    - **Name:** The display name that will appear as the message author
-    - **Profile Image:** (Optional) Upload an image to represent this webhook
-7.  Click **Save** to create the webhook.
-8.  Copy the generated webhook URL using the **Copy URL** button.
+1.  导航到要添加 Webhook 的频道。
+2.  点击频道菜单（⋮）并选择 **编辑频道**。
+3.  在频道设置模态框中，找到 **Webhooks** 部分。
+4.  点击 **管理** 打开 Webhooks 模态框。
+5.  点击 **新建 Webhook** 创建新 Webhook。
+6.  配置 Webhook：
+    - **名称：** 将显示为消息作者的显示名称
+    - **头像图片：** （可选）上传图片以代表此 Webhook
+7.  点击 **保存** 创建 Webhook。
+8.  使用 **复制 URL** 按钮复制生成的 Webhook URL。
 
-#### Webhook URL Format
+#### Webhook URL 格式
 
 ```
 {WEBUI_API_BASE_URL}/channels/webhooks/{webhook_id}/{token}
 ```
 
-This URL is unique and contains an authentication token. Anyone with this URL can post messages to the channel, so treat it securely.
+此 URL 是唯一的，包含身份验证令牌。任何拥有此 URL 的人都可以向频道发送消息，请妥善保管。
 
-#### Updating a Webhook
+#### 更新 Webhook
 
-1.  Open the **Webhooks** modal from the channel settings.
-2.  Click on the webhook you want to edit to expand it.
-3.  Modify the **Name** or **Profile Image** as needed.
-4.  Click **Save** to apply changes.
+1.  从频道设置中打开 **Webhooks** 模态框。
+2.  点击要编辑的 Webhook 展开它。
+3.  根据需要修改**名称**或**头像图片**。
+4.  点击 **保存** 应用更改。
 
-The webhook URL remains the same when you update the name or image. Messages posted after the update will show the new name/image, but existing messages retain the webhook identity from when they were posted.
+更新名称或图片时，Webhook URL 保持不变。更新后发送的消息将显示新名称/图片，但已有消息保留发送时的 Webhook 身份。
 
-#### Deleting a Webhook
+#### 删除 Webhook
 
-1.  Open the **Webhooks** modal from the channel settings.
-2.  Click on the webhook you want to delete to expand it.
-3.  Click the **Delete** (trash) icon.
-4.  Confirm the deletion.
+1.  从频道设置中打开 **Webhooks** 模态框。
+2.  点击要删除的 Webhook 展开它。
+3.  点击 **删除**（垃圾桶）图标。
+4.  确认删除。
 
-Once deleted, the webhook URL will stop working immediately. Messages previously posted by the webhook will remain in the channel but show "Deleted Webhook" as the author.
+删除后，Webhook URL 立即停止工作。此前由该 Webhook 发送的消息仍保留在频道中，但作者显示为"已删除的 Webhook"。
 
-### Posting Messages via Webhook
+### 通过 Webhook 发送消息
 
-To post a message from an external service, send a `POST` request to the webhook URL with a JSON payload.
+要从外部服务发送消息，请向 Webhook URL 发送包含 JSON 负载的 `POST` 请求。
 
-#### Request Format
+#### 请求格式
 
-**Endpoint:** `POST {webhook_url}`
-**Headers:** `Content-Type: application/json`
-**Body:**
+**端点：** `POST {webhook_url}`
+**请求头：** `Content-Type: application/json`
+**请求体：**
 
 ```json
 {
-  "content": "Your message content here"
+  "content": "您的消息内容"
 }
 ```
 
-#### Example: Using cURL
+#### 示例：使用 cURL
 
 ```bash
 curl -X POST "https://your-instance.com/api/channels/webhooks/{webhook_id}/{token}" \
   -H "Content-Type: application/json" \
-  -d '{"content": "Deployment to production completed successfully! 🚀"}'
+  -d '{"content": "生产环境部署成功完成！🚀"}'
 ```
 
-#### Example: Using Python
+#### 示例：使用 Python
 
 ```python
 import requests
 
 webhook_url = "https://your-instance.com/api/channels/webhooks/{webhook_id}/{token}"
 message = {
-    "content": "Build #1234 failed: Unit tests did not pass."
+    "content": "构建 #1234 失败：单元测试未通过。"
 }
 
 response = requests.post(webhook_url, json=message)
 print(response.json())
 ```
 
-#### Response Format
+#### 响应格式
 
-On success, the webhook will return:
+成功时，Webhook 将返回：
 
 ```json
 {
@@ -216,32 +216,32 @@ On success, the webhook will return:
 }
 ```
 
-### Security Considerations
+### 安全注意事项
 
--   **URL Protection:** Webhook URLs contain authentication tokens. Keep them secure and don't expose them in public repositories or logs.
--   **Channel Access:** Anyone with the webhook URL can post to the channel. Only share the URL with trusted services.
--   **Message Content:** Validate and sanitize message content on the sending side to prevent injection attacks.
--   **Regeneration:** If a webhook URL is compromised, delete the webhook and create a new one.
+-   **URL 保护：** Webhook URL 包含身份验证令牌，请妥善保管，不要在公共仓库或日志中暴露。
+-   **频道访问：** 任何拥有 Webhook URL 的人都可以向频道发送消息。仅与可信服务共享 URL。
+-   **消息内容：** 在发送端验证和过滤消息内容，防止注入攻击。
+-   **重新生成：** 如果 Webhook URL 泄露，请删除该 Webhook 并创建新的。
 
-### Webhook Identity
+### Webhook 身份
 
-Messages posted via webhooks have a special identity system:
-- They appear with the webhook's **name** and **profile image**
-- The user role is marked as **"webhook"** to distinguish from regular users
-- If a webhook is deleted, its messages remain visible but show "Deleted Webhook" with the current webhook name no longer displayed
-- Each message stores the webhook ID in its metadata, allowing proper attribution even if the webhook is later modified or deleted
+通过 Webhook 发送的消息具有特殊的身份系统：
+- 消息以 Webhook 的**名称**和**头像图片**显示
+- 用户角色标记为 **"webhook"**，以区别于普通用户
+- 如果 Webhook 被删除，其消息仍然可见，但显示"已删除的 Webhook"，当前 Webhook 名称不再显示
+- 每条消息在其元数据中存储 Webhook ID，即使 Webhook 后来被修改或删除，也能正确归因
 
-## Troubleshooting
+## 故障排查
 
-If you're not receiving webhook notifications, here are a few things to check:
+如果您没有收到 Webhook 通知，请检查以下几点：
 
--   **Verify the URL:** Ensure the webhook URL is correct and properly pasted into the settings field.
--   **Service Configuration:** Double-check that the webhook is set up correctly in the external service (e.g., Discord, Slack).
--   **Firewall/Proxy:** Make sure your network or firewall is not blocking outgoing requests from the Open WebUI server.
--   **Open WebUI Logs:** Check the Open WebUI server logs for any error messages related to webhook failures.
+-   **验证 URL：** 确保 Webhook URL 正确并已正确粘贴到设置字段中。
+-   **服务配置：** 仔细检查 Webhook 是否在外部服务（例如 Discord、Slack）中正确设置。
+-   **防火墙/代理：** 确保您的网络或防火墙没有阻止来自 Open WebUI 服务器的传出请求。
+-   **Open WebUI 日志：** 检查 Open WebUI 服务器日志中与 Webhook 失败相关的错误消息。
 
 :::note
 
-The webhook features in Open WebUI are continuously being improved. Stay tuned for more event types and customization options in future updates.
+Open WebUI 中的 Webhook 功能正在持续改进。请关注未来更新中的更多事件类型和自定义选项。
 
 :::

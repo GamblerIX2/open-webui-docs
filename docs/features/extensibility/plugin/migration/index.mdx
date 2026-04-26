@@ -1,22 +1,22 @@
 ---
 sidebar_position: 9999
-title: "Migration Guides"
+title: "迁移指南"
 ---
 
-# 🚚 Plugin Migration Guides
+# 🚚 插件迁移指南
 
-Open WebUI occasionally ships releases that require updates to existing Tools, Functions, Pipes, Filters, and Actions. This section collects the per-version migration guides for plugin authors.
+Open WebUI 偶尔会发布需要更新现有 Tools、Functions、Pipes、Filters 和 Actions 的版本。本节为插件作者收集了各版本的迁移指南。
 
-Pick the guide that matches the version you are upgrading **from**. If you are crossing multiple major versions, work through the guides in order.
-
----
-
-## Available Guides
-
-- **[Migrating to 0.5.0](/features/extensibility/plugin/migration/to-0.5.0)** — the `apps` → `routers` restructure, unified `chat_completion` endpoint, and the new `__request__` parameter in function signatures.
-- **[Migrating to 0.9.0](/features/extensibility/plugin/migration/to-0.9.0)** — the backend-wide sync → async refactor. Database model methods and most `open_webui.*` helpers now return coroutines and must be awaited.
+选择与你**从**中升级的版本匹配的指南。如果你跨越多个主要版本，请按顺序阅读各指南。
 
 ---
 
-💬 **Questions or Feedback?**
-If you run into issues upgrading a plugin, open a [GitHub issue](https://github.com/open-webui/open-webui) or ask in the community forums.
+## 可用指南
+
+- **[迁移到 0.5.0](/features/extensibility/plugin/migration/to-0.5.0)** — `apps` → `routers` 重构、统一的 `chat_completion` 端点以及函数签名中新增的 `__request__` 参数。
+- **[迁移到 0.9.0](/features/extensibility/plugin/migration/to-0.9.0)** — 后端全面从同步改为异步。数据库模型方法和大多数 `open_webui.*` 辅助函数现在返回协程，必须使用 `await`。
+
+---
+
+💬 **问题或反馈？**
+如果在升级插件时遇到问题，请提交 [GitHub issue](https://github.com/open-webui/open-webui) 或在社区论坛中提问。

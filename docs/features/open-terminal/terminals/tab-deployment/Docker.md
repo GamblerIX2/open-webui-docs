@@ -1,12 +1,12 @@
-## Prerequisites
+## 前置条件
 
-- [Docker Engine](https://docs.docker.com/engine/install/) installed and running
-- Open WebUI running (or ready to deploy alongside)
-- [Open WebUI Enterprise License](https://openwebui.com/enterprise) (required for production use)
+- 已安装并运行 [Docker Engine](https://docs.docker.com/engine/install/)
+- Open WebUI 正在运行（或准备好一同部署）
+- [Open WebUI 企业版许可证](https://openwebui.com/enterprise)（生产环境使用必须）
 
-## Quick start with Docker Compose
+## 使用 Docker Compose 快速开始
 
-This Compose file deploys Open WebUI and the Terminals orchestrator together.
+此 Compose 文件将 Open WebUI 和 Terminals 编排器一起部署。
 
 ```yaml
 services:
@@ -61,65 +61,65 @@ networks:
     name: open-webui-network
 ```
 
-Set the shared API key in a `.env` file next to your Compose file:
+在 Compose 文件旁边的 `.env` 文件中设置共享 API 密钥：
 
 ```env
 TERMINALS_API_KEY=change-me-to-a-strong-random-value
 ```
 
-Then start everything:
+然后启动所有内容：
 
 ```bash
 docker compose up -d
 ```
 
-Open WebUI will be available at `http://localhost:3000`. When any user activates a terminal, the orchestrator provisions their personal container automatically.
+Open WebUI 将在 `http://localhost:3000` 上可用。当任何用户激活终端时，编排器会自动配置其个人容器。
 
-:::warning Docker socket access
-The orchestrator needs access to the Docker socket (`/var/run/docker.sock`) to manage containers. For production, use a Docker socket proxy like [Tecnativa/docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy) to restrict the API calls it can make.
+:::warning Docker 套接字访问
+编排器需要访问 Docker 套接字 (`/var/run/docker.sock`) 来管理容器。在生产环境中，请使用 Docker 套接字代理，如 [Tecnativa/docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy)，以限制其可以进行的 API 调用。
 :::
 
 ---
 
 <details>
-<summary>Configuration reference</summary>
+<summary>配置参考</summary>
 
-| Variable | Default | Description |
+| 变量 | 默认值 | 描述 |
 | :--- | :--- | :--- |
-| `TERMINALS_BACKEND` | `docker` | Backend type. Set to `docker` for this deployment mode. |
-| `TERMINALS_API_KEY` | (empty) | Shared secret for authenticating requests from Open WebUI. Required. |
-| `TERMINALS_IMAGE` | `ghcr.io/open-webui/open-terminal:latest` | Default container image for user terminals. |
-| `TERMINALS_PORT` | `3000` | Port the orchestrator listens on. |
-| `TERMINALS_HOST` | `0.0.0.0` | Address the orchestrator binds to. |
-| `TERMINALS_NETWORK` | (empty) | Docker network for user containers. When set, containers communicate by name. |
-| `TERMINALS_DOCKER_HOST` | `127.0.0.1` | Address for published container ports. Only relevant without `TERMINALS_NETWORK`. |
-| `TERMINALS_DATA_DIR` | `data/terminals` | Host directory for per-user workspace data. |
-| `TERMINALS_IDLE_TIMEOUT_MINUTES` | `0` (disabled) | Minutes of inactivity before a container is stopped. Set to `30` for typical usage. |
-| `TERMINALS_MAX_CPU` | (empty) | CPU limit for user containers (e.g., `2`). |
-| `TERMINALS_MAX_MEMORY` | (empty) | Memory limit for user containers (e.g., `4Gi`). |
-| `TERMINALS_OPEN_WEBUI_URL` | (empty) | If set, validates incoming JWTs against this Open WebUI instance instead of using `TERMINALS_API_KEY`. |
+| `TERMINALS_BACKEND` | `docker` | 后端类型。在此部署模式下设置为 `docker`。 |
+| `TERMINALS_API_KEY` | (空) | 用于认证来自 Open WebUI 请求的共享密钥。必须提供。 |
+| `TERMINALS_IMAGE` | `ghcr.io/open-webui/open-terminal:latest` | 用户终端的默认容器镜像。 |
+| `TERMINALS_PORT` | `3000` | 编排器监听的端口。 |
+| `TERMINALS_HOST` | `0.0.0.0` | 编排器绑定的地址。 |
+| `TERMINALS_NETWORK` | (空) | 用户容器的 Docker 网络。设置后，容器通过名称进行通信。 |
+| `TERMINALS_DOCKER_HOST` | `127.0.0.1` | 发布容器端口的地址。仅在没有 `TERMINALS_NETWORK` 时相关。 |
+| `TERMINALS_DATA_DIR` | `data/terminals` | 存储每个用户工作区数据的宿主机目录。 |
+| `TERMINALS_IDLE_TIMEOUT_MINUTES` | `0` (禁用) | 容器停止前的非活动分钟数。对于典型使用，请设置为 `30`。 |
+| `TERMINALS_MAX_CPU` | (空) | 用户容器的 CPU 限制（例如 `2`）。 |
+| `TERMINALS_MAX_MEMORY` | (空) | 用户容器的内存限制（例如 `4Gi`）。 |
+| `TERMINALS_OPEN_WEBUI_URL` | (空) | 如果设置，则针对此 Open WebUI 实例验证传入的 JWT，而不是使用 `TERMINALS_API_KEY`。 |
 
 </details>
 
 ---
 
 <details>
-<summary>Container lifecycle details</summary>
+<summary>容器生命周期详情</summary>
 
-**Naming.** Containers are named `terminals-{policy_id}-{user_id}`, making them easy to filter with `docker ps --filter "label=managed-by=terminals"`.
+**命名。** 容器命名为 `terminals-{policy_id}-{user_id}`，从而便于使用 `docker ps --filter "label=managed-by=terminals"` 进行过滤。
 
-**Health checks.** After creating a container, the orchestrator polls its `/health` endpoint until it returns HTTP 200 (up to 15 seconds). Only then does it start proxying traffic.
+**健康检查。** 创建容器后，编排器会轮询其 `/health` 端点，直到返回 HTTP 200（最多 15 秒）。只有这样它才开始代理流量。
 
-**Reconciliation.** If the orchestrator restarts, it rediscovers existing running containers by their labels and recovers their API keys from the container configuration. This prevents duplicate containers from being created.
+**协调（Reconciliation）。** 如果编排器重新启动，它会通过标签重新发现现有的正在运行的容器，并从容器配置中恢复它们的 API 密钥。这可以防止创建重复的容器。
 
-**Conflict handling.** If a container with the same name already exists (e.g., from a previous failed cleanup), the orchestrator force-removes the old container and retries up to 3 times.
+**冲突处理。** 如果同名的容器已经存在（例如，来自之前失败的清理），编排器会强制删除旧容器并最多重试 3 次。
 
 </details>
 
 ---
 
-## Limitations
+## 限制
 
-- **Single host.** All user containers run on one Docker host. For high availability or larger teams, use the Kubernetes Operator backend.
-- **No built-in HA.** If the orchestrator goes down, active terminal sessions are interrupted (though containers keep running and are reconciled on restart).
-- **Docker socket required.** The orchestrator needs access to the Docker socket to manage containers.
+- **单主机。** 所有用户容器都在一个 Docker 主机上运行。如需高可用性或服务更大的团队，请使用 Kubernetes Operator 后端。
+- **没有内置高可用性。** 如果编排器宕机，活动的终端会话将被中断（尽管容器继续运行并在重新启动时被协调）。
+- **需要 Docker 套接字。** 编排器需要访问 Docker 套接字来管理容器。

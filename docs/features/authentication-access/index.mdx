@@ -1,80 +1,80 @@
 ---
 sidebar_position: 0
-title: "Authentication & Access"
+title: "认证与访问控制"
 ---
 
-# 🔐 Authentication & Access
+# 🔐 认证与访问控制
 
-**Control who gets in, what they can do, and how your instance integrates with your identity stack.**
+**控制谁可以登录、他们能做什么，以及您的实例如何与身份体系集成。**
 
-Open WebUI is multi-user from day one. Whether you're running a personal instance or managing thousands of seats across an organization, you have full control over authentication, authorization, and programmatic access. Connect your identity provider, define granular permissions, and automate user lifecycle management, all without touching a line of code.
+Open WebUI 从第一天起就支持多用户。无论您是在运行个人实例还是跨组织管理数千个席位，您都可以完全控制认证、授权和程序化访问。连接您的身份提供商、定义细粒度权限、自动化用户生命周期管理——无需修改一行代码。
 
 ---
 
-## What's In This Section
+## 本节内容
 
 | | |
 | :--- | :--- |
-| 👥 **[RBAC](./rbac)** | Roles, groups, and per-resource permissions. Define who can access what |
-| 🔑 **[SSO / OIDC](./auth/sso)** | Federated authentication with Google, Microsoft, Okta, Keycloak, or any OIDC provider |
-| 📂 **[LDAP](./auth/ldap)** | Authenticate against your existing directory service |
-| 📋 **[SCIM 2.0](./auth/scim)** | Automated user and group provisioning and deprovisioning from your IdP |
-| 🔐 **[API Keys](./api-keys)** | Programmatic access for scripts, bots, pipelines, and integrations |
+| 👥 **[RBAC](./rbac)** | 角色、用户组和按资源设置的权限。定义谁可以访问什么 |
+| 🔑 **[SSO / OIDC](./auth/sso)** | 使用 Google、Microsoft、Okta、Keycloak 或任何 OIDC 提供商进行联合认证 |
+| 📂 **[LDAP](./auth/ldap)** | 对您现有的目录服务进行认证 |
+| 📋 **[SCIM 2.0](./auth/scim)** | 从您的 IdP 自动化用户和用户组的预配与取消预配 |
+| 🔐 **[API Keys](./api-keys)** | 用于脚本、机器人、流水线和集成的程序化访问 |
 
 ---
 
-## How It Fits Together
+## 整体架构
 
 ```mermaid
 flowchart LR
-    IdP["Identity Provider<br/>(Google, Okta, LDAP...)"] -->|SSO / OIDC / LDAP| Auth["Authentication"]
-    IdP -->|SCIM 2.0| Provision["User & Group<br/>Provisioning"]
-    Auth --> RBAC["RBAC Engine"]
+    IdP["身份提供商<br/>(Google、Okta、LDAP...)"] -->|SSO / OIDC / LDAP| Auth["认证"]
+    IdP -->|SCIM 2.0| Provision["用户 & 用户组<br/>预配"]
+    Auth --> RBAC["RBAC 引擎"]
     Provision --> RBAC
-    RBAC -->|Roles + Groups| Permissions["Per-User<br/>Permissions"]
-    Permissions --> Resources["Models · Knowledge<br/>Tools · Channels"]
+    RBAC -->|角色 + 用户组| Permissions["按用户<br/>权限"]
+    Permissions --> Resources["模型 · 知识库<br/>工具 · 频道"]
     APIKeys["API Keys"] -->|Bearer Token| RBAC
 ```
 
-1. **Users authenticate** via SSO, OIDC, LDAP, or local credentials.
-2. **SCIM provisions** users and groups automatically from your identity provider.
-3. **RBAC determines access** based on roles (Admin, User) and group memberships.
-4. **Permissions are additive**: each group membership adds capabilities, never removes them.
-5. **API keys** inherit the creating user's full permissions for programmatic access.
+1. **用户通过** SSO、OIDC、LDAP 或本地凭据**进行认证**。
+2. **SCIM 从身份提供商自动预配**用户和用户组。
+3. **RBAC 根据**角色（管理员、用户）和用户组成员资格**确定访问权限**。
+4. **权限是累加的**：每个用户组成员资格都会增加能力，而不会减少。
+5. **API Keys** 继承创建用户的完整权限，用于程序化访问。
 
-:::tip SSO-Focused UX
-In SSO-only environments, you can disable local password auth with `ENABLE_PASSWORD_AUTH=false` and hide account-page password update controls with `ENABLE_PASSWORD_CHANGE_FORM=false`.
+:::tip 以 SSO 为中心的用户体验
+在仅 SSO 的环境中，您可以通过 `ENABLE_PASSWORD_AUTH=false` 禁用本地密码认证，并通过 `ENABLE_PASSWORD_CHANGE_FORM=false` 隐藏账户页面中的密码更新控件。
 :::
 
 ---
 
-## Quick Start
+## 快速开始
 
-### Solo or small team? Start simple
+### 个人或小团队？从简单开始
 
-Open WebUI works out of the box with local email/password authentication. No external identity provider required. Create accounts, assign admin or user roles, and you're done.
+Open WebUI 开箱即用，支持本地邮箱/密码认证。不需要外部身份提供商。创建账户、分配管理员或用户角色，即可完成。
 
-### Organization? Layer in SSO and SCIM
+### 组织？分层引入 SSO 和 SCIM
 
-1. **[Set up SSO](./auth/sso)**: Configure your identity provider for single sign-on
-2. **[Configure RBAC](./rbac)**: Create groups, assign permissions, and set up access control lists
-3. **[Enable SCIM](./auth/scim)** *(optional)*: Automate user lifecycle from your IdP
-4. **[Generate API keys](./api-keys)** *(optional)*: Enable programmatic access for automation
+1. **[设置 SSO](./auth/sso)**：配置您的身份提供商以实现单点登录
+2. **[配置 RBAC](./rbac)**：创建用户组、分配权限并设置访问控制列表
+3. **[启用 SCIM](./auth/scim)** *（可选）*：从您的 IdP 自动化用户生命周期
+4. **[生成 API Keys](./api-keys)** *（可选）*：为自动化启用程序化访问
 
 ---
 
-## Key Concepts
+## 核心概念
 
-### Additive permissions
+### 累加权限
 
-Open WebUI's security model is **additive**. Users start with their role's default permissions, and group memberships only ever *add* capabilities. A user's effective permissions are the union of everything granted by their role and all their groups.
+Open WebUI 的安全模型是**累加**的。用户从其角色的默认权限开始，用户组成员资格只会*增加*能力。用户的有效权限是其角色和所有用户组授予的所有权限的并集。
 
-### Per-resource access control
+### 按资源访问控制
 
-Models, Knowledge bases, Tools, and Skills all support fine-grained access control. Resources are **private by default**. The creator controls who can see and use them via user grants, group grants, or public visibility.
+模型、知识库、工具和 Skills 都支持细粒度访问控制。资源**默认为私有**。创建者通过用户授权、用户组授权或公开可见性来控制谁可以查看和使用它们。
 
-### Admin vs. User
+### 管理员与用户
 
-There are two primary roles. **Admins** have full system access. **Users** have capabilities defined by default permissions plus group memberships. A third role, **Pending**, holds new sign-ups in a queue for admin approval.
+有两种主要角色。**管理员**拥有完整的系统访问权限。**用户**的能力由默认权限加上用户组成员资格定义。第三种角色**待审批**，将新注册用户放入队列等待管理员批准。
 
-[**Roles →**](./rbac/roles) · [**Permissions →**](./rbac/permissions) · [**Groups →**](./rbac/groups)
+[**角色 →**](./rbac/roles) · [**权限 →**](./rbac/permissions) · [**用户组 →**](./rbac/groups)

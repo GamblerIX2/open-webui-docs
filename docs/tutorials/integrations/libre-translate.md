@@ -4,22 +4,20 @@ title: "LibreTranslate"
 ---
 
 :::warning
-
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
-
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 :::
 
-## Overview
+## 概述
 
-LibreTranslate is a free and open-source machine translation API that supports a wide range of languages. LibreTranslate is a self hosted, offline capable, and easy to setup, and unlike other APIs, it doesn't rely on proprietary providers such as Google or Azure to perform translations. Instead, its translation engine is powered by the open source [Argos Translate](https://github.com/argosopentech/argos-translate) library. You can integrate LibreTranslate with Open WebUI to leverage its machine translation capabilities. This documentation provides a step-by-step guide to setting up LibreTranslate in Docker and configuring the integration within Open WebUI.
+LibreTranslate 是一个免费开源的机器翻译 API，支持多种语言。LibreTranslate 可自托管、支持离线使用且易于安装，与其他 API 不同，它不依赖 Google 或 Azure 等专有服务商进行翻译。其翻译引擎由开源的 [Argos Translate](https://github.com/argosopentech/argos-translate) 库驱动。您可以将 LibreTranslate 与 Open WebUI 集成以利用其机器翻译功能。本文档提供了在 Docker 中设置 LibreTranslate 并在 Open WebUI 中配置集成的分步指南。
 
-## Setting up LibreTranslate in Docker
+## 在 Docker 中设置 LibreTranslate
 
-To set up LibreTranslate in Docker, follow these steps:
+按照以下步骤在 Docker 中设置 LibreTranslate：
 
-### Step 1: Create a Docker Compose File
+### 第 1 步：创建 Docker Compose 文件
 
-Create a new file named `docker-compose.yml` in a directory of your choice. Add the following configuration to the file:
+在您选择的目录中创建一个名为 `docker-compose.yml` 的新文件，并添加以下配置：
 
 ```yml
 services:
@@ -44,9 +42,9 @@ volumes:
   libretranslate_api_keys:
 ```
 
-### Step 2: Create a `stack.env` File
+### 第 2 步：创建 `stack.env` 文件
 
-Create a new file named `stack.env` in the same directory as your `docker-compose.yml` file. Add the following configuration to the file:
+在与 `docker-compose.yml` 文件相同的目录中创建名为 `stack.env` 的新文件，并添加以下配置：
 
 ```bash
 
@@ -64,39 +62,39 @@ LT_THREADS="12"
 LT_FRONTEND_TIMEOUT="2000"
 ```
 
-### Step 3: Run the Docker Compose File
+### 第 3 步：运行 Docker Compose 文件
 
-Run the following command to start the LibreTranslate service:
+运行以下命令启动 LibreTranslate 服务：
 
 ```bash
 docker-compose up -d
 ```
 
-This will start the LibreTranslate service in detached mode.
+这将以分离模式启动 LibreTranslate 服务。
 
-## Configuring the Integration in Open WebUI
+## 在 Open WebUI 中配置集成
 
-Once you have LibreTranslate up and running in Docker, you can configure the integration within Open WebUI. There are several community integrations available, including:
+在 Docker 中启动并运行 LibreTranslate 后，您可以在 Open WebUI 中配置集成。目前有多个社区集成可供选择，包括：
 
 - [LibreTranslate Filter Function](https://openwebui.com/posts/4993ae7e-bd2a-41dc-9e88-9941854495cc)
 - [LibreTranslate Action Function](https://openwebui.com/posts/103a14c1-174a-4445-bb9b-d48640e43b07)
 - [MultiLanguage LibreTranslate Action Function](https://openwebui.com/posts/f250971e-8163-4a0b-a30c-45fdfb2ba4f8)
 - [LibreTranslate Filter Pipeline](https://github.com/open-webui/pipelines/blob/main/examples/filters/libretranslate_filter_pipeline.py)
 
-Choose the integration that best suits your needs and follow the instructions to configure it within Open WebUI.
+选择最适合您需求的集成，并按照说明在 Open WebUI 中进行配置。
 
-Supported languages for the LibreTranslate pipeline & function:
-Really just all the languages that can be found within LibreTranslate, but here is the list:
+LibreTranslate pipeline 和 function 支持的语言：
+基本上涵盖 LibreTranslate 中的所有语言，以下是列表：
 
 ```txt
 Albanian, Arabic, Azerbaijani, Bengali, Bulgarian, Catalan, Valencian, Chinese, Czech, Danish, Dutch, English, Flemish, Esperanto, Estonian, Finnish, French, German, Greek, Hebrew, Hindi, Hungarian, Indonesian, Irish, Italian, Japanese, Korean, Latvian, Lithuanian, Malay, Persian, Polish, Portuguese, Romanian, Moldavian, Moldovan, Russian, Slovak, Slovenian, Spanish, Castilian, Swedish, Tagalog, Thai, Turkish, Ukrainian, Urdu
 ```
 
-## Troubleshooting
+## 故障排除
 
-- Make sure the LibreTranslate service is running and accessible.
-- Verify that the Docker configuration is correct.
-- Check the LibreTranslate logs for any errors.
+- 确保 LibreTranslate 服务正在运行且可访问。
+- 验证 Docker 配置是否正确。
+- 检查 LibreTranslate 日志是否有任何错误。
 
 ## Benefits of Integration
 

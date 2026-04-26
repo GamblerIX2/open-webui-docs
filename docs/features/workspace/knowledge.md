@@ -1,151 +1,151 @@
 ---
 sidebar_position: 4
-title: "Knowledge"
+title: "知识库"
 ---
 
-# 📚 Knowledge
+# 📚 知识库
 
-**Give your AI access to your documents and let it find what matters.**
+**让您的 AI 访问文档，并找到最相关的内容。**
 
-Knowledge is where you store the files and collections that your AI can search, read, and reason over. Upload PDFs, spreadsheets, code, or any text-based document. Build collections around projects, teams, or topics. When a model needs an answer, it pulls from your knowledge base instead of guessing.
+知识库是您存储 AI 可以搜索、阅读和推理的文件和集合的地方。上传 PDF、电子表格、代码或任何基于文本的文档。围绕项目、团队或主题构建集合。当模型需要答案时，它会从您的知识库中提取，而不是靠猜测。
 
-Unlike [Notes](/features/notes), which inject full content into every message, Knowledge uses retrieval (RAG) to find the relevant chunks on demand. This makes it the right choice for large document sets where injecting everything would exceed the context window.
-
----
-
-## Why Knowledge?
-
-### Your documents become searchable by AI
-
-Upload a folder of contracts, technical specs, or research papers. The AI searches them by meaning, not just keywords, and cites where it found the answer.
-
-### Two retrieval modes for different needs
-
-Choose **Focused Retrieval** (RAG) to let the AI search large collections efficiently, or **Full Context** to inject an entire document word-for-word when precision matters.
-
-### Autonomous exploration with native function calling
-
-With [native function calling](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models don't just search. They browse your knowledge bases, read files page by page, and synthesize across multiple documents without manual prompting.
-
-### Scoped access keeps things organized
-
-Attach specific knowledge bases to a model so it only searches what's relevant. Or leave it unscoped and let the model discover everything the user has access to.
+与将全部内容注入每条消息的[笔记](/features/notes)不同，知识库使用检索（RAG）按需找到相关片段。这使其成为注入所有内容会超出上下文窗口的大型文档集的正确选择。
 
 ---
 
-## Key Features
+## 为什么使用知识库？
+
+### 您的文档变得可由 AI 搜索
+
+上传一批合同、技术规格或研究论文。AI 按语义而非仅仅关键词搜索它们，并引用答案的来源。
+
+### 满足不同需求的两种检索模式
+
+选择**专注检索**（RAG）让 AI 高效搜索大型集合，或选择**全文上下文**在精度重要时逐字注入整个文档。
+
+### 通过原生函数调用自主探索
+
+启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型不只是搜索。它们可以浏览您的知识库、逐页阅读文件，并在没有手动提示的情况下跨多个文档综合内容。
+
+### 有序范围访问
+
+将特定知识库附加到模型，使其只搜索相关内容。或不附加，让模型发现用户有权访问的所有内容。
+
+---
+
+## 主要功能
 
 | | |
 | :--- | :--- |
-| 📄 **9 vector databases** | ChromaDB and PGVector (officially maintained), plus community options: Qdrant, Milvus, OpenSearch, Elasticsearch, and more |
-| 🔍 **Hybrid search** | BM25 keyword search + vector search with cross-encoder reranking |
-| 📑 **5 extraction engines** | Tika, Docling, Azure, Mistral OCR, custom loaders |
-| 🤖 **Agentic retrieval** | Models browse, search, and read your documents autonomously |
-| 📄 **Full context mode** | Inject entire documents with no chunking |
-| 📦 **Export and API** | Back up knowledge bases as zip files, manage via REST API |
+| 📄 **9 种向量数据库** | ChromaDB 和 PGVector（官方维护），以及社区选项：Qdrant、Milvus、OpenSearch、Elasticsearch 等 |
+| 🔍 **混合搜索** | BM25 关键词搜索 + 向量搜索，配合交叉编码器重排序 |
+| 📑 **5 种提取引擎** | Tika、Docling、Azure、Mistral OCR、自定义加载器 |
+| 🤖 **智能体检索** | 模型自主浏览、搜索和阅读您的文档 |
+| 📄 **全文上下文模式** | 无分块地注入整个文档 |
+| 📦 **导出和 API** | 将知识库备份为 zip 文件，通过 REST API 管理 |
 
 ---
 
-## Retrieval Modes
+## 检索模式
 
-When attaching files or knowledge bases to a model, click on the attached item to toggle between modes:
+将文件或知识库附加到模型时，点击已附加项在两种模式之间切换：
 
-### 🔍 Focused Retrieval (default)
+### 🔍 专注检索（默认）
 
-Uses RAG to find and inject the most relevant chunks based on the user's query. When hybrid search is enabled (`ENABLE_RAG_HYBRID_SEARCH`), retrieval combines BM25 keyword search with vector search, plus reranking for accuracy.
+使用 RAG 根据用户查询找到并注入最相关的片段。当启用混合搜索（`ENABLE_RAG_HYBRID_SEARCH`）时，检索结合了 BM25 关键词搜索和向量搜索，以及用于准确性的重排序。
 
-Best for large document sets where only specific sections are relevant.
+最适合只有特定部分相关的大型文档集。
 
-### 📄 Full Context
+### 📄 全文上下文
 
-Injects the complete content of the file into every message. No chunking, no semantic search. Always injected regardless of native function calling settings, so the model doesn't need to call any tools to access it.
+将文件的完整内容注入每条消息。无分块，无语义搜索。无论原生函数调用设置如何，始终注入，因此模型无需调用任何工具来访问它。
 
-Best for short reference documents, style guides, or context that's always relevant.
+最适合简短的参考文档、风格指南，或始终相关的上下文。
 
 ---
 
-## Agentic Knowledge Tools
+## 智能体知识工具
 
-With [native function calling](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models interact with your knowledge bases using built-in tools. Which tools appear depends on whether specific knowledge is attached to the model:
+启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型使用内置工具与您的知识库交互。显示哪些工具取决于是否有特定知识库附加到模型：
 
-| Tool | Attached KB | No KB attached | Description |
+| 工具 | 已附加知识库 | 未附加知识库 | 说明 |
 |------|:-----------:|:--------------:|-------------|
-| `list_knowledge` | ✅ | ❌ | List all KBs, files, and notes attached to the model |
-| `list_knowledge_bases` | ❌ | ✅ | Browse available knowledge bases with file counts |
-| `search_knowledge_bases` | ❌ | ✅ | Find knowledge bases by name or description |
-| `query_knowledge_bases` | ❌ | ✅ | Search KB names/descriptions by semantic similarity |
-| `search_knowledge_files` | ✅ (scoped) | ✅ (all) | Search files by filename |
-| `query_knowledge_files` | ✅ (scoped) | ✅ | Search file contents using the RAG pipeline |
-| `view_file` | ✅ | ❌ | Read file content with pagination (default 10K chars, cap 100K) |
-| `view_knowledge_file` | ✅ | ✅ | Read file content from any accessible KB |
-| `view_note` | ✅ | ❌ | Read attached notes |
+| `list_knowledge` | ✅ | ❌ | 列出附加到模型的所有知识库、文件和笔记 |
+| `list_knowledge_bases` | ❌ | ✅ | 浏览可用知识库（带文件数量） |
+| `search_knowledge_bases` | ❌ | ✅ | 按名称或描述查找知识库 |
+| `query_knowledge_bases` | ❌ | ✅ | 通过语义相似度搜索知识库名称/描述 |
+| `search_knowledge_files` | ✅（有范围） | ✅（全部） | 按文件名搜索文件 |
+| `query_knowledge_files` | ✅（有范围） | ✅ | 使用 RAG 流水线搜索文件内容 |
+| `view_file` | ✅ | ❌ | 分页读取文件内容（默认 10K 字符，上限 100K） |
+| `view_knowledge_file` | ✅ | ✅ | 从任何可访问的知识库读取文件内容 |
+| `view_note` | ✅ | ❌ | 读取附加的笔记 |
 
-The key split: `list_knowledge` and `list_knowledge_bases` are mutually exclusive. Attaching a KB scopes the model to only those documents. Leaving it unscoped lets the model discover everything the user has access to.
+关键区别：`list_knowledge` 和 `list_knowledge_bases` 互斥。附加知识库会将模型范围限定为只处理那些文档。不附加则让模型发现用户有权访问的所有内容。
 
-Autonomous exploration works best with frontier models that can intelligently chain search, browse, and synthesize. Smaller models may struggle with multi-step retrieval. Administrators can disable the **Knowledge Base** tool category per-model in **Workspace > Models > Edit > Builtin Tools**.
+自主探索在能够智能链接搜索、浏览和综合的前沿模型上效果最佳。较小的模型可能难以处理多步检索。管理员可以在**工作区 > 模型 > 编辑 > 内置工具**中按模型禁用**知识库**工具类别。
 
-For the full list of built-in agentic tools, see the [Native/Agentic Mode Tools Guide](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode).
+有关所有内置智能体工具的完整列表，请参阅[原生/智能体模式工具指南](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode)。
 
-:::warning Knowledge is NOT auto-injected with native function calling
+:::warning 原生函数调用时知识库不会自动注入
 
-When native function calling is enabled, attached knowledge is **not automatically injected**. The model must call the knowledge tools to search and retrieve. If your model isn't using attached knowledge:
+启用原生函数调用时，附加的知识库**不会自动注入**。模型必须调用知识工具来搜索和检索。如果您的模型未使用附加的知识库：
 
-1. **Add system prompt instructions** telling the model to use `list_knowledge` and `query_knowledge_files`.
-2. **Disable native function calling** for that model to restore automatic RAG injection.
-3. **Switch to Full Context mode** for the attachment to bypass RAG entirely.
+1. **添加系统提示词指令**，告诉模型使用 `list_knowledge` 和 `query_knowledge_files`。
+2. **禁用该模型的原生函数调用**，恢复自动 RAG 注入。
+3. **将附件切换为全文上下文模式**，完全绕过 RAG。
 :::
 
 ---
 
-## Setting Up a Knowledge Base
+## 设置知识库
 
-1. Click **Workspace** in the sidebar, then select **Knowledge**.
-2. Click **+ New Knowledge** and give it a name and description.
-3. Upload files or add existing documents.
-4. Attach the knowledge base to a model in **Workspace > Models > Edit**, or reference it in chat with `#`.
+1. 点击侧边栏中的**工作区**，然后选择**知识库**。
+2. 点击 **+ 新建知识库**，输入名称和描述。
+3. 上传文件或添加现有文档。
+4. 在**工作区 > 模型 > 编辑**中将知识库附加到模型，或在对话中用 `#` 引用它。
 
-### Exporting
+### 导出
 
-Admins can export an entire knowledge base as a zip file via the item menu (three dots) > **Export**. Files are converted to `.txt` for universal compatibility. Regular users will not see the Export option.
+管理员可以通过项目菜单（三点）> **导出**将整个知识库导出为 zip 文件。文件转换为 `.txt` 以确保通用兼容性。普通用户不会看到导出选项。
 
-### API access
+### API 访问
 
-Knowledge bases can be managed programmatically:
+知识库可以通过编程方式管理：
 
-- `POST /api/v1/files/` - Upload files
-- `GET /api/v1/files/{id}/process/status` - Check processing status
-- `POST /api/v1/knowledge/{id}/file/add` - Add files to a knowledge base
+- `POST /api/v1/files/` - 上传文件
+- `GET /api/v1/files/{id}/process/status` - 检查处理状态
+- `POST /api/v1/knowledge/{id}/file/add` - 向知识库添加文件
 
-File processing happens asynchronously. You must poll the status endpoint until processing completes before adding files to a knowledge base, or you'll get an "empty content" error. See [API Endpoints](/reference/api-endpoints#-retrieval-augmented-generation-rag) for workflow examples.
-
----
-
-## Use Cases
-
-### Project documentation
-
-Upload your team's technical specs, architecture docs, and runbooks into a knowledge base. Attach it to a "Project Assistant" model. The AI answers questions grounded in your actual documentation instead of generic training data.
-
-### Legal and compliance review
-
-Load contracts, policies, and regulatory documents. Ask the AI to find specific clauses, compare terms across agreements, or flag inconsistencies.
-
-### Research synthesis
-
-Add dozens of papers to a knowledge base. The AI searches across all of them to answer questions, find supporting evidence, or identify contradictions between studies.
+文件处理是异步的。在将文件添加到知识库之前，必须轮询状态端点直到处理完成，否则会收到"内容为空"错误。有关工作流示例，请参阅 [API 端点](/reference/api-endpoints#-retrieval-augmented-generation-rag)。
 
 ---
 
-## Limitations
+## 使用场景
 
-### Context window with Full Context mode
+### 项目文档
 
-"Using Entire Document" injects the full text. A large document attached to a model with a small context window will crowd out conversation history.
+将团队的技术规格、架构文档和操作手册上传到知识库。将其附加到"项目助手"模型。AI 根据您的实际文档回答问题，而不是通用的训练数据。
 
-### Processing delay for API uploads
+### 法律和合规审查
 
-Files uploaded via API are processed asynchronously. Attempting to use a file before processing completes will fail silently or return empty results.
+加载合同、政策和监管文件。让 AI 查找特定条款、比较协议间的条款，或标记不一致之处。
 
-### Native function calling changes behavior
+### 研究综合
 
-Enabling native function calling changes how knowledge bases work. If your KB suddenly stops producing results, check whether `function_calling: native` was set in global model defaults. See [Knowledge Base troubleshooting](/troubleshooting/rag#13-knowledge-base-attached-to-model-not-working) for details.
+将数十篇论文添加到知识库。AI 在所有论文中搜索以回答问题、找到支持证据，或识别研究之间的矛盾。
+
+---
+
+## 局限性
+
+### 全文上下文模式的上下文窗口
+
+"使用整个文档"会注入全文。将大型文档附加到上下文窗口较小的模型，将会挤占对话历史。
+
+### API 上传的处理延迟
+
+通过 API 上传的文件是异步处理的。在处理完成之前尝试使用文件将会静默失败或返回空结果。
+
+### 原生函数调用改变行为
+
+启用原生函数调用时，附加的知识库**不会自动注入**。使用上述工具可以管理这种行为。

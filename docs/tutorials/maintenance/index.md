@@ -1,15 +1,15 @@
 ---
 sidebar_position: 0
-title: "Maintenance"
+title: "维护"
 ---
 
-# 🔧 Maintenance Tutorials
+# 🔧 维护教程
 
-**Keep your Open WebUI deployment healthy — backups, storage, offline mode, and database management.**
+**保持 Open WebUI 部署健康稳定：备份、存储、离线模式与数据库管理。**
 
-| Tutorial | What you'll achieve | Details |
+| 教程 | 你将完成什么 | 详情 |
 |----------|-------------------|---------|
-| [Backups](./backups) | Back up and restore all Open WebUI data | 👤 Admin · ⏱️ 15 min |
-| [Database Management](./database) | Manage, migrate, and troubleshoot the application database | 👤 Admin · ⏱️ 20 min |
-| [Offline Mode](./offline-mode) | Run Open WebUI without internet access | 👤 Admin · ⏱️ 30 min |
-| [S3 Storage](./s3-storage) | Store uploads and artifacts in S3-compatible object storage | 👤 Admin · ⏱️ 20 min |
+| [备份](./backups) | 备份并恢复全部 Open WebUI 数据 | 👤 管理员 · ⏱️ 15 分钟 |
+| [数据库管理](./database) | 管理、迁移并排查应用数据库问题 | 👤 管理员 · ⏱️ 20 分钟 |
+| [离线模式](./offline-mode) | 在无互联网访问条件下运行 Open WebUI | 👤 管理员 · ⏱️ 30 分钟 |
+| [S3 存储](./s3-storage) | 将上传文件与产物存储到兼容 S3 的对象存储中 | 👤 管理员 · ⏱️ 20 分钟 |

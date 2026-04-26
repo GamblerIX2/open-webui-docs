@@ -1,143 +1,142 @@
 ---
 sidebar_position: 10
-title: "Unraid Deployment (Beginner-Safe)"
+title: "Unraid 部署（新手友好）"
 ---
 
-# Open WebUI on Unraid (Beginner-Safe)
+# 在 Unraid 上部署 Open WebUI（新手友好）
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the [contributing tutorial](/tutorials/contributing-tutorial).
+本教程由社区贡献，不属于 Open WebUI 团队官方支持范围。内容仅用于演示如何根据你的特定场景自定义 Open WebUI。想参与贡献？请查看[贡献教程](/tutorials/contributing-tutorial)。
 
 :::
 
-This guide is for first-time Unraid users who want a stable Docker deployment with persistent data and safe upgrades.
+本指南面向第一次使用 Unraid 的用户，目标是实现稳定的 Docker 部署、持久化数据和安全升级。
 
-## What You Will Do
+## 你将完成什么
 
-- Create the Open WebUI container in Unraid.
-- Configure persistent storage for `/app/backend/data`.
-- Connect Open WebUI to Ollama.
-- Update Open WebUI without losing data.
-- Troubleshoot reverse-proxy and persistence issues.
+- 在 Unraid 中创建 Open WebUI 容器。
+- 为 `/app/backend/data` 配置持久化存储。
+- 将 Open WebUI 连接到 Ollama。
+- 在不丢失数据的情况下升级 Open WebUI。
+- 排查反向代理与持久化相关问题。
 
-## Before You Start
+## 开始前准备
 
-- Docker is enabled in Unraid.
-- You have a persistent appdata path, for example: `/mnt/user/appdata/open-webui`.
-- Optional: Ollama is running either on:
-  - the Unraid host, or
-  - another reachable machine.
+- 已在 Unraid 中启用 Docker。
+- 已准备持久化 appdata 路径，例如：`/mnt/user/appdata/open-webui`。
+- 可选：Ollama 运行在以下位置之一：
+  - Unraid 主机本机；或
+  - 可连通的其他机器。
 
 :::important
-Persist `/app/backend/data` to a host path. If you skip this, chats/settings can disappear after container recreation.
+务必将 `/app/backend/data` 持久化到宿主机路径。若跳过此步骤，重建容器后聊天记录和设置可能丢失。
 :::
 
-## 1. Create the Container in Unraid
+## 1. 在 Unraid 中创建容器
 
-In **Docker > Add Container**, use:
+在 **Docker > Add Container** 中使用以下配置：
 
-| Field | Value |
+| 字段 | 值 |
 | --- | --- |
 | Name | `open-webui` |
 | Repository | `ghcr.io/open-webui/open-webui:main` |
 | Network Type | `bridge` |
 | Restart Policy | `always` |
 | Container Port | `8080` |
-| Host Port | `3000` (or another free port) |
+| Host Port | `3000`（或其他空闲端口） |
 
-Add a path mapping:
+添加路径映射：
 
-| Config Type | Container Path | Host Path |
+| 配置类型 | 容器路径 | 宿主机路径 |
 | --- | --- | --- |
 | Path | `/app/backend/data` | `/mnt/user/appdata/open-webui` |
 
-## 2. Configure Ollama Connectivity
+## 2. 配置 Ollama 连接
 
-Choose one setup.
+请选择一种方式。
 
-### Ollama on the Unraid Host
+### Ollama 运行在 Unraid 主机
 
-- Extra parameters:
+- 额外参数：
   - `--add-host=host.docker.internal:host-gateway`
-- Environment variable:
+- 环境变量：
   - `OLLAMA_BASE_URL=http://host.docker.internal:11434`
 
-### Ollama on Another Machine
+### Ollama 运行在其他机器
 
-- Environment variable:
+- 环境变量：
   - `OLLAMA_BASE_URL=http://<ollama-lan-ip>:11434`
 
-### Ollama in Another Container
+### Ollama 运行在其他容器
 
-- Put both containers on the same custom Docker network.
-- Set:
+- 将两个容器放到同一个自定义 Docker 网络。
+- 设置：
   - `OLLAMA_BASE_URL=http://<ollama-container-name>:11434`
 
-## 3. First Launch Validation
+## 3. 首次启动验证
 
-1. Start the container.
-2. Open `http://<unraid-ip>:3000`.
-3. Complete initial admin setup.
-4. Open **Settings > Admin Settings > Connections** and verify the Ollama endpoint.
-5. Confirm models appear in the model selector.
+1. 启动容器。
+2. 打开 `http://<unraid-ip>:3000`。
+3. 完成初始化管理员设置。
+4. 进入 **Settings > Admin Settings > Connections**，确认 Ollama 端点配置正确。
+5. 确认模型选择器中能看到模型。
 
-## 4. Persistent Volume Notes
+## 4. 持久化卷注意事项
 
-- Open WebUI state is stored in `/app/backend/data`.
-- Set a fixed `WEBUI_SECRET_KEY` in your Unraid template and keep it the same across recreates to avoid unnecessary session invalidation.
-- Keep host mapping consistent across updates/recreates.
-- Use a directory mapping, not a file mapping.
-- If persistence fails, check folder permissions for `/mnt/user/appdata/open-webui`.
+- Open WebUI 状态数据存储在 `/app/backend/data`。
+- 在 Unraid 模板中设置固定的 `WEBUI_SECRET_KEY`，并在重建容器时保持不变，以避免不必要的会话失效。
+- 在更新或重建时保持宿主机映射路径一致。
+- 使用目录映射，不要使用文件映射。
+- 如持久化失败，请检查 `/mnt/user/appdata/open-webui` 目录权限。
 
-## 5. Upgrade Steps (Safe Workflow)
+## 5. 升级步骤（安全流程）
 
-1. Back up `/mnt/user/appdata/open-webui`.
-2. Ensure your template keeps the same `WEBUI_SECRET_KEY`.
-3. Update/pull your Open WebUI image tag.
-4. Recreate using the same template and the same `/app/backend/data` mapping.
-5. Verify chats/settings are intact.
-6. If needed, roll back to the previous image and restore backup.
+1. 备份 `/mnt/user/appdata/open-webui`。
+2. 确保模板中的 `WEBUI_SECRET_KEY` 保持不变。
+3. 更新或拉取新的 Open WebUI 镜像标签。
+4. 使用相同模板和相同 `/app/backend/data` 映射重建容器。
+5. 验证聊天记录和设置是否完整。
+6. 如有需要，回滚到旧镜像并恢复备份。
 
-For broader update options, see [Updating Open WebUI](/getting-started/updating).
+更多升级方式请参阅 [Updating Open WebUI](/getting-started/updating)。
 
-## Troubleshooting
+## 故障排查
 
-### Cannot Reach Ollama
+### 无法连接 Ollama
 
-Symptoms:
+现象：
 - `Connection error` in Open WebUI
-- models do not load
+- 模型无法加载
 
-Checks:
-- Confirm `OLLAMA_BASE_URL` is reachable from inside the Open WebUI container.
-- If using host Ollama, confirm `--add-host=host.docker.internal:host-gateway` is present.
-- If `host.docker.internal` fails, use your Unraid host LAN IP.
+检查项：
+- 确认在 Open WebUI 容器内可访问 `OLLAMA_BASE_URL`。
+- 若使用主机上的 Ollama，确认已配置 `--add-host=host.docker.internal:host-gateway`。
+- 若 `host.docker.internal` 解析失败，请改用 Unraid 主机的局域网 IP。
 
-### `host.docker.internal` Does Not Resolve
+### `host.docker.internal` 无法解析
 
 - Add `--add-host=host.docker.internal:host-gateway`.
-- Restart container after saving template changes.
-- Fallback: `OLLAMA_BASE_URL=http://<unraid-lan-ip>:11434`.
+- 保存模板改动后重启容器。
+- 兜底方案：`OLLAMA_BASE_URL=http://<unraid-lan-ip>:11434`。
 
-### Reverse Proxy Subpath Problems (`/openwebui`)
+### 反向代理子路径问题（`/openwebui`）
 
-Symptoms:
-- login/static assets return `404`
-- WebSocket disconnects or stuck loading states
+现象：
+- 登录页或静态资源返回 `404`
+- WebSocket 断开或长期停留在加载状态
 
-Checks:
-- Ensure proxy forwards WebSocket upgrade headers.
-- Ensure subpath routing is consistent (strip or rewrite prefix before forwarding).
-- Set `WEBUI_URL` without trailing slash, for example:
+- 确保代理正确转发 WebSocket 升级头。
+- 确保子路径路由策略一致（转发前去掉或重写前缀）。
+- 设置不带末尾斜杠的 `WEBUI_URL`，例如：
   - `WEBUI_URL=https://example.com/openwebui`
-- If subpath remains unstable, prefer a subdomain:
+- 若子路径方案仍不稳定，建议改用子域名：
   - `WEBUI_URL=https://ai.example.com`
 
-For broader reverse-proxy debugging, see [Connection Errors](/troubleshooting/connection-error).
+更多反向代理排障方法请参阅 [Connection Errors](/troubleshooting/connection-error)。
 
-### Data Missing After Update/Redo
+### 更新或重建后数据丢失
 
-- Verify mapping is exactly `/app/backend/data` to your persistent host folder.
-- Confirm no typo created a second empty folder.
-- Confirm Unraid permissions allow read/write.
+- 确认映射是否严格为 `/app/backend/data` 指向持久化宿主机目录。
+- 确认没有因路径拼写错误创建第二个空目录。
+- 确认 Unraid 权限允许读写。

@@ -1,38 +1,38 @@
 ---
 sidebar_position: 100
-title: "Role-Based Access Control (RBAC)"
+title: "基于角色的访问控制（RBAC）"
 ---
 
-Open WebUI implements a flexible and secure **Role-Based Access Control (RBAC)** system. This system allows administrators to precisely manage user capabilities and access to resources through three interconnected layers:
+Open WebUI 实现了一个灵活且安全的**基于角色的访问控制（RBAC）**系统。该系统允许管理员通过三个相互关联的层次来精确管理用户能力和资源访问：
 
-1.  [**Roles**](./roles.md): The high-level user type (Admin, User, Pending). This defines the baseline trust level.
-2.  [**Permissions**](./permissions.md): Granular feature flags (e.g., "Can Delete Chats", "Can Use Web Search").
-3.  [**Groups**](./groups.md): The mechanism for organizing users, granting additional permissions, and managing shared access to resources (ACLs). Resources can also be shared directly to individual users.
+1.  [**角色**](./roles.md)：高级用户类型（管理员、用户、待审批）。这定义了基线信任级别。
+2.  [**权限**](./permissions.md)：细粒度功能标志（例如"可以删除对话"、"可以使用网络搜索"）。
+3.  [**用户组**](./groups.md)：用于组织用户、授予额外权限以及管理对资源共享访问（ACL）的机制。资源也可以直接共享给单个用户。
 
-:::info Key Concept: Additive Permissions
-The security model is **Additive**. Users start with their default rights, and Group memberships **add** capabilities. A user effectively has the *union* of all rights granted by their Roles and Groups.
+:::info 核心概念：累加权限
+安全模型是**累加**的。用户从其默认权限开始，用户组成员资格会**增加**能力。用户实际拥有的权限是其角色和用户组授予的所有权限的*并集*。
 :::
 
-:::warning Scope of RBAC vs Provider Credentials
-RBAC controls what users can do **inside Open WebUI** (features, resources, and UI/API actions).
+:::warning RBAC 与提供商凭证的范围边界
+RBAC 控制用户在 **Open WebUI 内部**能做什么（功能、资源和 UI/API 操作）。
 
-RBAC does **not** replace least-privilege configuration for external providers. If you connect an OpenAI-compatible proxy/provider (for example LiteLLM, OpenRouter, or custom gateways), use provider credentials that are scoped for inference usage in your deployment.
+RBAC **不**替代外部提供商的最小权限配置。如果您连接了 OpenAI 兼容的代理/提供商（例如 LiteLLM、OpenRouter 或自定义网关），请使用在您的部署中用于推理的最小所需范围的提供商凭证。
 
-Avoid configuring management/master keys for general user traffic unless your deployment explicitly requires that level of trust.
+除非您的部署明确需要该级别的信任，否则请避免为一般用户流量配置管理/主密钥。
 :::
 
-## Documentation Guide
+## 文档指南
 
-*   [‍🔑 **Roles**](./roles.md)
-    *   Understand the difference between Admins and Users.
-    *   Learn about Admin limitations and security/privacy configurations.
+*   [‍🔑 **角色**](./roles.md)
+    *   了解管理员和用户之间的区别。
+    *   了解管理员的限制及安全/隐私配置。
 
-*   [🔒 **Permissions**](./permissions.md)
-    *   Explore the full list of available permission toggles.
-    *   Understand granular controls for Chat, Workspace, and Features.
-    *   **Security Tip**: Learn how properly configured Global Defaults protect your system.
+*   [🔒 **权限**](./permissions.md)
+    *   探索完整的可用权限开关列表。
+    *   了解对话、工作区和功能的细粒度控制。
+    *   **安全提示**：了解正确配置全局默认值如何保护您的系统。
 
-*   [‍🔐 **Groups**](./groups.md)
-    *   Learn how to structure teams and projects.
-    *   **Strategy**: Distinguish between "Permission Groups" (for rights) and "Sharing Groups" (for access).
-    *   Manage Access Control Lists (ACLs) for private Models and Knowledge — share with groups or individual users.
+*   [‍🔐 **用户组**](./groups.md)
+    *   了解如何构建团队和项目。
+    *   **策略**：区分"权限用户组"（用于权限）和"共享用户组"（用于访问）。
+    *   管理私有模型和知识库的访问控制列表（ACL）——与用户组或单个用户共享。

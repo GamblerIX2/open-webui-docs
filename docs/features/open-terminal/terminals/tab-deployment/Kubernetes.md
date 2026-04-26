@@ -1,13 +1,13 @@
-## Prerequisites
+## 前置条件
 
-- A running Kubernetes cluster (v1.24+)
-- [Helm](https://helm.sh/docs/intro/install/) v3 installed
-- `kubectl` configured to access your cluster
-- [Open WebUI Enterprise License](https://openwebui.com/enterprise) (required for production use)
+- 一个正在运行的 Kubernetes 集群 (v1.24+)
+- 已安装 [Helm](https://helm.sh/docs/intro/install/) v3
+- 已配置 `kubectl` 以访问你的集群
+- [Open WebUI 企业版许可证](https://openwebui.com/enterprise)（生产环境使用必须）
 
-## Deploy with Helm
+## 使用 Helm 部署
 
-The Open WebUI Helm chart includes Terminals as an optional subchart. Add a `terminals` section to your values file:
+Open WebUI Helm chart 包含 Terminals 作为可选子 chart。在你的 values 文件中添加 `terminals` 部分：
 
 ```yaml
 # values.yaml
@@ -32,7 +32,7 @@ terminals:
     idleTimeoutMinutes: 30
 ```
 
-Then install or upgrade:
+然后安装或升级：
 
 ```bash
 helm upgrade --install open-webui open-webui/open-webui \
@@ -40,128 +40,128 @@ helm upgrade --install open-webui open-webui/open-webui \
   --namespace open-webui --create-namespace
 ```
 
-:::tip Auto-configured connection
-When `terminals.enabled` is `true`, the chart automatically sets `TERMINAL_SERVER_CONNECTIONS` to point at the in-cluster orchestrator. No manual connection setup is needed.
+:::tip 自动配置连接
+当 `terminals.enabled` 为 `true` 时，chart 会自动设置 `TERMINAL_SERVER_CONNECTIONS` 指向集群内的编排器。不需要手动配置连接。
 :::
 
-### Verify
+### 验证
 
 ```bash
-# Check that all pods are running
+# 检查所有 pod 是否正在运行
 kubectl get pods -n open-webui -l app.kubernetes.io/part-of=open-terminal
 
-# Check that the CRD is installed
+# 检查 CRD 是否已安装
 kubectl get crd terminals.openwebui.com
 ```
 
 ---
 
-## What gets deployed
+## 部署了什么
 
-When `terminals.enabled: true`, the chart creates:
+当 `terminals.enabled: true` 时，chart 将创建：
 
-| Resource | Purpose |
+| 资源 | 目的 |
 | :--- | :--- |
-| **CRD** (`terminals.openwebui.com`) | Defines the `Terminal` custom resource |
-| **Operator Deployment** | Kopf controller that watches Terminal CRs and provisions Pods, Services, PVCs, Secrets |
-| **Orchestrator Deployment + Service** | FastAPI service that receives requests from Open WebUI and proxies to user Pods |
-| **Secret** | Shared API key (auto-generated if not provided) |
+| **CRD** (`terminals.openwebui.com`) | 定义 `Terminal` 自定义资源 |
+| **Operator Deployment** | Kopf 控制器，监听 Terminal CR 并配置 Pod、Service、PVC、Secret |
+| **Orchestrator Deployment + Service** | FastAPI 服务，接收来自 Open WebUI 的请求并代理到用户 Pod |
+| **Secret** | 共享 API 密钥（如果未提供则自动生成） |
 
-For **each user terminal**, the operator creates a Pod, Service, Secret (API key), and optionally a PVC for persistent storage.
+对于**每个用户终端**，Operator 会创建一个 Pod、Service、Secret（API 密钥），以及可选的用于持久化存储的 PVC。
 
 ---
 
-## Lifecycle
+## 生命周期
 
-When a user activates a terminal, the orchestrator creates a `Terminal` CR. The operator provisions a Pod with a Service, Secret, and optional PVC. Once the Pod passes readiness checks, the orchestrator proxies traffic to it.
+当用户激活终端时，编排器会创建一个 `Terminal` CR。Operator 会配置一个带有 Service、Secret 和可选 PVC 的 Pod。一旦 Pod 通过就绪检查，编排器就会将流量代理到它。
 
-When a terminal has been idle longer than `idleTimeoutMinutes`, the operator deletes the Pod but keeps the PVC and Secret. On the next request, a fresh Pod is created with the same PVC reattached, so **user data persists** across idle cycles.
+当终端空闲时间超过 `idleTimeoutMinutes` 时，Operator 会删除 Pod，但保留 PVC 和 Secret。在下一次请求时，将创建一个连接了相同 PVC 的新 Pod，因此在空闲周期内**用户数据能够持久化**。
 
 ```bash
-# List all terminals
+# 列出所有终端
 kubectl get terminals -n open-webui
 
-# Inspect a specific terminal
+# 检查特定的终端
 kubectl describe terminal <name> -n open-webui
 
-# Delete a terminal (child resources are garbage-collected automatically)
+# 删除终端（子资源会自动被垃圾回收）
 kubectl delete terminal <name> -n open-webui
 ```
 
 ---
 
-## Monitoring
+## 监控
 
 ```bash
-# Operator logs
+# Operator 日志
 kubectl logs -n open-webui deployment/<release>-terminals-operator --tail=50
 
-# Orchestrator logs
+# 编排器日志
 kubectl logs -n open-webui deployment/<release>-terminals-orchestrator --tail=50
 ```
 
 ---
 
 <details>
-<summary>Terminal CRD reference</summary>
+<summary>Terminal CRD 参考</summary>
 
-### Spec fields
+### Spec 字段
 
-| Field | Type | Default | Description |
+| 字段 | 类型 | 默认值 | 描述 |
 | :--- | :--- | :--- | :--- |
-| `userId` | string | *(required)* | Open WebUI user ID |
-| `image` | string | `ghcr.io/open-webui/open-terminal:latest` | Container image |
-| `resources.requests.cpu` | string | `100m` | CPU request |
-| `resources.requests.memory` | string | `256Mi` | Memory request |
-| `resources.limits.cpu` | string | `1` | CPU limit |
-| `resources.limits.memory` | string | `1Gi` | Memory limit |
-| `idleTimeoutMinutes` | integer | `30` | Idle timeout before Pod is stopped |
-| `packages` | array | `[]` | Apt packages to pre-install |
-| `pipPackages` | array | `[]` | Pip packages to pre-install |
-| `persistence.enabled` | boolean | `true` | Enable persistent storage |
-| `persistence.size` | string | `1Gi` | PVC size |
-| `persistence.storageClass` | string | *(cluster default)* | Storage class |
+| `userId` | 字符串 | *(必填)* | Open WebUI 用户 ID |
+| `image` | 字符串 | `ghcr.io/open-webui/open-terminal:latest` | 容器镜像 |
+| `resources.requests.cpu` | 字符串 | `100m` | CPU 请求 |
+| `resources.requests.memory` | 字符串 | `256Mi` | 内存请求 |
+| `resources.limits.cpu` | 字符串 | `1` | CPU 限制 |
+| `resources.limits.memory` | 字符串 | `1Gi` | 内存限制 |
+| `idleTimeoutMinutes` | 整数 | `30` | Pod 停止前的空闲超时 |
+| `packages` | 数组 | `[]` | 预安装的 Apt 包 |
+| `pipPackages` | 数组 | `[]` | 预安装的 Pip 包 |
+| `persistence.enabled` | 布尔值 | `true` | 启用持久化存储 |
+| `persistence.size` | 字符串 | `1Gi` | PVC 大小 |
+| `persistence.storageClass` | 字符串 | *(集群默认)* | Storage class (存储类) |
 
-### Status fields
+### Status 字段
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `phase` | `Pending`, `Provisioning`, `Running`, `Idle`, or `Error` |
-| `podName` | Name of the terminal Pod |
-| `serviceUrl` | In-cluster URL for the terminal |
-| `apiKeySecret` | Secret holding the terminal's API key |
-| `lastActivityAt` | Timestamp of last proxied request |
+| `phase` | `Pending`, `Provisioning`, `Running`, `Idle`, 或 `Error` |
+| `podName` | 终端 Pod 的名称 |
+| `serviceUrl` | 终端的集群内 URL |
+| `apiKeySecret` | 保存终端 API 密钥的 Secret |
+| `lastActivityAt` | 上次代理请求的时间戳 |
 
 </details>
 
 <details>
-<summary>Full Helm values reference</summary>
+<summary>完整 Helm values 参考</summary>
 
-| Key | Default | Description |
+| 键 | 默认值 | 描述 |
 | :--- | :--- | :--- |
-| `terminals.enabled` | `false` | Enable the Terminals subchart |
-| `terminals.apiKey` | (empty) | Shared API key (auto-generated if empty) |
-| `terminals.existingSecret` | (empty) | Pre-existing Secret name (key: `api-key`) |
-| `terminals.crd.install` | `true` | Install the Terminal CRD |
-| `terminals.operator.image.repository` | `ghcr.io/open-webui/terminals-operator` | Operator image |
-| `terminals.operator.image.tag` | `latest` | Operator image tag |
-| `terminals.operator.replicaCount` | `1` | Operator replicas |
-| `terminals.orchestrator.image.repository` | `ghcr.io/open-webui/terminals` | Orchestrator image |
-| `terminals.orchestrator.image.tag` | `latest` | Orchestrator image tag |
-| `terminals.orchestrator.backend` | `kubernetes-operator` | Backend type |
-| `terminals.orchestrator.terminalImage` | `ghcr.io/open-webui/open-terminal:latest` | Default image for user Pods |
-| `terminals.orchestrator.idleTimeoutMinutes` | `30` | Idle timeout (minutes) |
-| `terminals.orchestrator.service.type` | `ClusterIP` | Orchestrator Service type |
-| `terminals.orchestrator.service.port` | `8080` | Orchestrator Service port |
+| `terminals.enabled` | `false` | 启用 Terminals 子 chart |
+| `terminals.apiKey` | (空) | 共享 API 密钥（如果为空则自动生成） |
+| `terminals.existingSecret` | (空) | 预存在的 Secret 名称 (键: `api-key`) |
+| `terminals.crd.install` | `true` | 安装 Terminal CRD |
+| `terminals.operator.image.repository` | `ghcr.io/open-webui/terminals-operator` | Operator 镜像 |
+| `terminals.operator.image.tag` | `latest` | Operator 镜像标签 |
+| `terminals.operator.replicaCount` | `1` | Operator 副本数 |
+| `terminals.orchestrator.image.repository` | `ghcr.io/open-webui/terminals` | 编排器镜像 |
+| `terminals.orchestrator.image.tag` | `latest` | 编排器镜像标签 |
+| `terminals.orchestrator.backend` | `kubernetes-operator` | 后端类型 |
+| `terminals.orchestrator.terminalImage` | `ghcr.io/open-webui/open-terminal:latest` | 用户 Pod 的默认镜像 |
+| `terminals.orchestrator.idleTimeoutMinutes` | `30` | 空闲超时（分钟） |
+| `terminals.orchestrator.service.type` | `ClusterIP` | 编排器 Service 类型 |
+| `terminals.orchestrator.service.port` | `8080` | 编排器 Service 端口 |
 
 </details>
 
 <details>
-<summary>RBAC requirements (manual install only)</summary>
+<summary>RBAC 要求（仅限手动安装）</summary>
 
-If not using the Helm chart, the operator's ServiceAccount needs a ClusterRole with:
+如果不使用 Helm chart，Operator 的 ServiceAccount 需要一个具有以下权限的 ClusterRole：
 
-| Resource | Verbs |
+| 资源 | 动作 (Verbs) |
 | :--- | :--- |
 | `terminals.openwebui.com` | get, list, watch, create, update, patch, delete |
 | `pods`, `services`, `persistentvolumeclaims`, `secrets` | get, list, watch, create, update, patch, delete |

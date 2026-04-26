@@ -1,35 +1,33 @@
 ---
 sidebar_position: 1000
-title: "Backups"
+title: "备份"
 ---
 
-# Backing Up Your Instance
+# 备份您的实例
 
  :::warning
-
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
-
+本教程由社区贡献，不受 Open WebUI 团队官方维护或审核。如有问题，请直接联系原作者。
 :::
 
- Nobody likes losing data!
+ 没有人喜欢数据丢失！
 
- If you're self-hosting Open WebUI, then you may wish to institute some kind of formal backup plan in order to ensure that you retain a second and third copy of parts of your configuration.
+ 如果您正在自托管 Open WebUI，可能希望制定某种正式的备份计划，以确保保留配置的第二份和第三份副本。
 
- This guide is intended to recommend some basic recommendations for how users might go about doing that.
+ 本指南旨在为用户提供一些基本建议，说明如何进行备份。
 
- This guide assumes that the user has installed Open WebUI via Docker (or intends to do so)
+ 本指南假设用户已通过 Docker 安装 Open WebUI（或计划这样做）。
 
-## Ensuring data persistence
+## 确保数据持久化
 
-Firstly, before deploying your stack with Docker, ensure that your Docker Compose uses a persistent data store. If you're using the Docker Compose [from the Github repository](https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml) that's already taken care of. But it's easy to cook up your own variations and forget to verify this.
+首先，在使用 Docker 部署您的应用栈之前，请确保 Docker Compose 使用了持久化数据存储。如果您使用的是 [Github 仓库中的 Docker Compose](https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml)，这一点已经处理好了。但自定义配置时很容易遗漏这一验证。
 
-Docker containers are ephemeral and data must be persisted to ensure its survival on the host filesystem.
+Docker 容器是临时性的，必须将数据持久化到宿主机文件系统以确保其存续。
 
-## Using Docker volumes
+## 使用 Docker 卷
 
-If you're using the Docker Compose from the project repository, you will be deploying Open Web UI using Docker volumes.
+如果您使用的是项目仓库中的 Docker Compose，将通过 Docker 卷部署 Open Web UI。
 
-For Ollama and Open WebUI the mounts are:
+Ollama 和 Open WebUI 的挂载配置为：
 
 ```yaml
 ollama:
@@ -43,17 +41,17 @@ open-webui:
     - open-webui:/app/backend/data
 ```
 
-To find the actual bind path on host, run:
+要查找宿主机上的实际绑定路径，运行：
 
 `docker volume inspect ollama`
 
-and
+以及
 
 `docker volume inspect open-webui`
 
-## Using direct host binds
+## 使用直接宿主机绑定
 
-Some users deploy Open Web UI with direct (fixed) binds to the host filesystem, like this:
+一些用户使用直接（固定）绑定到宿主机文件系统的方式部署 Open Web UI，如下所示：
 
 ```yaml
 services:
@@ -69,11 +67,11 @@ services:
       - /opt/open-webui:/app/backend/data
 ```
 
-If this is how you've deployed your instance, you'll want to note the paths on root.
+如果您是这样部署的，需要记录根目录上的路径。
 
-## Scripting A Backup Job
+## 编写备份任务脚本
 
-However your instance is provisioned, it's worth inspecting the app's data store on your server to understand what data you'll be backing up. You should see something like this:
+无论您的实例如何配置，都建议检查服务器上应用的数据存储，了解需要备份的数据。您应该会看到类似如下的结构：
 
 ```txt
 ├── audit.log
@@ -83,25 +81,25 @@ However your instance is provisioned, it's worth inspecting the app's data store
 └── webui.db
 ```
 
-## Files in persistent data store
+## 持久化数据存储中的文件
 
-| File/Directory | Description |
+| 文件/目录 | 描述 |
 |---|---|
-| `audit.log` | Log file for auditing events. |
-| `cache/` | Directory for storing cached data. |
-| `uploads/` | Directory for storing user-uploaded files. |
-| `vector_db/` | Directory containing the ChromaDB vector database. |
-| `webui.db` | SQLite database for persistent storage of other instance data |
+| `audit.log` | 用于审计事件的日志文件。 |
+| `cache/` | 用于存储缓存数据的目录。 |
+| `uploads/` | 用于存储用户上传文件的目录。 |
+| `vector_db/` | 包含 ChromaDB 向量数据库的目录。 |
+| `webui.db` | 用于持久存储其他实例数据的 SQLite 数据库。 |
 
-# File Level Backup Approaches
+# 文件级备份方案
 
-The first way to back up the application data is to take a file level backup approach ensuring that the persistent Open Web UI data is properly backed up.
+备份应用数据的第一种方式是采用文件级备份方法，确保 Open Web UI 的持久化数据得到妥善备份。
 
-There's an almost infinite number of ways in which technical services can be backed up, but `rsync` remains a popular favorite for incremental jobs and so will be used as a demonstration.
+技术服务的备份方式几乎无穷无尽，但 `rsync` 作为增量任务的热门选择，将在此作为示例使用。
 
-Users could target the entire `data` directory to back up all the instance data at once or create more selective backup jobs targeting individual components. You could add more descriptive names for the targets also.
+用户可以针对整个 `data` 目录一次性备份所有实例数据，也可以创建更有选择性的备份任务，针对各个组件分别备份。您还可以为目标添加更具描述性的名称。
 
-A model rsync job could look like this:
+一个示范性的 rsync 任务如下所示：
 
 ```bash
 
@@ -156,11 +154,11 @@ echo "Backup completed successfully."
 exit 0
 ```
 
-## Rsync Job With Container Interruption
+## 带容器中断的 Rsync 任务
 
-To maintain data integrity, it's generally recommended to run database backups on cold filesystems. Our default model backup job can be modified slightly to bring down the stack before running the backup script and bring it back after.
+为保持数据完整性，通常建议在冷文件系统上运行数据库备份。我们的默认示范备份任务可以稍作修改，在运行备份脚本之前停止应用栈，备份完成后再重新启动。
 
-The downside of this approach, of course, is that it will entail instance downtime. Consider running the job at times you won't be using the instance or taking "software" dailies (on the running data) and more robust weeklies (on cold data).
+当然，这种方式的缺点是会导致实例停机。建议在不使用实例的时间段运行该任务，或者采用每日"软备份"（在运行中的数据上）和更稳健的每周备份（在冷数据上）相结合的策略。
 
 ```bash
 
@@ -223,7 +221,7 @@ echo "Backup completed successfully."
 exit 0
 ```
 
-## Model Backup Script Using SQLite & ChromaDB Backup Functions To B2 Remote
+## 使用 SQLite 和 ChromaDB 备份功能备份到 B2 远程存储的脚本
 
 ```bash
 
@@ -318,9 +316,9 @@ echo "Backup completed to $DESTINATION"
 
 ---
 
-## Point In Time Snapshots
+## 时间点快照
 
-In addition taking backups, users may also wish to create point-in-time snapshots which could be stored locally (on the server), remotely, or both.
+除了进行备份之外，用户还可能希望创建时间点快照，这些快照可以存储在本地（服务器上）、远程或两者都存储。
 
 ```bash
 
@@ -353,57 +351,57 @@ fi
 exit 0
 ```
 
-## Crontab For Scheduling
+## 使用 Crontab 调度任务
 
-Once you've added your backup script and provisioned your backup storage, you'll want to QA the scripts to make sure that they're running as expected. Logging is highly advisable.
+添加备份脚本并配置好备份存储后，建议对脚本进行质量检验，确保其按预期运行。强烈建议开启日志记录。
 
-Set your new script(s) up to run using crontabs according to your desired run frequency.
+使用 crontab 按所需频率设置新脚本的运行计划。
 
-# Commercial Utilities
+# 商业工具
 
-In addition to scripting your own backup jobs, you can find commercial offerings which generally work by installing agents on your server that will abstract the complexities of running backups. These are beyond the purview of this article but provide convenient solutions.
+除了自编备份脚本之外，您还可以使用商业解决方案，这类工具通常通过在服务器上安装代理来抽象备份操作的复杂性。这超出了本文的讨论范围，但它们是方便的解决方案。
 
 ---
 
-# Host Level Backups
+# 宿主机级别备份
 
-Your Open WebUI instance might be provisioned on a host (physical or virtualised) which you control.
+您的 Open WebUI 实例可能部署在您控制的宿主机（物理机或虚拟机）上。
 
-Host level backups involve creating snapshots or backups but of the entire VM rather than running applications.
+宿主机级别的备份是对整个虚拟机（而非运行中的应用）进行快照或备份。
 
-Some may wish to leverage them as their primary or only protection while others may wish to layer them in as additional data protections.
+有些用户可能将其作为主要或唯一的保护手段，而另一些用户可能将其作为额外的数据保护层。
 
-# How Many Backups Do I Need?
+# 我需要多少份备份？
 
-The amount of backups that you will wish to take depends on your personal level of risk tolerance. However, remember that it's best practice to *not* consider the application itself to be a backup copy (even if it lives in the cloud!). That means that if you've provisioned your instance on a VPS, it's still a reasonable recommendation to keep two (independent) backup copies.
+备份数量取决于您个人对风险的承受程度。但请记住，最佳实践是*不要*将应用本身视为备份副本（即使它运行在云端！）。这意味着，如果您在 VPS 上部署了实例，保留两份独立备份副本仍然是合理的建议。
 
-An example backup plan that would cover the needs of many home users:
+适合许多家庭用户需求的备份方案示例：
 
-## Model backup plan 1 (primary + 2 copies)
+## 示范备份方案 1（主存储 + 2 份副本）
 
-| Frequency | Target | Technology | Description |
+| 频率 | 目标 | 技术 | 描述 |
 |---|---|---|---|
-| Daily Incremental | Cloud Storage (S3/B2) | rsync | Daily incremental backup pushed to a cloud storage bucket (S3 or B2). |
-| Weekly Incremental | On-site Storage (Home NAS) | rsync | Weekly incremental backup pulled from the server to on-site storage (e.g., a home NAS). |
+| 每日增量 | 云存储（S3/B2） | rsync | 每日增量备份推送到云存储桶（S3 或 B2）。 |
+| 每周增量 | 本地存储（家庭 NAS） | rsync | 每周增量备份从服务器拉取到本地存储（例如家庭 NAS）。 |
 
-## Model backup plan 2 (primary + 3 copies)
+## 示范备份方案 2（主存储 + 3 份副本）
 
-This backup plan is a little more complicated but also more comprehensive .. it involves daily pushes to two cloud storage providers for additional redundancy.
+这个备份方案稍微复杂，但更为全面——每日向两个云存储提供商推送，以获得额外冗余。
 
-| Frequency | Target | Technology | Description |
+| 频率 | 目标 | 技术 | 描述 |
 |---|---|---|---|
-| Daily Incremental | Cloud Storage (S3) | rsync | Daily incremental backup pushed to an S3 cloud storage bucket. |
-| Daily Incremental | Cloud Storage (B2) | rsync | Daily incremental backup pushed to a Backblaze B2 cloud storage bucket. |
-| Weekly Incremental | On-site Storage (Home NAS) | rsync | Weekly incremental backup pulled from the server to on-site storage (e.g., a home NAS). |
+| 每日增量 | 云存储（S3） | rsync | 每日增量备份推送到 S3 云存储桶。 |
+| 每日增量 | 云存储（B2） | rsync | 每日增量备份推送到 Backblaze B2 云存储桶。 |
+| 每周增量 | 本地存储（家庭 NAS） | rsync | 每周增量备份从服务器拉取到本地存储（例如家庭 NAS）。 |
 
-# Additional Topics
+# 扩展主题
 
-In the interest of keeping this guide reasonably thorough these additional subjects were ommitted but may be worth your consideration depending upon how much time you have to dedicate to setting up and maintaining a data protection plan for your instance:
+为了使本指南保持合理的详尽程度，以下附加主题未作详细介绍，但根据您为实例数据保护计划投入的时间，这些主题可能值得关注：
 
-| Topic | Description |
+| 主题 | 描述 |
 |---|---|
-| SQLite Built-in Backup | Consider using SQLite's `.backup` command for a consistent database backup solution. |
-| Encryption | Modify backup scripts to incorporate encryption at rest. See [Database Encryption with SQLCipher](/reference/database-schema#database-encryption-with-sqlcipher) for database-level encryption. |
-| Disaster Recovery and Testing | Develop a disaster recovery plan and regularly test the backup and restore process. |
-| Alternative Backup Tools | Explore other command-line backup tools like `borgbackup` or `restic` for advanced features. |
-| Email Notifications and Webhooks | Implement email notifications or webhooks to monitor backup success or failure. |
+| SQLite 内置备份 | 考虑使用 SQLite 的 `.backup` 命令实现一致的数据库备份方案。 |
+| 加密 | 修改备份脚本以加入静态加密。有关数据库级加密，请参阅 [使用 SQLCipher 进行数据库加密](/reference/database-schema#database-encryption-with-sqlcipher)。 |
+| 灾难恢复与测试 | 制定灾难恢复计划，并定期测试备份和恢复流程。 |
+| 其他备份工具 | 探索其他命令行备份工具，如 `borgbackup` 或 `restic`，以获得更高级的功能。 |
+| 邮件通知与 Webhook | 实现邮件通知或 webhook，以监控备份成功或失败的情况。 |

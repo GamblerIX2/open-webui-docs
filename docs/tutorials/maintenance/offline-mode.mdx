@@ -1,79 +1,79 @@
 ---
 sidebar_position: 300
-title: "Offline Mode"
+title: "离线模式"
 ---
 
-# Running Open WebUI in offline mode 🔌
+# 在离线模式下运行 Open WebUI 🔌
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the [contributing tutorial](/contributing).
+本教程由社区贡献，不属于 Open WebUI 团队官方支持范围。内容仅用于演示如何根据你的特定场景自定义 Open WebUI。想参与贡献？请查看[贡献教程](/contributing)。
 
 :::
 
-If you want to run Open WebUI in offline mode, you have to consider your installation approach and adjust your desired features accordingly. In this guide, we will go over the different ways of achieving a mostly similar setup to the online version.
+如果你希望以离线模式运行 Open WebUI，需要结合你的安装方式，按需调整可用功能。本指南会介绍几种实现方式，以尽量获得接近在线版本的使用体验。
 
-## What means offline mode?
+## 什么是离线模式？
 
-The offline mode of Open WebUI lets you run the application without the need for an active internet connection. This allows you to create an 'air-gapped' environment for your LLMs and tools (a fully 'air-gapped' environment requires isolating the instance from the internet).
+Open WebUI 的离线模式允许应用在无互联网连接时运行。这有助于为你的 LLM 和工具构建“气隙（air-gapped）”环境（完全气隙需将实例与互联网彻底隔离）。
 
 :::info
 
-**Disabled functionality when offline mode is enabled:**
+**启用离线模式后将禁用的功能：**
 
-- Automatic version update checks (controlled by `ENABLE_VERSION_UPDATE_CHECK`)
-- Downloads of embedding models from Hugging Face Hub (controlled by `HF_HUB_OFFLINE`)
-  - If you did not download an embedding model prior to activating offline mode, RAG, web search and document analysis functionality will not work properly
-- Automatic model updates for embeddings, reranking, and Whisper models
-- Update notifications in the UI
+- 自动版本更新检查（由 `ENABLE_VERSION_UPDATE_CHECK` 控制）
+- 从 Hugging Face Hub 下载嵌入模型（由 `HF_HUB_OFFLINE` 控制）
+  - 若在启用离线模式前未预先下载嵌入模型，RAG、网页搜索和文档分析功能将无法正常工作
+- 嵌入模型、重排模型和 Whisper 模型的自动更新
+- UI 中的更新通知
 
-**Still functional:**
+**仍可用：**
 
-- External LLM API connections (OpenAI, etc.)
-- OAuth authentication providers
-- Web search and RAG with external APIs
+- 外部 LLM API 连接（OpenAI 等）
+- OAuth 认证提供商
+- 基于外部 API 的网页搜索与 RAG
 
 :::
 
-## How to enable offline mode?
+## 如何启用离线模式？
 
-Offline mode requires setting multiple environment variables to fully disconnect Open WebUI from external network dependencies. The primary variables are:
+离线模式需要设置多个环境变量，以尽可能切断 Open WebUI 对外部网络的依赖。核心变量如下：
 
-**Required Environment Variables:**
+**必需环境变量：**
 
-- `OFFLINE_MODE=true` - Disables version checks and prevents automatic model downloads
-- `HF_HUB_OFFLINE=1` - Tells Hugging Face Hub to operate in offline mode, preventing all automatic downloads
+- `OFFLINE_MODE=true` - 禁用版本检查并阻止自动下载模型
+- `HF_HUB_OFFLINE=1` - 告知 Hugging Face Hub 以离线模式运行，阻止所有自动下载
 
-**Optional but Recommended:**
+**可选但推荐：**
 
-- `RAG_EMBEDDING_MODEL_AUTO_UPDATE=false` - Prevents automatic updates of embedding models
-- `RAG_RERANKING_MODEL_AUTO_UPDATE=false` - Prevents automatic updates of reranking models  
-- `WHISPER_MODEL_AUTO_UPDATE=false` - Prevents automatic updates of Whisper models
+- `RAG_EMBEDDING_MODEL_AUTO_UPDATE=false` - 阻止嵌入模型自动更新
+- `RAG_RERANKING_MODEL_AUTO_UPDATE=false` - 阻止重排模型自动更新
+- `WHISPER_MODEL_AUTO_UPDATE=false` - 阻止 Whisper 模型自动更新
 
-Apply these environment variables depending on your deployment method.
+请根据你的部署方式应用这些环境变量。
 
-:::warning Critical: HF_HUB_OFFLINE Behavior
+:::warning 关键说明：HF_HUB_OFFLINE 的行为
 
-When `HF_HUB_OFFLINE=1` is set:
-- **Downloads of models, sentence transformers, and other Hugging Face content will NOT WORK**
-- RAG will not work on a default installation if this is enabled without pre-downloading models
-- Only pre-downloaded models in the correct cache directories will be accessible
+当设置 `HF_HUB_OFFLINE=1` 后：
+- **模型、sentence-transformers 及其他 Hugging Face 内容将无法下载**
+- 若未提前下载模型就启用该项，默认安装下的 RAG 将无法工作
+- 仅能访问正确缓存目录中预先下载的模型
 
-This variable provides the strictest offline enforcement but requires careful preparation.
+该变量提供最严格的离线约束，但也要求提前做好充分准备。
 
 :::
 
 :::tip
 
-Consider if you need to start the application offline from the beginning of your deployment. If your use case does not require immediate offline capability, follow **approach II** for an easier setup.
+请先评估你是否需要在部署初期就完全离线运行。如果你的场景不要求立即离线，建议采用**方案 II**，配置更简单。
 
 :::
 
-## Approach I
+## 方案 I
 
 ### I: Speech-To-Text
 
-The local `whisper` installation does not include the model by default. In this regard, you can follow the [guide](/features/chat-conversations/audio/speech-to-text/stt-config) only partially if you want to use an external model/provider. To use the local `whisper` application, you must first download the model of your choice (e.g. [Huggingface - Systran](https://huggingface.co/Systran)).
+本地 `whisper` 安装默认不包含模型。若你希望使用外部模型/提供商，可部分参考此[指南](/features/chat-conversations/audio/speech-to-text/stt-config)。若要使用本地 `whisper`，需先下载你选择的模型（例如 [Huggingface - Systran](https://huggingface.co/Systran)）。
 
 ```python
 from faster_whisper import WhisperModel
@@ -88,15 +88,15 @@ faster_whisper_kwargs = {
 WhisperModel(**faster_whisper_kwargs)
 ```
 
-The contents of the download directory must be copied to `/app/backend/data/cache/whisper/models/` within your Open WebUI deployment. It makes sense to directly declare your `whisper` model via the [environment variable](https://docs.openwebui.com/reference/env-configuration#whisper_model), like this: `WHISPER_MODEL=Systran/faster-whisper-large-v3`.
+下载目录中的内容必须复制到 Open WebUI 部署内的 `/app/backend/data/cache/whisper/models/`。建议通过[环境变量](https://docs.openwebui.com/reference/env-configuration#whisper_model)直接声明 `whisper` 模型，例如：`WHISPER_MODEL=Systran/faster-whisper-large-v3`。
 
 ### I: Text-To-Speech
 
-The default local transformer can already handle the text-to-speech function. If you prefer a different approach, follow one of the [guides](https://docs.openwebui.com/category/%EF%B8%8F-text-to-speech).
+默认本地 transformer 已可满足文本转语音功能。若你偏好其他方案，可参考这些[指南](https://docs.openwebui.com/category/%EF%B8%8F-text-to-speech)。
 
 ### I: Embedding Model
 
-For various purposes, you will need an embedding model (e.g. [RAG](/features/chat-conversations/rag)). You will first have to download such a model of your choice (e.g. [Huggingface - sentence-transformers](https://huggingface.co/sentence-transformers)).
+在多种场景下你都需要嵌入模型（例如 [RAG](/features/chat-conversations/rag)）。你需要先下载所选模型（例如 [Huggingface - sentence-transformers](https://huggingface.co/sentence-transformers)）。
 
 ```python
 from huggingface_hub import snapshot_download
@@ -104,27 +104,27 @@ from huggingface_hub import snapshot_download
 snapshot_download(repo_id="sentence-transformers/all-MiniLM-L6-v2", cache_dir="/path/of/your/choice")
 ```
 
-The contents of the download directory must be copied to `/app/backend/data/cache/embedding/models/` within your Open WebUI deployment. It makes sense to directly declare your embedding model via the [environment variable](https://docs.openwebui.com/reference/env-configuration#rag_embedding_model), like this: `RAG_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2`.
+下载目录中的内容必须复制到 Open WebUI 部署内的 `/app/backend/data/cache/embedding/models/`。建议通过[环境变量](https://docs.openwebui.com/reference/env-configuration#rag_embedding_model)直接声明嵌入模型，例如：`RAG_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2`。
 
-## Approach II
+## 方案 II
 
-### Running Open WebUI with internet connection during setup
+### 在安装阶段保留网络连接运行 Open WebUI
 
-This is the easiest approach to achieving the offline setup with almost all features available in the online version. Apply only the features you want to use for your deployment.
+这是最容易实现离线部署的方式，并可保留接近在线版本的大多数功能。请仅启用你部署场景真正需要的功能。
 
 ### II: Embedding Model
 
-In your Open WebUI installation, navigate to `Admin Settings` > `Settings` > `Documents` and select the embedding model you would like to use (e.g. [sentence-transformer/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)). After the selection, click the download button next to it.
+在 Open WebUI 中进入 `Admin Settings` > `Settings` > `Documents`，选择你要使用的嵌入模型（例如 [sentence-transformer/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)）。选择后点击其右侧下载按钮。
 
 ---
 
-After you have installed all your desired features, set the environment variable `OFFLINE_MODE=True` depending on your type of Open WebUI deployment.
+安装完所需功能后，根据你的 Open WebUI 部署类型设置环境变量 `OFFLINE_MODE=True`。
 
-## Sidenote
+## 补充说明
 
-As previously mentioned, to achieve a fully offline experience with Open WebUI, you must disconnect your instance from the internet. The offline mode only prevents errors within Open WebUI when there is no internet connection.
+如前所述，要实现真正完全离线的 Open WebUI 体验，你还必须将实例与互联网断开。离线模式本身主要用于避免在无网时 Open WebUI 内部出现报错。
 
-How you disconnect your instance is your choice. Here is an example via `docker-compose`:
+如何断开实例网络由你自行决定。下面给出一个 `docker-compose` 示例：
 
 ```yaml
 services:

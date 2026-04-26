@@ -1,31 +1,31 @@
 ---
 sidebar_position: 6
-title: "Finance Dashboard"
+title: "财务仰表盘"
 ---
 
-# 💰 Personal Finance Dashboard
+# 💰 个人财务仰表盘
 
-Upload bank statements and get a spending analysis with charts.
+上传银行对账单，获得带图表的支出分析报告。
 
-> **You:** $Finance Analyzer <br/>
-> *(drop 3 CSV bank statements into the file browser)* <br/>
-> Analyze my spending over the last 3 months. Where is my money going?
+> **你：** $Finance Analyzer <br/>
+> *（拖入 3 个 CSV 银行对账单到文件浏览器）* <br/>
+> 分析我这 3 个月的支出情况。我的针主要用在哪里？
 
-## What the AI does
+## AI 的工作流程
 
-1. Reads all CSV files and normalizes the different formats
-2. Categorizes transactions: groceries, dining, subscriptions, transport, etc.
-3. Identifies recurring charges and flags anything unusual
-4. Creates a dashboard with monthly trends, category breakdown, and top merchants
-5. Flags anomalies: unusually large charges, new subscriptions, possible duplicates
+1. 读取所有 CSV 文件并标准化不同格式
+2. 对交易分类：食材、餐饮、订阅服务、交通等
+3. 识别定期费用并标记异常项目
+4. 创建包含月度趋势、类别分布和主要商家的仰表盘
+5. 标记异常项目：异常大额费用、新增订阅、可能的重复费用
 
 {/* TODO: Screenshot — File browser previewing a generated spending_dashboard.html: pie chart of spending categories, bar chart of monthly trends, table of top merchants. */}
 
 {/* TODO: Screenshot — The anomaly report: "3 things to check: $450 charge to 'TECHSTORE' on Feb 15 (unusually large), new $14.99/month subscription to 'StreamPlus', possible duplicate $89.00 charge on March 3 and 5." */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

@@ -5,79 +5,79 @@ title: "Open Terminal"
 
 # ⚡ Open Terminal
 
-**Give your AI a real computer to work on.**
+**给你的 AI 一台真正的计算机来工作。**
 
-Open Terminal connects a real computing environment to Open WebUI. The AI can write code, execute it, read the output, fix errors, and iterate, all without leaving the chat. It handles files, installs packages, runs servers, and returns results directly to you. Run it in a Docker container for isolation, or bare metal for direct access to your machine.
+Open Terminal 将真实的计算环境连接到 Open WebUI。AI 可以编写代码、执行代码、读取输出、修复错误并反复迭代，全程无需离开聊天界面。它能处理文件、安装软件包、运行服务器，并将结果直接返回给你。在 Docker 容器中运行可获得隔离保护，也可在裸机上运行以直接访问你的机器。
 
-This is where ideas become working software. Ask a question, get a running script. Describe a website, see it rendered live. Point it at a dataset, get a finished report.
+这里是想法变成可运行软件的地方。提一个问题，得到一段运行中的脚本；描述一个网站，看它实时渲染；指向一个数据集，得到一份完整的报告。
 
-![Open WebUI with Open Terminal, file browser sidebar and chat](/images/open-terminal-file-browser.png)
+![带有 Open Terminal、文件浏览器侧边栏和聊天的 Open WebUI](/images/open-terminal-file-browser.png)
 
 ---
 
-## Capabilities
+## 功能概览
 
-### Data analysis and reporting
+### 数据分析与报告
 
-Upload spreadsheets, CSVs, or databases. The AI reads the data, runs analysis scripts, and generates charts or reports.
+上传电子表格、CSV 或数据库文件。AI 读取数据、运行分析脚本并生成图表或报告。
 
-![AI analyzing data from a spreadsheet](/images/open-terminal-ai-csv-analysis.png)
+![AI 分析电子表格数据](/images/open-terminal-ai-csv-analysis.png)
 
-### Document search and extraction
+### 文档检索与内容提取
 
-Point the AI at a folder of PDFs, Word docs, or emails. It reads all of them and returns structured results: summaries, extracted fields, or cross-references.
+将 AI 指向包含 PDF、Word 文档或电子邮件的文件夹。它会逐一读取，并返回结构化结果：摘要、提取字段或交叉引用。
 
 {/* TODO: Screenshot — A chat where the user asks about the Johnson contract. The AI lists the files it found in a folder (contract_v2.docx, notes.pdf, invoice.xlsx) and provides a consolidated summary of relevant information from each. */}
 
-### Web development with live preview
+### Web 开发与实时预览
 
-The AI builds HTML/CSS/JS projects, starts a preview server, and renders the result inside Open WebUI. Iterate by describing changes in chat.
+AI 构建 HTML/CSS/JS 项目、启动预览服务器，并在 Open WebUI 内部渲染结果。通过聊天描述修改内容，预览随即更新。
 
 {/* TODO: Screenshot — A chat on the left side of the screen. On the right, a live website preview panel shows a clean event landing page with a banner, date, and registration button. */}
 
-### Software development
+### 软件开发
 
-Clone repos, run test suites, debug failures, refactor code, and work with Git, all through natural language.
+通过自然语言克隆仓库、运行测试套件、调试失败、重构代码，以及与 Git 交互。
 
-### File and system automation
+### 文件与系统自动化
 
-Bulk rename, sort, deduplicate, convert, compress, and organize files. Manage disk space, schedule backups, process logs.
+批量重命名、排序、去重、转换、压缩和整理文件。管理磁盘空间、定时备份、处理日志。
 
 {/* TODO: Screenshot — A chat where the user asks "rename all the photos to include the date". The AI responds confirming "Renamed 43 files" with a before/after example: IMG_4521.jpg → 2025-03-15_IMG_4521.jpg. */}
 
 ---
 
-## Key Features
+## 核心特性
 
 | | |
 | :--- | :--- |
-| 🖥️ **Code execution** | Runs real commands and returns output |
-| 📁 **File browser** | Browse, upload, download, and edit files in the sidebar |
-| 📄 **Document reading** | PDF, Word, Excel, PowerPoint, RTF, EPUB, email |
-| 🌐 **Website preview** | Live preview of web projects inside Open WebUI |
-| 🔒 **Isolation optional** | Run in a Docker container for sandboxing, or bare metal for full access |
+| 🖥️ **代码执行** | 运行真实命令并返回输出 |
+| 📁 **文件浏览器** | 在侧边栏浏览、上传、下载和编辑文件 |
+| 📄 **文档阅读** | 支持 PDF、Word、Excel、PowerPoint、RTF、EPUB、电子邮件 |
+| 🌐 **网站预览** | 在 Open WebUI 内实时预览 Web 项目 |
+| 🔒 **可选隔离** | 在 Docker 容器中运行以沙箱隔离，或在裸机上运行以获得完整访问权限 |
 
 ---
 
-## Get Started
+## 快速开始
 
-**[Installation →](./setup/installation)** · **[Connect to Open WebUI →](./setup/connecting)**
+**[安装 →](./setup/installation)** · **[连接到 Open WebUI →](./setup/connecting)**
 
-:::info Model requirements
-Open Terminal requires models with **native function calling** support. Frontier models (GPT-5.4, Claude Sonnet 4.6, Gemini 3.1 Pro) handle complex multi-step tasks well. Smaller models may work for simple commands but can struggle with longer workflows. [Enable native function calling](./setup/connecting#8-enable-native-function-calling) on your model.
+:::info 模型要求
+Open Terminal 需要支持**原生函数调用**的模型。前沿模型（GPT-5.4、Claude Sonnet 4.6、Gemini 3.1 Pro）能很好地处理复杂的多步骤任务。较小的模型可以处理简单命令，但在较长的工作流中可能表现欠佳。请在你的模型上[启用原生函数调用](./setup/connecting#8-enable-native-function-calling)。
 :::
 
 ---
 
-## Use Cases
+## 使用场景
 
-- **[Code execution](./use-cases/code-execution)** — write, run, and debug scripts
-- **[Software development](./use-cases/software-development)** — repos, tests, debugging, refactoring, Git
-- **[Document & data analysis](./use-cases/file-analysis)** — spreadsheets, PDFs, Word docs, emails
-- **[Web development](./use-cases/web-development)** — build and preview websites
-- **[System automation](./use-cases/system-automation)** — file management, backups, batch operations
-- **[Advanced workflows](./use-cases/advanced-workflows)** — skills for data reports, research, code review, and more
-- **[File browser](./file-browser)** — uploading, previewing, editing files
+- **[代码执行](./use-cases/code-execution)** — 编写、运行和调试脚本
+- **[软件开发](./use-cases/software-development)** — 仓库、测试、调试、重构、Git
+- **[文档与数据分析](./use-cases/file-analysis)** — 电子表格、PDF、Word 文档、电子邮件
+- **[Web 开发](./use-cases/web-development)** — 构建和预览网站
+- **[系统自动化](./use-cases/system-automation)** — 文件管理、备份、批量操作
+- **[高级工作流](./use-cases/advanced-workflows)** — 数据报告、研究、代码审查等技能
+- **[文件浏览器](./file-browser)** — 上传、预览、编辑文件
 
 ---
 

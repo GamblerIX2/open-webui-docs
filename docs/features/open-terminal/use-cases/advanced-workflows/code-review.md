@@ -1,31 +1,31 @@
 ---
 sidebar_position: 10
-title: "Code Review"
+title: "代码审查"
 ---
 
-# 🔍 Automated Code Review
+# 🔍 自动化代码审查
 
-Point the AI at a pull request, a branch diff, or a file, and get a detailed code review — security issues, performance problems, style violations, and suggestions for improvement.
+让 AI 审查 pull request、分支差异或文件，获得详细的代码审查报告——包括安全漏洞、性能问题、风格违调和改进建议。
 
-> **You:** $Code Reviewer <br/>
-> Review the changes in the `feature/auth-refactor` branch compared to `main`.
+> **你：** $Code Reviewer <br/>
+> 审查 `feature/auth-refactor` 分支相对于 `main` 的变更。
 
-## What the AI does
+## AI 的工作流程
 
-1. Runs `git diff main..feature/auth-refactor` to see all changes
-2. Reads each modified file in full context (not just the diff — it understands surrounding code)
-3. Categorizes findings: security, performance, correctness, style, documentation
-4. Prioritizes issues from critical to nitpick
-5. Suggests specific fixes with code snippets
-6. Saves a structured review report
+1. 运行 `git diff main..feature/auth-refactor` 查看所有变更
+2. 在完整上下文中读取每个修改的文件（不仅仅是 diff——它理解周围代码）
+3. 对发现进行分类：安全、性能、正确性、风格、文档
+4. 按优先级排列问题：严重到小细节
+5. 提出带代码片段的具体修复建议
+6. 保存结构化审查报告
 
 {/* TODO: Screenshot — Chat showing the AI reviewing a branch diff. The response lists findings organized by severity: "🔴 Critical: SQL injection in user_query() — use parameterized queries. 🟡 Warning: N+1 query in get_orders(). 🔵 Suggestion: Extract validation logic into a helper." */}
 
 {/* TODO: Screenshot — The generated review report in the file browser: a markdown file with sections for each file reviewed, findings with line numbers, and suggested fixes with code blocks. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---

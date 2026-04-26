@@ -1,32 +1,32 @@
 ---
 sidebar_position: 1
-title: "Data Reports"
+title: "数据报告"
 ---
 
-# 📊 Turn Raw Data into a Polished Report
+# 📊 将原始数据转化为精美报告
 
-Upload messy data, and the AI cleans it, analyzes it, builds charts, and produces a downloadable PDF report.
+上传杂乱的数据，AI 会清洗、分析、建立图表，并生成可下载的 PDF 报告。
 
-> **You:** $Data Report Generator <br/>
-> *(drag-drop `survey_responses.csv` into the file browser)* <br/>
-> Analyze this survey data and create a report for our team meeting.
+> **你：** $Data Report Generator <br/>
+> *（拖挙 `survey_responses.csv` 到文件浏览器）* <br/>
+> 分析这份问卷数据，为我们的团队会议制作一份报告。
 
-## What the AI does
+## AI 的工作流程
 
-1. Reads the CSV and identifies data quality issues
-2. Cleans the data (fixes formatting, removes duplicates, handles missing values)
-3. Computes statistics — response rates, averages, distributions
-4. Generates charts (bar charts, pie charts, trend lines)
-5. Assembles everything into a formatted PDF with title page, summary, charts, and data tables
-6. Saves the PDF to the file browser for download
+1. 读取 CSV 并识别数据质量问题
+2. 清理数据（修复格式、删除重复、处理缺失值）
+3. 计算统计数据——回应率、均値、分布
+4. 生成图表（条形图、饥形图、趋势线）
+5. 将所有内容整合为带有封面、摘要、图表和数据表格的格式化 PDF
+6. 将 PDF 保存到文件浏览器以供下载
 
 {/* TODO: Screenshot — File browser showing three outputs: survey_cleaned.csv, charts/ folder with .png files, and survey_report.pdf. The PDF is previewed showing a professional title page. */}
 
 {/* TODO: Screenshot — A page inside the generated PDF showing a bar chart, key findings, and a summary table. */}
 
-## Skill content
+## 技能内容
 
-Copy this into **Workspace → Skills → Create**:
+将下面的内容复制到**工作区 → 技能 → 创建**：
 
 ```markdown
 ---
