@@ -2,7 +2,7 @@
 """写入 workspace 翻译文件（skills、prompts、models、knowledge）"""
 import pathlib
 
-BASE = pathlib.Path("d:/Github/open-webui-docs/docs")
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 def w(rel, content):
     p = BASE / rel

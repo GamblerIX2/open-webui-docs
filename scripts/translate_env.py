@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 filepath = 'd:/Github/open-webui-docs/docs/reference/env-configuration.mdx'
 with open(filepath, 'r', encoding='utf-8') as f:

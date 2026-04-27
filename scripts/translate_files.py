@@ -2,7 +2,7 @@
 """批量写入翻译后的文档文件"""
 import os
 
-BASE = "d:/Github/open-webui-docs/docs"
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 files = {}
 
@@ -680,6 +680,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \\
 
 ```python
 import requests
+import pathlib
 
 response = requests.get(
     "http://localhost:8080/api/models",

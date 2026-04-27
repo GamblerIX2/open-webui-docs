@@ -1,5 +1,6 @@
 import os
 import re
+import pathlib
 
 filepath = 'd:/Github/open-webui-docs/docs/reference/database-schema.md'
 with open(filepath, 'r', encoding='utf-8') as f:

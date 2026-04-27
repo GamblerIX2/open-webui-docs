@@ -80,7 +80,7 @@ async def resolve_user(user_id: str):
 
 If your plugin opens its own database session (rare, but some Tools do for custom queries), the sync helper is gone. Switch to the async variant.
 
-#### Before (0.8.x):
+#### 之前（0.8.x）：
 ```python
 from open_webui.internal.db import get_db_context
 from open_webui.models.users import User
@@ -90,7 +90,7 @@ def count_active_users():
         return db.query(User).filter_by(is_active=True).count()
 ```
 
-#### After (0.9.0):
+#### 之后（0.9.0）：
 ```python
 from sqlalchemy import select, func
 from open_webui.internal.db import get_async_db_context

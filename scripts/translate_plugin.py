@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Translate plugin-related docs"""
 import os
+import pathlib
 
-BASE = 'd:/Github/open-webui-docs/docs'
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 def r(filepath, old, new):
     content = open(filepath, encoding='utf-8').read()

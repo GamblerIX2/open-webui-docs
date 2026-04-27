@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 # Docker.md
 filepath = 'd:/Github/open-webui-docs/docs/features/open-terminal/terminals/tab-deployment/Docker.md'

@@ -1,3 +1,4 @@
+import pathlib
 #!/usr/bin/env python3
 """Translate plugin/index.mdx and plugin/tools/index.mdx"""
 
@@ -18,7 +19,7 @@ def translate(filepath, pairs):
     else:
         print(f'UNCHANGED: {os.path.basename(filepath)}')
 
-BASE = 'd:/Github/open-webui-docs/docs'
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 # ============================================================
 # plugin/index.mdx
