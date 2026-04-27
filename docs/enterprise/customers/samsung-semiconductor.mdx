@@ -1,116 +1,112 @@
 ---
 sidebar_position: 1
 title: "Samsung Semiconductor Inc."
-description: "How Samsung Semiconductor built a secure, self-hosted AI platform with Open WebUI to boost research and development efficiency, cutting workflows from days to hours."
+description: "Samsung Semiconductor 如何借助 Open WebUI 构建安全的本地自托管 AI 平台，提升研发效率，并将工作流从数天缩短到数小时。"
 keywords: ["Samsung Semiconductor AI", "Open WebUI case study", "on-prem AI platform", "enterprise LLM", "private AI deployment", "Kubernetes AI", "RAG internal data", "AI productivity", "secure generative AI", "LLM for R&D"]
 ---
 
-# Samsung Semiconductor Accelerates R&D With Private, On-Prem AI Platform Powered by Open WebUI
+# Samsung Semiconductor 借助 Open WebUI 加速研发，打造私有化本地 AI 平台
 
 ![Samsung Semiconductor, Inc.](/images/enterprise/customers/samsung-semiconductor/hero.png)
 
-## Overview
+## 概览
 
 :::info
-How Samsung Semiconductor built a secure, self-hosted AI platform with **Open WebUI** to boost research and development efficiency, cutting workflows **from days to hours**.
+了解 Samsung Semiconductor 如何借助 **Open WebUI** 构建安全的自托管 AI 平台，提升研发效率，并将工作流耗时**从数天缩短到数小时**。
 :::
 
-### At a Glance
+### 一览
 
-- **Users**: 1,000 - 4,999 employees
-- **Region**: United States (data residency enforced)
-- **Industry**: Semiconductor
-- **Deployment**: On-prem Kubernetes cluster
-- **Models**: Internal LLMs + SLMs
-- **Time-to-deploy**: 14-day pilot, full rollout in 30 days
-- **Adoption**: 40% active use in first week, stabilized at 5-10% daily actives
-- **Key Results**: 30% faster development cycles, seamless internal adoption
+- **用户规模**：1,000 - 4,999 名员工
+- **地区**：美国（已落实数据驻留要求）
+- **行业**：半导体
+- **部署方式**：本地 Kubernetes 集群
+- **模型**：内部 LLM + SLM
+- **上线周期**：14 天试点，30 天完成全面推广
+- **采用情况**：第一周活跃使用率达 40%，之后稳定在每日 5-10% 活跃
+- **关键成果**：开发周期加快 30%，内部推广顺畅
 
+## 关于 Samsung Semiconductor Inc.
 
-## About Samsung Semiconductor Inc.
+[Samsung Semiconductor Inc. (SSI)](https://semiconductor.samsung.com/) 提供包括 DRAM、SSD、处理器和图像传感器在内的先进半导体解决方案。以创新为核心，该公司支持全球技术领导者，并推动数据中心、移动设备和 AI 系统的持续进步。
 
-[Samsung Semiconductor Inc. (SSI)](https://semiconductor.samsung.com/) delivers cutting-edge semiconductor solutions including DRAM, SSD, processors, and image sensors. With innovation at its core, the company supports global technology leaders and powers advancements across data centers, mobile devices, and AI systems.
+## 挑战：在规模化前提下实现安全且灵活的 AI
 
-## The Challenge: Secure, Flexible AI at Scale
+随着 SSI 各团队开始尝试生成式 AI 工具，管理层意识到他们需要一个**自托管 AI 界面**，在**创新与控制**之间取得平衡。
 
-As teams across SSI began experimenting with generative AI tools, leadership identified a need for a **self-hosted AI interface** that balanced **innovation with control**.
+目标是：为员工提供可信赖的环境来使用大语言模型（LLM），同时不牺牲数据安全和合规性。
 
-The goal: provide employees a trusted environment to work with large language models (LLMs) without compromising data security or compliance.
+**关键需求**
 
-**Key Requirements**
+- **简单、可靠**的聊天机器人部署
+- 与内部 **Active Directory（SSO）** 集成
+- **完整审计链路**与可导出的日志
+- **严格的数据驻留**和内网隔离
+- 对插件访问和安全护栏拥有**控制力**
 
-- **Simple, reliable** chatbot deployment
-- Integration with internal **Active Directory (SSO)**
-- **Full audit trails** and exportable logs
-- **Strict data residency** and internal networking
-- **Control** over plugin access and guardrails
+基于 SaaS 的 AI 工具虽然部署迅速，但在灵活性和治理能力上存在不足。SSI 需要的是一个能够由他们自己托管、审计并持续演进的平台，同时避免供应商锁定。
 
-SaaS-based AI tools offered speed but lacked flexibility and governance. SSI required a platform they could host, audit, and evolve, without vendor lock-in.
+## 解决方案：在 Kubernetes 上运行 Open WebUI
 
-## The Solution: Open WebUI on Kubernetes
-Open WebUI was selected for its **open architecture, flexibility, and rapid proof-of-concept capabilities**. Within two weeks, SSI’s AI/ML engineering team had a production-ready deployment running inside their secure on-prem Kubernetes cluster.
+Open WebUI 之所以被选中，是因为它具备**开放架构、灵活性以及快速完成概念验证的能力**。在两周内，SSI 的 AI/ML 工程团队就在其安全的本地 Kubernetes 集群中完成了可用于生产的部署。
 
-**Architecture Highlights**
-- **Compute / Orchestration**: Internal orchestration on Kubernetes
-- **Storage / Database**: Internal DB (encrypted and managed in-house)
-- **Networking**: Fully internal network isolation
-- **Logging / Monitoring**: SSI’s internal observability stack
-- **Security Controls**: Data residency enforced; internal user access controls
- 
+**架构亮点**
+- **计算 / 编排**：在 Kubernetes 上进行内部编排
+- **存储 / 数据库**：内部数据库（加密并由内部管理）
+- **网络**：完全内网隔离
+- **日志 / 监控**：SSI 自有可观测性栈
+- **安全控制**：执行数据驻留要求；实施内部用户访问控制
 
-> “Open WebUI gave us control across security, models, and UX, without vendor lock-in.” — Software Engineering, Samsung Semiconductor, Inc.
+> “Open WebUI 让我们能够同时掌控安全、模型和用户体验，而不受供应商锁定。” —— Samsung Semiconductor, Inc. 软件工程团队
 
-## Adoption & Enablement
+## 推广与赋能
 
-To ensure smooth adoption, SSI launched a **14-day pilot with 100 analysts**. Following rapid success, Open WebUI was rolled out company-wide with two live training sessions and ongoing IT help desk support.
-Within 30 days:
+为确保平稳采用，SSI 先对 **100 名分析人员**开展了为期 14 天的试点。试点快速取得成功后，Open WebUI 被推广到全公司，并配套两场实时培训以及持续的 IT 服务台支持。
+在 30 天内：
 
-- 80% of targeted staff had adopted the platform
-- Daily active users stabilized at 5-10% of total employees
-- R&D teams reported **significant productivity improvements**
+- 80% 的目标员工采用了该平台
+- 每日活跃用户稳定在员工总数的 5-10%
+- 研发团队反馈**生产效率显著提升**
 
-> “Open WebUI provides users with an environment similar to commercial tools, giving them a sense of familiarity, and at the same time, it has the advantage of improving usability with its simple and intuitive design.” — AI/ML Engineering, Samsung Semiconductor, Inc.
+> “Open WebUI 为用户提供了类似商用工具的使用环境，带来熟悉感，同时又凭借简洁直观的设计提升了可用性。” —— Samsung Semiconductor, Inc. AI/ML 工程团队
 
-## Results: Speed, Adoption, and Control
+## 成果：速度、采用率与控制力
 
-![Screenshot of Open WebUI showing Samsung Semiconductor, Inc. internal AI chatbot interface.](/images/enterprise/customers/samsung-semiconductor/open-webui.png)
+![展示 Samsung Semiconductor, Inc. 内部 AI 聊天机器人界面的 Open WebUI 截图。](/images/enterprise/customers/samsung-semiconductor/open-webui.png)
 
+### 01. 开发速度
 
+研发与软件开发团队反馈，开发周期预计缩短了 **30%**，从而加快了迭代和创新速度。
 
-### 01. Development Speed
+### 02. 采用率与易用性
 
-R&D and software development teams reported development cycles shortened by an estimated **30%**, accelerating iteration and innovation.
+第一周内就有超过 **40% 的员工**成为活跃用户，他们普遍认可系统的简洁性与响应速度。
 
-### 02. Adoption & Usability
+### 03. 安全与合规
 
-Over **40% of employees** became active users within the first week, citing simplicity and responsiveness.
+- **私有化本地部署**帮助满足内部数据驻留要求。
+- 内建访问控制与日志能力支持**在不拖慢团队效率的前提下完成治理**。
 
-### 03. Security & Compliance
+## Samsung 为何选择 Open WebUI
 
-- **Private, on-premises deployment** supported compliance with internal data residency requirements.
-- Built-in access control and logging supported **governance without slowing** teams.
+Open WebUI 成为理想选择，主要因为它提供：
+- 对模型、数据和扩展能力的**完全控制**
+- 兼具企业级 UI 的**自托管灵活性**
+- **快速部署**与较低的 IT 额外负担
+- 与现有 AI 应用的**高度兼容性**
 
-## Why Samsung Chose Open WebUI
+这一平台让团队能够更有信心、更安全地协作，加快从想法走向洞察的过程。
 
-Open WebUI stood out as a strong fit, offering:
-- **Full control** over models, data, and extensions
-- **Self-hosted flexibility** with enterprise-grade UI
-- **Rapid deployment** and minimal IT overhead
-- **High compatibility** with existing AI applications
+## 下一步
 
-The platform empowered teams to collaborate confidently and securely, accelerating the path from idea to insight.
-
-## What’s Next
-
-Samsung Semiconductor plans to continue expanding its AI infrastructure with Open WebUI, integrating additional internal models and optimizing RAG performance over proprietary research datasets.
-
+Samsung Semiconductor 计划继续基于 Open WebUI 扩展其 AI 基础设施，接入更多内部模型，并持续优化其专有研发数据集上的 RAG 性能。
 
 ---
 
 :::tip
 
-**Looking for an [Enterprise Plan](https://docs.openwebui.com/enterprise)?** — **[Speak with Our Sales Team Today!](https://docs.openwebui.com/enterprise)**
+**正在了解 [Enterprise Plan](https://docs.openwebui.com/enterprise)？** —— **[立即联系销售团队！](https://docs.openwebui.com/enterprise)**
 
-Get **enhanced capabilities**, including **custom theming and branding**, **Service Level Agreement (SLA) support**, **Long-Term Support (LTS) versions**, and **more!**
+获取**增强能力**，包括**自定义主题与品牌定制**、**Service Level Agreement（SLA）支持**、**Long-Term Support（LTS）版本**等更多内容。
 
 :::

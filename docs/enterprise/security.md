@@ -1,95 +1,94 @@
 ---
 sidebar_position: 2
-title: "Security"
+title: "安全"
 ---
 
-### Enterprise-Grade Security Architecture
+### 企业级安全架构
 
-For enterprise organizations, AI adoption isn't just a technology decision, it's a security decision. Every model query, every document uploaded, and every workflow automated represents data that needs protection.
+对于企业组织而言，采用 AI 不只是技术决策，更是安全决策。每一次模型查询、每一份上传文档以及每一个自动化工作流，都代表着需要被保护的数据。
 
-Open WebUI is built with security as a core priority. Whether you are navigating strict regulatory requirements or simply committed to protecting your organization's intellectual property, Open WebUI provides controls to help you deploy AI with confidence. As with any self-hosted software, the deploying organization is responsible for securing its environment, infrastructure, and configuration.
+Open WebUI 将安全作为核心优先级来构建。无论你是在应对严格监管要求，还是只是致力于保护组织的知识产权，Open WebUI 都能提供帮助你更有信心部署 AI 的控制能力。与任何自托管软件一样，部署方需要负责保护其环境、基础设施和配置。
 
-### Security Architecture
+### 安全架构
 
-#### Your Data, Your Infrastructure
+#### 你的数据，你的基础设施
 
-Unlike SaaS AI platforms where your data traverses third-party servers, Open WebUI gives you **full control over your data pipeline**:
+不同于 SaaS AI 平台需要让数据经过第三方服务器，Open WebUI 让你能够**完全掌控自己的数据链路**：
 
-| Deployment Model | Description |
+| 部署模型 | 说明 |
 | :--- | :--- |
-| **On-Premise** | Run entirely within your own data centers. Your data stays within your network by default. |
-| **Private Cloud** | Deploy in your organization's cloud tenancy (AWS, Azure, GCP) with full infrastructure control. |
-| **Air-Gapped** | Complete network isolation for environments with the strictest security requirements. |
-| **Hybrid** | Flexible configurations that balance accessibility with security boundaries. |
+| **本地部署** | 完全运行在你自己的数据中心中。默认情况下，数据保留在你的网络内部。 |
+| **私有云** | 部署在组织自己的云租户（AWS、Azure、GCP）中，并保有完整基础设施控制权。 |
+| **气隙环境** | 完整网络隔离，适用于安全要求最严格的环境。 |
+| **混合模式** | 在可访问性与安全边界之间取得平衡的灵活配置。 |
 
-For organizations handling sensitive data, whether proprietary research, customer information, or classified materials, this architecture is designed to help protect your security posture.
+对于处理敏感数据的组织——无论是专有研究、客户信息，还是涉密材料——这种架构都旨在帮助你保护整体安全态势。
 
-### Regulatory & Compliance Considerations
+### 监管与合规考量
 
-Many organizations evaluating AI platforms operate under regulatory frameworks such as SOC 2, HIPAA, GDPR, FedRAMP, or ISO 27001. Open WebUI's self-hosted, on-premise, and air-gapped architecture provides technical controls that can form **part of** a compliant deployment:
+许多评估 AI 平台的组织都处于 SOC 2、HIPAA、GDPR、FedRAMP 或 ISO 27001 等监管框架之下。Open WebUI 的自托管、本地部署与气隙架构提供的技术控制，可构成合规部署的**一部分**：
 
-* **Self-hosted data pipeline** ,  Your data stays within your infrastructure by default, unless you configure external model providers.
-* **Identity integration** ,  SSO, LDAP, RBAC to enforce your access policies.
-* **Audit-ready logging** ,  Container-native log streams compatible with enterprise SIEM tools.
-* **Data residency control** ,  You choose where your data physically resides.
+* **自托管数据链路**：除非你主动配置外部模型提供商，否则数据默认保留在你的基础设施内。
+* **身份集成**：通过 SSO、LDAP、RBAC 执行访问策略。
+* **可审计日志**：容器原生日志流可兼容企业级 SIEM 工具。
+* **数据驻留控制**：由你决定数据的物理存放位置。
 
-:::warning Compliance Responsibility
-As self-hosted software, Open WebUI is deployed and operated within your infrastructure. Compliance certifications apply to **your deployment**, not to the software itself. Because you manage the deployment, configuration, access controls, and operational safeguards, responsibility for meeting any regulatory framework sits with your organization. Use of this software is governed by the [Open WebUI License](/license).
+:::warning 合规责任
+作为自托管软件，Open WebUI 由你在自己的基础设施中部署和运行。合规认证适用于**你的部署环境**，而不是软件本身。由于部署、配置、访问控制和运维防护都由你管理，因此满足任何监管框架的责任在于你的组织。该软件的使用受 [Open WebUI License](/license) 约束。
 
-General best-practice guidance is available in our [hardening documentation](/getting-started/advanced-topics/hardening). Enterprise customers on the appropriate tier receive hands-on support for deployment and configuration decisions.
+通用最佳实践可参阅我们的[加固文档](/getting-started/advanced-topics/hardening)。购买相应等级企业方案的客户可获得部署与配置决策方面的实践支持。
 
-[**Contact Enterprise Sales for Compliance Guidance → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售获取合规指导 → sales@openwebui.com**](mailto:sales@openwebui.com)
 :::
 
-### Identity & Access Management
+### 身份与访问管理
 
-Seamless integration with your existing identity infrastructure reduces friction while maintaining security boundaries.
+与现有身份基础设施无缝集成，既能降低使用阻力，也能维持安全边界。
 
-#### Enterprise Identity Integration
+#### 企业身份集成
 
-Open WebUI integrates with the identity systems your organization already uses:
+Open WebUI 可接入组织已经在使用的身份系统：
 
-* **LDAP & Active Directory** ,  Connect directly to your existing directory services for user authentication and management.
-* **Single Sign-On (SSO)** ,  Support for SAML and OIDC protocols, enabling users to access Open WebUI with their existing corporate credentials.
-* **Multi-Factor Authentication (MFA)** ,  Layer additional security on top of primary authentication.
+* **LDAP 与 Active Directory**：直接连接现有目录服务，用于用户认证和管理。
+* **单点登录（SSO）**：支持 SAML 和 OIDC 协议，让用户使用现有企业凭据访问 Open WebUI。
+* **多因素认证（MFA）**：在主认证之上叠加额外安全层。
 
-#### Access Control & Permissions
+#### 访问控制与权限
 
-Beyond authentication, Open WebUI provides granular control over user permissions:
+除认证外，Open WebUI 还提供细粒度的权限控制：
 
-* **Role-Based Access Control (RBAC)** ,  Define roles that align with your organizational structure to limit administrative access.
-* **Model-Level Permissions** ,  Control which users or groups can access specific models.
-* **Workspace Isolation** ,  Separate teams or departments to help restrict unauthorized data access.
+* **基于角色的访问控制（RBAC）**：定义与组织结构一致的角色，限制管理权限。
+* **模型级权限**：控制哪些用户或群组可以访问特定模型。
+* **工作区隔离**：隔离团队或部门，帮助限制未经授权的数据访问。
 
-### Data Governance
+### 数据治理
 
-#### Audit & Accountability
+#### 审计与责任追踪
 
-For regulated industries and security-conscious organizations, visibility into system usage is not optional. Open WebUI supports standard enterprise logging patterns:
+对于受监管行业和重视安全的组织而言，系统使用可见性不是可选项。Open WebUI 支持标准企业日志模式：
 
-* **Infrastructure-Level Logging** ,  Containerized architecture allows standard output streams to be piped directly to your logging infrastructure (Splunk, Datadog, ELK).
-* **Event Tracking** ,  Track API usage and system events to monitor for anomalies.
-* **Retention Controls** ,  Because you own the database, you control the data retention policies, so data can be purged or archived according to your compliance schedules.
+* **基础设施级日志**：容器化架构允许将标准输出直接导入日志基础设施（Splunk、Datadog、ELK）。
+* **事件追踪**：跟踪 API 使用情况和系统事件，以监控异常。
+* **保留策略控制**：由于数据库归你掌管，因此你可以按合规要求清理或归档数据。
 
-#### Data Residency
+#### 数据驻留
 
-For organizations with geographic data requirements, whether driven by GDPR, data sovereignty laws, or internal policy, Open WebUI's self-hosted deployment model is designed to support keeping your data physically located where your policies require.
+对于有地域性数据要求的组织——无论是出于 GDPR、数据主权法律，还是内部政策——Open WebUI 的自托管部署模式都旨在支持你将数据物理存放在政策要求的位置。
 
+### 这对你的组织意味着什么
 
-### What This Means for Your Organization
+#### 面向安全团队
 
-#### For Security Teams
+Open WebUI 的代码库可公开审计，让你具备可见性和控制力，并能接入现有安全工具链，而不会形成新的盲区。
 
-Open WebUI's publicly auditable codebase gives you visibility and control, integrating with your existing security tooling rather than creating blind spots.
+#### 面向合规负责人
 
-#### For Compliance Officers
+系统具备支撑合规态势所需的技术控制。无论你是在准备审计，还是响应安全问卷，Open WebUI 的架构都能为你的说明提供技术依据。
 
-The technical controls exist to support your compliance posture. Whether you are preparing for an audit or responding to a security questionnaire, Open WebUI's architecture provides technical controls that can support your responses.
+#### 面向 IT 管理层
 
-#### For IT Leadership
+用户管理不会变成另一个孤岛。Open WebUI 能与现有身份基础设施协同工作，降低管理开销，并帮助你在各类工具之间保持一致的访问策略。
 
-User management doesn't become another silo. Open WebUI works with your existing identity infrastructure, reducing administrative overhead and helping maintain consistent access policies across your tooling.
+---
 
---- 
-
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

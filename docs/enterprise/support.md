@@ -1,69 +1,69 @@
 ---
 sidebar_position: 6
-title: "Support & SLAs"
+title: "支持与 SLA"
 ---
 
-### Enterprise Support Built for Your Organization
+### 为你的组织打造的企业支持
 
-Open WebUI's enterprise solutions provide mission-critical businesses with **dedicated support and direct access** to the team behind the platform. Support engagements are structured to match your organization's needs, from teams requiring branding flexibility to enterprises needing hands-on guidance.
+Open WebUI 的企业方案为关键业务组织提供**专属支持与直接对接**平台核心团队的渠道。支持服务会根据组织需求进行安排，无论你需要品牌定制灵活性，还是希望获得更深入的落地指导。
 
-### Support Capabilities
+### 支持能力
 
-#### Dedicated Account Manager
+#### 专属客户经理
 
-Enterprise customers receive a **single point of contact** for guidance, onboarding, and strategy. Your dedicated account manager can provide:
+企业客户将获得**单一联系人**，用于咨询、入门引导和策略沟通。专属客户经理可提供：
 
-* **Onboarding Guidance** ,  Structured support through initial deployment and rollout.
-* **Ongoing Strategy** ,  Check-ins to help your deployment evolve with your needs.
-* **Internal Advocacy** ,  A direct line to the Open WebUI team who understands your requirements.
+* **上线引导**：围绕初始部署与推广的结构化支持。
+* **持续策略支持**：通过定期沟通帮助部署方案随着需求演进。
+* **内部协同推动**：直接连接了解你需求的 Open WebUI 团队成员。
 
-#### Office Hours with Core Engineers
+#### 与核心工程师的 Office Hours
 
-Directly work with the engineers evolving Open WebUI. These exclusive sessions provide opportunities to:
+直接与持续演进 Open WebUI 的工程师协作。这些专属交流时段可帮助你：
 
-* **Solve Hard Problems** ,  Discuss complex technical challenges with the people who know the codebase best.
-* **Roadmap Insight** ,  Get insight into upcoming features and architectural direction.
-* **Direct Feedback** ,  Provide input that directly influences product development.
-* **Architecture Review** ,  Review your deployment architecture with expert guidance.
+* **解决复杂问题**：与最熟悉代码库的人讨论复杂技术挑战。
+* **了解路线图**：提前了解即将推出的功能与架构方向。
+* **直接反馈**：提供可直接影响产品发展的意见。
+* **架构评审**：在专家指导下审查部署架构。
 
-#### Communication Channels
+#### 沟通渠道
 
-Stay connected with the Open WebUI team through dedicated channels suited to your operational tempo:
+通过适合你运维节奏的专用渠道与 Open WebUI 团队保持联系：
 
-| Channel | Description |
+| 渠道 | 说明 |
 | :--- | :--- |
-| **Community Discord** | A real-time channel where your engineers can connect with the Open WebUI team and broader community. |
-| **AI Support Bot** | Get instant answers from our support bot, trained specifically on Open WebUI documentation and features. Available 24/7 in Discord. |
-| **Dedicated Support Channels** | Priority access for enterprise customers, direct communication for troubleshooting, guidance, and ongoing questions. |
-| **Consulting Hours** | Scheduled time with our team for deep-dive architecture reviews, optimization, and strategic planning. |
+| **社区 Discord** | 实时沟通渠道，你的工程师可以在这里与 Open WebUI 团队及更广泛社区交流。 |
+| **AI 支持机器人** | 从专门基于 Open WebUI 文档与功能训练的支持机器人处即时获得答案。Discord 中 24/7 可用。 |
+| **专属支持渠道** | 为企业客户提供优先级更高的故障排查、指导与持续问答沟通。 |
+| **咨询时段** | 与团队预约深入架构评审、优化和战略规划讨论。 |
 
-### Consulting Topics
+### 咨询主题
 
-During consulting hours, our team can provide **high-level guidance** on a range of enterprise topics, including:
+在咨询时段中，我们的团队可针对多种企业主题提供**高层级指导**，包括：
 
-* **Theming & Branding** ,  Guidance on white-labeling Open WebUI to reflect your organization's identity.
-* **Model Integration** ,  Architectural advice for integrating proprietary or third-party AI models.
-* **Custom Feature Planning** ,  Strategic input on extending Open WebUI for your organization's workflows.
-* **Deployment Architecture** ,  Best practices for on-premise, hybrid, or cloud deployments.
+* **主题与品牌定制**：关于如何对白标化 Open WebUI 以体现组织品牌形象提供建议。
+* **模型集成**：为接入专有模型或第三方 AI 模型提供架构建议。
+* **自定义功能规划**：就如何为组织工作流扩展 Open WebUI 提供策略性建议。
+* **部署架构**：关于本地、混合或云部署的最佳实践。
 
 :::note
-Open WebUI provides **guidance and expertise**, not implementation services. For hands-on development work, we recommend engaging a qualified systems integrator or internal engineering team.
+Open WebUI 提供的是**指导与专业知识**，而不是实施服务。如果你需要实际开发或落地交付，我们建议与合格的系统集成商或内部工程团队合作。
 :::
 
-### What This Means for Your Organization
+### 这对你的组织意味着什么
 
-#### For IT Operations
+#### 面向 IT 运维团队
 
-You are not navigating deployment challenges alone. Direct access to the Open WebUI team means faster resolution and guidance informed by deep platform expertise.
+你不需要独自应对部署挑战。直接接入 Open WebUI 团队，意味着问题能更快解决，并获得基于深度平台经验的指导。
 
-#### For Procurement & Legal
+#### 面向采购与法务
 
-Enterprise support provides a formal relationship with the organization behind the platform, documented, accountable, and structured with Service Level Agreements (SLAs).
+企业支持为你提供与平台背后组织的正式合作关系，具备文档化、可追责和基于 Service Level Agreement（SLA）的支持机制。
 
-#### For Executive Leadership
+#### 面向管理层
 
-Enterprise support de-risks your AI investment. You have a direct relationship with the team building and maintaining Open WebUI, supporting long-term viability.
+企业支持能够降低 AI 投资风险。你将与持续构建和维护 Open WebUI 的团队建立直接关系，从而更好地保障长期可持续性。
 
---- 
+---
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

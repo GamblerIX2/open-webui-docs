@@ -1,39 +1,39 @@
 ---
 sidebar_position: 2
-title: "Container Service"
+title: "容器服务"
 ---
 
-# Container Service
+# 容器服务
 
-Run the official `ghcr.io/open-webui/open-webui` image on a managed container platform such as AWS ECS/Fargate, Azure Container Apps, or Google Cloud Run.
+在 AWS ECS/Fargate、Azure Container Apps 或 Google Cloud Run 等托管容器平台上运行官方 `ghcr.io/open-webui/open-webui` 镜像。
 
-:::info Prerequisites
-Before proceeding, ensure you have configured the [shared infrastructure requirements](/enterprise/deployment#shared-infrastructure-requirements) — PostgreSQL, Redis, a vector database, shared storage, and content extraction.
+:::info 前置条件
+继续之前，请先完成[共享基础设施要求](/enterprise/deployment#shared-infrastructure-requirements)的配置——包括 PostgreSQL、Redis、向量数据库、共享存储和内容提取。
 :::
 
-## When to Choose This Pattern
+## 何时选择这种模式
 
-- You want container benefits (immutable images, versioned deployments, no OS management) without Kubernetes complexity
-- Your organization already uses a managed container platform
-- You need fast scaling with minimal operational overhead
-- You prefer managed infrastructure with platform-native auto-scaling
+- 你希望获得容器带来的优势（不可变镜像、版本化部署、无需管理操作系统），但不想承担 Kubernetes 的复杂度
+- 你的组织已经在使用托管容器平台
+- 你需要以较低运维开销快速扩缩容
+- 你偏好具备平台原生自动扩缩容能力的托管基础设施
 
-## Architecture
+## 架构
 
 ```mermaid
 flowchart TB
-    LB["Load Balancer"]
+    LB["负载均衡器"]
 
-    subgraph CS["Container Service"]
-        T1["Container Task 1"]
-        T2["Container Task 2"]
-        T3["Container Task N"]
+    subgraph CS["容器服务"]
+        T1["容器任务 1"]
+        T2["容器任务 2"]
+        T3["容器任务 N"]
     end
 
-    subgraph Backend["Managed Backing Services"]
+    subgraph Backend["托管后端服务"]
         PG["PostgreSQL + PGVector"]
         Redis["Redis"]
-        S3["Object Storage"]
+        S3["对象存储"]
         Tika["Tika"]
     end
 
@@ -41,45 +41,45 @@ flowchart TB
     CS --> Backend
 ```
 
-## Image Selection
+## 镜像选择
 
-Use **versioned tags** for production stability:
+为确保生产稳定性，请使用**版本化标签**：
 
 ```
 ghcr.io/open-webui/open-webui:v0.x.x
 ```
 
-Avoid the `:main` tag in production — it tracks the latest development build and can introduce breaking changes without warning. Check the [Open WebUI releases](https://github.com/open-webui/open-webui/releases) for the latest stable version.
+不要在生产环境中使用 `:main` 标签——它会跟踪最新开发构建，可能在没有预警的情况下引入破坏性变更。请查看 [Open WebUI releases](https://github.com/open-webui/open-webui/releases) 获取最新稳定版本。
 
-## Scaling Strategy
+## 扩缩容策略
 
-- **Platform-native auto-scaling**: Configure your container service to scale on CPU utilization, memory, or request count.
-- **Health checks**: Use the `/health` endpoint for both liveness and readiness probes.
-- **Task-level env vars**: Pass all shared infrastructure configuration as environment variables or secrets in your task definition.
-- **Session affinity**: Enable sticky sessions on your load balancer for WebSocket stability. While Redis handles cross-instance coordination, session affinity reduces unnecessary session handoffs.
+- **平台原生自动扩缩容**：将容器服务配置为根据 CPU 使用率、内存或请求数扩缩容。
+- **健康检查**：使用 `/health` 端点同时作为 liveness 和 readiness 探针。
+- **任务级环境变量**：通过任务定义中的环境变量或密钥传入所有共享基础设施配置。
+- **会话亲和性**：在负载均衡器上启用 sticky session 以提高 WebSocket 稳定性。虽然 Redis 负责跨实例协调，但会话亲和性可以减少不必要的会话切换。
 
-## Key Considerations
+## 关键注意事项
 
-| Consideration | Detail |
+| 注意事项 | 说明 |
 | :--- | :--- |
-| **Storage** | Use object storage (S3, GCS, Azure Blob) or a shared filesystem (such as EFS). Container-local storage is ephemeral and not shared across tasks. |
-| **Tika sidecar** | Run Tika as a sidecar container in the same task definition, or as a separate service. Sidecar pattern keeps extraction traffic local. |
-| **Secrets management** | Use your platform's secrets manager (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager) for `DATABASE_URL`, `REDIS_URL`, and `WEBUI_SECRET_KEY`. |
-| **Updates** | Perform a rolling deployment with a single task first — this task runs migrations (`ENABLE_DB_MIGRATIONS=true`). Once healthy, scale the remaining tasks with `ENABLE_DB_MIGRATIONS=false`. |
+| **存储** | 使用对象存储（S3、GCS、Azure Blob）或共享文件系统（如 EFS）。容器本地存储是临时性的，且不会在任务之间共享。 |
+| **Tika sidecar** | 可将 Tika 作为同一任务定义中的 sidecar 容器运行，也可单独作为服务部署。sidecar 模式可让提取流量保持本地化。 |
+| **密钥管理** | 使用平台的密钥管理服务（AWS Secrets Manager、Azure Key Vault、GCP Secret Manager）来保存 `DATABASE_URL`、`REDIS_URL` 和 `WEBUI_SECRET_KEY`。 |
+| **更新** | 先执行单任务滚动部署——该任务负责运行迁移（`ENABLE_DB_MIGRATIONS=true`）。健康后，再将其余任务扩容，并设置 `ENABLE_DB_MIGRATIONS=false`。 |
 
-## Anti-Patterns to Avoid
+## 需要避免的反模式
 
-| Anti-Pattern | Impact | Fix |
+| 反模式 | 影响 | 修复方式 |
 | :--- | :--- | :--- |
-| Using local SQLite | Data loss on task restart, database locks with multiple tasks | Set `DATABASE_URL` to PostgreSQL |
-| Default ChromaDB | SQLite-backed vector DB crashes under multi-process access | Set `VECTOR_DB=pgvector` (or Milvus/Qdrant) |
-| Inconsistent `WEBUI_SECRET_KEY` | Login loops, 401 errors, sessions that don't persist across tasks | Set the same key on every task via secrets manager |
-| No Redis | WebSocket failures, config not syncing, "Model Not Found" errors | Set `REDIS_URL` and `WEBSOCKET_MANAGER=redis` |
+| 使用本地 SQLite | 任务重启时数据丢失，多任务下数据库锁冲突 | 将 `DATABASE_URL` 设置为 PostgreSQL |
+| 使用默认 ChromaDB | 基于 SQLite 的向量数据库在多进程访问下会崩溃 | 设置 `VECTOR_DB=pgvector`（或使用 Milvus/Qdrant） |
+| `WEBUI_SECRET_KEY` 不一致 | 登录循环、401 错误、会话无法跨任务保持 | 通过密钥管理器为每个任务设置相同的密钥 |
+| 未配置 Redis | WebSocket 失败、配置不同步、“Model Not Found” 错误 | 设置 `REDIS_URL` 和 `WEBSOCKET_MANAGER=redis` |
 
-For container basics, see the [Quick Start guide](/getting-started/quick-start).
+有关容器基础知识，请参阅[快速开始指南](/getting-started/quick-start)。
 
 ---
 
-**Need help planning your enterprise deployment?** Our team works with organizations worldwide to design and implement production Open WebUI environments.
+**需要帮助规划企业部署吗？** 我们的团队正在帮助全球组织设计并实施生产级 Open WebUI 环境。
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

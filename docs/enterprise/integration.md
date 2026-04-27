@@ -1,58 +1,57 @@
 ---
 sidebar_position: 4
-title: "Integration"
+title: "集成"
 ---
 
-### Make Open WebUI Your Own
+### 让 Open WebUI 真正适配你的组织
 
-Off-the-shelf software rarely fits enterprise workflows perfectly. Teams have established processes, specific model requirements, and brand standards that generic tools can't accommodate.
+现成软件很少能完全契合企业工作流。团队有既定流程、特定模型要求和品牌标准，而通用工具往往无法全部满足。
 
-Open WebUI is built differently. From the interface your users see to the AI models powering their work, every layer is designed for customization, without requiring you to fork the codebase or maintain a separate build.
+Open WebUI 采用不同的思路。从用户看到的界面，到驱动工作的 AI 模型，每一层都为定制化而设计，而且无需 fork 代码库或维护独立构建。
 
+### AI 模型集成
 
-### AI Model Integration
+#### 让任意模型接入任意工作流
 
-#### Connect Any Model to Any Workflow
+每个组织的 AI 需求都不相同。也许你已经基于专有数据微调了模型；也许出于合规原因，你必须使用特定提供商；又或者你需要为不同部门的不同场景提供不同模型。
 
-Your organization's AI needs are unique. Maybe you have fine-tuned models on proprietary data. Perhaps you are committed to specific providers for compliance reasons. Or you need different models for different use cases across departments.
+Open WebUI 支持灵活的模型集成：
 
-Open WebUI supports flexible model integration:
+* **专有模型**：接入你为组织领域自行开发或微调的模型。
+* **第三方提供商**：集成满足合规与性能要求的商业 AI 服务。
+* **本地模型**：完全在本地运行模型，以获得最大的数据控制力并降低延迟。
+* **多模型环境**：为不同团队提供不同模型，或按具体需求构建多模型 agentic 工作流。
 
-* **Proprietary Models** ,  Connect models you have developed or fine-tuned specifically for your organization's domain.
-* **Third-Party Providers** ,  Integrate commercial AI services that meet your compliance and performance requirements.
-* **Local Models** ,  Run models entirely on-premise for maximum data control and reduced latency.
-* **Multi-Model Environments** ,  Offer different models to different teams, or build multi-model agentic workflows based on specific needs.
+#### 面向企业工作流的模型优化
 
-#### Model Optimization for Enterprise Workflows
+除了基础连接能力外，Open WebUI 的企业方案还可为特定使用场景提供模型优化建议：
 
-Beyond basic connectivity, Open WebUI's enterprise offerings include guidance on optimizing model performance for your specific use cases:
+* **微调咨询**：与我们的团队协作，为你的领域术语和使用模式优化模型。
+* **性能基准评估**：了解不同模型在真实工作流需求下的表现。
+* **成本优化**：在模型能力与 token 成本之间取得平衡，以支撑可持续的大规模部署。
 
-* **Fine-Tuning Consultation** ,  Work with our team to optimize models for your domain vocabulary and use patterns.
-* **Performance Benchmarking** ,  Understand how different models perform against your actual workflow requirements.
-* **Cost Optimization** ,  Balance model capability against token costs for sustainable deployment at scale.
+### 可扩展性与平台集成
 
-### Extensibility & Platform Integration
+#### 为扩展而生，而非替换现有系统
 
-#### Built to Extend, Not Replace
+企业软件生态往往很复杂。你最不需要的，就是再出现一个新孤岛。Open WebUI 的模块化架构意味着它会**与**现有基础设施协同工作，而不是与之对抗：
 
-Enterprise software ecosystems are complex. The last thing you need is another silo. Open WebUI's modular architecture means it works *with* your existing infrastructure, not against it:
-
-| Integration Type | Examples |
+| 集成类型 | 示例 |
 | :--- | :--- |
-| **Identity Systems** | LDAP, Active Directory, SSO providers (SAML, OIDC). |
-| **Enterprise Tools** | Connect to internal APIs, databases, and business systems. |
-| **Workflow Automation** | Integrate with existing automation pipelines and orchestration tools. |
-| **Observability** | Feed logs and metrics into your existing monitoring stack. |
+| **身份系统** | LDAP、Active Directory、SSO 提供商（SAML、OIDC）。 |
+| **企业工具** | 连接内部 API、数据库和业务系统。 |
+| **工作流自动化** | 与现有自动化流水线和编排工具集成。 |
+| **可观测性** | 将日志和指标接入你现有的监控栈。 |
 
-#### Extend Without Forking
+#### 无需 Fork 即可扩展
 
-Open WebUI's plugin and pipeline architecture allows you to add functionality without modifying core code:
+Open WebUI 的插件与 Pipeline 架构允许你在不修改核心代码的前提下扩展功能：
 
-* **Custom Workflows** ,  Build organization-specific AI workflows that reflect your actual business processes.
-* **Data Connectors** ,  Create integrations that pull context from your internal knowledge bases.
-* **Specialized Interfaces** ,  Develop custom UI components for specific departmental needs.
-* **Automation Hooks** ,  Trigger actions in external systems based on AI interactions.
+* **自定义工作流**：构建贴合真实业务流程的组织级 AI 工作流。
+* **数据连接器**：创建从内部知识库提取上下文的集成。
+* **专用界面**：为特定部门需求开发自定义 UI 组件。
+* **自动化钩子**：根据 AI 交互触发外部系统中的动作。
 
---- 
+---
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

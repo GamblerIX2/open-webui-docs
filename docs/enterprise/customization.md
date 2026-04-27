@@ -1,36 +1,36 @@
 ---
 sidebar_position: 5
-title: "Customization"
+title: "定制化"
 ---
 
-### White-Labeling & Custom Theming
+### 白标化与自定义主题
 
-For organizations deploying AI tools to internal teams, or offering AI capabilities to clients, brand consistency matters. Open WebUI's enterprise licensing enables full white-labeling capabilities:
+对于向内部团队部署 AI 工具，或向客户提供 AI 能力的组织来说，品牌一致性非常重要。Open WebUI 的企业版授权支持完整的白标能力：
 
-| Capability | What You Can Customize |
+| 能力 | 可定制内容 |
 | :--- | :--- |
-| **Visual Identity** | Replace default branding with your organization's logo, colors, and visual style. |
-| **Interface Theming** | Customize the look and feel to match your existing internal tools. |
-| **User Experience** | Tailor the interface to emphasize the workflows most relevant to your teams. |
+| **视觉识别** | 用组织自己的 Logo、配色和视觉风格替换默认品牌元素。 |
+| **界面主题** | 自定义外观与体验，使其与现有内部工具保持一致。 |
+| **用户体验** | 调整界面重点，突出最符合团队工作流的使用方式。 |
 
-#### Why This Matters
+#### 这为什么重要
 
-When AI tools look and feel like part of your existing ecosystem, adoption increases. Users don't experience cognitive friction switching between "your tools" and "that AI thing", it becomes one seamless environment.
+当 AI 工具在观感和体验上成为你现有生态的一部分时，采用率会更高。用户不会在“你们自己的工具”和“那个 AI 工具”之间来回切换产生认知割裂，而是获得一个连贯统一的环境。
 
-### What This Means for Your Organization
+### 这对你的组织意味着什么
 
-#### For Product Owners
+#### 面向产品负责人
 
-You are not forcing teams to adapt to the tool, the tool adapts to them. Customization options mean you can roll out AI capabilities that feel native to each department's workflow.
+你不需要强迫团队去适应工具，而是让工具适应团队。定制能力意味着你可以为不同部门推出更符合原生工作流体验的 AI 能力。
 
-#### For IT Teams
+#### 面向 IT 团队
 
-Integration flexibility means Open WebUI slots into your existing architecture. You are not rebuilding identity management, recreating monitoring dashboards, or maintaining yet another authentication silo.
+灵活的集成能力让 Open WebUI 能够顺畅接入你现有的架构。你无需重建身份管理、重做监控面板，或再维护一个新的身份认证孤岛。
 
-#### For Brand & Communications Teams
+#### 面向品牌与传播团队
 
-White-labeling helps AI tools meet the same brand standards as every other internal platform. No awkward "third-party app" aesthetic undermining your carefully maintained internal experience.
+白标化能够让 AI 工具遵循与你其他内部平台一致的品牌标准，避免“第三方应用”的违和感破坏你精心维护的内部体验。
 
---- 
+---
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)
