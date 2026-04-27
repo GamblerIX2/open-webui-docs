@@ -1,36 +1,36 @@
 ---
 sidebar_position: 11
-title: "Temporal Awareness"
+title: "时间感知"
 ---
 
-# Temporal Awareness (Date & Time)
+# 时间感知（日期与时间）
 
-For an AI to be truly helpful, it needs to understand the concept of time. Open WebUI provides models with the current date, time, and timezone so they can deliver contextually relevant answers (e.g., "What's on my schedule today?" or "Summarize my meetings from yesterday").
+要让 AI 真正有帮助，它必须理解“时间”这一概念。Open WebUI 会向模型提供当前日期、时间和时区，从而使其能够给出更符合上下文的回答（例如“我今天的日程是什么？”或“总结一下我昨天的会议”）。
 
-## System-Level Awareness
+## 系统级时间感知
 
-By default, Open WebUI injects temporal variables into the model's environment via the system prompt. Even without specialized tools, most models are aware of:
-- **`CURRENT_DATE`**: Injected as YYYY-MM-DD.
-- **`CURRENT_TIME`**: Injected as HH:MM.
-- **`CURRENT_WEEKDAY`**: (e.g., Monday, Tuesday).
+默认情况下，Open WebUI 会通过 system prompt 将时间变量注入到模型环境中。即使不使用专门工具，大多数模型也能感知以下信息：
+- **`CURRENT_DATE`**：以 YYYY-MM-DD 格式注入
+- **`CURRENT_TIME`**：以 HH:MM 格式注入
+- **`CURRENT_WEEKDAY`**：例如 Monday、Tuesday
 
-These variables can be manually used in [**Prompts**](/features/workspace/prompts) or [**Model Files**](/features/workspace/models) using the `{{CURRENT_DATE}}` syntax.
+这些变量也可以在 [**Prompts**](/features/workspace/prompts) 或 [**Model Files**](/features/workspace/models) 中通过 `{{CURRENT_DATE}}` 语法手动使用。
 
 ---
 
-## Native Temporal Tools (Agentic)
+## 原生时间工具（Agentic）
 
-When using a model with **Native Function Calling** enabled (see the [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)), models gain granular control over time calculations and queries.
+当你使用启用了 **Native Function Calling** 的模型时（参见 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），模型就能更细粒度地执行时间查询与时间计算。
 
-### Available Time Tools:
-- **`get_current_timestamp`**: The model can retrieve the exact current Unix timestamp (UTC) and ISO date string.
-- **`calculate_timestamp`**: The model can perform relative time arithmetic (e.g., "Calculate the date for 3 days ago" or "When is next Friday?").
+### 可用时间工具：
+- **`get_current_timestamp`**：模型可获取精确的当前 Unix 时间戳（UTC）和 ISO 日期字符串
+- **`calculate_timestamp`**：模型可执行相对时间计算（例如“计算 3 天前的日期”或“下周五是哪天？”）
 
-### Why use native tool calling for Time?
-While static variables tell the model "when it is now," native tools allow the model to **reason about time**. 
+### 为什么时间要用原生工具调用？
+静态变量只能告诉模型“现在是什么时间”，而原生工具能让模型**对时间进行推理**。
 
-If you ask: *"Find the notes I wrote last Tuesday,"* a model without tools might guess the date incorrectly. A tool-equipped model will:
-1.  **Calculate** the exact date of "last Tuesday" using `calculate_timestamp`.
-2.  **Search** your notes using that specific date as a filter via `search_notes`.
+如果你问：*"Find the notes I wrote last Tuesday,"*，没有工具的模型可能会猜错具体日期；而有工具的模型会：
+1.  使用 `calculate_timestamp` **计算**出“上周二”的准确日期
+2.  再通过 `search_notes` 用该具体日期作为过滤条件去**搜索**你的笔记
 
-This precision is essential for reliable agentic workflows that involve searching history, scheduling tasks, or analyzing time-sensitive data.
+这种精确性对于依赖历史搜索、任务调度或时序数据分析的 agentic 工作流至关重要。

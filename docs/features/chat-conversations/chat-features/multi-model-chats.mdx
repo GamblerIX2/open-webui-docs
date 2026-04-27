@@ -1,70 +1,67 @@
 ---
 sidebar_position: 2
-title: "Multi-Model Chats"
+title: "多模型聊天"
 ---
 
-# Multi-Model Chats
+# 多模型聊天
 
-Open WebUI allows you to interact with **multiple models simultaneously** within a single chat interface. This powerful feature enables you to compare responses, verify facts, and leverage the unique strengths of different LLMs side-by-side.
+Open WebUI 允许你在单个聊天界面中**同时与多个模型交互**。这一强大功能让你可以并排比较回答、交叉验证事实，并结合不同 LLM 的独特优势。
 
-## Overview
+## 概览
 
-In a Multi-Model Chat, your prompt is sent to two or more selected models at the same time. Their responses are displayed in parallel columns (or stacked, depending on screen size), giving you immediate insight into how different AI architectures approach the same problem.
+在多模型聊天中，你的提示词会同时发送给两个或更多已选模型。它们的回复会以并列列布局显示（或在小屏幕上堆叠显示），让你能够立刻看到不同 AI 架构面对同一问题时的处理方式。
 
-## How to Use
+## 如何使用
 
-1.  **Select Models**: In the chat header (Model Selector), click the **+ (Plus)** button to add more models to your current session.
-    *   *Example Setup*: Select **GPT-5.1 Thinking** (for reasoning), **Gemini 3** (for creative writing), and **Claude Sonnet 4.5** (for overall performance).
-2.  **Send Prompt**: Type your question as usual.
-3.  **View Results**: Watch as all models generate their responses simultaneously in the chat window.
+1.  **选择模型**：在聊天头部的模型选择器中，点击 **+（Plus）** 按钮，将更多模型添加到当前会话
+    *   *示例组合*：选择 **GPT-5.1 Thinking**（负责推理）、**Gemini 3**（擅长创意写作）和 **Claude Sonnet 4.5**（综合表现强）
+2.  **发送提示词**：像平常一样输入你的问题
+3.  **查看结果**：观察所有模型在聊天窗口中同时生成回复
 
-## Usage Scenarios
+## 使用场景
 
-*   **Model Comparison/Benchmarking**: Test which model writes better Python code or which one hallucinates less on niche topics.
-*   **Fact Validation**: "Cross-examine" models. If two models say X and one says Y, you can investigate further.
-*   **Diverse Perspectives**: Get a "Creative" take from one model and a "Technical" take from another for the same query.
+*   **模型比较 / 基准测试**：测试哪个模型更擅长写 Python 代码，或哪个模型在小众主题上幻觉更少
+*   **事实校验**：对多个模型进行“交叉盘问”。如果两个模型说 X，而另一个说 Y，你就可以进一步调查
+*   **多元视角**：针对同一个问题，从一个模型获得“创意型”回答，从另一个模型获得“技术型”回答
 
-## Permissions
+## 权限
 
-Admins can control access to Multi-Model Chats on a per-role or per-group basis.
+管理员可按角色或用户组控制对多模型聊天的访问权限。
 
-*   **Location**: Admin Panel > Settings > General > User Permissions > Chat > **Multiple Models**
-*   **Environment Variable**: `USER_PERMISSIONS_CHAT_MULTIPLE_MODELS` (Default: `True`)
+*   **位置**：Admin Panel > Settings > General > User Permissions > Chat > **Multiple Models**
+*   **环境变量**：`USER_PERMISSIONS_CHAT_MULTIPLE_MODELS`（默认：`True`）
 
-If disabled, users will not see the "plus" button in the model selector and cannot initiate multi-model sessions.
+如果关闭，用户将看不到模型选择器中的 “plus” 按钮，也无法发起多模型会话。
 
 ---
 
-## Merging Responses (Mixture of Agents)
+## 合并回复（Mixture of Agents）
 
-Once you have responses from multiple models, Open WebUI offers an advanced capability to **Merge** them into a single, superior answer. This implements a **Mixture of Agents (MOA)** workflow.
+当你获得多个模型的回复后，Open WebUI 还提供一个更高级的能力：将它们**合并**为一个更优答案。这实现了 **Mixture of Agents（MOA）** 工作流。
 
-### What is Merging?
+### 什么是合并？
 
-Merging takes the outputs from all your active models and sends them—along with your original prompt—to a "Synthesizer Model." This Synthesizer Model reads all the draft answers and combines them into one final, polished response.
+合并会把所有当前激活模型的输出，加上你的原始提示词，一并发送给一个 “Synthesizer Model”。这个 Synthesizer Model 会阅读所有草稿答案，并将它们融合为一个最终的、经过打磨的回复。
 
-### How to Merge
+### 如何合并
 
-1.  Start a **Multi-Model Chat** and get responses from your selected models.
-2.  Look for the **Merge** (or "Synthesize") button in the response controls area (often near the regeneration controls).
-3.  Open WebUI will generate a **new response** that aggregates the best parts of the previous outputs.
+1.  启动一个**多模型聊天**，并获取多个模型的回复
+2.  在回复控制区域找到 **Merge**（或 “Synthesize”）按钮（通常位于重新生成控制附近）
+3.  Open WebUI 会生成一个**新的回复**，综合之前各个模型输出中的最佳部分
 
-### Advantages of Merging
+### 合并的优势
 
-*   **Higher Accuracy**: Research suggests that aggregating outputs from multiple models often outperforms any single model acting alone.
-*   **Best of Both Worlds**: You might get the code accuracy of Model A combined with the clear explanations of Model B.
-*   **Reduced Hallucinations**: The synthesizer model can filter out inconsistencies found in individual responses.
+*   **更高准确性**：研究表明，聚合多个模型的输出，往往优于任何一个单独模型的结果
+*   **兼得优势**：例如，你可以同时获得模型 A 的代码准确性和模型 B 的解释清晰度
+*   **减少幻觉**：综合模型可以过滤掉单个回复中的不一致内容
 
-### Configuration
+### 配置
 
-The merging process relies on the backend **Tasks** system.
+合并过程依赖后端的 **Tasks** 系统。
 
-*   **Task Model**: The specific model used to perform the merger can be configured in **Admin Panel > Settings > Tasks**. We recommend using a highly capable model (like GPT-5.1 or Claude Sonnet 4.5) as the task model for the best results.
-*   **Prompt Template**: The system uses a specialized prompt template to instruct the AI on how to synthesize the answers.
+*   **Task Model**：用于执行合并的具体模型，可在 **Admin Panel > Settings > Tasks** 中配置。我们建议使用能力较强的模型（如 GPT-5.1 或 Claude Sonnet 4.5）作为 task model，以获得最佳结果
+*   **Prompt Template**：系统会使用一个专门的提示模板，引导 AI 如何综合这些答案
 
-:::info Experimental
-The Merging/MOA feature is an advanced capability. While powerful, it requires a capable Task Model to work effectively.
+:::info 实验性功能
+Merging / MOA 是一个高级能力。它功能很强，但需要一个足够强大的 Task Model 才能发挥效果。
 :::
-
-
-

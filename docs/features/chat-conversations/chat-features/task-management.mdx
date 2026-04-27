@@ -1,61 +1,61 @@
 ---
 sidebar_position: 12
-title: "Task Management"
+title: "任务管理"
 ---
 
-# Task Management
+# 任务管理
 
-Task Management gives agentic models a structured way to plan and track multi-step work in a chat. Instead of keeping an implicit plan in free text, the model can maintain a live task list with explicit statuses.
+Task Management 为 agentic 模型提供了一种结构化方式，用于在聊天中规划并跟踪多步骤工作。模型不必再把计划隐含在自由文本里，而是可以维护一个带明确状态的实时任务列表。
 
-## Why This Matters for Agentic AI
+## 为什么这对 Agentic AI 很重要
 
-For simple Q&A, a single response is enough. For true agentic workflows (research, debugging, migrations, investigations), models need a reliable execution loop:
+对于简单问答，一次回复就够了。但对于真正的 agentic 工作流（研究、调试、迁移、调查），模型需要一个可靠的执行闭环：
 
-1. break down work,
-2. execute steps,
-3. update progress,
-4. adapt the plan.
+1. 拆解任务，
+2. 执行步骤，
+3. 更新进度，
+4. 动态调整计划。
 
-Task lists make that loop visible to the user and reduce failures caused by skipped or forgotten steps.
+任务列表可以将这个闭环直接展示给用户，也能减少因步骤遗漏或遗忘而导致的失败。
 
-## How It Works
+## 工作原理
 
-The model uses two built-in tools to manage the list:
+模型使用两个内置工具来管理任务列表：
 
-- `create_tasks` — called once at the start of multi-step work to lay out the full checklist.
-- `update_task` — called after finishing each step, to mark a single task by id as `pending`, `in_progress`, `completed`, or `cancelled`.
+- `create_tasks` —— 在多步骤工作开始时调用一次，创建完整清单
+- `update_task` —— 每完成一个步骤后调用，用于按 id 将某个任务标记为 `pending`、`in_progress`、`completed` 或 `cancelled`
 
-When these tools are used:
+当这些工具被使用时：
 
-- Tasks are stored at the chat level
-- The UI shows progress in-chat (e.g., completed vs total)
-- Status changes are reflected in real time
+- 任务会存储在聊天级别
+- UI 会在聊天中显示进度（例如：已完成 / 总数）
+- 状态变化会实时反映
 
-Supported statuses:
+支持的状态：
 
 - `pending`
 - `in_progress`
 - `completed`
 - `cancelled`
 
-## Enabling It
+## 如何启用
 
-Task Management is controlled per model in Builtin Tools:
+Task Management 以模型为粒度，在 Builtin Tools 中控制：
 
-1. Go to **Workspace > Models > Edit**
-2. Ensure **Capabilities > Builtin Tools** is enabled
-3. Under builtin categories, keep **Task Management** enabled
+1. 前往 **Workspace > Models > Edit**
+2. 确保已启用 **Capabilities > Builtin Tools**
+3. 在 builtin 分类中保持 **Task Management** 处于启用状态
 
-See [Built-in System Tools](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode) for tool details.
+工具细节请参阅 [Built-in System Tools](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode)。
 
-## Best Practices
+## 最佳实践
 
-- Use task lists for requests that need multiple concrete steps
-- Keep only one task in `in_progress` at a time
-- Mark tasks `completed` immediately after finishing
-- Cancel stale tasks explicitly instead of leaving them pending
+- 对需要多个明确步骤的请求使用任务列表
+- 同一时间只保留一个任务处于 `in_progress`
+- 每完成一个任务后立刻将其标记为 `completed`
+- 对于已过时任务，请显式标记为 `cancelled`，不要一直让它停留在 `pending`
 
-## Related Features
+## 相关功能
 
 - [Reasoning & Thinking Models](./reasoning-models.mdx)
 - [Automations](./automations.mdx)

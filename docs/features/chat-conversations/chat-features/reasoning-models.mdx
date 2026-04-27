@@ -1,30 +1,30 @@
 ---
 sidebar_position: 10
-title: "Reasoning & Thinking Models"
+title: "推理与 Thinking 模型"
 ---
 
+# 推理与 Thinking 模型
 
-# Reasoning & Thinking Models
+Open WebUI 对具备 “thinking” 或 “reasoning” 行为的模型（如 DeepSeek R1、OpenAI o1 等）提供一等支持。这类模型通常会在给出最终答案之前，先生成内部思维链。
 
-Open WebUI provides first-class support for models that exhibit "thinking" or "reasoning" behaviors (such as DeepSeek R1, OpenAI o1, and others). These models often generate internal chains of thought before providing a final answer.
+## Thinking 标签的工作方式
 
-## How Thinking Tags Work
+当模型生成推理内容时，通常会把这些内容包裹在特定的类 XML 标签中（例如 `<think>...</think>` 或 `<thought>...</thought>`）。
 
-When a model generates reasoning content, it typically wraps that content in specific XML-like tags (e.g., `<think>...</think>` or `<thought>...</thought>`). 
+Open WebUI 会自动：
+1.  **检测** 模型输出流中的这些标签
+2.  **提取** 标签之间的内容
+3.  **渲染** 提取出的内容，并以可折叠 UI 区块形式展示，标题通常为 “Thought” 或 “Thinking”
 
-Open WebUI automatically:
-1.  **Detects** these tags in the model's output stream.
-2.  **Extracts** the content between the tags.
-3.  **Renders** the extracted content in a collapsible UI element labeled "Thought" or "Thinking".
+这样既能保持主聊天界面简洁，也能让你在需要时查看模型的内部推理过程。
 
-This keeps the main chat interface clean while still giving you access to the model's internal processing.
+## `reasoning_tags` 参数
 
-## The `reasoning_tags` Parameter
+你可以使用 `reasoning_tags` 参数，自定义 Open WebUI 应该识别哪些标签。该参数可按**聊天级**或**模型级**设置。
 
-You can customize which tags Open WebUI should look for using the `reasoning_tags` parameter. This can be set on a **per-chat** or **per-model** basis.
+### 默认标签
 
-### Default Tags
-By default, Open WebUI looks for several common reasoning tag pairs:
+默认情况下，Open WebUI 会识别以下常见推理标签对：
 - `<think>`, `</think>`
 - `<thinking>`, `</thinking>`
 - `<reason>`, `</reason>`
@@ -32,105 +32,106 @@ By default, Open WebUI looks for several common reasoning tag pairs:
 - `<thought>`, `</thought>`
 - `<|begin_of_thought|>`, `<|end_of_thought|>`
 
-### Customization
-If your model uses different tags, you can provide a list of tag pairs in the `reasoning_tags` parameter. Each pair is a tuple or list of the opening and closing tag.
+### 自定义
 
-## Configuration & Behavior
+如果你的模型使用的是不同标签，你可以在 `reasoning_tags` 中提供一组标签对。每一对都是一个 tuple 或 list，包含开始标签与结束标签。
 
-- **Stripping from Payload**: The `reasoning_tags` parameter itself is an Open WebUI-specific control and is **stripped** from the payload before being sent to the LLM backend (OpenAI, Ollama, etc.). This ensures compatibility with providers that do not recognize this parameter.
-- **Chat History**: Reasoning content is preserved in chat history and **sent back to the model** across turns. When building messages for subsequent requests, Open WebUI serializes the reasoning content with its original tags (e.g., `<think>...</think>`) and includes it in the assistant message's `content` field. This allows the model to "remember" its previous reasoning steps across the entire conversation.
-- **UI Rendering**: Internally, reasoning blocks are processed and rendered using a specialized UI component. When saved or exported, they may be represented as HTML `<details type="reasoning">` tags.
+## 配置与行为
+
+- **从 Payload 中剥离**：`reasoning_tags` 参数本身是 Open WebUI 特有控制项，在发送给 LLM 后端（如 OpenAI、Ollama 等）前会被**剥离**，从而确保与不识别该参数的提供商兼容
+- **聊天历史**：推理内容会保留在聊天历史中，并且**跨轮次发回给模型**。在构建后续请求消息时，Open WebUI 会将推理内容连同其原始标签（如 `<think>...</think>`）一起序列化，并放入 assistant message 的 `content` 字段，让模型在整个对话中“记住”自己此前的思考过程
+- **UI 渲染**：内部上，推理块会通过专门 UI 组件进行处理与渲染。保存或导出时，它们可能表现为 HTML `<details type="reasoning">` 标签
 
 ---
 
-## Open WebUI Settings
+## Open WebUI 设置
 
-Open WebUI provides several built-in settings to configure reasoning model behavior. These can be found in:
+Open WebUI 提供多项内置设置，用于配置推理模型行为。你可以在以下位置找到：
 
-- **Chat Controls** (sidebar) → **Advanced Parameters** — per-chat settings
-- **Workspace** → **Models** → **Edit Model** → **Advanced Parameters** — per-model settings (Admin only)
-- **Admin Panel** → **Settings** → **Models** → select a model → **Advanced Parameters** — alternative per-model settings location
+- **Chat Controls**（侧边栏）→ **Advanced Parameters** —— 按聊天设置
+- **Workspace** → **Models** → **Edit Model** → **Advanced Parameters** —— 按模型设置（仅管理员）
+- **Admin Panel** → **Settings** → **Models** → 选择某个模型 → **Advanced Parameters** —— 另一个按模型设置入口
 
-### Reasoning Tags Setting
+### Reasoning Tags 设置
 
-This setting controls how Open WebUI parses and displays thinking/reasoning blocks:
-
-| Option | Description |
-|--------|-------------|
-| **Default** | Uses the system default behavior |
-| **Enabled** | Explicitly enables reasoning tag detection using default `<think>...</think>` tags |
-| **Disabled** | Turns off reasoning tag detection entirely |
-| **Custom** | Allows you to specify custom start and end tags |
-
-#### Using Custom Tags
-
-If your model uses non-standard reasoning tags (e.g., `<reasoning>...</reasoning>` or `[思考]...[/思考]`), select **Custom** and enter:
-
-- **Start Tag**: The opening tag (e.g., `<reasoning>`)
-- **End Tag**: The closing tag (e.g., `</reasoning>`)
-
-This is useful for:
-- Models with localized thinking tags
-- Custom fine-tuned models with unique tag formats
-- Models that use XML-style reasoning markers
-
-### think (Ollama)
-
-This Ollama-specific setting enables or disables the model's built-in reasoning feature:
+该设置控制 Open WebUI 如何解析并显示 thinking / reasoning 区块：
 
 | Option | Description |
 |--------|-------------|
-| **Default** | Uses Ollama's default behavior |
-| **On** | Explicitly enables thinking mode for the model |
-| **Off** | Disables thinking mode |
+| **Default** | 使用系统默认行为 |
+| **Enabled** | 显式启用推理标签检测，默认按 `<think>...</think>` 解析 |
+| **Disabled** | 完全关闭推理标签检测 |
+| **Custom** | 允许你指定自定义开始和结束标签 |
+
+#### 使用自定义标签
+
+如果你的模型使用非标准推理标签（如 `<reasoning>...</reasoning>` 或 `[思考]...[/思考]`），请选择 **Custom**，并填写：
+
+- **Start Tag**：开始标签（例如 `<reasoning>`）
+- **End Tag**：结束标签（例如 `</reasoning>`）
+
+这适用于：
+- 使用本地化思考标签的模型
+- 使用独特标签格式的自定义微调模型
+- 使用 XML 风格 reasoning marker 的模型
+
+### think（Ollama）
+
+这是一个 Ollama 专属设置，用于启用或禁用模型内置的 reasoning 功能：
+
+| Option | Description |
+|--------|-------------|
+| **Default** | 使用 Ollama 默认行为 |
+| **On** | 显式为模型开启 thinking mode |
+| **Off** | 关闭 thinking mode |
 
 :::note
-This setting sends the `think` parameter directly to Ollama. It's separate from how Open WebUI parses the response—you may need both this setting AND proper reasoning tags configuration for the full experience.
+该设置会把 `think` 参数直接发送给 Ollama。它与 Open WebUI 对响应内容的解析逻辑是分开的——若想获得完整体验，通常需要同时启用这个设置**以及**正确配置 reasoning tags。
 :::
 
 ### Reasoning Effort
 
-For models that support variable reasoning depth (like some API providers), this setting controls how much effort the model puts into reasoning:
+对于支持可变推理深度的模型（如某些 API 提供商模型），该设置用于控制模型投入多少“推理力度”：
 
-- Common values: `low`, `medium`, `high`
-- Some providers accept numeric values
+- 常见值：`low`、`medium`、`high`
+- 某些提供商也接受数值型参数
 
 :::info
-Reasoning Effort is only applicable to models from specific providers that support this parameter. It has no effect on local Ollama models.
+Reasoning Effort 仅对支持该参数的特定提供商模型有效。对本地 Ollama 模型无效。
 :::
 
 ---
 
-## Interleaved Thinking with Tool Calls
+## 工具调用中的交错式思考（Interleaved Thinking）
 
-When a model uses **native function calling** (tool use) within a single turn, Open WebUI preserves the reasoning content and sends it back to the API for subsequent calls within that turn. This enables true "interleaved thinking" where:
+当模型在单轮对话中使用 **native function calling**（工具调用）时，Open WebUI 会保留推理内容，并在该轮的后续调用中重新发回给 API。这使得真正的“交错式思考”成为可能：
 
-1. Model generates reasoning → makes a tool call
-2. Tool executes and returns results
-3. Model receives: original messages + previous reasoning + tool call + tool result
-4. Model continues reasoning → may make more tool calls or provide final answer
-5. Process repeats until the turn completes
+1. 模型生成推理 → 发起工具调用
+2. 工具执行并返回结果
+3. 模型收到：原始消息 + 先前推理 + 工具调用 + 工具结果
+4. 模型继续推理 → 可能继续调用更多工具，或给出最终答案
+5. 这个过程会持续，直到本轮完成
 
-### How It Works
+### 工作原理
 
-During a multi-step tool calling turn, Open WebUI:
+在多步骤工具调用轮次中，Open WebUI 会：
 
-1. **Captures** reasoning content from the model's response (via `reasoning_content`, `reasoning`, or `thinking` fields in the delta)
-2. **Stores** it in content blocks alongside tool calls
-3. **Serializes** the reasoning with its original tags (e.g., `<think>...</think>`) when building messages for the next API call
-4. **Includes** the serialized content in the assistant message's `content` field
+1. **捕获** 模型响应中的推理内容（来自 delta 中的 `reasoning_content`、`reasoning` 或 `thinking` 字段）
+2. **将其存储** 在内容块中，并与工具调用并列保存
+3. 在构建下一次 API 请求消息时，将推理内容连同原始标签（如 `<think>...</think>`）**序列化**
+4. **把序列化结果写入** assistant message 的 `content` 字段
 
-This ensures the model has access to its previous thought process when deciding on subsequent actions within the same turn.
+这确保模型在决定后续动作时，能够继续访问自己先前的思考过程。
 
-### How Reasoning Is Sent Back
+### 推理内容是如何被重新发回的
 
-When building the next API request during a tool call loop, Open WebUI serializes reasoning as **text wrapped in tags** inside the assistant message's `content` field:
+在工具调用循环中构建下一次 API 请求时，Open WebUI 会把推理序列化为**包裹在标签中的文本**，并放入 assistant message 的 `content` 字段：
 
 ```text
 <think>Let me search for the current weather data...</think>
 ```
 
-The message structure looks like:
+消息结构如下：
 
 ```json
 {
@@ -140,48 +141,48 @@ The message structure looks like:
 }
 ```
 
-### Provider Compatibility
+### 提供商兼容性
 
-Open WebUI follows the **OpenAI Chat Completions API standard**. Reasoning content is serialized as text within the message content field, not as provider-specific structured blocks.
+Open WebUI 遵循 **OpenAI Chat Completions API 标准**。推理内容会作为消息 `content` 中的文本进行序列化，而不是用某个提供商专有的结构化内容块。
 
 | Provider Type | Compatibility |
 |--------------|---------------|
-| OpenAI-compatible APIs | ✅ Works — reasoning is in the content text |
-| Ollama | ✅ Works — Ollama processes the message content |
-| Anthropic (extended thinking) | ❌ Not supported — Anthropic requires structured `{"type": "thinking"}` blocks, use a pipe function |
-| OpenAI o-series (stateful) | ⚠️ Limited — reasoning is hidden/internal, nothing to capture |
+| OpenAI-compatible APIs | ✅ 可用 —— 推理内容在 content 文本中 |
+| Ollama | ✅ 可用 —— Ollama 会处理 message content |
+| Anthropic（extended thinking） | ❌ 不支持 —— Anthropic 需要结构化 `{"type": "thinking"}` 内容块，请改用 pipe function |
+| OpenAI o-series（stateful） | ⚠️ 有限 —— 推理内容隐藏 / 内部化，无法捕获 |
 
-### Important Notes
+### 重要说明
 
-- **Within-turn preservation**: Reasoning is preserved and sent back to the API within the same turn (while tool calls are being processed).
-- **Cross-turn behavior**: Reasoning content **is** sent back to the API across turns. When building messages for subsequent requests, Open WebUI serializes the reasoning content with its original tags (e.g., `<think>...</think>`) and includes it in the assistant message's `content` field. This allows the model to maintain context of its previous reasoning throughout the conversation.
-- **Text-based serialization**: Reasoning is sent as text wrapped in tags (e.g., `<think>thinking content</think>`), not as structured content blocks. This works with most OpenAI-compatible APIs but may not align with provider-specific formats like Anthropic's extended thinking content blocks.
+- **单轮内保留**：在同一轮中（工具调用处理中），推理内容会被保留并重新发送给 API
+- **跨轮行为**：推理内容**也会**跨轮次重新发送给 API。Open WebUI 会在后续请求中，将上一轮推理内容连同原始标签（如 `<think>...</think>`）一起写入 assistant message 的 `content`，从而让模型在整个对话期间都能延续自身的推理上下文
+- **基于文本的序列化**：推理内容会以带标签文本形式发送（如 `<think>thinking content</think>`），而不是结构化内容块。这对大多数 OpenAI 兼容 API 都有效，但不一定符合 Anthropic extended thinking 这类提供商专有格式
 
 ---
 
-## Streaming vs Non-Streaming
+## Streaming 与 Non-Streaming
 
-### Streaming Mode (Default)
+### Streaming 模式（默认）
 
-In streaming mode (`stream: true`), Open WebUI processes tokens as they arrive and can detect reasoning blocks in real-time. This generally works well without additional configuration.
+在 streaming 模式（`stream: true`）下，Open WebUI 会边接收 token 边处理，因此能够实时检测 reasoning 区块。通常情况下无需额外配置即可良好工作。
 
-### Non-Streaming Mode
+### Non-Streaming 模式
 
-In non-streaming mode (`stream: false`), the entire response is returned at once. **This is where most parsing issues occur** because:
+在 non-streaming 模式（`stream: false`）下，整段响应会一次性返回。**大多数解析问题都发生在这里**，因为：
 
-1. The response arrives as a single block of text
-2. Without the reasoning parser, no post-processing separates the `<think>` content
-3. The raw response is displayed as-is
+1. 响应作为单一文本块整体到达
+2. 如果没有 reasoning parser，就不会有后处理去分离 `<think>` 内容
+3. 原始响应会直接原样显示
 
-:::info Important
-If you're using non-streaming requests (via API or certain configurations), **the reasoning parser is essential** for proper thinking block separation.
+:::info 重要
+如果你正在使用 non-streaming 请求（例如通过 API 或某些特殊配置），那么 **reasoning parser 对于正确分离 thinking 区块至关重要**。
 :::
 
 ---
 
-## API Usage
+## API 使用示例
 
-When using the Open WebUI API with reasoning models:
+使用 Open WebUI API 调用 reasoning 模型时：
 
 ```json
 {
@@ -193,17 +194,17 @@ When using the Open WebUI API with reasoning models:
 }
 ```
 
-**Recommendation:** Use `"stream": true` for the most reliable reasoning block parsing.
+**建议：** 使用 `"stream": true`，以获得最稳定的 reasoning 区块解析效果。
 
 ---
 
-## Troubleshooting
+## 故障排查
 
-### Thinking Content Merged with Final Answer
+### Thinking 内容与最终答案混在一起
 
-**Symptom:** When using a reasoning model, the entire response (including `<think>...</think>` blocks) is displayed as the final answer, instead of being separated into a hidden/collapsible thinking section.
+**症状：** 使用推理模型时，整段响应（包括 `<think>...</think>` 区块）被直接显示为最终答案，而不是被拆分到隐藏 / 可折叠的 thinking 区域中。
 
-**Example of incorrect display:**
+**错误示例：**
 
 ```text
 <think>
@@ -216,15 +217,15 @@ I think that's a solid approach. Let me write the code now.
 Here's a complete code snippet that demonstrates a sticky header using CSS and JavaScript...
 ```
 
-**Expected behavior:** The thinking content should be hidden or collapsible, with only the final answer visible.
+**期望行为：** thinking 内容应该隐藏或可折叠，只显示最终答案。
 
-### For Ollama Users
+### 对于 Ollama 用户
 
-The most common cause is that Ollama is not configured with the correct **reasoning parser**. When running Ollama, you need to specify the `--reasoning-parser` flag to enable proper parsing of thinking blocks.
+最常见原因是：Ollama 没有配置正确的 **reasoning parser**。运行 Ollama 时，你需要指定 `--reasoning-parser` 参数，才能正确解析 thinking 区块。
 
-#### Step 1: Configure the Reasoning Parser
+#### 第 1 步：配置 Reasoning Parser
 
-When starting Ollama, add the `--reasoning-parser` flag:
+启动 Ollama 时加入 `--reasoning-parser`：
 
 ```bash
 # For DeepSeek-R1 style reasoning (recommended for most models)
@@ -235,13 +236,13 @@ ollama serve --reasoning-parser qwen3
 ollama serve --reasoning-parser deepseek_v3
 ```
 
-:::tip Recommended Parser
-For most reasoning models, including Qwen3 and DeepSeek variants, use `--reasoning-parser deepseek_r1`. This parser handles the standard `<think>...</think>` format used by most reasoning models.
+:::tip 推荐 Parser
+对于大多数推理模型（包括 Qwen3 和 DeepSeek 变体），推荐使用 `--reasoning-parser deepseek_r1`。它能正确处理绝大多数模型使用的标准 `<think>...</think>` 格式。
 :::
 
-#### Step 2: Restart Ollama
+#### 第 2 步：重启 Ollama
 
-After adding the flag, restart the Ollama service:
+加上该参数后，重启 Ollama 服务：
 
 ```bash
 # Stop Ollama
@@ -255,25 +256,25 @@ Stop-Process -Name ollama -Force
 ollama serve --reasoning-parser deepseek_r1
 ```
 
-#### Step 3: Verify in Open WebUI
+#### 第 3 步：在 Open WebUI 中验证
 
-1. Go to Open WebUI and start a new chat with your reasoning model
-2. Ask a question that requires reasoning (e.g., a math problem or logic puzzle)
-3. The response should now show the thinking content in a collapsible section
+1. 前往 Open WebUI，并使用 reasoning model 新建一个聊天
+2. 提出一个需要推理的问题（例如数学题或逻辑题）
+3. 现在回复应该会把 thinking 内容显示为可折叠区块
 
-### Available Reasoning Parsers
+### 可用的 Reasoning Parsers
 
 | Parser | Description | Use Case |
 |--------|-------------|----------|
-| `deepseek_r1` | DeepSeek R1 format | Most reasoning models, including Qwen3 |
-| `deepseek_v3` | DeepSeek V3 format | Some DeepSeek variants |
-| `qwen3` | Qwen3-specific format | If `deepseek_r1` doesn't work with Qwen |
+| `deepseek_r1` | DeepSeek R1 格式 | 大多数推理模型，包括 Qwen3 |
+| `deepseek_v3` | DeepSeek V3 格式 | 某些 DeepSeek 变体 |
+| `qwen3` | Qwen3 专属格式 | 如果 `deepseek_r1` 对 Qwen 无效时使用 |
 
-### Troubleshooting Checklist
+### 故障排查清单
 
-#### 1. Verify Ollama Is Running with Reasoning Parser
+#### 1. 确认 Ollama 已使用 reasoning parser 启动
 
-Check if Ollama was started with the correct flag:
+检查 Ollama 是否带着正确参数启动：
 
 ```bash
 # Check the Ollama process
@@ -282,109 +283,109 @@ ps aux | grep ollama
 Get-Process -Name ollama | Format-List *
 ```
 
-Look for `--reasoning-parser` in the command line arguments.
+确认命令行参数中存在 `--reasoning-parser`。
 
-#### 2. Check Model Compatibility
+#### 2. 检查模型兼容性
 
-Not all models output reasoning in the same format. Verify your model's documentation for:
+并非所有模型都用相同格式输出推理内容。请查看模型文档，确认：
 
-- What tags it uses for thinking content (e.g., `<think>`, `<reasoning>`, etc.)
-- Whether it requires specific prompting to enable thinking mode
+- 它使用什么标签表示 thinking 内容（如 `<think>`、`<reasoning>` 等）
+- 是否需要特殊提示词才能启用 thinking mode
 
-#### 3. Test with Streaming Enabled
+#### 3. 测试开启 Streaming
 
-If non-streaming isn't working, try enabling streaming in your chat:
+如果 non-streaming 模式表现异常，尝试在聊天中启用 streaming：
 
-1. Go to **Chat Controls** (sidebar)
-2. Ensure streaming is enabled (this is the default)
-3. Test the model again
+1. 前往 **Chat Controls**（侧边栏）
+2. 确保已启用 streaming（默认即开启）
+3. 再次测试该模型
 
-#### 4. Check Open WebUI Version
+#### 4. 检查 Open WebUI 版本
 
-Ensure you're running the latest version of Open WebUI, as reasoning model support continues to improve:
+请确认你使用的是 Open WebUI 最新版本，因为 reasoning model 支持仍在持续改进：
 
 ```bash
 docker pull ghcr.io/open-webui/open-webui:main
 ```
 
-#### 5. Verify the Model Response Format
+#### 5. 验证模型响应格式
 
-Use the Ollama CLI directly to check what format your model outputs:
+直接用 Ollama CLI 检查模型实际输出格式：
 
 ```bash
 ollama run your-model:tag "Explain step by step: What is 15 + 27?"
 ```
 
-Look for `<think>` tags in the output. If they're not present, the model may require specific system prompts to enable thinking mode.
+检查输出中是否出现 `<think>` 标签。如果没有，可能说明模型需要额外的 system prompt 才会启用 thinking mode。
 
-### Reasoning Lost Between Tool Calls
+### 工具调用后推理内容丢失
 
-**Symptom:** The model seems to "forget" what it was thinking about after a tool call completes.
+**症状：** 工具调用完成后，模型似乎“忘记了”自己先前在想什么。
 
-**Possible Causes:**
-1. The model doesn't output reasoning in a captured format (`reasoning_content`, `reasoning`, or `thinking` delta fields)
-2. The model uses text-based thinking tags that aren't being parsed as reasoning blocks
+**可能原因：**
+1. 模型没有通过可捕获格式输出推理内容（如 `reasoning_content`、`reasoning` 或 `thinking` delta 字段）
+2. 模型使用了基于文本的 thinking 标签，但这些标签没有被解析为 reasoning block
 
-**Solution:** Check if your model outputs reasoning through:
-- Structured delta fields (`reasoning_content`, `reasoning`, `thinking`)
-- Text-based tags that Open WebUI detects (ensure reasoning tag detection is enabled)
+**解决方案：** 检查你的模型是否通过以下方式输出推理内容：
+- 结构化 delta 字段（`reasoning_content`、`reasoning`、`thinking`）
+- Open WebUI 能识别的基于文本的标签（并确保已启用 reasoning tag detection）
 
-### Anthropic Extended Thinking Not Working with Tool Calls
+### Anthropic Extended Thinking 与工具调用不兼容
 
-**Symptom:** Using Anthropic's Claude models with extended thinking enabled, but tool calls fail with errors like:
+**症状：** 使用 Anthropic Claude 模型，并开启 extended thinking 时，工具调用报错，例如：
 
 ```
 Expected `thinking` or `redacted_thinking`, but found `text`. When `thinking` is enabled, 
 a final `assistant` message must start with a thinking block.
 ```
 
-**Cause:** This is a fundamental architectural difference. Open WebUI follows the **OpenAI Chat Completions API standard** and does not natively support Anthropic's proprietary API format. Anthropic's extended thinking requires structured content blocks with `{"type": "thinking"}` or `{"type": "redacted_thinking"}`, which are Anthropic-specific formats that don't exist in the OpenAI standard.
+**原因：** 这是一个底层架构差异。Open WebUI 遵循 **OpenAI Chat Completions API 标准**，并不原生支持 Anthropic 的专有 API 格式。Anthropic 的 extended thinking 需要结构化内容块（`{"type": "thinking"}` 或 `{"type": "redacted_thinking"}`），而这些格式并不存在于 OpenAI 标准中。
 
-Open WebUI serializes reasoning as text wrapped in tags (e.g., `<think>...</think>`) inside the message content field. This works with OpenAI-compatible APIs but does not satisfy Anthropic's requirement for structured thinking blocks.
+Open WebUI 会把 reasoning 内容序列化为带标签的文本（例如 `<think>...</think>`），并放入 message content 字段。这对 OpenAI 兼容 API 可行，但无法满足 Anthropic 对结构化 thinking block 的要求。
 
-**Why Open WebUI Doesn't Support This Natively:**
+**为什么 Open WebUI 不原生支持这一点：**
 
-There is no standard way for storing reasoning content as part of the API payload across different providers. If Open WebUI implemented support for one provider's format, it would likely break existing deployments for many other inference providers. Given the wide variety of backends Open WebUI supports, we follow the OpenAI Completions API as the common standard. For more details on this architectural decision, see our **[FAQ on protocol support](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**.
+目前没有一个跨提供商通用的标准，可在 API payload 中统一存储 reasoning 内容。如果 Open WebUI 针对某一个提供商格式实现支持，就可能破坏许多其他推理后端部署。鉴于 Open WebUI 支持的后端种类非常广泛，我们选择遵循 OpenAI Completions API 作为共同标准。更多背景可参阅 **[FAQ on protocol support](/faq#q-why-doesnt-open-webui-natively-support-provider-xs-proprietary-api)**。
 
-**Workarounds:**
+**可行替代方案：**
 
-1. **Use a Pipe Function**: Create a custom [pipe function](/features/extensibility/pipelines/pipes) that converts Open WebUI's text-based thinking format to Anthropic's structured thinking blocks before sending requests to the Anthropic API.
+1. **使用 Pipe Function**：创建一个自定义 [pipe function](/features/extensibility/pipelines/pipes)，在请求发送给 Anthropic API 前，把 Open WebUI 的文本型 thinking 格式转换成 Anthropic 所需的结构化 thinking block
 
-2. **Disable Extended Thinking**: If you don't need extended thinking for tool-calling workflows, disable it to avoid the format mismatch.
+2. **关闭 Extended Thinking**：如果你的工具调用工作流并不需要 extended thinking，可以关闭它，以避免格式不匹配
 
 :::note
-This limitation applies specifically to combining Anthropic's extended thinking with tool calls. Extended thinking works without tool calls, and tool calls work without extended thinking—the issue only occurs when using both features together via the Anthropic API.
+这一限制只出现在 **Anthropic extended thinking + tool calls** 的组合场景中。单独使用 extended thinking 没问题，单独使用 tool calls 也没问题——只有两者一起通过 Anthropic API 使用时才会出错。
 :::
 
-### Stateful Reasoning Models (GPT-5.2, etc.)
+### 有状态推理模型（GPT-5.2 等）
 
-**Symptom:** Using a model that hides its reasoning (stateful/internal reasoning), and reasoning is not being preserved.
+**症状：** 你使用的模型会隐藏其推理内容（stateful / internal reasoning），因此推理无法被保留。
 
-**Cause:** Some newer models (like GPT-5.2) keep their reasoning internal and don't expose it in the API response. Open WebUI can only preserve reasoning that is actually returned by the model.
+**原因：** 某些较新的模型（如 GPT-5.2）会把 reasoning 保持在内部，不会通过 API 响应暴露出来。Open WebUI 只能保留模型实际返回的推理内容。
 
-**Behavior:** If the model returns a reasoning summary instead of full reasoning content, that summary is what gets preserved and sent back.
+**行为：** 如果模型返回的是推理摘要而非完整推理内容，那么被保留并重新发送的就是该摘要。
 
 ---
 
-## Frequently Asked Questions
+## 常见问题
 
-### Why is the thinking block showing as raw text?
-If the model uses tags that are not in the default list and have not been configured in `reasoning_tags`, Open WebUI will treat them as regular text. You can fix this by adding the correct tags to the `reasoning_tags` parameter in the Model Settings or Chat Controls.
+### 为什么 thinking 区块显示成了原始文本？
+如果模型使用的标签不在默认列表中，且你也没有在 `reasoning_tags` 中显式配置它们，那么 Open WebUI 会将其视作普通文本。你可以在 Model Settings 或 Chat Controls 中，把正确标签加入 `reasoning_tags` 参数来解决这一问题。
 
-### Does the model see its own thinking?
+### 模型能看到它自己之前的 thinking 吗？
 
-**Yes.** Reasoning content is preserved and sent back to the model in both scenarios:
+**能。** 推理内容会在以下两种场景中被保留并重新发回给模型：
 
-- **Within the same turn (during tool calls)**: **Yes**. When a model makes tool calls, Open WebUI preserves the reasoning content and sends it back to the API as part of the assistant message. This enables the model to maintain context about what it was thinking when it made the tool call.
+- **同一轮内（工具调用过程中）**：**可以**。当模型发起工具调用时，Open WebUI 会保留推理内容，并作为 assistant message 的一部分重新发送给 API，让模型保有它发起工具调用时的思考上下文
 
-- **Across different turns**: **Yes**. When building messages for subsequent requests, Open WebUI serializes reasoning content from previous turns with its original tags (e.g., `<think>...</think>`) and includes it in the assistant message's `content` field. This allows the model to reference its previous reasoning throughout the conversation.
+- **跨轮次**：**也可以**。在构建后续请求时，Open WebUI 会将前几轮的 reasoning 内容连同原始标签（如 `<think>...</think>`）一起序列化，写入 assistant message 的 `content`，让模型在整个对话期间都能引用自己先前的 reasoning
 
-### How is reasoning sent during tool calls?
+### 工具调用期间，reasoning 是如何被发送回去的？
 
-When tool calls are involved, reasoning is serialized as text with its original tags and included in the assistant message's `content` field. For example:
+当存在工具调用时，reasoning 会以带原始标签的文本形式序列化，并写入 assistant message 的 `content` 字段。例如：
 
 ```
 <think>Let me search for the current weather...</think>
 ```
 
-This text-based format works with most OpenAI-compatible providers. However, some providers (like Anthropic) may expect structured thinking content blocks in a specific format—Open WebUI currently uses text-based serialization rather than provider-specific structured formats.
+这种文本格式对大多数 OpenAI 兼容提供商都有效。但某些提供商（如 Anthropic）可能要求特定结构化 thinking 内容块格式——而 Open WebUI 当前采用的是基于文本的序列化，而非提供商专有结构化格式。

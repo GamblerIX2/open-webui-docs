@@ -1,111 +1,111 @@
 ---
 sidebar_position: 10
-title: "Message Queue"
+title: "消息队列"
 ---
 
-# Message Queue
+# 消息队列
 
-The **Message Queue** feature allows you to continue composing and sending messages while the AI is still generating a response. Instead of blocking your input until the current response completes, your messages are queued and automatically sent in sequence.
-
----
-
-## How It Works
-
-When you send a message while the AI is generating a response:
-
-1. **Your message is queued** - It appears in a compact queue area just above the input box
-2. **You can continue working** - Add more messages, edit queued messages, or delete them
-3. **Automatic processing** - Once the current response finishes, all queued messages are combined and sent together
-
-This creates a seamless workflow where you can capture thoughts as they come without waiting for the AI to finish.
+**Message Queue** 功能允许你在 AI 仍在生成回复时，继续编辑并发送消息。它不会在当前回复未完成时阻塞你的输入，而是会将新消息加入队列，并按顺序自动发送。
 
 ---
 
-## Queue Management
+## 工作原理
 
-Each queued message shows three action buttons:
+当你在 AI 生成回复期间发送消息时：
+
+1. **你的消息会进入队列** —— 它会显示在输入框上方的紧凑队列区域
+2. **你可以继续操作** —— 继续添加消息、编辑队列中的消息，或删除它们
+3. **自动处理** —— 当前回复结束后，所有排队消息会被合并并一次性发送
+
+这样你就能在不等待 AI 完成的情况下，及时记录脑中想到的内容，形成更流畅的工作流。
+
+---
+
+## 队列管理
+
+每条排队消息都会显示 3 个操作按钮：
 
 | Action | Icon | Description |
 |--------|------|-------------|
-| **Send Now** | ↑ | Interrupts the current generation and sends this message immediately |
-| **Edit** | ✏️ | Removes the message from the queue and puts it back in the input field |
-| **Delete** | 🗑️ | Removes the message from the queue without sending |
+| **立即发送** | ↑ | 中断当前生成，并立即发送这条消息 |
+| **编辑** | ✏️ | 将该消息移出队列，并放回输入框中继续编辑 |
+| **删除** | 🗑️ | 将该消息从队列中移除且不发送 |
 
-### Combining Messages
+### 合并消息
 
-When the AI finishes generating, all queued messages are **combined into a single prompt** (separated by blank lines) and sent together. This means:
+当 AI 完成生成后，所有排队消息会被**合并为一个提示词**（用空行分隔）并一起发送。这意味着：
 
-- Multiple quick thoughts become one coherent message
-- Context flows naturally between your queued inputs
-- The AI receives everything at once for better understanding
-
----
-
-## Persistence
-
-The message queue is preserved when you navigate between chats within the same browser session:
-
-- **Leaving a chat** - Queue is saved to session storage
-- **Returning to the chat** - Queue is restored and processed
-- **Closing the browser** - Queue is cleared (session storage only)
-
-This means you can start a thought, switch to another chat to check something, and return to find your queued messages waiting.
+- 多个零散念头会被组合成一条更连贯的消息
+- 你排队输入的上下文会自然衔接
+- AI 会一次性收到全部内容，从而更好理解你的意图
 
 ---
 
-## Settings
+## 持久性
 
-You can disable the Message Queue feature if you prefer the traditional behavior:
+当你在同一浏览器会话中切换聊天时，消息队列会被保留：
 
-1. Go to **Settings** → **Interface**
-2. Find **Enable Message Queue** under the Chat section
-3. Toggle it off
+- **离开聊天** —— 队列会保存到 session storage
+- **返回聊天** —— 队列会恢复并继续处理
+- **关闭浏览器** —— 队列会被清空（仅保存在 session storage 中）
 
-When disabled, sending a message while the AI is generating will:
-- **Interrupt** the current generation
-- **Send** your new message immediately
+这意味着你可以先记下一段想法，切去另一个聊天查点内容，再返回时依然能看到排队中的消息。
 
-:::tip Default Behavior
-Message Queue is **enabled by default**. The toggle allows you to choose between:
-- **Queue mode** (default) - Messages queue up until generation completes
-- **Interrupt mode** - New messages stop current generation immediately
+---
+
+## 设置
+
+如果你更喜欢传统行为，也可以关闭 Message Queue：
+
+1. 前往 **Settings** → **Interface**
+2. 在 Chat 区域找到 **Enable Message Queue**
+3. 将其关闭
+
+关闭后，当你在 AI 生成期间发送消息时，会发生以下行为：
+- **中断** 当前生成
+- **立即发送** 你的新消息
+
+:::tip 默认行为
+Message Queue **默认开启**。该开关允许你在以下两种模式间切换：
+- **队列模式**（默认）—— 在生成完成前，消息会排队等待
+- **中断模式** —— 新消息会立即打断当前生成
 :::
 
 ---
 
-## Use Cases
+## 使用场景
 
-### 1. Stream of Consciousness
+### 1. 意识流记录
 
-You're reading an AI response and have follow-up questions. Instead of waiting:
-- Queue your first follow-up
-- Queue a clarification
-- Queue another thought
+当你在阅读 AI 的回复时，又冒出新的追问，不必等待：
+- 先排入第一个追问
+- 再排入一条补充说明
+- 再排入另一条想法
 
-All are sent together when the AI finishes.
+当 AI 完成当前回复后，这些内容会一起发送。
 
-### 2. Adding Context
+### 2. 补充上下文
 
-The AI is working on a complex response, but you remember additional context:
-- Queue the extra information
-- The AI receives it as part of the next message
+AI 正在处理一个复杂回复时，你又想起额外上下文：
+- 直接把这部分额外信息加入队列
+- AI 会在下一条消息中一起接收到它
 
-### 3. Multitasking
+### 3. 多任务处理
 
-You're in a long conversation and need to capture quick notes:
-- Queue messages as reminders
-- Edit or delete before they're sent
-- Use "Send Now" for urgent interruptions
+当你处于长对话中，又想快速记录一些备注：
+- 把消息作为提醒加入队列
+- 在发送前继续编辑或删除
+- 对于紧急内容，使用 “立即发送”
 
 ---
 
-## Summary
+## 总结
 
 | Feature | Behavior |
 |---------|----------|
-| **Enabled** | Messages queue during generation, sent together when complete |
-| **Disabled** | New messages interrupt current generation immediately |
-| **Persistence** | Queue survives navigation within session |
-| **Actions** | Send Now, Edit, Delete for each queued item |
+| **启用** | 生成期间消息进入队列，完成后一起发送 |
+| **禁用** | 新消息会立即中断当前生成 |
+| **持久性** | 队列可在同一会话中的页面切换间保留 |
+| **操作** | 每条排队项都支持立即发送、编辑、删除 |
 
-The Message Queue helps you maintain your flow of thought without the friction of waiting for AI responses to complete.
+Message Queue 能让你保持思路连续，不必因为等待 AI 回复完成而打断节奏。
