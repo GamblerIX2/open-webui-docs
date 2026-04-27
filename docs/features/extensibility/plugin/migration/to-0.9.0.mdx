@@ -141,7 +141,7 @@ class Pipe:
         return await generate_chat_completion(__request__, body, full_user)
 ```
 
-#### After (0.9.0):
+#### 之后（0.9.0）：
 ```python
 from pydantic import BaseModel
 from fastapi import Request
@@ -195,7 +195,7 @@ class Tools:
 
 If your plugin exposes its own FastAPI routes (advanced Tools sometimes do this via router imports) and declares a database session dependency, switch both the dependency and the type annotation.
 
-#### Before (0.8.x):
+#### 之前（0.8.x）：
 ```python
 from fastapi import Depends
 from sqlalchemy.orm import Session

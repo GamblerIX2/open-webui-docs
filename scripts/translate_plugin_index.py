@@ -1,6 +1,7 @@
-import pathlib
 #!/usr/bin/env python3
 """Translate plugin/index.mdx and plugin/tools/index.mdx"""
+import os
+import pathlib
 
 def translate(filepath, pairs):
     content = open(filepath, encoding='utf-8').read()
@@ -12,7 +13,6 @@ def translate(filepath, pairs):
         else:
             pass  # Already translated or not present
     if changed:
-        import os
         with open(filepath, 'w', encoding='utf-8', newline='') as f:
             f.write(content)
         print(f'TRANSLATED: {os.path.basename(filepath)}')

@@ -363,7 +363,7 @@ Things to know about the chat_file table:
 | user_id         | VARCHAR(255)  | NOT NULL        | 用户引用  |
 | timestamp       | INTEGER       | NOT NULL        | 创建时间戳 |
 
-## Config 表
+## Config 表 表
 
 | **Column Name** | **Data Type** | **Constraints** | **Default**       | **Description**        |
 | --------------- | ------------- | --------------- | ----------------- | ---------------------- |
@@ -1038,7 +1038,7 @@ SQLCipher 加密需要一些**默认未包含**的额外依赖项。在使用此
 
 对于 Docker 用户，这意味着需要构建一个包含这些依赖项的自定义镜像。
 
-### Config 表uration
+### Config 表 表uration
 
 要启用加密，请设置以下环境变量：
 

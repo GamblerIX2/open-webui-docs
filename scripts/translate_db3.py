@@ -1,7 +1,8 @@
 import os
 import pathlib
 
-filepath = 'd:/Github/open-webui-docs/docs/reference/database-schema.md'
+DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs"
+filepath = DOCS / "reference/database-schema.md"
 with open(filepath, 'r', encoding='utf-8') as f:
     content = f.read()
 

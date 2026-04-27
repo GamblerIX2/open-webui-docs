@@ -1,7 +1,8 @@
 import os
 import pathlib
 
-filepath = 'd:/Github/open-webui-docs/docs/reference/env-configuration.mdx'
+DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs"
+filepath = DOCS / "reference/env-configuration.mdx"
 with open(filepath, 'r', encoding='utf-8') as f:
     content = f.read()
 

@@ -13,7 +13,7 @@ export const Testimonals = ({
 			name: "Jan Kessler, AI Architect",
 			company: "JGU Mainz",
 			content:
-				"Deploying an self-hosted AI chat stack for a large university like the Johannes Gutenberg University Mainz demands scalable and seamlessly integrable solutions. As the AI Architect at the university's Data Center, I chose Open WebUI as our chat frontend, impressed by its out-of-the-box readiness for enterprise environments and its rapidly paced, community-driven development. Now, our fully open-source stack – comprising LLMs, proxy/loadbalancer, and frontend – is successfully serving our user base of 30,000+ students and 5,000+ employees, garnering very positive feedback. Open WebUI’s user-centric design, rich feature set, and adaptability have solidified it as an outstanding choice for our institution.",
+				"像约翰内斯·古腾堡大学美因茨分校这样的大型高校，在部署自托管 AI 聊天技术栈时，需要既可扩展又能无缝集成的解决方案。作为学校数据中心的 AI 架构师，我选择 Open WebUI 作为我们的聊天前端，因为它开箱即具备面向企业环境的成熟度，同时又保持着高节奏、社区驱动的开发速度。如今，我们这套完全开源的技术栈——由 LLM、代理/负载均衡器和前端组成——已经稳定服务于超过 30,000 名学生和 5,000 名教职员工，并收获了非常积极的反馈。Open WebUI 以用户为中心的设计、丰富的功能集合以及出色的适应性，使它成为我们机构的优秀选择。",
 		},
 	];
 
