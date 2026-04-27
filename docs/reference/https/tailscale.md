@@ -3,33 +3,33 @@ sidebar_position: 3
 title: "HTTPS using Tailscale"
 ---
 
-# HTTPS using Tailscale
+# 使用 Tailscale 的 HTTPS
 
-**Access Open WebUI securely from anywhere on your private network. No ports, no certificates, no public exposure.**
+**在你的私有网络中，从任意位置安全访问 Open WebUI。无需开放端口、无需自己管理证书，也无需公网暴露。**
 
-Tailscale creates an encrypted mesh VPN (a "tailnet") between your devices. Every device gets a stable hostname like `my-server.tail1234.ts.net`, and Tailscale can provision trusted HTTPS certificates for it automatically. Your Open WebUI instance stays completely private, accessible only to devices on your tailnet.
+Tailscale 会在你的设备之间建立一个加密 mesh VPN（即 “tailnet”）。每台设备都会获得一个稳定主机名，例如 `my-server.tail1234.ts.net`，并且 Tailscale 能自动为其申请受信任的 HTTPS 证书。你的 Open WebUI 实例可以保持完全私有，只允许 tailnet 中的设备访问。
 
-:::tip When to use Tailscale
-Tailscale is ideal when you want **private, authenticated access** across devices without exposing Open WebUI to the public internet. Perfect for personal setups, small teams, or accessing a home server from your phone or laptop on the go.
+:::tip 何时使用 Tailscale
+如果你希望在不将 Open WebUI 暴露到公网的情况下，实现**跨设备、私有且可认证的访问**，Tailscale 非常合适。它尤其适用于个人部署、小团队，或需要在外通过手机 / 笔记本访问家庭服务器的场景。
 :::
 
-:::info Looking for the full guide?
-This page covers **HTTPS setup** specifically. For the complete Tailscale integration story, including SSO authentication, Docker Compose sidecar setup, and more, see the [**Tailscale Integration Tutorial**](/tutorials/auth-sso/tailscale).
+:::info 想看完整指南？
+本页只聚焦于 **HTTPS 配置**。如果你还需要 SSO 认证、Docker Compose sidecar 配置等完整接入方案，请查看 [**Tailscale Integration Tutorial**](/tutorials/auth-sso/tailscale)。
 :::
 
 ---
 
-## Prerequisites
+## 前提条件
 
-| Requirement | Details |
+| 要求 | 详情 |
 | :--- | :--- |
-| **Open WebUI** | Running locally on port `8080` (default) |
-| **Tailscale account** | Free for personal use at [tailscale.com](https://tailscale.com) |
-| **Tailscale installed** | On both the server running Open WebUI and any client devices |
+| **Open WebUI** | 已在本地端口 `8080`（默认值）运行 |
+| **Tailscale 账号** | 个人用途可免费注册，见 [tailscale.com](https://tailscale.com) |
+| **已安装 Tailscale** | 服务端与客户端设备上都需要安装 |
 
 ---
 
-## 1. Install Tailscale
+## 1. 安装 Tailscale
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -37,7 +37,7 @@ import TabItem from '@theme/TabItem';
 <Tabs>
   <TabItem value="mac" label="macOS" default>
 
-Download from the [Mac App Store](https://apps.apple.com/app/tailscale/id1475387142) or:
+从 [Mac App Store](https://apps.apple.com/app/tailscale/id1475387142) 下载，或执行：
 
 ```bash
 brew install tailscale
@@ -53,76 +53,76 @@ curl -fsSL https://tailscale.com/install.sh | sh
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-Download from [tailscale.com/download](https://tailscale.com/download/windows).
+从 [tailscale.com/download](https://tailscale.com/download/windows) 下载。
 
   </TabItem>
 </Tabs>
 
-## 2. Connect the server
+## 2. 连接服务器
 
-On the machine running Open WebUI:
+在运行 Open WebUI 的机器上执行：
 
 ```bash
 sudo tailscale up
 ```
 
-Your machine gets a tailnet hostname like `my-server.tail1234.ts.net`. Find it with:
+你的机器会获得一个类似 `my-server.tail1234.ts.net` 的 tailnet 主机名。可以通过以下命令查看：
 
 ```bash
 tailscale status
 ```
 
-## 3. Access Open WebUI
+## 3. 访问 Open WebUI
 
-From any device on the same tailnet, open:
+在同一 tailnet 上的任意设备中打开：
 
 ```
 http://my-server.tail1234.ts.net:8080
 ```
 
-This connection is already encrypted end-to-end by WireGuard. For browser features that require HTTPS (like Voice Calls), continue to the next step.
+此连接已由 WireGuard 端到端加密。如果你需要浏览器中要求 HTTPS 的功能（例如 Voice Calls），请继续执行下一步。
 
 ---
 
-## Enable HTTPS with Tailscale certificates
+## 使用 Tailscale 证书启用 HTTPS
 
-Tailscale can provision trusted Let's Encrypt certificates for your tailnet hostname.
+Tailscale 可以为你的 tailnet 主机名自动申请受信任的 Let's Encrypt 证书。
 
-### 1. Enable HTTPS in the admin console
+### 1. 在管理后台启用 HTTPS
 
-Go to [**Tailscale Admin → DNS**](https://login.tailscale.com/admin/dns) and enable **HTTPS Certificates**.
+前往 [**Tailscale Admin → DNS**](https://login.tailscale.com/admin/dns)，打开 **HTTPS Certificates**。
 
-### 2. Generate a certificate
+### 2. 生成证书
 
 ```bash
 sudo tailscale cert my-server.tail1234.ts.net
 ```
 
-This creates two files in the current directory:
-- `my-server.tail1234.ts.net.crt` (certificate)
-- `my-server.tail1234.ts.net.key` (private key)
+该命令会在当前目录生成两个文件：
+- `my-server.tail1234.ts.net.crt`（证书）
+- `my-server.tail1234.ts.net.key`（私钥）
 
-### 3. Serve Open WebUI over HTTPS
+### 3. 通过 HTTPS 提供 Open WebUI
 
-Use `tailscale serve` to proxy HTTPS traffic directly to Open WebUI without any reverse proxy:
+使用 `tailscale serve` 把 HTTPS 流量直接代理到 Open WebUI，而无需额外反向代理：
 
 ```bash
 sudo tailscale serve https / http://localhost:8080
 ```
 
-Now access Open WebUI at:
+现在你可以通过以下地址访问 Open WebUI：
 
 ```
 https://my-server.tail1234.ts.net
 ```
 
-No port number needed. Tailscale handles TLS termination and proxies to your local Open WebUI.
+无需显式端口号。Tailscale 会负责 TLS 终止，并把流量转发到本地 Open WebUI。
 
 ---
 
-## Configure Open WebUI
+## 配置 Open WebUI
 
-Set `WEBUI_URL` so OAuth callbacks and internal links resolve correctly:
+设置 `WEBUI_URL`，确保 OAuth 回调和内部链接正确解析：
 
 ```bash
 docker run -d \
@@ -135,30 +135,30 @@ docker run -d \
 
 ---
 
-## Tailscale Funnel (optional public access)
+## Tailscale Funnel（可选的公网访问）
 
-If you want to share Open WebUI publicly (without requiring Tailscale on the client), Tailscale Funnel exposes your `tailscale serve` endpoint to the internet:
+如果你想在**客户端无需安装 Tailscale** 的情况下把 Open WebUI 公网开放出去，可以使用 Tailscale Funnel，把 `tailscale serve` 暴露到互联网：
 
 ```bash
 sudo tailscale funnel https / http://localhost:8080
 ```
 
-Your Open WebUI is now publicly accessible at `https://my-server.tail1234.ts.net` with a valid TLS certificate. Funnel routes traffic through Tailscale's infrastructure, similar to Cloudflare Tunnel.
+你的 Open WebUI 之后将通过 `https://my-server.tail1234.ts.net` 对公网可访问，并带有有效 TLS 证书。Funnel 会通过 Tailscale 基础设施转发流量，类似于 Cloudflare Tunnel。
 
 :::warning
-Funnel makes your Open WebUI accessible to anyone on the internet. Make sure you have authentication configured in Open WebUI before enabling it.
+Funnel 会让你的 Open WebUI 对互联网中的所有人开放。启用前，请确保你已经在 Open WebUI 中配置好认证。
 :::
 
 ---
 
-## Quick reference
+## 快速参考
 
-| What | Command / Value |
+| 操作 | 命令 / 值 |
 | :--- | :--- |
-| Connect to tailnet | `sudo tailscale up` |
-| Check hostname | `tailscale status` |
-| Serve over HTTPS | `sudo tailscale serve https / http://localhost:8080` |
-| Public access (Funnel) | `sudo tailscale funnel https / http://localhost:8080` |
-| Generate cert manually | `sudo tailscale cert my-server.tail1234.ts.net` |
-| Admin console | [login.tailscale.com/admin](https://login.tailscale.com/admin) |
-| Set CORS origin | `CORS_ALLOW_ORIGIN=https://my-server.tail1234.ts.net` |
+| 加入 tailnet | `sudo tailscale up` |
+| 查看主机名 | `tailscale status` |
+| 通过 HTTPS 提供服务 | `sudo tailscale serve https / http://localhost:8080` |
+| 公网访问（Funnel） | `sudo tailscale funnel https / http://localhost:8080` |
+| 手动生成证书 | `sudo tailscale cert my-server.tail1234.ts.net` |
+| 管理后台 | [login.tailscale.com/admin](https://login.tailscale.com/admin) |
+| 设置 CORS origin | `CORS_ALLOW_ORIGIN=https://my-server.tail1234.ts.net` |

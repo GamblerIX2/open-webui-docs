@@ -3,63 +3,63 @@ sidebar_position: 1
 title: "HTTPS using Cloudflare Tunnel"
 ---
 
-# HTTPS using Cloudflare Tunnel
+# 使用 Cloudflare Tunnel 的 HTTPS
 
-**Expose Open WebUI to the internet securely. No open ports, no certificates, no reverse proxy.**
+**安全地将 Open WebUI 暴露到互联网。无需开放端口、无需证书、也无需反向代理。**
 
-Cloudflare Tunnel (`cloudflared`) creates an outbound-only connection from your machine to Cloudflare's edge network. Traffic flows through Cloudflare's infrastructure with automatic TLS, DDoS protection, and access controls, all without exposing a single port on your server.
+Cloudflare Tunnel（`cloudflared`）会从你的机器向 Cloudflare 边缘网络建立一条仅出站连接。流量通过 Cloudflare 基础设施转发，并自动获得 TLS、DDoS 防护和访问控制，而你的服务器无需暴露任何端口。
 
-:::tip When to use Cloudflare Tunnel
-This is the recommended approach when you want **production-grade public access** without managing TLS certificates or firewall rules. It works on any network, including behind NAT or restrictive firewalls.
+:::tip 何时使用 Cloudflare Tunnel
+如果你希望在**无需自己管理 TLS 证书或防火墙规则**的情况下获得**生产级公网访问**，这是推荐方案。它适用于各种网络环境，包括 NAT 后面或受限防火墙环境。
 :::
 
 ---
 
-## Prerequisites
+## 前提条件
 
-| Requirement | Details |
+| 要求 | 详情 |
 | :--- | :--- |
-| **Open WebUI** | Running locally on port `8080` (default) |
-| **Cloudflare account** | Free at [cloudflare.com](https://dash.cloudflare.com/sign-up) |
-| **Domain on Cloudflare** | Your domain's DNS must be managed by Cloudflare |
+| **Open WebUI** | 已在本地端口 `8080`（默认值）运行 |
+| **Cloudflare 账号** | 可在 [cloudflare.com](https://dash.cloudflare.com/sign-up) 免费注册 |
+| **Cloudflare 托管域名** | 你的域名 DNS 必须由 Cloudflare 管理 |
 
 ---
 
-## Option A: Dashboard setup (no CLI)
+## 方案 A：Dashboard 配置（无需 CLI）
 
-The simplest path. Everything configured through the Cloudflare dashboard.
+最简单的方式。全部通过 Cloudflare dashboard 完成。
 
-### 1. Create the tunnel
+### 1. 创建 tunnel
 
-1. Go to [**Zero Trust → Networks → Tunnels**](https://one.dash.cloudflare.com/networks/tunnels)
-2. Click **Create a tunnel** → select **Cloudflared**
-3. Name it (e.g., `open-webui`)
-4. Follow the install instructions to run the connector on your machine
+1. 前往 [**Zero Trust → Networks → Tunnels**](https://one.dash.cloudflare.com/networks/tunnels)
+2. 点击 **Create a tunnel** → 选择 **Cloudflared**
+3. 为 tunnel 命名（例如 `open-webui`）
+4. 按页面说明在你的机器上安装并运行 connector
 
-### 2. Add a public hostname
+### 2. 添加公网主机名
 
-In the tunnel config, add a **Public Hostname**:
+在 tunnel 配置中添加一个 **Public Hostname**：
 
-| Field | Value |
+| 字段 | 值 |
 | :--- | :--- |
-| **Subdomain** | `chat` (or whatever you prefer) |
-| **Domain** | Select your Cloudflare domain |
+| **Subdomain** | `chat`（或你喜欢的任意名称） |
+| **Domain** | 选择你的 Cloudflare 域名 |
 | **Service type** | `HTTP` |
 | **URL** | `localhost:8080` |
 
-Save. Cloudflare creates the DNS record automatically.
+保存后，Cloudflare 会自动创建对应 DNS 记录。
 
-### 3. Access Open WebUI
+### 3. 访问 Open WebUI
 
-Open `https://chat.your-domain.com`. HTTPS is handled entirely by Cloudflare.
+打开 `https://chat.your-domain.com`。HTTPS 全部由 Cloudflare 处理。
 
 ---
 
-## Option B: CLI setup
+## 方案 B：CLI 配置
 
-For automation, infrastructure-as-code, or headless servers.
+适合自动化、基础设施即代码，或无头服务器场景。
 
-### 1. Install cloudflared
+### 1. 安装 cloudflared
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -89,25 +89,25 @@ winget install Cloudflare.cloudflared
   </TabItem>
 </Tabs>
 
-### 2. Authenticate
+### 2. 完成认证
 
 ```bash
 cloudflared tunnel login
 ```
 
-This opens a browser to authorize `cloudflared` with your Cloudflare account.
+该命令会打开浏览器，让你授权 `cloudflared` 访问你的 Cloudflare 账号。
 
-### 3. Create the tunnel
+### 3. 创建 tunnel
 
 ```bash
 cloudflared tunnel create open-webui
 ```
 
-Note the **Tunnel ID** in the output. You'll need it for the config.
+请记下输出中的 **Tunnel ID**，后续配置时会用到。
 
-### 4. Configure
+### 4. 配置
 
-Create `~/.cloudflared/config.yml`:
+创建 `~/.cloudflared/config.yml`：
 
 ```yaml
 tunnel: YOUR_TUNNEL_ID
@@ -119,25 +119,25 @@ ingress:
   - service: http_status:404
 ```
 
-### 5. Create DNS record
+### 5. 创建 DNS 记录
 
 ```bash
 cloudflared tunnel route dns open-webui chat.your-domain.com
 ```
 
-### 6. Start the tunnel
+### 6. 启动 tunnel
 
 ```bash
 cloudflared tunnel run open-webui
 ```
 
-Open `https://chat.your-domain.com`.
+然后打开 `https://chat.your-domain.com`。
 
 ---
 
-## Run as a system service
+## 作为系统服务运行
 
-To keep the tunnel running after reboot:
+若想让 tunnel 在系统重启后仍自动运行：
 
 ```bash
 sudo cloudflared service install
@@ -145,13 +145,13 @@ sudo systemctl enable cloudflared
 sudo systemctl start cloudflared
 ```
 
-This uses the config at `~/.cloudflared/config.yml` automatically.
+它会自动使用 `~/.cloudflared/config.yml` 中的配置。
 
 ---
 
-## Configure Open WebUI
+## 配置 Open WebUI
 
-Set `WEBUI_URL` so OAuth callbacks and internal links resolve correctly:
+设置 `WEBUI_URL`，确保 OAuth 回调和内部链接都能正确解析：
 
 ```bash
 docker run -d \
@@ -164,9 +164,9 @@ docker run -d \
 
 ---
 
-## Docker Compose with cloudflared
+## 在 Docker Compose 中集成 cloudflared
 
-Run both Open WebUI and the tunnel connector in a single stack:
+你也可以把 Open WebUI 与 tunnel connector 一起放进同一个 stack：
 
 ```yaml
 services:
@@ -189,34 +189,34 @@ volumes:
   open-webui:
 ```
 
-Get your tunnel token from the [Cloudflare dashboard](https://one.dash.cloudflare.com/networks/tunnels) → select your tunnel → **Configure** → copy the token from the install command.
+你可以在 [Cloudflare dashboard](https://one.dash.cloudflare.com/networks/tunnels) 中获取 tunnel token：选择你的 tunnel → **Configure** → 从安装命令中复制 token。
 
 :::tip
-No `ports` needed on the `open-webui` service. `cloudflared` connects to it via Docker's internal network. To use this, change the service URL in your tunnel config to `http://open-webui:8080`.
+在这种部署方式中，`open-webui` 服务**不需要**暴露 `ports`。`cloudflared` 会通过 Docker 内部网络连接它。此时请把 tunnel config 中的 service URL 改成 `http://open-webui:8080`。
 :::
 
 ---
 
-## Add access controls (optional)
+## 添加访问控制（可选）
 
-Cloudflare Zero Trust lets you gate access behind authentication without touching Open WebUI:
+Cloudflare Zero Trust 可以在不改动 Open WebUI 的情况下，为你的实例加上一层认证保护：
 
-1. Go to [**Zero Trust → Access → Applications**](https://one.dash.cloudflare.com/access/apps)
-2. **Add an application** → Self-hosted
-3. Set the domain to `chat.your-domain.com`
-4. Create an **Access Policy** (e.g., allow only `@your-company.com` emails)
+1. 前往 [**Zero Trust → Access → Applications**](https://one.dash.cloudflare.com/access/apps)
+2. 点击 **Add an application** → Self-hosted
+3. 将域名设置为 `chat.your-domain.com`
+4. 创建一条 **Access Policy**（例如只允许 `@your-company.com` 邮箱访问）
 
-Users see a Cloudflare login page before reaching Open WebUI.
+这样用户在进入 Open WebUI 前，会先看到 Cloudflare 登录页。
 
 ---
 
-## Quick reference
+## 快速参考
 
-| What | Command / Value |
+| 操作 | 命令 / 值 |
 | :--- | :--- |
-| Create tunnel | `cloudflared tunnel create open-webui` |
-| Start tunnel | `cloudflared tunnel run open-webui` |
-| Add DNS | `cloudflared tunnel route dns open-webui chat.your-domain.com` |
-| Install as service | `sudo cloudflared service install` |
+| 创建 tunnel | `cloudflared tunnel create open-webui` |
+| 启动 tunnel | `cloudflared tunnel run open-webui` |
+| 添加 DNS | `cloudflared tunnel route dns open-webui chat.your-domain.com` |
+| 安装为系统服务 | `sudo cloudflared service install` |
 | Dashboard | [one.dash.cloudflare.com/networks/tunnels](https://one.dash.cloudflare.com/networks/tunnels) |
-| Set CORS origin | `CORS_ALLOW_ORIGIN=https://chat.your-domain.com` |
+| 设置 CORS origin | `CORS_ALLOW_ORIGIN=https://chat.your-domain.com` |

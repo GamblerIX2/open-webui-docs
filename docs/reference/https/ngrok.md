@@ -3,28 +3,28 @@ sidebar_position: 2
 title: "HTTPS using ngrok"
 ---
 
-# HTTPS using ngrok
+# 使用 ngrok 的 HTTPS
 
-**Instant public HTTPS for your local Open WebUI. Zero config, zero open ports.**
+**为本地 Open WebUI 立刻获得公网 HTTPS。零配置、零开放端口。**
 
-ngrok creates a secure tunnel from a public URL to your local machine. It's the fastest way to get HTTPS working for development, demos, or testing features that require a secure context (like Voice Calls).
+ngrok 会从公网 URL 向你的本地机器建立一条安全隧道。它是让本地 Open WebUI 快速支持 HTTPS 的最快方式，尤其适用于开发、演示或测试那些需要安全上下文的功能（例如 Voice Calls）。
 
-:::tip When to use ngrok
-ngrok is ideal for **development and testing**. For production deployments, use a reverse proxy like [Nginx](/reference/https/nginx) or [Caddy](/reference/https/caddy), or a [Cloudflare Tunnel](/reference/https/cloudflare-tunnel) for zero-trust access.
+:::tip 何时使用 ngrok
+ngrok 非常适合**开发与测试**。对于生产部署，请优先选择反向代理方案，例如 [Nginx](/reference/https/nginx)、[Caddy](/reference/https/caddy)，或使用 [Cloudflare Tunnel](/reference/https/cloudflare-tunnel) 获得 zero-trust 访问。
 :::
 
 ---
 
-## Prerequisites
+## 前提条件
 
-| Requirement | Details |
+| 要求 | 详情 |
 | :--- | :--- |
-| **Open WebUI** | Running locally on port `8080` (default) |
-| **ngrok account** | Free at [ngrok.com](https://ngrok.com), provides a stable authtoken |
+| **Open WebUI** | 已在本地端口 `8080`（默认值）运行 |
+| **ngrok 账号** | 可在 [ngrok.com](https://ngrok.com) 免费注册，并获得稳定的 authtoken |
 
 ---
 
-## 1. Install ngrok
+## 1. 安装 ngrok
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -51,38 +51,38 @@ curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok-v3-stable-linux-amd64.tgz \
 choco install ngrok
 ```
 
-Or download directly from [ngrok.com/download](https://ngrok.com/download).
+或直接从 [ngrok.com/download](https://ngrok.com/download) 下载。
 
   </TabItem>
 </Tabs>
 
-## 2. Authenticate
+## 2. 完成认证
 
 ```bash
 ngrok config add-authtoken YOUR_AUTH_TOKEN
 ```
 
-Find your authtoken at [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
+你的 authtoken 可在 [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken) 获取。
 
-## 3. Start the tunnel
+## 3. 启动隧道
 
 ```bash
 ngrok http 8080
 ```
 
-ngrok outputs a public URL like:
+ngrok 会输出类似下面的公网地址：
 
 ```
 Forwarding  https://a1b2-203-0-113-42.ngrok-free.app → http://localhost:8080
 ```
 
-Open that `https://` URL in your browser. You're done.
+直接在浏览器中打开这个 `https://` URL 即可。
 
 ---
 
-## Configure Open WebUI
+## 配置 Open WebUI
 
-Set `WEBUI_URL` so OAuth callbacks and internal links resolve correctly:
+设置 `WEBUI_URL`，确保 OAuth 回调与内部链接都能正确解析：
 
 ```bash
 docker run -d \
@@ -94,40 +94,40 @@ docker run -d \
 ```
 
 :::warning
-ngrok free-tier URLs change every time you restart the tunnel. Update `WEBUI_URL` accordingly, or use a [ngrok custom domain](https://ngrok.com/docs/guides/how-to-set-up-a-custom-domain/) (paid) for a stable URL.
+ngrok 免费层的 URL 会在每次重启 tunnel 后变化。请相应更新 `WEBUI_URL`，或者使用 [ngrok custom domain](https://ngrok.com/docs/guides/how-to-set-up-a-custom-domain/)（付费）来获得固定 URL。
 :::
 
 ---
 
-## Custom domain (optional)
+## 自定义域名（可选）
 
-With a paid ngrok plan, claim a fixed subdomain so your URL never changes:
+在付费 ngrok 计划中，你可以申请固定子域名，使 URL 不再变化：
 
 ```bash
 ngrok http 8080 --url=your-name.ngrok-free.app
 ```
 
-This gives you a permanent URL you can set once in `WEBUI_URL` and forget.
+这样你就能在 `WEBUI_URL` 中一次性配置固定地址，无需频繁更新。
 
 ---
 
-## Quick reference
+## 快速参考
 
-| What | Command / Value |
+| 操作 | 命令 / 值 |
 | :--- | :--- |
-| Start tunnel | `ngrok http 8080` |
-| Custom domain | `ngrok http 8080 --url=your-name.ngrok-free.app` |
+| 启动 tunnel | `ngrok http 8080` |
+| 自定义域名 | `ngrok http 8080 --url=your-name.ngrok-free.app` |
 | Dashboard | [dashboard.ngrok.com](https://dashboard.ngrok.com) |
-| Inspect traffic | `http://localhost:4040` (ngrok's local inspector) |
-| Set CORS origin | `CORS_ALLOW_ORIGIN=https://your-name.ngrok-free.app` |
+| 查看请求流量 | `http://localhost:4040`（ngrok 本地调试面板） |
+| 设置 CORS origin | `CORS_ALLOW_ORIGIN=https://your-name.ngrok-free.app` |
 
 ---
 
-## Limitations
+## 限制
 
-| Concern | Detail |
+| 问题 | 说明 |
 | :--- | :--- |
-| **Free-tier URLs rotate** | URL changes on every restart unless you use a custom domain |
-| **Interstitial warning** | Free-tier shows an ngrok splash page on first visit |
-| **Not for production** | ngrok adds latency and is a single point of failure; use a reverse proxy or Cloudflare Tunnel instead |
-| **Rate limits** | Free tier has connection rate limits; paid plans remove them |
+| **免费层 URL 会轮换** | 每次重启 tunnel 后 URL 都会变化，除非你使用自定义域名 |
+| **首次访问拦截页** | 免费层首次访问会显示 ngrok splash page |
+| **不适合生产环境** | ngrok 会增加额外延迟，并且本身是单点依赖；生产环境请改用反向代理或 Cloudflare Tunnel |
+| **速率限制** | 免费层有限速；付费计划可移除这类限制 |
