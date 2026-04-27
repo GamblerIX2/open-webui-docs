@@ -1,137 +1,137 @@
 ---
 sidebar_position: 3
-title: "Chatterbox TTS — Voice Cloning"
+title: "Chatterbox TTS —— 声音克隆"
 ---
 
-# Chatterbox TTS — Voice Cloning
+# Chatterbox TTS —— 声音克隆
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
-## What is `Chatterbox TTS API`?
+## 什么是 `Chatterbox TTS API`？
 
-[Chatterbox TTS API](https://github.com/travisvn/chatterbox-tts-api) is an API wrapper that allows for voice cloning and text-to-speech, serving as a direct substitute for the OpenAI Speech API endpoint.
+[Chatterbox TTS API](https://github.com/travisvn/chatterbox-tts-api) 是一个 API 封装层，支持声音克隆与文本转语音，可直接替代 OpenAI Speech API endpoint。
 
 [![Link to Resemble AI voice samples](https://img.shields.io/badge/listen-demo_samples-blue)](https://resemble-ai.github.io/chatterbox_demopage/)
 
-## Key Features
+## 主要特性
 
-- Zero-shot voice cloning — only ~10 seconds of any voice sample needed
-- [Outperforms ElevenLabs](https://podonos.com/resembleai/chatterbox)
-- Watermarked outputs for responsible voice cloning
+- 零样本声音克隆 —— 只需约 10 秒语音样本
+- [表现优于 ElevenLabs](https://podonos.com/resembleai/chatterbox)
+- 输出带水印，便于负责任地使用声音克隆
 - 0.5B Llama backbone
-- Custom Voice Library management
-- Streaming support for fast generation
-- Advanced memory management and automatic cleanup
-- Optional frontend for easy management and usage
+- 自定义 Voice Library 管理
+- 支持流式输出，生成更快
+- 具备高级内存管理与自动清理
+- 可选前端界面，便于管理和使用
 
-### Hardware Recommendations
+### 硬件建议
 
-- Memory: 4GB minimum, 8GB+ recommended
-- GPU: CUDA (Nvidia), Apple M-series (MPS)
-- CPU: Works but slower — GPU recommended for production
+- 内存：至少 4GB，推荐 8GB+
+- GPU：CUDA（Nvidia）或 Apple M 系列（MPS）
+- CPU：也能运行，但更慢 —— 生产环境推荐使用 GPU
 
 :::info
 
-Chatterbox can use a good deal of memory and has hardware requirements that might be higher than you're used to with other local TTS solutions. If you have trouble meeting the requirements, you might find [OpenAI Edge TTS](https://docs.openwebui.com/tutorials/text-to-speech/openai-edge-tts-integration) or [Kokoro-FastAPI](https://docs.openwebui.com/tutorials/text-to-speech/Kokoro-FastAPI-integration) to be suitable replacements.
+Chatterbox 可能会占用较多内存，其硬件要求也可能高于你熟悉的其他本地 TTS 方案。如果你的机器难以满足要求，可以考虑 [OpenAI Edge TTS](https://docs.openwebui.com/tutorials/text-to-speech/openai-edge-tts-integration) 或 [Kokoro-FastAPI](https://docs.openwebui.com/tutorials/text-to-speech/Kokoro-FastAPI-integration) 作为替代方案。
 
 :::
 
-## ⚡️ Quick start
+## ⚡️ 快速开始
 
-### 🐍 Using Python
+### 🐍 使用 Python
 
-#### Option A: Using uv (Recommended - Faster & Better Dependencies)
+#### 方案 A：使用 uv（推荐 —— 更快、依赖处理更好）
 
 ```bash
 
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/travisvn/chatterbox-tts-api
 cd chatterbox-tts-api
 
-# Install uv if you haven't already
+# 如果还没安装 uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install dependencies with uv (automatically creates venv)
+# 用 uv 安装依赖（会自动创建 venv）
 uv sync
 
-# Copy and customize environment variables
+# 复制并自定义环境变量
 cp .env.example .env
 
-# Start the API with FastAPI
+# 使用 FastAPI 启动 API
 uv run uvicorn app.main:app --host 0.0.0.0 --port 4123
 
-# Or use the main script
+# 或使用主脚本
 uv run main.py
 ```
 
-> 💡 **Why uv?** Users report better compatibility with `chatterbox-tts`, 25-40% faster installs, and superior dependency resolution. [See migration guide →](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/UV_MIGRATION.md)
+> 💡 **为什么选 uv？** 用户普遍反馈它对 `chatterbox-tts` 兼容性更好、安装速度提升 25-40%，并且依赖解析更稳定。[查看迁移指南 →](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/UV_MIGRATION.md)
 
-#### Option B: Using pip (Traditional)
+#### 方案 B：使用 pip（传统方式）
 
 ```bash
 
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/travisvn/chatterbox-tts-api
 cd chatterbox-tts-api
 
-# Setup environment — using Python 3.11
+# 配置环境 —— 使用 Python 3.11
 python -m venv .venv
 source .venv/bin/activate
 
-# Install dependencies
+# 安装依赖
 pip install -r requirements.txt
 
-# Copy and customize environment variables
+# 复制并自定义环境变量
 cp .env.example .env
 
-# Add your voice sample (or use the provided one)
+# 添加你的语音样本（或使用项目自带样本）
 
 # cp your-voice.mp3 voice-sample.mp3
 
-# Start the API with FastAPI
+# 使用 FastAPI 启动 API
 uvicorn app.main:app --host 0.0.0.0 --port 4123
 
-# Or use the main script
+# 或使用主脚本
 python main.py
 ```
 
-> Ran into issues? Check the [troubleshooting section](https://github.com/travisvn/chatterbox-tts-api?tab=readme-ov-file#common-issues)
+> 遇到问题？请查看 [troubleshooting section](https://github.com/travisvn/chatterbox-tts-api?tab=readme-ov-file#common-issues)
 
-### 🐳 Docker (Recommended)
+### 🐳 Docker（推荐）
 
 ```bash
 
-# Clone and start with Docker Compose
+# 克隆并用 Docker Compose 启动
 git clone https://github.com/travisvn/chatterbox-tts-api
 cd chatterbox-tts-api
 
-# Use Docker-optimized environment variables
-cp .env.example.docker .env  # Docker-specific paths, ready to use
+# 使用针对 Docker 优化的环境变量
+cp .env.example.docker .env  # Docker 专用路径，可直接使用
 
-# Or: cp .env.example .env    # Local development paths, needs customization
+# 或：cp .env.example .env    # 本地开发路径，需要自行修改
 
-# Choose your deployment method:
+# 选择部署方式：
 
-# API Only (default)
-docker compose -f docker/docker-compose.yml up -d             # Standard (pip-based)
-docker compose -f docker/docker-compose.uv.yml up -d          # uv-optimized (faster builds)
-docker compose -f docker/docker-compose.gpu.yml up -d         # Standard + GPU
-docker compose -f docker/docker-compose.uv.gpu.yml up -d      # uv + GPU (recommended for GPU users)
-docker compose -f docker/docker-compose.cpu.yml up -d         # CPU-only
+# 仅 API（默认）
+docker compose -f docker/docker-compose.yml up -d             # 标准版（基于 pip）
+docker compose -f docker/docker-compose.uv.yml up -d          # uv 优化版（构建更快）
+docker compose -f docker/docker-compose.gpu.yml up -d         # 标准版 + GPU
+docker compose -f docker/docker-compose.uv.gpu.yml up -d      # uv + GPU（GPU 用户推荐）
+docker compose -f docker/docker-compose.cpu.yml up -d         # 仅 CPU
 
-# API + Frontend (add --profile frontend to any of the above)
-docker compose -f docker/docker-compose.yml --profile frontend up -d             # Standard + Frontend
+# API + Frontend（在以上任一命令后加 --profile frontend）
+docker compose -f docker/docker-compose.yml --profile frontend up -d             # 标准版 + Frontend
 docker compose -f docker/docker-compose.gpu.yml --profile frontend up -d         # GPU + Frontend
 docker compose -f docker/docker-compose.uv.gpu.yml --profile frontend up -d      # uv + GPU + Frontend
 
-# Watch the logs as it initializes (the first use of TTS takes the longest)
+# 查看初始化日志（第一次使用 TTS 最慢）
 docker logs chatterbox-tts-api -f
 
-# Test the API
+# 测试 API
 curl -X POST http://localhost:4123/v1/audio/speech \
   -H "Content-Type: application/json" \
   -d '{"input": "Hello from Chatterbox TTS!"}' \
@@ -141,124 +141,125 @@ curl -X POST http://localhost:4123/v1/audio/speech \
 <!-- markdownlint-disable-next-line MD033 -->
 <details>
 <!-- markdownlint-disable-next-line MD033 -->
-<summary>**🚀 Running with the Frontend Interface**</summary>
+<summary>**🚀 使用前端界面运行**</summary>
 
-This project includes an optional React-based web UI. Use Docker Compose profiles to easily opt in or out of the frontend:
+该项目包含一个可选的 React Web UI。你可以通过 Docker Compose profile 方便地选择是否启用前端：
 
-### With Docker Compose Profiles
+### 使用 Docker Compose Profiles
 
 ```bash
 
-# API only (default behavior)
+# 仅 API（默认行为）
 docker compose -f docker/docker-compose.yml up -d
 
-# API + Frontend + Web UI (with --profile frontend)
+# API + Frontend + Web UI（添加 --profile frontend）
 docker compose -f docker/docker-compose.yml --profile frontend up -d
 
-# Or use the convenient helper script for fullstack:
+# 或者使用辅助脚本启动完整栈：
 python start.py fullstack
 
-# Same pattern works with all deployment variants:
+# 其他部署变体同理：
 docker compose -f docker/docker-compose.gpu.yml --profile frontend up -d    # GPU + Frontend
 docker compose -f docker/docker-compose.uv.yml --profile frontend up -d     # uv + Frontend
 docker compose -f docker/docker-compose.cpu.yml --profile frontend up -d    # CPU + Frontend
 ```
 
-### Local Development
+### 本地开发
 
-For local development, you can run the API and frontend separately:
+本地开发时，你可以分别运行 API 和前端：
 
 ```bash
 
-# Start the API first (follow earlier instructions)
+# 先启动 API（按前文说明）
 
-# Then run the frontend:
+# 然后启动前端：
 cd frontend && npm install && npm run dev
 ```
 
-> **Note:** If you encounter dependency issues, try running `npm install --force` instead of just `npm install`.
+> **注意：** 如果遇到依赖问题，可尝试使用 `npm install --force` 代替普通 `npm install`。
 
-Click the link provided from Vite to access the web UI.
+根据 Vite 输出的链接打开 Web UI 即可。
 
-### Build for Production
+### 生产构建
 
-Build the frontend for production deployment:
+为生产部署构建前端：
 
 ```bash
 cd frontend && npm install && npm run build
 ```
 
-> **Note:** If the build fails due to dependency conflicts, try using `npm install --force`.
+> **注意：** 如果构建因依赖冲突失败，也可以尝试 `npm install --force`。
 
-You can then access it directly from your local file system at `/dist/index.html`.
+构建完成后可直接通过本地文件系统中的 `/dist/index.html` 访问。
 
-### Port Configuration
+### 端口说明
 
-- **API Only**: Accessible at `http://localhost:4123` (direct API access)
-- **With Frontend**: Web UI at `http://localhost:4321`, API requests routed via proxy
+- **仅 API**：通过 `http://localhost:4123` 访问
+- **带 Frontend**：Web UI 位于 `http://localhost:4321`，API 请求通过反向代理转发
 
-The frontend uses a reverse proxy to route requests, so when running with `--profile frontend`, the web interface will be available at `http://localhost:4321` while the API runs behind the proxy.
+因此，当使用 `--profile frontend` 运行时，Web 界面位于 `http://localhost:4321`，而 API 则在代理后端运行。
 
 </details>
 
-## Setting up Open WebUI to use `Chatterbox TTS API`
+## 配置 Open WebUI 使用 `Chatterbox TTS API`
 
-We recommend running with the frontend interface so you can upload the audio files for the voices you'd like to use before configuring Open WebUI's settings. If started correctly (see guide above), you can visit `http://localhost:4321` to access the frontend.
+我们建议你先带前端界面运行，这样可以先上传想克隆的声音文件，再去配置 Open WebUI。如果已按上文正确启动，可访问 `http://localhost:4321` 打开前端。
 
-To use Chatterbox TTS API with Open WebUI, follow these steps:
+让 Open WebUI 使用 Chatterbox TTS API 的步骤如下：
 
-- Open the Admin Panel and go to `Settings` -> `Audio`
-- Set your TTS Settings to match the following:
+- 打开 Admin Panel 并进入 `Settings` -> `Audio`
+- 将 TTS 设置为：
 - - Text-to-Speech Engine: OpenAI
-  - API Base URL: `http://localhost:4123/v1` # alternatively, try `http://host.docker.internal:4123/v1`
+  - API Base URL: `http://localhost:4123/v1` # 也可尝试 `http://host.docker.internal:4123/v1`
   - API Key: `none`
-  - TTS Model: `tts-1` or `tts-1-hd`
-  - TTS Voice: Name of the voice you've cloned (can also include aliases, defined in the frontend)
+  - TTS Model: `tts-1` 或 `tts-1-hd`
+  - TTS Voice: 你克隆出来的语音名称（也可使用前端中定义的别名）
   - Response splitting: `Paragraphs`
 
 :::info
 
-The default API key is the string `none` (no API key required)
+默认 API key 为字符串 `none`（无需真实 API key）
 
 :::
 
 ![Screenshot of Open WebUI Admin Settings for Audio adding the correct endpoints for this project](https://lm17s1uz51.ufs.sh/f/EsgO8cDHBTOUjUe3QjHytHQ0xqn2CishmXgGfeJ4o983TUMO)
 
-## Please ⭐️ star the [repo on GitHub](https://github.com/travisvn/chatterbox-tts-api) to support development
+## 如果觉得这个项目有帮助，请为 [repo on GitHub](https://github.com/travisvn/chatterbox-tts-api) 点个 ⭐️
 
-## Need help?
+## 需要帮助？
 
-Chatterbox can be challenging to get running the first time, and you may want to try different install options if you run into issues with a particular one.
+Chatterbox 初次启动时可能比较折腾，如果某种安装方式不顺利，你可以尝试切换到其他安装路径。
 
-For more information on `chatterbox-tts-api`, you can visit the [GitHub repo](https://github.com/travisvn/chatterbox-tts-api)
+如需了解更多 `chatterbox-tts-api` 信息，请访问其 [GitHub repo](https://github.com/travisvn/chatterbox-tts-api)。
 
-- 📖 **Documentation**: See [API Documentation](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/API_README.md) and [Docker Guide](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/DOCKER_README.md)
-- 💬 **Discord**: [Join the Discord for this project](http://chatterboxtts.com/discord)
+- 📖 **文档**：参见 [API Documentation](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/API_README.md) 和 [Docker Guide](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/DOCKER_README.md)
+- 💬 **Discord**：可加入该项目的 [Discord](http://chatterboxtts.com/discord)
 
-## Troubleshooting
+## 故障排查
 
-### Memory Requirements
+### 内存要求
 
-Chatterbox has higher memory requirements than other TTS solutions:
-- **Minimum:** 4GB RAM
-- **Recommended:** 8GB+ RAM
-- **GPU:** NVIDIA CUDA or Apple M-series (MPS) recommended
+Chatterbox 的内存要求高于其他 TTS 方案：
+- **最低：** 4GB RAM
+- **推荐：** 8GB+ RAM
+- **GPU：** 推荐使用 NVIDIA CUDA 或 Apple M 系列（MPS）
 
-If you experience memory issues, consider using a lighter alternative like [OpenAI Edge TTS](/features/chat-conversations/audio/text-to-speech/openai-edge-tts-integration) or [Kokoro-FastAPI](/features/chat-conversations/audio/text-to-speech/Kokoro-FastAPI-integration).
+如果你有内存问题，可考虑改用更轻量的方案，例如 [OpenAI Edge TTS](/features/chat-conversations/audio/text-to-speech/openai-edge-tts-integration) 或 [Kokoro-FastAPI](/features/chat-conversations/audio/text-to-speech/Kokoro-FastAPI-integration)。
 
-### Docker Networking
+### Docker 网络
 
-If Open WebUI can't connect to Chatterbox:
+如果 Open WebUI 无法连接 Chatterbox：
 
-- **Docker Desktop:** Use `http://host.docker.internal:4123/v1` 
-- **Docker Compose:** Use `http://chatterbox-tts-api:4123/v1`
-- **Linux:** Use your host machine's IP address
+- **Docker Desktop：** 使用 `http://host.docker.internal:4123/v1`
+- **Docker Compose：** 使用 `http://chatterbox-tts-api:4123/v1`
+- **Linux：** 使用宿主机 IP 地址
 
-### First-Time Startup
+### 首次启动
 
-The first TTS request takes significantly longer as the model loads. Check logs with:
+第一次 TTS 请求通常会更慢，因为模型需要先加载。可使用以下命令查看日志：
+
 ```bash
 docker logs chatterbox-tts-api -f
 ```
 
-For more troubleshooting tips, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
