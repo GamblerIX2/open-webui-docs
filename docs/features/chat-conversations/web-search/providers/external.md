@@ -5,45 +5,45 @@ title: "External"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
-## External Web Search API
+## 外部 Web Search API
 
-This option allows you to connect Open WebUI to your own self-hosted web search API endpoint. This is useful if you want to:
+这个选项允许你把 Open WebUI 连接到你自己托管的 web search API endpoint。适用场景包括：
 
-- Integrate a search engine not natively supported by Open WebUI.
-- Implement custom search logic, filtering, or result processing.
-- Use a private or internal search index.
+- 集成 Open WebUI 原生未支持的搜索引擎
+- 实现自定义搜索逻辑、过滤规则或结果处理流程
+- 使用私有或内部搜索索引
 
-### Open WebUI Setup
+### Open WebUI 配置
 
-1. Navigate to the Open WebUI `Admin Panel`.
-2. Go to the `Settings` tab and then select `Web Search`.
-3. Toggle `Enable Web Search` to the on position.
-4. Set `Web Search Engine` from the dropdown menu to `external`.
-5. Fill `External Search URL` with the full URL of your custom search API endpoint (e.g., `http://localhost:8000/search` or `https://my-search-api.example.com/api/search`).
-6. Fill `External Search API Key` with the secret API key required to authenticate with your custom search endpoint. Leave blank if your endpoint doesn't require authentication (not recommended for public endpoints).
-7. Click `Save`.
+1. 进入 Open WebUI `Admin Panel`
+2. 打开 `Settings` 标签，再进入 `Web Search`
+3. 将 `Enable Web Search` 切换为开启
+4. 将 `Web Search Engine` 从下拉菜单设为 `external`
+5. 在 `External Search URL` 中填写你自定义搜索 API 的完整 URL（例如 `http://localhost:8000/search` 或 `https://my-search-api.example.com/api/search`）
+6. 在 `External Search API Key` 中填写访问该搜索 endpoint 所需的密钥。如果你的 endpoint 不需要鉴权，也可以留空（但对于公网 endpoint，不推荐）
+7. 点击 `Save`
 
 ![Open WebUI Admin panel showing External Search config](/images/tutorial_external_search.png)
 
-### API Specification
+### API 规范
 
-Open WebUI will interact with your `External Search URL` as follows:
+Open WebUI 会按如下方式与你的 `External Search URL` 交互：
 
 - **Method:** `POST`
 - **Headers:**
@@ -58,11 +58,11 @@ Open WebUI will interact with your `External Search URL` as follows:
     }
     ```
 
-  - `query` (string): The search term entered by the user.
-  - `count` (integer): The suggested maximum number of results Open WebUI expects. Your API can return fewer results if necessary.
+  - `query`（string）：用户输入的搜索关键词
+  - `count`（integer）：Open WebUI 希望获取的最大结果数。必要时，你的 API 也可以返回更少结果
 
 - **Expected Response Body (JSON):**
-    Your API endpoint *must* return a JSON array of search result objects. Each object should have the following structure:
+    你的 API endpoint **必须**返回一个 JSON 数组，其中每个元素都是搜索结果对象，结构如下：
 
     ```json
     [
@@ -80,15 +80,15 @@ Open WebUI will interact with your `External Search URL` as follows:
     ]
     ```
 
-  - `link` (string): The direct URL to the search result.
-  - `title` (string): The title of the web page.
-  - `snippet` (string): A descriptive text snippet from the page content relevant to the query.
+  - `link`（string）：搜索结果的直接 URL
+  - `title`（string）：网页标题
+  - `snippet`（string）：页面内容中与查询相关的简要描述
 
-    If an error occurs or no results are found, your endpoint should ideally return an empty JSON array `[]`.
+    如果发生错误，或未找到结果，建议你的 endpoint 返回空数组 `[]`
 
-### Example Implementation (Python/FastAPI)
+### 示例实现（Python/FastAPI）
 
-Here is a simple example of a self-hosted search API using Python with FastAPI and the `duckduckgo-search` library.
+以下示例演示如何使用 Python + FastAPI + `duckduckgo-search` 库实现一个自托管搜索 API。
 
 ```python
 import uvicorn

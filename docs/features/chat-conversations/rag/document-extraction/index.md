@@ -1,34 +1,34 @@
 ---
 sidebar_position: 1
-title: "Document Extraction"
+title: "文档提取"
 ---
 
-## Document Extraction in Open WebUI
+## Open WebUI 中的文档提取
 
-Open WebUI provides powerful document extraction capabilities that allow you to process and analyze various types of documents within your RAG (Retrieval Augmented Generation) workflows. Document extraction is essential for transforming unstructured document content into structured data that can be effectively used by language models.
+Open WebUI 提供强大的文档提取能力，使你可以在 RAG（Retrieval Augmented Generation）工作流中处理并分析多种类型的文档。文档提取是把非结构化文档内容转换为结构化数据的关键步骤，从而让语言模型更有效地使用这些内容。
 
-## What is Document Extraction?
+## 什么是文档提取？
 
-Document extraction refers to the process of automatically identifying and extracting text and data from various file formats, including:
+文档提取指的是自动识别并提取各种文件格式中的文本与数据的过程，其中包括：
 
-- PDFs (both text-based and scanned)
-- Images containing text
-- Handwritten documents
-- And more
+- PDF（包括文本型 PDF 与扫描版 PDF）
+- 含文字的图片
+- 手写文档
+- 以及更多格式
 
-With proper document extraction, Open WebUI can help you:
+通过恰当的文档提取，Open WebUI 可以帮助你：
 
-- Convert image-based documents to searchable text
-- Preserve document structure and layout information
-- Extract data in structured formats for further processing
-- Support multilingual content recognition
+- 将基于图像的文档转换为可搜索文本
+- 尽量保留文档结构与版面信息
+- 以结构化格式提取数据，供后续处理
+- 支持多语言内容识别
 
-:::note Privacy in Temporary Chats
-In **Temporary Chat** mode, document extraction is performed **exclusively in the browser** to prevent data from being stored or processed on the backend. This strict privacy measure means that some complex file formats (like certain DOCX files) that rely on backend parsers may not be processed correctly.
+:::note Temporary Chat 中的隐私
+在 **Temporary Chat** 模式下，文档提取会**仅在浏览器中执行**，以防止数据在后端被存储或处理。由于这一严格隐私策略，某些依赖后端解析器的复杂文件格式（例如部分 DOCX 文件）可能无法被正确处理。
 :::
 
-## Available Extraction Methods
+## 可用提取方式
 
-Open WebUI supports multiple document extraction engines to accommodate different needs and document types. Each extraction method has its own strengths and is suitable for different scenarios.
+Open WebUI 支持多种文档提取引擎，以适配不同需求与文档类型。每种提取方式都有各自优势，适合不同场景。
 
-Explore the documentation for each available extraction method to learn how to set it up and use it effectively with your Open WebUI instance.
+你可以查阅各个提取方式的专门文档，了解如何配置并在 Open WebUI 实例中有效使用它们。
