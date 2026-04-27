@@ -5,35 +5,35 @@ title: "Mojeek"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
 ## Mojeek Search API
 
-### Setup
+### 设置
 
-1. Please visit [Mojeek Search API page](https://www.mojeek.com/services/search/web-search-api/) to obtain an `API key`
-2. With `API key`, open `Open WebUI Admin panel` and click `Settings` tab, and then click `Web Search`
-3. Enable `Web search` and Set `Web Search Engine` to `mojeek`
-4. Fill `Mojeek Search API Key` with the `API key`
-5. Click `Save`
+1. 访问 [Mojeek Search API page](https://www.mojeek.com/services/search/web-search-api/) 获取 `API key`
+2. 拿到 `API key` 后，打开 `Open WebUI Admin panel`，点击 `Settings`，再进入 `Web Search`
+3. 启用 `Web search`，并将 `Web Search Engine` 设为 `mojeek`
+4. 在 `Mojeek Search API Key` 中填写该 `API key`
+5. 点击 `Save`
 
-### Docker Compose Setup
+### Docker Compose 设置
 
-Add the following environment variables to your Open WebUI `docker-compose.yaml` file:
+将以下环境变量加入你的 Open WebUI `docker-compose.yaml`：
 
 ```yaml
 services:

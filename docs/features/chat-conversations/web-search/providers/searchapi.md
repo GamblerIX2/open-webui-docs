@@ -5,40 +5,40 @@ title: "SearchApi"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
 ## SearchApi API
 
-[SearchApi](https://searchapi.io) is a collection of real-time SERP APIs. Any existing or upcoming SERP engine that returns `organic_results` is supported. The default web search engine is `google`, but it can be changed to `bing`, `baidu`, `google_news`, `bing_news`, `google_scholar`, `google_patents`, and others.
+[SearchApi](https://searchapi.io) 提供一组实时 SERP API。任何当前或未来会返回 `organic_results` 的 SERP 引擎都可被支持。默认 web search engine 是 `google`，但你也可以改成 `bing`、`baidu`、`google_news`、`bing_news`、`google_scholar`、`google_patents` 等。
 
-### Setup
+### 设置
 
-1. Go to [SearchApi](https://searchapi.io), and log on or create a new account.
-2. Go to `Dashboard` and copy the API key.
-3. With `API key`, open `Open WebUI Admin panel` and click `Settings` tab, and then click `Web Search`.
-4. Enable `Web search` and set `Web Search Engine` to `searchapi`.
-5. Fill `SearchApi API Key` with the `API key` that you copied in step 2 from [SearchApi](https://www.searchapi.io/) dashboard.
-6. [Optional] Enter the `SearchApi engine` name you want to query. Example, `google`, `bing`, `baidu`, `google_news`, `bing_news`, `google_videos`, `google_scholar` and `google_patents.` By default, it is set to `google`.
-7. Click `Save`.
+1. 前往 [SearchApi](https://searchapi.io) 并登录或创建新账号
+2. 进入 `Dashboard`，复制 API key
+3. 拿到 `API key` 后，打开 `Open WebUI Admin panel`，点击 `Settings`，再进入 `Web Search`
+4. 启用 `Web search`，并将 `Web Search Engine` 设为 `searchapi`
+5. 在 `SearchApi API Key` 中填写你在第 2 步从 [SearchApi](https://www.searchapi.io/) dashboard 复制的 `API key`
+6. [可选] 填写你想查询的 `SearchApi engine` 名称，例如 `google`、`bing`、`baidu`、`google_news`、`bing_news`、`google_videos`、`google_scholar`、`google_patents`。默认值为 `google`
+7. 点击 `Save`
 
 ![Open WebUI Admin panel](/images/tutorial_searchapi_search.png)
 
-#### Note
+#### 注意
 
-You have to enable `Web search` in the prompt field, using plus (`+`) button to search the web using [SearchApi](https://www.searchapi.io/) engines.
+你还需要在提示词输入框中通过加号（`+`）按钮启用 `Web search`，才能使用 [SearchApi](https://www.searchapi.io/) 引擎进行网页搜索。
 
 ![enable Web search](/images/enable_web_search.png)

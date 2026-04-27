@@ -5,38 +5,38 @@ title: "Yacy"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
 ## Yacy API
 
-### Setup
+### 设置
 
-1. Navigate to: `Admin Panel` -> `Settings` -> `Web Search`
-2. Toggle `Enable Web Search`
-3. Set `Web Search Engine` from dropdown menu to `yacy`
-4. Set `Yacy Instance URL` to one of the following examples:
+1. 前往：`Admin Panel` -> `Settings` -> `Web Search`
+2. 打开 `Enable Web Search`
+3. 将 `Web Search Engine` 从下拉框中设为 `yacy`
+4. 将 `Yacy Instance URL` 设为以下示例之一：
 
-    - `http://yacy:8090` (using the container name and exposed port, suitable for Docker-based setups)
-    - `http://host.docker.internal:8090` (using the `host.docker.internal` DNS name and the host port, suitable for Docker-based setups)
-    - `https://<yacy.local>:8443` (using a local domain name, suitable for local network access)
-    - `https://yacy.example.com` (using a custom domain name for a self-hosted Yacy instance, suitable for public or private access)
-    - `https://yacy.example.com:8443` (using https over the default Yacy https port)
+    - `http://yacy:8090`（使用容器名和暴露端口，适合 Docker 部署）
+    - `http://host.docker.internal:8090`（使用 `host.docker.internal` 和宿主机端口，适合 Docker 部署）
+    - `https://<yacy.local>:8443`（使用本地域名，适合局域网访问）
+    - `https://yacy.example.com`（使用自定义域名，适合公网或私有 Yacy 实例）
+    - `https://yacy.example.com:8443`（通过 Yacy 默认 HTTPS 端口访问）
 
-5. Optionally, enter your Yacy username and password if authentication is required for your Yacy instance. If both are left blank, digest authentication will be skipped
-6. Press save
+5. 如果你的 Yacy 实例需要鉴权，可选填写 Yacy 用户名和密码；若两者都留空，则会跳过 digest authentication
+6. 点击保存
 
 ![Open WebUI Admin panel showing Yacy config](/images/tutorial_yacy.png)

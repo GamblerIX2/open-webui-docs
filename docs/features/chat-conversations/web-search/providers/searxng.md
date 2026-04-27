@@ -5,45 +5,45 @@ title: "SearXNG"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
-This guide provides instructions on how to set up web search capabilities in Open WebUI using SearXNG in Docker.
+本指南说明如何在 Docker 中使用 SearXNG 为 Open WebUI 配置 web search。
 
-## SearXNG (Docker)
+## SearXNG（Docker）
 
 > "**SearXNG is a free internet metasearch engine which aggregates results from various search services and databases. Users are neither tracked nor profiled.**"
 
-## 1. SearXNG Configuration
+## 1. 配置 SearXNG
 
-To configure SearXNG optimally for use with Open WebUI, follow these steps:
+若要让 SearXNG 更适合 Open WebUI 使用，请按以下步骤配置：
 
-**Step 1: `git clone` SearXNG Docker and navigate to the folder:**
+**第 1 步：`git clone` SearXNG Docker，并进入目录**
 
-1. Clone the repository `searxng-docker`
+1. 克隆 `searxng-docker` 仓库
 
- Clone the searxng-docker repository. This will create a new directory called `searxng-docker`, which will contain your SearXNG configuration files. Refer to the [SearXNG documentation](https://docs.searxng.org/) for configuration instructions.
+   克隆后会生成一个名为 `searxng-docker` 的目录，其中包含 SearXNG 配置文件。更多说明请参阅 [SearXNG documentation](https://docs.searxng.org/)。
 
 ```bash
 git clone https://github.com/searxng/searxng-docker.git
 ```
 
-Navigate to the `searxng-docker` repository, and run all commands from there:
+然后进入 `searxng-docker` 目录，后续命令都在其中执行：
 
 ```bash
 cd searxng-docker
 ```
 
-**Step 2: Locate and and modify the `.env` file:**
+**第 2 步：找到并修改 `.env` 文件**
 
-1. Uncomment `SEARXNG_HOSTNAME` from the `.env` file and set it accordingly:
+1. 取消注释 `.env` 中的 `SEARXNG_HOSTNAME` 并进行设置：
 
 ```bash
 
@@ -70,37 +70,37 @@ SEARXNG_HOSTNAME=localhost
 # SEARXNG_UWSGI_THREADS=4
 ```
 
-**Step 3: Modify the `docker-compose.yaml` file**
+**第 3 步：修改 `docker-compose.yaml`**
 
-3. Remove the `localhost` restriction by modifying the `docker-compose.yaml` file:
+3. 通过修改 `docker-compose.yaml` 去掉 `localhost` 限制：
 
-If port 8080 is already in use, change `0.0.0.0:8080` to `0.0.0.0:[available port]` in the command before running it.
+如果 8080 端口已被占用，请在运行前把命令中的 `0.0.0.0:8080` 改成 `0.0.0.0:[available port]`。
 
-Run the appropriate command for your operating system:
+按你的操作系统执行对应命令：
 
 - **Linux**
 ```bash
 sed -i 's/127.0.0.1:8080/0.0.0.0:8080/' docker-compose.yaml
 ```
 
-- **macOS**:
+- **macOS**
 ```bash
 sed -i '' 's/127.0.0.1:8080/0.0.0.0:8080/' docker-compose.yaml
 ```
 
-**Step 4: Grant Necessary Permissions**
+**第 4 步：授予必要权限**
 
-4. Allow the container to create new config files by running the following command in the root directory:
+4. 在项目根目录运行以下命令，让容器能够创建新的配置文件：
 
 ```bash
 sudo chmod a+rwx searxng
 ```
 
-**Step 5: Create a Non-Restrictive `limiter.toml` File**
+**第 5 步：创建一个宽松的 `limiter.toml`**
 
-5. Create a non-restrictive `searxng-docker/searxng/limiter.toml` config file:
+5. 创建一个较宽松的 `searxng-docker/searxng/limiter.toml`：
 
-*If the file already exists, append the missing lines to it.*
+*如果该文件已存在，请把缺失的内容补进去。*
 
 <!-- markdownlint-disable-next-line MD033 -->
 <details>
@@ -125,27 +125,27 @@ pass_ip = []
 
 </details>
 
-**Step 6: Remove the Default `settings.yml` File**
+**第 6 步：删除默认 `settings.yml`**
 
-6. Delete the default `searxng-docker/searxng/settings.yml` file if it exists, as it will be regenerated on the first launch of SearXNG:
+6. 如果存在默认的 `searxng-docker/searxng/settings.yml`，请先删除，因为它会在 SearXNG 首次启动时重新生成：
 
 ```bash
 rm searxng/settings.yml
 ```
 
-**Step 7: Create a Fresh `settings.yml` File**
+**第 7 步：重新生成 `settings.yml`**
 
-7. Bring up the container momentarily to generate a fresh settings.yml file:
+7. 先短暂启动容器，以生成一份新的 settings.yml：
 
-If you have multiple containers running with the same name, such as caddy, redis, or searxng, you need to rename them in the docker-compose.yaml file to avoid conflicts.
+如果你当前有多个同名容器（如 caddy、redis 或 searxng），需要先在 docker-compose.yaml 中重命名它们以避免冲突。
 
 ```bash
 docker compose up -d ; sleep 10 ; docker compose down
 ```
 
-After the initial run, add `cap_drop: - ALL` to the `docker-compose.yaml` file for security reasons.
+首次运行完成后，出于安全考虑，请在 `docker-compose.yaml` 中加入 `cap_drop: - ALL`。
 
-If Open WebUI is running in the same Docker network as Searxng, you may remove the `0.0.0.0` and only specify the port mapping. In this case, Open WebUI can access Searxng directly using the container name.
+如果 Open WebUI 与 Searxng 处于同一个 Docker network 中，你也可以去掉 `0.0.0.0`，仅保留端口映射；此时 Open WebUI 可直接通过容器名访问 Searxng。
 
 <details>
 <summary>docker-compose.yaml</summary>
@@ -175,9 +175,9 @@ searxng:
 
 </details>
 
-**Step 8: Add Formats**
+**第 8 步：添加输出格式**
 
-8. Add HTML and JSON formats to the `searxng-docker/searxng/settings.yml` file:
+8. 在 `searxng-docker/searxng/settings.yml` 中加入 HTML 和 JSON 格式：
 
 - **Linux**
 ```bash
@@ -189,23 +189,23 @@ sed -i 's/- html/- html\n    - json/' searxng/settings.yml
 sed -i '' 's/- html/- html\n    - json/' searxng/settings.yml
 ```
 
-**Step 9: Run the Server**
+**第 9 步：启动服务**
 
-9. Start the container with the following command:
+9. 执行以下命令启动容器：
 
 ```bash
 docker compose up -d
 ```
 
-The searXNG will be available at http://localhost:8080 (or the port number you set earlier).
+此时 searXNG 会运行在 `http://localhost:8080`（或你之前指定的端口）。
 
-## 2. Alternative Setup
+## 2. 另一种简化配置方式
 
-Alternatively, if you don't want to modify the default configuration, you can simply create an empty `searxng-docker` folder and follow the rest of the setup instructions.
+如果你不想修改默认配置，也可以创建一个空的 `searxng-docker` 文件夹，然后继续后续配置步骤。
 
-### Docker Compose Setup
+### Docker Compose 设置
 
-Add the following environment variables to your Open WebUI `docker-compose.yaml` file:
+将以下环境变量加入你的 Open WebUI `docker-compose.yaml`：
 
 ```yaml
 services:
@@ -218,14 +218,14 @@ services:
       SEARXNG_QUERY_URL: "http://searxng:8080/search?q=<query>"
 ```
 
-Create a `.env` file for SearXNG:
+为 SearXNG 创建一个 `.env` 文件：
 
 ```env
 # SearXNG
 SEARXNG_HOSTNAME=localhost:8080/
 ```
 
-Next, add the following to SearXNG's `docker-compose.yaml` file:
+接着，在 SearXNG 的 `docker-compose.yaml` 中加入以下内容：
 
 ```yaml
 services:
@@ -253,7 +253,7 @@ services:
         max-file: "1"
 ```
 
-Your stack is ready to be launched with:
+现在整个 stack 已经可以通过以下命令启动：
 
 ```bash
 docker compose up -d
@@ -261,27 +261,27 @@ docker compose up -d
 
 :::note
 
-On the first run, you must remove `cap_drop: - ALL` from the `docker-compose.yaml` file for the `searxng` service to successfully create `/etc/searxng/uwsgi.ini`. This is necessary because the `cap_drop: - ALL` directive removes all capabilities, including those required for the creation of the `uwsgi.ini` file. After the first run, you should re-add `cap_drop: - ALL` to the `docker-compose.yaml` file for security reasons.
+首次运行时，你必须先从 `docker-compose.yaml` 中移除 `searxng` 服务下的 `cap_drop: - ALL`，否则 SearXNG 无法成功创建 `/etc/searxng/uwsgi.ini`。原因是 `cap_drop: - ALL` 会移除所有 capability，其中也包括创建 `uwsgi.ini` 所需的权限。首次运行完成后，出于安全考虑，应重新加回 `cap_drop: - ALL`。
 
 :::
 
-**Configure SearXNG for Open WebUI Integration**
+**为 Open WebUI 集成配置 SearXNG**
 
-After starting the container, you need to configure SearXNG to support JSON format queries from Open WebUI:
+容器启动后，你还需要让 SearXNG 支持 Open WebUI 所需的 JSON 查询格式：
 
-1. Stop the container after about 30 seconds to allow initial configuration files to be generated:
+1. 启动约 30 秒后先停止容器，以便初始配置文件生成完成：
 
 ```bash
 docker compose down
 ```
 
-2. Navigate to the `./searxng` folder and edit the `settings.yml` file:
+2. 进入 `./searxng` 目录并编辑 `settings.yml`：
 
 ```bash
 cd searxng
 ```
 
-3. Open the `settings.yml` file in your preferred text editor and locate the `search` section. Add `json` to the formats list:
+3. 用你喜欢的编辑器打开 `settings.yml`，找到 `search` 段落，在 formats 列表中加入 `json`：
 
 ```yaml
 search:
@@ -293,13 +293,13 @@ search:
     - json  # Add this line to enable JSON format support for Open WebUI
 ```
 
-Alternatively, you can use the following command to automatically add JSON support:
+或者你也可以用下面命令自动添加：
 
 ```bash
 sed -i '/formats:/,/]/s/html/html\n    - json/' searxng/settings.yml
 ```
 
-4. Save the file and restart the container:
+4. 保存文件后，重新启动容器：
 
 ```bash
 docker compose up -d
@@ -307,62 +307,62 @@ docker compose up -d
 
 :::warning
 
-Without adding JSON format support, SearXNG will block queries from Open WebUI and you'll encounter `403 Client Error: Forbidden` errors in your Open WebUI logs.
+如果不加入 JSON 格式支持，SearXNG 会阻止来自 Open WebUI 的查询，你会在 Open WebUI 日志中看到 `403 Client Error: Forbidden` 错误。
 
 :::
 
-Alternatively, you can run SearXNG directly using `docker run`:
+你也可以直接通过 `docker run` 启动 SearXNG：
 
 ```bash
 docker run --name searxng --env-file .env -v ./searxng:/etc/searxng:rw -p 8080:8080 --restart unless-stopped --cap-drop ALL --cap-add CHOWN --cap-add SETGID --cap-add SETUID --cap-add DAC_OVERRIDE --log-driver json-file --log-opt max-size=1m --log-opt max-file=1 searxng/searxng:latest
 ```
 
-## 3. Confirm Connectivity
+## 3. 确认连通性
 
-Confirm connectivity to SearXNG from your Open WebUI container instance in your command line interface:
+在命令行中，从 Open WebUI 容器实例验证它是否能访问 SearXNG：
 
 ```bash
 docker exec -it open-webui curl http://host.docker.internal:8080/search?q=this+is+a+test+query&format=json
 ```
 
-## 4. GUI Configuration
+## 4. 图形界面配置
 
-1. Navigate to: `Admin Panel` -> `Settings` -> `Web Search`
-2. Toggle `Enable Web Search`
-3. Set `Web Search Engine` from dropdown menu to `searxng`
-4. Set `Searxng Query URL` to one of the following examples:
+1. 前往：`Admin Panel` -> `Settings` -> `Web Search`
+2. 打开 `Enable Web Search`
+3. 将 `Web Search Engine` 从下拉框设为 `searxng`
+4. 将 `Searxng Query URL` 设为以下格式之一：
 
-- `http://localhost:8080/search?q=<query>` (using the host and host port, suitable for Docker-based setups)
-- `http://searxng:8080/search?q=<query>` (using the container name and exposed port, suitable for Docker-based setups)
-- `http://host.docker.internal:8080/search?q=<query>` (using the `host.docker.internal` DNS name and the host port, suitable for Docker-based setups)
-- `http://<searxng.local>/search?q=<query>` (using a local domain name, suitable for local network access)
-- `https://<search.domain.com>/search?q=<query>` (using a custom domain name for a self-hosted SearXNG instance, suitable for public or private access)
+- `http://localhost:8080/search?q=<query>`（使用宿主机与宿主机端口，适用于 Docker 部署）
+- `http://searxng:8080/search?q=<query>`（使用容器名与暴露端口，适用于 Docker 部署）
+- `http://host.docker.internal:8080/search?q=<query>`（使用 `host.docker.internal` DNS 名称与宿主机端口，适用于 Docker 部署）
+- `http://<searxng.local>/search?q=<query>`（使用本地域名，适用于局域网访问）
+- `https://<search.domain.com>/search?q=<query>`（使用自定义域名，适用于公网或私有部署）
 
-**Do note the `/search?q=<query>` part is mandatory.**
+**请注意，`/search?q=<query>` 这一部分是必需的。**
 
-5. Adjust the `Search Result Count` and `Concurrent Requests` values accordingly
-6. Save changes
+5. 根据需要调整 `Search Result Count` 与 `Concurrent Requests`
+6. 保存更改
 
 ![SearXNG GUI Configuration](/images/tutorial_searxng_config.png)
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems, including proxy configuration, connection timeouts, and empty content issues.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时和内容为空等常见问题。
 
 :::
 
-## 5. Using Web Search in a Chat
+## 5. 在聊天中使用 Web Search
 
-To access Web Search, Click the Integrations button next to the + icon.
+若要访问 Web Search，请点击 + 图标旁边的 Integrations 按钮。
 
-Here you can toggle Web Search On/Off.
+在那里你可以切换 Web Search 的开 / 关。
 
 ![Web Search UI Toggle](/images/web_search_toggle.png)
 
-By following these steps, you will have successfully set up SearXNG with Open WebUI, enabling you to perform web searches using the SearXNG engine.
+完成以上步骤后，你就成功为 Open WebUI 配置好了 SearXNG，并能够在聊天中使用 SearXNG 引擎进行网页搜索。
 
-#### Note
+#### 注意
 
-You will have to explicitly toggle this On/Off in a chat.
+你需要在聊天中手动显式打开 / 关闭该功能。
 
-This is enabled on a per session basis eg. reloading the page, changing to another chat will toggle off.
+这是按会话生效的；例如刷新页面，或切换到另一个聊天后，该开关会自动关闭。
