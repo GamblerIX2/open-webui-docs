@@ -1,36 +1,36 @@
 ---
 sidebar_position: 5
-title: "Customization"
+title: "定制"
 ---
 
-### White-Labeling & Custom Theming
+### 白标化与自定义主题
 
-For organizations deploying AI tools to internal teams, or offering AI capabilities to clients, brand consistency matters. Open WebUI's enterprise licensing enables full white-labeling capabilities:
+对于向内部团队部署 AI 工具，或向客户提供 AI 能力的组织来说，品牌一致性非常重要。Open WebUI 的企业许可支持完整的白标化能力：
 
 | Capability | What You Can Customize |
 | :--- | :--- |
-| **Visual Identity** | Replace default branding with your organization's logo, colors, and visual style. |
-| **Interface Theming** | Customize the look and feel to match your existing internal tools. |
-| **User Experience** | Tailor the interface to emphasize the workflows most relevant to your teams. |
+| **视觉识别** | 用你组织自己的 Logo、配色和视觉风格替换默认品牌元素。 |
+| **界面主题** | 自定义整体外观，使之与现有内部工具保持一致。 |
+| **用户体验** | 调整界面重点，让它更贴合团队最常用的工作流。 |
 
-#### Why This Matters
+#### 为什么这很重要
 
-When AI tools look and feel like part of your existing ecosystem, adoption increases. Users don't experience cognitive friction switching between "your tools" and "that AI thing", it becomes one seamless environment.
+当 AI 工具在外观和体验上都像你现有生态的一部分时，采用率就会上升。用户不必在“你的工具”和“那个 AI 工具”之间频繁切换思维，而是能在同一个连续环境中工作。
 
-### What This Means for Your Organization
+### 这对你的组织意味着什么
 
-#### For Product Owners
+#### 对产品负责人
 
-You are not forcing teams to adapt to the tool, the tool adapts to them. Customization options mean you can roll out AI capabilities that feel native to each department's workflow.
+不是团队去适应工具，而是工具来适应团队。定制能力意味着，你可以推出真正贴合各部门工作流的 AI 功能。
 
-#### For IT Teams
+#### 对 IT 团队
 
-Integration flexibility means Open WebUI slots into your existing architecture. You are not rebuilding identity management, recreating monitoring dashboards, or maintaining yet another authentication silo.
+集成灵活性意味着 Open WebUI 可以顺利嵌入你现有架构。你无需重建身份管理、重做监控面板，也不必再维护一个新的认证孤岛。
 
-#### For Brand & Communications Teams
+#### 对品牌与传播团队
 
-White-labeling helps AI tools meet the same brand standards as every other internal platform. No awkward "third-party app" aesthetic undermining your carefully maintained internal experience.
+白标化能让 AI 工具遵循与你其他内部平台一致的品牌标准，不再出现那种破坏整体体验的“第三方应用”割裂感。
 
 --- 
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

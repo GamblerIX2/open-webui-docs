@@ -1,34 +1,34 @@
 ---
 sidebar_position: 7
-title: "Partners & Agencies"
+title: "合作伙伴与代理商"
 ---
 
-We carefully select our partners to maintain the highest standards and provide the best experience to our community.
+我们会谨慎选择合作伙伴，以维持最高标准，并为社区提供最佳体验。
 
-### For Agencies and Solutions Providers
+### 面向代理商与解决方案提供商
 
-If you are a **consulting agency**, **AI services provider**, or **reseller**, please **do not** contact enterprise sales directly. As noted in our guidelines, direct sales inquiries from agencies may not receive a response.
+如果你是**咨询代理机构**、**AI 服务提供商**或**经销商**，请**不要**直接联系企业销售。正如我们的指引所述，来自代理机构的直接销售咨询可能不会收到回复。
 
-Instead, we ask that you **fill out our partnership interest form**:
+请改为填写我们的**合作意向表单**：
 
-🔗 **[Apply to Partner Network](https://forms.gle/SemdgxjFXpHmdCby6)**
+🔗 **[申请加入合作伙伴网络](https://forms.gle/SemdgxjFXpHmdCby6)**
 
-#### Eligibility & Expectations
+#### 资格要求与预期
 
-To ensure alignment with our mission, please note the following criteria for partners:
+为确保与你的合作方向与我们的使命一致，请注意以下合作标准：
 
-* **Company Maturity:** We prioritize mature organizations. Generally, companies **less than 5 years old are not eligible** except in exceptional cases.
-* **Capacity:** Our program receives a high volume of requests. Being on the waitlist **does not guarantee a response**.
-* **Communication:** Please **do not follow up** or send additional messages after applying.
+* **公司成熟度：** 我们优先考虑成熟组织。一般情况下，**成立未满 5 年的公司不具备资格**，除非属于特殊情况。
+* **处理容量：** 我们收到的申请量很大。进入等待名单**并不保证一定会收到回复**。
+* **沟通方式：** 提交申请后，请**不要重复跟进**或发送额外消息。
 
-### Direct Client Deployments
+### 直接面向客户的部署
 
-If you have an **end-client** who is ready to move forward and is committed to purchasing an **Enterprise License** immediately, you may facilitate the introduction.
+如果你已经有一个**最终客户**准备推进，并且明确承诺立即购买**企业许可证**，你可以协助进行引荐。
 
-Please contact us directly with:
+请直接联系，并提供以下信息：
 
-1. Your agency details.
-2. The client's company name and official work email domain.
-3. The expected number of end users (seats) to be deployed.
+1. 你的代理机构信息。
+2. 客户的公司名称及官方工作邮箱域名。
+3. 预计部署的最终用户数量（席位数）。
 
-[**Contact Sales for Immediate Client Deployment**](mailto:sales@openwebui.com)
+[**联系销售以推进客户部署**](mailto:sales@openwebui.com)

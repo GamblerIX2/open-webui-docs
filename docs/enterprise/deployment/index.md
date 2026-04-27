@@ -1,37 +1,37 @@
 ---
 sidebar_position: 3
-title: "Deployment Options"
+title: "部署选项"
 ---
 
-# Scalable Enterprise Deployment Options
+# 可扩展的企业部署选项
 
-Open WebUI's **stateless, container-first architecture** means the same application runs identically whether you deploy it as a Python process on a VM, a container in a managed service, or a pod in a Kubernetes cluster. The difference between deployment patterns is how you **orchestrate, scale, and operate** the application — not how the application itself behaves.
+Open WebUI 的**无状态、容器优先架构**意味着：无论你把它部署为虚拟机上的 Python 进程、托管容器服务中的容器，还是 Kubernetes 集群中的 Pod，本质上运行的都是同一个应用。不同部署模式之间的差异，在于你如何**编排、扩展和运维**它，而不是应用本身的行为发生改变。
 
-:::tip Model Inference Is Independent
-How you serve LLM models is separate from how you deploy Open WebUI. You can use **managed APIs** (OpenAI, Anthropic, Azure OpenAI, Google Gemini) or **self-hosted inference** (Ollama, vLLM) with any deployment pattern. See [Integration](/enterprise/integration) for details on connecting models.
+:::tip 模型推理是独立维度
+LLM 模型如何提供服务，与 Open WebUI 如何部署是两个独立问题。无论采用哪种部署模式，你都可以使用**托管 API**（OpenAI、Anthropic、Azure OpenAI、Google Gemini）或**自托管推理**（Ollama、vLLM）。关于模型接入方式，详见[集成](/enterprise/integration)。
 :::
 
 ---
 
-## Shared Infrastructure Requirements
+## 共享基础设施要求
 
-Regardless of which deployment pattern you choose, every scaled Open WebUI deployment requires the same set of backing services. Configure these **before** scaling beyond a single instance.
+无论你选择哪一种部署模式，任何需要扩展的 Open WebUI 部署都依赖同一组后端服务。在从单实例扩展之前，请先完成这些基础设施配置。
 
-| Component | Why It's Required | Options |
+| 组件 | 为什么必需 | 可选方案 |
 | :--- | :--- | :--- |
-| **PostgreSQL** | Multi-instance deployments require a real database. SQLite does not support concurrent writes from multiple processes. | Self-managed, Amazon RDS, Azure Database for PostgreSQL, Google Cloud SQL |
-| **Redis** | Session management, WebSocket coordination, and configuration sync across instances. | Self-managed, Amazon ElastiCache, Azure Cache for Redis, Google Memorystore |
-| **Vector Database** | The default ChromaDB uses a local SQLite backend that is not safe for multi-process access. | PGVector (shares PostgreSQL), Milvus, Qdrant, or ChromaDB in HTTP server mode |
-| **Shared Storage** | Uploaded files must be accessible from every instance. | Shared filesystem (NFS, EFS, CephFS) or object storage (`S3`, `GCS`, `Azure Blob`) |
-| **Content Extraction** | The default `pypdf` extractor leaks memory under sustained load. | Apache Tika or Docling as a sidecar service |
-| **Embedding Engine** | The default SentenceTransformers model loads ~500 MB into RAM per worker process. | OpenAI Embeddings API, or Ollama running an embedding model |
+| **PostgreSQL** | 多实例部署必须使用真正的数据库。SQLite 不支持多个进程并发写入。 | 自托管、Amazon RDS、Azure Database for PostgreSQL、Google Cloud SQL |
+| **Redis** | 用于会话管理、WebSocket 协调和实例间配置同步。 | 自托管、Amazon ElastiCache、Azure Cache for Redis、Google Memorystore |
+| **向量数据库** | 默认 ChromaDB 使用本地 SQLite 后端，不适合多进程访问。 | PGVector（复用 PostgreSQL）、Milvus、Qdrant，或 HTTP Server 模式的 ChromaDB |
+| **共享存储** | 上传文件必须能被所有实例访问。 | 共享文件系统（NFS、EFS、CephFS）或对象存储（`S3`、`GCS`、`Azure Blob`） |
+| **内容提取** | 默认 `pypdf` 提取器在持续负载下会发生内存泄漏。 | 以 Sidecar 方式运行 Apache Tika 或 Docling |
+| **Embedding 引擎** | 默认 SentenceTransformers 模型会为每个 worker 进程加载约 500 MB 内存。 | OpenAI Embeddings API，或运行 embedding 模型的 Ollama |
 
-### Critical Configuration
+### 关键配置
 
-These environment variables **must** be set consistently across every instance:
+以下环境变量**必须**在所有实例中保持一致：
 
 ```bash
-# Shared secret — MUST be identical on all instances
+# 共享密钥 —— 所有实例必须完全一致
 WEBUI_SECRET_KEY=your-secret-key-here
 
 # Database
@@ -53,70 +53,70 @@ TIKA_SERVER_URL=http://tika:9998
 # Embeddings
 RAG_EMBEDDING_ENGINE=openai
 
-# Storage — choose ONE:
-# Option A: shared filesystem (mount the same volume to all instances, no env var needed)
-# Option B: object storage (see https://docs.openwebui.com/reference/env-configuration#cloud-storage for all required vars)
+# 存储 —— 二选一：
+# 方案 A：共享文件系统（为所有实例挂载同一个卷，无需额外环境变量）
+# 方案 B：对象存储（所有所需变量见 https://docs.openwebui.com/reference/env-configuration#cloud-storage）
 # STORAGE_PROVIDER=s3
 
-# Workers — let the orchestrator handle scaling
+# Workers —— 让编排器负责扩缩容
 UVICORN_WORKERS=1
 
-# Migrations — only ONE instance should run migrations
+# 数据库迁移 —— 只能有一个实例负责执行迁移
 ENABLE_DB_MIGRATIONS=false
 ```
 
-:::warning Database Migrations
-Set `ENABLE_DB_MIGRATIONS=false` on **all instances except one**. During updates, scale down to a single instance, allow migrations to complete, then scale back up. Concurrent migrations can corrupt your database.
+:::warning 数据库迁移
+除一个实例外，**所有实例**都应设置 `ENABLE_DB_MIGRATIONS=false`。更新时，先缩容到单实例，等待迁移完成，再重新扩容。并发迁移可能损坏数据库。
 :::
 
-For the complete step-by-step scaling walkthrough, see [Scaling Open WebUI](/getting-started/advanced-topics/scaling). For the full environment variable reference, see [Environment Variable Configuration](/reference/env-configuration).
+如需完整的逐步扩展指南，请参阅 [Scaling Open WebUI](/getting-started/advanced-topics/scaling)。完整环境变量参考见 [Environment Variable Configuration](/reference/env-configuration)。
 
 ---
 
-## Choose Your Deployment Pattern
+## 选择你的部署模式
 
-Open WebUI supports three production deployment patterns. Each guide covers architecture, scaling strategy, and key considerations specific to that approach.
+Open WebUI 支持三种生产级部署模式。每份指南都涵盖该模式对应的架构、扩展策略和关键注意事项。
 
-### [Python / Pip on Auto-Scaling VMs](./python-pip)
+### [自动扩缩容虚拟机上的 Python / Pip](./python-pip)
 
-Deploy `open-webui serve` as a systemd-managed process on virtual machines in a cloud auto-scaling group (AWS ASG, Azure VMSS, GCP MIG). Best for teams with established VM-based infrastructure and strong Linux administration skills, or when regulatory requirements mandate direct OS-level control.
+将 `open-webui serve` 以 systemd 管理的进程形式，部署在云自动扩缩容虚拟机组（AWS ASG、Azure VMSS、GCP MIG）中。适合已经具备 VM 基础设施和较强 Linux 运维能力的团队，或受监管要求必须进行操作系统层直接控制的场景。
 
-### [Container Service](./container-service)
+### [容器服务](./container-service)
 
-Run the official Open WebUI container image on a managed platform such as AWS ECS/Fargate, Azure Container Apps, or Google Cloud Run. Best for teams wanting container benefits — immutable images, versioned deployments, no OS management — without Kubernetes complexity.
+在 AWS ECS/Fargate、Azure Container Apps、Google Cloud Run 等托管平台上运行官方 Open WebUI 容器镜像。适合希望获得容器优势（不可变镜像、版本化部署、无需管理操作系统），但又不想引入 Kubernetes 复杂度的团队。
 
-### [Kubernetes with Helm](./kubernetes-helm)
+### [使用 Helm 的 Kubernetes](./kubernetes-helm)
 
-Deploy using the official Open WebUI Helm chart on any Kubernetes distribution (EKS, AKS, GKE, OpenShift, Rancher, self-managed). Best for large-scale, mission-critical deployments requiring declarative infrastructure-as-code, advanced auto-scaling, and GitOps workflows.
+在任意 Kubernetes 发行版（EKS、AKS、GKE、OpenShift、Rancher、自建集群）上使用官方 Open WebUI Helm Chart 部署。适合需要声明式基础设施、进阶自动扩缩容与 GitOps 工作流的大规模关键任务级场景。
 
 ---
 
-## Deployment Comparison
+## 部署模式对比
 
-| | **Python / Pip (VMs)** | **Container Service** | **Kubernetes (Helm)** |
+| | **Python / Pip（VM）** | **容器服务** | **Kubernetes（Helm）** |
 | :--- | :--- | :--- | :--- |
-| **Operational complexity** | Moderate — OS patching, Python management | Low — platform-managed containers | Higher — requires K8s expertise |
-| **Auto-scaling** | Cloud ASG/VMSS with health checks | Platform-native, minimal configuration | HPA with fine-grained control |
-| **Container isolation** | None — process runs directly on OS | Full container isolation | Full container + namespace isolation |
-| **Rolling updates** | Manual (scale down, update, scale up) | Platform-managed rolling deployments | Declarative rolling updates with rollback |
-| **Infrastructure-as-code** | Terraform/Pulumi for VMs + config mgmt | Task/service definitions (CloudFormation, Bicep, Terraform) | Helm charts + GitOps (Argo CD, Flux) |
-| **Best suited for** | Teams with VM-centric operations, regulatory constraints | Teams wanting container benefits without K8s complexity | Large-scale, mission-critical deployments |
-| **Minimum team expertise** | Linux administration, Python | Container fundamentals, cloud platform | Kubernetes, Helm, cloud-native patterns |
+| **运维复杂度** | 中等 —— 需管理 OS 补丁和 Python 运行环境 | 低 —— 容器由平台托管 | 较高 —— 需要 K8s 专业能力 |
+| **自动扩缩容** | 云 ASG/VMSS + 健康检查 | 平台原生，配置较少 | HPA，控制更精细 |
+| **容器隔离** | 无 —— 进程直接运行在 OS 上 | 完整容器隔离 | 完整容器 + namespace 隔离 |
+| **滚动更新** | 手动（缩容、更新、再扩容） | 平台托管滚动部署 | 声明式滚动更新，并支持回滚 |
+| **基础设施即代码** | Terraform/Pulumi + 配置管理 | 任务/服务定义（CloudFormation、Bicep、Terraform） | Helm Chart + GitOps（Argo CD、Flux） |
+| **最适用场景** | 以虚拟机为核心的团队，或受监管限制的环境 | 想要容器收益但不想承担 K8s 复杂度的团队 | 大规模、关键任务级部署 |
+| **团队最低能力要求** | Linux 运维、Python | 容器基础、云平台 | Kubernetes、Helm、云原生模式 |
 
 ---
 
-## Observability
+## 可观测性
 
-Production deployments should include monitoring and observability regardless of deployment pattern.
+无论采用哪种部署模式，生产环境都应具备监控与可观测性。
 
-### Health Checks
+### 健康检查
 
-- **`/health`** — Basic liveness check. Returns HTTP 200 when the application is running. Use this for load balancer and auto-scaler health checks.
-- **`/api/models`** — Verifies the application can connect to configured model backends. Requires an API key.
+- **`/health`** —— 基础存活检查。应用正常运行时返回 HTTP 200。可用于负载均衡器和自动扩缩容健康检查。
+- **`/api/models`** —— 验证应用是否能连接到已配置的模型后端。需要 API key。
 
 ### OpenTelemetry
 
-Open WebUI supports **OpenTelemetry** for distributed tracing and HTTP metrics. Enable it with:
+Open WebUI 支持使用 **OpenTelemetry** 进行分布式追踪和 HTTP 指标采集。启用方式如下：
 
 ```bash
 ENABLE_OTEL=true
@@ -124,31 +124,31 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://your-collector:4318
 OTEL_SERVICE_NAME=open-webui
 ```
 
-This auto-instruments FastAPI, SQLAlchemy, Redis, and HTTP clients — giving visibility into request latency, database query performance, and cross-service traces.
+它会自动为 FastAPI、SQLAlchemy、Redis 和 HTTP 客户端注入观测能力，从而帮助你了解请求延迟、数据库查询性能和跨服务链路。
 
-### Structured Logging
+### 结构化日志
 
-Enable JSON-formatted logs for integration with log aggregation platforms (Datadog, Loki, CloudWatch, Splunk):
+启用 JSON 格式日志，以便接入 Datadog、Loki、CloudWatch、Splunk 等日志平台：
 
 ```bash
 LOG_FORMAT=json
 GLOBAL_LOG_LEVEL=INFO
 ```
 
-For full monitoring setup details, see [Monitoring](/reference/monitoring) and [OpenTelemetry](/reference/monitoring/otel).
+完整监控配置详情请参阅 [Monitoring](/reference/monitoring) 和 [OpenTelemetry](/reference/monitoring/otel)。
 
 ---
 
-## Next Steps
+## 下一步
 
-- **[Architecture & High Availability](/enterprise/architecture)** — Deeper dive into Open WebUI's stateless design and HA capabilities.
-- **[Security](/enterprise/security)** — Compliance frameworks, SSO/LDAP integration, RBAC, and audit logging.
-- **[Integration](/enterprise/integration)** — Connecting AI models, pipelines, and extending functionality.
-- **[Scaling Open WebUI](/getting-started/advanced-topics/scaling)** — The complete step-by-step technical scaling guide.
-- **[Multi-Replica Troubleshooting](/troubleshooting/multi-replica)** — Solutions for common issues in scaled deployments.
+- **[架构与高可用性](/enterprise/architecture)** —— 深入了解 Open WebUI 的无状态设计与高可用能力。
+- **[安全](/enterprise/security)** —— 合规框架、SSO/LDAP 集成、RBAC 与审计日志。
+- **[集成](/enterprise/integration)** —— 连接 AI 模型、Pipeline，并扩展平台能力。
+- **[Scaling Open WebUI](/getting-started/advanced-topics/scaling)** —— 完整的逐步技术扩展指南。
+- **[Multi-Replica Troubleshooting](/troubleshooting/multi-replica)** —— 多副本扩展部署中的常见问题解决方案。
 
 ---
 
-**Need help planning your enterprise deployment?** Our team works with organizations worldwide to design and implement production Open WebUI environments.
+**需要帮助规划企业部署？** 我们的团队正与全球组织合作，共同设计和落地生产级 Open WebUI 环境。
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)
