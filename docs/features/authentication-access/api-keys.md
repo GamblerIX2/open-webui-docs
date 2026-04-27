@@ -106,7 +106,6 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 
 ```python
 import requests
-import pathlib
 
 response = requests.get(
     "http://localhost:8080/api/models",

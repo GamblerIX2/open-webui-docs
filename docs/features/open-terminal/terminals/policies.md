@@ -22,7 +22,7 @@ flowchart LR
     E --> F["编排器按策略规格<br/>分配容器"]
 ```
 
-1. **管理员通过 REST API 在编排器上创建策略**（见下方 [API 参考](#api-参考)）。
+1. **管理员通过 REST API 在编排器上创建策略**（见下方 API 参考）。
 2. **管理员在 Open WebUI 中创建终端连接**（位于 **Settings → Connections → Open Terminal**）。每个连接包含一个 `policy_id` 字段，将其映射到编排器上的某个策略。
 3. **用户打开终端。** Open WebUI 通过 `/p/{policy_id}/...` 路由请求，编排器按该策略的规格分配（或复用）容器。
 
@@ -164,8 +164,9 @@ flowchart LR
 
 ---
 
+<a id="api-reference"></a>
 <details>
-<summary>API 参考（用于程序化访问）</summary> {#api-参考}
+<summary>API 参考（用于程序化访问）</summary>
 
 所有端点均以编排器上的 `/api/v1` 为前缀，并需要 `Authorization: Bearer {TERMINALS_API_KEY}` 标头。
 
@@ -258,7 +259,7 @@ flowchart LR
     E --> F["Orchestrator provisions<br/>container with policy spec"]
 ```
 
-1. **Admin creates policies** on the orchestrator via its REST API (see [API reference](#api-reference) below).
+1. **Admin creates policies** on the orchestrator via its REST API (see the API reference below).
 2. **Admin creates terminal connections** in Open WebUI under **Settings → Connections → Open Terminal**. Each connection includes a `policy_id` field that maps it to a policy on the orchestrator.
 3. **Users open a terminal.** Open WebUI routes the request through `/p/{policy_id}/...`, and the orchestrator provisions (or reuses) a container matching that policy's spec.
 

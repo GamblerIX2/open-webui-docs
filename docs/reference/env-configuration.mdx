@@ -14,7 +14,7 @@ Open WebUI 提供了大量的环境变量，允许你定制和配置应用程序
 
 :::
 
-### 关于 `PersistentConfig` 环境变量的重要说明
+### 关于 `PersistentConfig` 环境变量的重要说明 {#important-note-on-persistentconfig-environment-variables}
 
 :::note
 
@@ -860,13 +860,13 @@ By default, audit logging uses **blacklist mode** — all paths are logged excep
 :::
 
 
-### Ollama 配置 配置
+### Ollama 配置
 
 #### `ENABLE_OLLAMA_API`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables the use of Ollama APIs.
+- 描述：启用 Ollama API。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `OLLAMA_BASE_URL` (`OLLAMA_API_BASE_URL` is deprecated) {#ollama_base_url}
@@ -2823,15 +2823,15 @@ Note: this configuration assumes that AWS credentials will be available to your 
 - 类型：`str`
 - 描述：Specifies the AWS region where the S3 Vector Bucket is hosted.
 
-## RAG (检索增强生成) 配置 (检索增强生成) 配置 Content Extraction Engine
+## RAG（检索增强生成）内容提取引擎配置
 
 #### `CONTENT_EXTRACTION_ENGINE`
 
 - 类型：`str`
-- Options:
-  - Leave empty to use default
-  - `external` - Use external loader
-  - `tika` - Use a local Apache Tika server
+- 可选值：
+  - 留空以使用默认值
+  - `external` - 使用外部加载器
+  - `tika` - 使用本地 Apache Tika 服务器
   - `docling` - Use Docling engine
   - `document_intelligence` - Use Document Intelligence engine
   - `mistral_ocr` - Use Mistral OCR engine
@@ -3325,7 +3325,7 @@ This variable was introduced alongside a fix for **uvicorn worker death during d
 - 描述：Sets the API version for Azure OpenAI Services when using Azure OpenAI for RAG embeddings. Common values include `2023-05-15`, `2023-12-01-preview`, or `2024-02-01`.
 - 持久化：这是一个 `PersistentConfig` 变量。
 
-#### Ollama 配置 配置 Embeddings
+#### Ollama Embeddings 配置
 
 #### `RAG_OLLAMA_BASE_URL`
 
@@ -5872,7 +5872,7 @@ For API Key creation (and the API keys themselves):
 1. This setting controls API key creation permission for non-admin users (directly or via User Groups)
 2. API keys must also be globally enabled using `ENABLE_API_KEYS`
 
-**Note:** Administrators can generate API keys whenever `ENABLE_API_KEYS` is enabled, even without `features.api_keys`. See the [Authentication Setup for API Key](/reference/monitoring#authentication-setup-for-api-key-) guide for detailed setup instructions.
+**Note:** 当 `ENABLE_API_KEYS` 启用时，管理员即使没有 `features.api_keys` 权限也可以生成 API key。详细设置说明请参见[监控指南](/reference/monitoring)。
 
 :::
 

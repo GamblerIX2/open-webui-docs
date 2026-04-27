@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """批量写入翻译后的 RBAC 和 auth 文件"""
 import os, pathlib
-import pathlib
 
 BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 

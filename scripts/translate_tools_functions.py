@@ -1,5 +1,5 @@
-import pathlib
 #!/usr/bin/env python3
+import pathlib
 """Translate plugin/tools/index.mdx and plugin/functions/index.mdx"""
 
 def translate(filepath, pairs):

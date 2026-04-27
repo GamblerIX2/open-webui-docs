@@ -64,7 +64,7 @@ title: "知识库"
 
 ---
 
-## 智能体知识工具
+## 智能体知识工具 {#agentic-knowledge-tools}
 
 启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型使用内置工具与您的知识库交互。显示哪些工具取决于是否有特定知识库附加到模型：
 
@@ -116,7 +116,7 @@ title: "知识库"
 - `GET /api/v1/files/{id}/process/status` - 检查处理状态
 - `POST /api/v1/knowledge/{id}/file/add` - 向知识库添加文件
 
-文件处理是异步的。在将文件添加到知识库之前，必须轮询状态端点直到处理完成，否则会收到"内容为空"错误。有关工作流示例，请参阅 [API 端点](/reference/api-endpoints#-retrieval-augmented-generation-rag)。
+文件处理是异步的。在将文件添加到知识库之前，必须轮询状态端点直到处理完成，否则会收到"内容为空"错误。有关工作流示例，请参阅 [API 端点](/reference/api-endpoints)。
 
 ---
 
