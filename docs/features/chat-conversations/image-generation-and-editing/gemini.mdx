@@ -4,37 +4,37 @@ title: "Gemini"
 ---
 
 :::warning
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 :::
 
-Open WebUI also supports image generation through the **Google AI Studio API** also known as the **Gemini API**.
+Open WebUI 也支持通过 **Google AI Studio API**（也称 **Gemini API**）进行图像生成。
 
-### Initial Setup
+### 初始设置
 
-1. Obtain an [API key](https://aistudio.google.com/api-keys) from Google AI Studio - alternatively an API Key from Google Cloud and activate the `Generative Language API` for the project.
-2. You most likely need to create a project and enable the `Generative Language API` in addition to adding billing information, because the image generation API is not available for free.
+1. 从 Google AI Studio 获取一个 [API key](https://aistudio.google.com/api-keys)——或者从 Google Cloud 获取 API key，并为项目启用 `Generative Language API`
+2. 大多数情况下，你还需要创建项目、启用 `Generative Language API` 并配置计费信息，因为图像生成 API 不是免费提供的
 
 :::warning
-If you are utilizing a free API key, it is vital to have a payment method on file. The absence of a valid payment method is a frequent cause of errors during the setup process.
+如果你使用的是免费 API key，请务必在账户中绑定支付方式。缺少有效支付方式是配置过程中最常见的报错原因之一。
 :::
 
 :::tip
-Alternatively, if you are using Vertex AI, you can create an API key in Google Cloud instead of a service account. This key will function correctly, provided it is assigned the appropriate permissions. And given the Generative Language API is enabled for the project.
+如果你使用的是 Vertex AI，也可以在 Google Cloud 中创建 API key，而不是 service account。只要它具备正确权限，并且项目已启用 Generative Language API，这个 key 同样可正常工作。
 :::
 
-### Configuring Open WebUI
+### 配置 Open WebUI
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Gemini`.
-3. Set the `API Base URL` to `https://generativelanguage.googleapis.com/v1beta`.
-4. Enter your Google AI Studio [API key](https://aistudio.google.com/api-keys).
-5. Enter the model you wish to use from these [available models](https://ai.google.dev/gemini-api/docs/imagen#model-versions).
-6. Set the image size to one of the available [image sizes](https://ai.google.dev/gemini-api/docs/image-generation#aspect_ratios).
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Gemini`
+3. 将 `API Base URL` 设置为 `https://generativelanguage.googleapis.com/v1beta`
+4. 输入你的 Google AI Studio [API key](https://aistudio.google.com/api-keys)
+5. 输入你想使用的模型名称，可从这些 [available models](https://ai.google.dev/gemini-api/docs/imagen#model-versions) 中选择
+6. 将图像尺寸设为可用的 [image sizes](https://ai.google.dev/gemini-api/docs/image-generation#aspect_ratios) 之一
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-### Example Minimal Setup
+### 最小配置示例
 
 <Tabs>
   <TabItem value="gemini-3-pro" label="Gemini 3.0 Pro (aka Nano Banana Pro)" default>
@@ -45,15 +45,15 @@ import TabItem from '@theme/TabItem';
 - **Image Prompt Generation**: on
 - **Image Generation Engine**: `Gemini`
 - **Gemini Base URL**: `https://generativelanguage.googleapis.com/v1beta`
-- **Gemini API Key**: Enter your API Key
+- **Gemini API Key**: 输入你的 API Key
 - **Gemini Endpoint Method**: `generateContent`
 
 **Edit Image**
 - **Image Edit Engine**: `Gemini`
 - **Model**: `gemini-3-pro-image-preview`
-- **Image Size**: (can be left empty)
+- **Image Size**: （可留空）
 - **Gemini Base URL**: `https://generativelanguage.googleapis.com/v1beta`
-- **Gemini API Key**: Enter your API Key
+- **Gemini API Key**: 输入你的 API Key
 
 </TabItem>
   <TabItem value="gemini-2.5-flash" label="Gemini 2.5 Flash (aka Nano Banana)">
@@ -64,15 +64,15 @@ import TabItem from '@theme/TabItem';
 - **Image Prompt Generation**: on
 - **Image Generation Engine**: `Gemini`
 - **Gemini Base URL**: `https://generativelanguage.googleapis.com/v1beta`
-- **Gemini API Key**: Enter your API Key
+- **Gemini API Key**: 输入你的 API Key
 - **Gemini Endpoint Method**: `generateContent`
 
 **Edit Image**
 - **Image Edit Engine**: `Gemini`
 - **Model**: `gemini-2.5-flash-image`
-- **Image Size**: (can be left empty)
+- **Image Size**: （可留空）
 - **Gemini Base URL**: `https://generativelanguage.googleapis.com/v1beta`
-- **Gemini API Key**: Enter your API Key
+- **Gemini API Key**: 输入你的 API Key
 
 </TabItem>
 </Tabs>
@@ -81,42 +81,42 @@ import TabItem from '@theme/TabItem';
 
 :::info
 
-This feature appears to only work for models supported with this endpoint: `https://generativelanguage.googleapis.com/v1beta/models/<MODEL_NAME>:predict`.
-This is the OpenAI **BETA** endpoint, which Google provides for experimental OpenAI compatibility.
+该功能似乎只适用于支持以下 endpoint 的模型：`https://generativelanguage.googleapis.com/v1beta/models/<MODEL_NAME>:predict`。  
+这是 Google 提供的、兼容 OpenAI 的实验性 **BETA** endpoint。
 
-Google Imagen models use this endpoint while Gemini models use a different endpoint ending with `:generateContent`
+Google Imagen 模型使用这个 endpoint，而 Gemini 模型则使用另一个以 `:generateContent` 结尾的 endpoint。
 
-Imagen model endpoint example:
+Imagen 模型 endpoint 示例：
 
-- `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict`.
-- [Documentation for Imagen models](https://ai.google.dev/gemini-api/docs/imagen)
+- `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict`
+- [Imagen 模型文档](https://ai.google.dev/gemini-api/docs/imagen)
 
-Gemini model endpoint example:
+Gemini 模型 endpoint 示例：
 
-- `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent`.
-- [Documentation for Gemini models](https://ai.google.dev/gemini-api/docs/image-generation)
+- `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent`
+- [Gemini 模型文档](https://ai.google.dev/gemini-api/docs/image-generation)
 
-Trying to call a Gemini model, such as `gemini-3-pro-image-preview` would result in an error due to the difference in supported endpoints for Image Generation.
+如果你尝试调用 `gemini-3-pro-image-preview` 这类 Gemini 模型，但仍使用图像生成中的 `predict` endpoint，就会因 endpoint 不匹配而报错：
 
 `400: [ERROR: models/gemini-3-pro-image-preview is not found for API version v1beta, or is not supported for predict. Call ListModels to see the list of available models and their supported methods.]`
 
 :::
 
-### LiteLLM Proxy with Gemini Endpoints
+### 使用 Gemini Endpoints 的 LiteLLM Proxy
 
-Image generation with a LiteLLM proxy using Gemini or Imagen endpoints is supported with Open WebUI. Configure the Image Generation as follows:
+Open WebUI 支持通过使用 Gemini 或 Imagen endpoints 的 LiteLLM proxy 进行图像生成。配置方式如下：
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Open AI`.
-3. Change the API endpoint URL to `https://<your-litellm-url>:<port>/v1`.
-4. Enter your LiteLLM API key.
-5. The API version can be left blank.
-6. Enter the image model name as it appears in your LiteLLM configuration.
-7. Set the image size to one of the available sizes for the selected model.
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Open AI`
+3. 将 API endpoint URL 改为 `https://<your-litellm-url>:<port>/v1`
+4. 输入你的 LiteLLM API key
+5. API version 可留空
+6. 输入你在 LiteLLM 配置中使用的图像模型名称
+7. 将图像尺寸设置为所选模型支持的可用尺寸之一
 
 :::tip
 
-To find your LiteLLM connection information, navigate to the **Admin Panel** > **Settings** > **Connections** menu.
-Your connection information will be listed under the Gemini API connection.
+若要查看 LiteLLM 连接信息，请前往 **Admin Panel** > **Settings** > **Connections**。
+你的连接信息会显示在 Gemini API connection 下方。
 
 :::
