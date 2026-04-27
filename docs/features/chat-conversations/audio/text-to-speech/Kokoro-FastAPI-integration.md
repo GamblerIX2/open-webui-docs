@@ -5,22 +5,22 @@ title: "Kokoro-FastAPI Using Docker"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
-## What is `Kokoro-FastAPI`?
+## 什么是 `Kokoro-FastAPI`？
 
-[Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) is a dockerized FastAPI wrapper for the [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) text-to-speech model that implements the OpenAI API endpoint specification. It offers high-performance text-to-speech with impressive generation speeds.
+[Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) 是 [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) 文本转语音模型的 Docker 化 FastAPI 封装，实现了 OpenAI API endpoint 规范，并提供高性能的文本转语音能力。
 
-## Key Features
+## 主要特性
 
-- OpenAI-compatible Speech endpoint with inline voice combination
-- NVIDIA GPU accelerated or CPU Onnx inference
-- Streaming support with variable chunking
-- Multiple audio format support (`.mp3`, `.wav`, `.opus`, `.flac`, `.aac`, `.pcm`)
-- Integrated web interface on localhost:8880/web (or additional container in repo for gradio)
-- Phoneme endpoints for conversion and generation
+- 兼容 OpenAI Speech endpoint，支持内联语音组合
+- 支持 NVIDIA GPU 加速或 CPU ONNX 推理
+- 支持流式输出与可变分块
+- 支持多种音频格式（`.mp3`、`.wav`、`.opus`、`.flac`、`.aac`、`.pcm`）
+- 集成 Web 界面，默认位于 localhost:8880/web（仓库中也提供了额外 gradio 容器）
+- 提供音素转换与生成功能 endpoint
 
 ## Voices
 
@@ -43,26 +43,26 @@ This tutorial is a community contribution and is not supported by the Open WebUI
 - en_us
 - en_uk
 
-## Requirements
+## 前置要求
 
-- Docker installed on your system
-- Open WebUI running
-- For GPU support: NVIDIA GPU with CUDA 12.3
-- For CPU-only: No special requirements
+- 系统已安装 Docker
+- Open WebUI 正在运行
+- 若使用 GPU：需要支持 CUDA 12.3 的 NVIDIA GPU
+- 若仅 CPU：无特殊要求
 
-## ⚡️ Quick start
+## ⚡️ 快速开始
 
-### You can choose between GPU or CPU versions
+### 你可以选择 GPU 或 CPU 版本
 
-### GPU Version (Requires NVIDIA GPU with CUDA 12.8)
+### GPU 版本（需要支持 CUDA 12.8 的 NVIDIA GPU）
 
-Using docker run:
+使用 docker run：
 
 ```bash
 docker run --gpus all -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-gpu
 ```
 
-Or docker compose, by creating a `docker-compose.yml` file and running `docker compose up`. For example:
+或者创建 `docker-compose.yml` 后用 docker compose 启动。例如：
 
 ```yaml
 name: kokoro
@@ -84,19 +84,19 @@ services:
 
 :::info
 
-You may need to install and configure [the NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+你可能需要先安装并配置 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 
 :::
 
-### CPU Version (ONNX optimized inference)
+### CPU 版本（ONNX 优化推理）
 
-With docker run:
+使用 docker run：
 
 ```bash
 docker run -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu
 ```
 
-With docker compose:
+使用 docker compose：
 
 ```yaml
 name: kokoro
@@ -108,44 +108,44 @@ services:
         restart: always
 ```
 
-## Setting up Open WebUI to use `Kokoro-FastAPI`
+## 配置 Open WebUI 使用 `Kokoro-FastAPI`
 
-To use Kokoro-FastAPI with Open WebUI, follow these steps:
+按照以下步骤让 Open WebUI 使用 Kokoro-FastAPI：
 
-- Open the Admin Panel and go to `Settings` -> `Audio`
-- Set your TTS Settings to match the following:
+- 打开 Admin Panel 并进入 `Settings` -> `Audio`
+- 将 TTS 设置为：
 - - Text-to-Speech Engine: OpenAI
-  - API Base URL: `http://localhost:8880/v1` # you may need to use `host.docker.internal` instead of `localhost`
+  - API Base URL: `http://localhost:8880/v1` # 也可能需要改成 `host.docker.internal`
   - API Key: `not-needed`
-  - TTS Voice: `af_bella` # also accepts mapping of existing OAI voices for compatibility
+  - TTS Voice: `af_bella` # 也接受现有 OAI voice 的映射值以保持兼容
   - TTS Model: `kokoro`
 
 :::info
 
-The default API key is the string `not-needed`. You do not have to change that value if you do not need the added security.
+默认 API key 字符串是 `not-needed`。如果你不需要额外安全控制，可以保持不变。
 
 :::
 
-## Building the Docker Container
+## 构建 Docker 容器
 
 ```bash
 git clone https://github.com/remsky/Kokoro-FastAPI.git
 cd Kokoro-FastAPI
-cd docker/cpu # or docker/gpu
+cd docker/cpu # 或 docker/gpu
 docker compose up --build
 ```
 
-**That's it!**
+**就是这么简单！**
 
-For more information on building the Docker container, including changing ports, please refer to the [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) repository
+如需了解构建容器、修改端口等更多信息，请参阅 [Kokoro-FastAPI](https://github.com/remsky/Kokoro-FastAPI) 仓库。
 
-## Troubleshooting
+## 故障排查
 
-### NVIDIA GPU Not Detected
+### 未检测到 NVIDIA GPU
 
-If the GPU version isn't using your GPU:
+如果 GPU 版本没有使用到你的显卡：
 
-1. **Install NVIDIA Container Toolkit:**
+1. **安装 NVIDIA Container Toolkit：**
    ```bash
    # Ubuntu/Debian
    distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -155,25 +155,25 @@ If the GPU version isn't using your GPU:
    sudo systemctl restart docker
    ```
 
-2. **Verify GPU access:**
+2. **验证 GPU 可访问：**
    ```bash
    docker run --rm --gpus all nvidia/cuda:12.2.0-base nvidia-smi
    ```
 
-### Connection Issues from Open WebUI
+### 从 Open WebUI 连接失败
 
-If Open WebUI can't reach Kokoro:
+如果 Open WebUI 无法访问 Kokoro：
 
-- Use `host.docker.internal:8880` instead of `localhost:8880` (Docker Desktop)
-- If both are in Docker Compose, use `http://kokoro-fastapi-gpu:8880/v1`
-- Verify the service is running: `curl http://localhost:8880/health`
+- 使用 `host.docker.internal:8880` 代替 `localhost:8880`（Docker Desktop）
+- 如果两者都在 Docker Compose 中，使用 `http://kokoro-fastapi-gpu:8880/v1`
+- 确认服务正在运行：`curl http://localhost:8880/health`
 
-### CPU Version Performance
+### CPU 版本性能
 
-The CPU version uses ONNX optimization and performs well for most use cases. If speed is a concern:
+CPU 版本使用 ONNX 优化，对大多数场景已经够用。如果你仍然关心速度：
 
-- Consider upgrading to the GPU version
-- Ensure no other heavy processes are running on the CPU
-- The CPU version is recommended for systems without compatible NVIDIA GPUs
+- 可升级到 GPU 版本
+- 确保 CPU 上没有其他重负载进程
+- 对于没有兼容 NVIDIA GPU 的系统，CPU 版仍是推荐选择
 
-For more troubleshooting tips, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。

@@ -1,51 +1,51 @@
 ---
 sidebar_position: 2
-title: "Mistral TTS Integration"
+title: "Mistral TTS 集成"
 ---
 
-# Using Mistral for Text-to-Speech
+# 使用 Mistral 实现文本转语音
 
-This guide covers how to use Mistral's Text-to-Speech API with Open WebUI.
+本指南介绍如何在 Open WebUI 中使用 Mistral 的 Text-to-Speech API。
 
-:::tip Looking for STT?
-See the companion guide: [Using Mistral Voxtral for Speech-to-Text](/features/chat-conversations/audio/speech-to-text/mistral-voxtral-integration)
+:::tip 想配置 STT？
+请查看配套指南：[使用 Mistral Voxtral 实现语音转文本](/features/chat-conversations/audio/speech-to-text/mistral-voxtral-integration)
 :::
 
-## Requirements
+## 前置要求
 
-- A Mistral API key
-- Open WebUI installed and running
+- 一个 Mistral API key
+- Open WebUI 已安装并正常运行
 
-## Quick Setup (UI)
+## 快速配置（UI）
 
-1. Click your **profile icon** (bottom-left corner)
-2. Select **Admin Panel**
-3. Click **Settings** -> **Audio** tab
-4. Configure the following:
+1. 点击你的**头像图标**（左下角）
+2. 选择 **Admin Panel**
+3. 点击 **Settings** -> **Audio** 标签
+4. 按如下方式配置：
 
 | Setting | Value |
 |---------|-------|
 | **Text-to-Speech Engine** | `MistralAI` |
 | **API Base URL** | `https://api.mistral.ai/v1` |
-| **API Key** | Your Mistral API key |
-| **TTS Model** | `mistral-tts-latest` (or leave empty for default) |
-| **TTS Voice** | Choose from available voices |
+| **API Key** | 你的 Mistral API key |
+| **TTS Model** | `mistral-tts-latest`（或留空使用默认值） |
+| **TTS Voice** | 从可用语音中选择 |
 
-5. Click **Save**
+5. 点击 **Save**
 
-## Available Models
+## 可用模型
 
 | Model | Description |
 |-------|-------------|
-| `mistral-tts-latest` | Default model used for Mistral TTS |
+| `mistral-tts-latest` | Mistral TTS 默认使用的模型 |
 
 :::info
-If `AUDIO_TTS_MODEL` is empty, Open WebUI defaults to `mistral-tts-latest` for Mistral TTS.
+如果 `AUDIO_TTS_MODEL` 为空，Open WebUI 在使用 Mistral TTS 时会默认回退到 `mistral-tts-latest`。
 :::
 
-## Environment Variables Setup
+## 环境变量配置
 
-If you prefer to configure via environment variables:
+如果你更倾向于通过环境变量配置：
 
 ```yaml
 services:
@@ -57,51 +57,51 @@ services:
       - AUDIO_TTS_MISTRAL_API_BASE_URL=https://api.mistral.ai/v1
       - AUDIO_TTS_MODEL=mistral-tts-latest
       - AUDIO_TTS_VOICE=<voice-id>
-    # ... other configuration
+    # ... 其他配置
 ```
 
-### All Mistral TTS Environment Variables
+### 全部 Mistral TTS 环境变量
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_TTS_ENGINE` | Set to `mistral` | empty (uses browser-only TTS) |
-| `AUDIO_TTS_MISTRAL_API_KEY` | Your Mistral API key | empty |
-| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API base URL | `https://api.mistral.ai/v1` |
-| `AUDIO_TTS_MODEL` | TTS model | `mistral-tts-latest` (effective default for Mistral engine) |
+| `AUDIO_TTS_ENGINE` | 设置为 `mistral` | empty（仅使用浏览器侧 TTS） |
+| `AUDIO_TTS_MISTRAL_API_KEY` | 你的 Mistral API key | empty |
+| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API Base URL | `https://api.mistral.ai/v1` |
+| `AUDIO_TTS_MODEL` | TTS 模型 | `mistral-tts-latest`（Mistral 引擎的有效默认值） |
 | `AUDIO_TTS_VOICE` | Voice ID | empty |
 
-## Choosing Voices
+## 选择语音
 
-Open WebUI queries the configured Mistral endpoint for available voices and shows them in the **TTS Voice** selector.
+Open WebUI 会向已配置的 Mistral endpoint 请求可用语音列表，并在 **TTS Voice** 选择器中展示它们。
 
-If voices are not listed:
-- Confirm your API key is valid
-- Verify the API base URL is reachable from the Open WebUI server/container
-- Check logs for `/audio/voices` request errors
+如果语音列表没有显示：
+- 确认 API key 有效
+- 确认 Open WebUI 服务器 / 容器可以访问 API Base URL
+- 查看 `/audio/voices` 请求相关日志
 
-## Testing TTS
+## 测试 TTS
 
-1. Start a new chat
-2. Send a message to any model
-3. Click the **speaker icon** on the AI response to hear it read aloud
+1. 新建一个聊天
+2. 向任意模型发送一条消息
+3. 点击 AI 回复上的**扬声器图标**，听它朗读内容
 
-## Troubleshooting
+## 故障排查
 
-### "Mistral API key is required for Mistral TTS"
+### “Mistral API key is required for Mistral TTS”
 
-1. Confirm `AUDIO_TTS_MISTRAL_API_KEY` is set (or entered in Admin Audio settings)
-2. Save settings and retry
+1. 确认 `AUDIO_TTS_MISTRAL_API_KEY` 已设置（或已在 Admin Audio 设置中填写）
+2. 保存设置后重试
 
-### No voices shown in the dropdown
+### 下拉框中没有语音
 
-1. Verify network access from Open WebUI to `AUDIO_TTS_MISTRAL_API_BASE_URL`
-2. Check Open WebUI logs for Mistral voice list errors
-3. Confirm your key has permission to access Mistral audio APIs
+1. 确认 Open WebUI 到 `AUDIO_TTS_MISTRAL_API_BASE_URL` 的网络访问正常
+2. 查看 Open WebUI 日志中与 Mistral 语音列表相关的错误
+3. 确认你的 key 有权限访问 Mistral 音频 API
 
-### TTS request fails
+### TTS 请求失败
 
-1. Verify `AUDIO_TTS_ENGINE=mistral`
-2. Try leaving the model empty (uses `mistral-tts-latest`)
-3. Try another voice ID from the fetched list
+1. 确认 `AUDIO_TTS_ENGINE=mistral`
+2. 尝试将模型留空（会使用 `mistral-tts-latest`）
+3. 尝试切换为已获取列表中的其他 voice ID
 
-For broader audio debugging, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更广泛的音频调试请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。

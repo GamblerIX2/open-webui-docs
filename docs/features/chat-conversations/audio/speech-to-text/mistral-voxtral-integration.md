@@ -3,43 +3,43 @@ sidebar_position: 2
 title: "Mistral Voxtral STT"
 ---
 
-# Using Mistral Voxtral for Speech-to-Text
+# 使用 Mistral Voxtral 实现语音转文本
 
-This guide covers how to use Mistral's Voxtral model for Speech-to-Text with Open WebUI. Voxtral is Mistral's speech-to-text model that provides accurate transcription.
+本指南介绍如何在 Open WebUI 中使用 Mistral 的 Voxtral 模型进行 Speech-to-Text。Voxtral 是 Mistral 的语音转文本模型，可提供较准确的转录结果。
 
-:::tip Looking for TTS?
-See the companion guide: [Using Mistral for Text-to-Speech](/features/chat-conversations/audio/text-to-speech/mistral-tts-integration)
+:::tip 想配置 TTS？
+请查看配套指南：[使用 Mistral 实现文本转语音](/features/chat-conversations/audio/text-to-speech/mistral-tts-integration)
 :::
 
-## Requirements
+## 前置要求
 
-- A Mistral API key
-- Open WebUI installed and running
+- 一个 Mistral API key
+- Open WebUI 已安装并正常运行
 
-## Quick Setup (UI)
+## 快速配置（UI）
 
-1. Click your **profile icon** (bottom-left corner)
-2. Select **Admin Panel**
-3. Click **Settings** → **Audio** tab
-4. Configure the following:
+1. 点击你的**头像图标**（左下角）
+2. 选择 **Admin Panel**
+3. 点击 **Settings** → **Audio** 标签
+4. 按如下方式配置：
 
 | Setting | Value |
 |---------|-------|
 | **Speech-to-Text Engine** | `MistralAI` |
-| **API Key** | Your Mistral API key |
-| **STT Model** | `voxtral-mini-latest` (or leave empty for default) |
+| **API Key** | 你的 Mistral API key |
+| **STT Model** | `voxtral-mini-latest`（或留空使用默认值） |
 
-5. Click **Save**
+5. 点击 **Save**
 
-## Available Models
+## 可用模型
 
 | Model | Description |
 |-------|-------------|
-| `voxtral-mini-latest` | Default transcription model (recommended) |
+| `voxtral-mini-latest` | 默认转录模型（推荐） |
 
-## Environment Variables Setup
+## 环境变量配置
 
-If you prefer to configure via environment variables:
+如果你更倾向于使用环境变量：
 
 ```yaml
 services:
@@ -49,81 +49,83 @@ services:
       - AUDIO_STT_ENGINE=mistral
       - AUDIO_STT_MISTRAL_API_KEY=your-mistral-api-key
       - AUDIO_STT_MODEL=voxtral-mini-latest
-    # ... other configuration
+    # ... 其他配置
 ```
 
-### All Mistral STT Environment Variables
+### 全部 Mistral STT 环境变量
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_STT_ENGINE` | Set to `mistral` | empty (uses local Whisper) |
-| `AUDIO_STT_MISTRAL_API_KEY` | Your Mistral API key | empty |
-| `AUDIO_STT_MISTRAL_API_BASE_URL` | Mistral API base URL | `https://api.mistral.ai/v1` |
-| `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS` | Use chat completions endpoint | `false` |
-| `AUDIO_STT_MODEL` | STT model | `voxtral-mini-latest` |
+| `AUDIO_STT_ENGINE` | 设置为 `mistral` | empty（使用本地 Whisper） |
+| `AUDIO_STT_MISTRAL_API_KEY` | 你的 Mistral API key | empty |
+| `AUDIO_STT_MISTRAL_API_BASE_URL` | Mistral API Base URL | `https://api.mistral.ai/v1` |
+| `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS` | 使用 chat completions endpoint | `false` |
+| `AUDIO_STT_MODEL` | STT 模型 | `voxtral-mini-latest` |
 
-## Transcription Methods
+## 转录方式
 
-Mistral supports two transcription methods:
+Mistral 支持两种转录方式：
 
-### Standard Transcription (Default)
-Uses the dedicated transcription endpoint. This is the recommended method.
+### 标准转录（默认）
 
-### Chat Completions Method
-Set `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS=true` to use Mistral's chat completions API for transcription. This method:
-- Requires audio in mp3 or wav format (automatic conversion is attempted)
-- May provide different results than the standard endpoint
+使用专用转录 endpoint。这是推荐方式。
 
-## Using STT
+### Chat Completions 方式
 
-1. Click the **microphone icon** in the chat input
-2. Speak your message
-3. Click the microphone again or wait for silence detection
-4. Your speech will be transcribed and appear in the input box
+将 `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS=true` 后，可改用 Mistral 的 chat completions API 进行转录。该方式：
+- 要求音频为 mp3 或 wav 格式（系统会尝试自动转换）
+- 结果可能与标准 endpoint 有所不同
 
-## Supported Audio Formats
+## 使用 STT
 
-Voxtral accepts common audio formats. The system defaults to accepting `audio/*` and `video/webm`.
+1. 点击聊天输入框中的**麦克风图标**
+2. 说出你的内容
+3. 再次点击麦克风，或等待静音检测结束
+4. 你的语音会被转录并显示在输入框中
 
-If using the chat completions method, audio is automatically converted to mp3.
+## 支持的音频格式
 
-## Troubleshooting
+Voxtral 接受常见音频格式。系统默认允许 `audio/*` 和 `video/webm`。
 
-### API Key Errors
+如果使用 chat completions 方式，音频会自动转换为 mp3。
 
-If you see "Mistral API key is required":
-1. Verify your API key is entered correctly
-2. Check the API key hasn't expired
-3. Ensure your Mistral account has API access
+## 故障排查
 
-### Transcription Not Working
+### API key 错误
 
-1. Check container logs: `docker logs open-webui -f`
-2. Verify the STT Engine is set to `MistralAI`
-3. Try the standard transcription method (disable chat completions)
+如果你看到 “Mistral API key is required”：
+1. 确认 API key 填写正确
+2. 检查 API key 是否已过期
+3. 确认你的 Mistral 账号已开通 API 访问权限
 
-### Audio Format Issues
+### 转录无法工作
 
-If using chat completions method and audio conversion fails:
-- Ensure FFmpeg is available in the container
-- Try recording in a different format (wav or mp3)
-- Switch to the standard transcription method
+1. 检查容器日志：`docker logs open-webui -f`
+2. 确认 STT Engine 设置为 `MistralAI`
+3. 优先尝试标准转录方式（关闭 chat completions）
 
-For more troubleshooting, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+### 音频格式问题
 
-## Comparison with Other STT Options
+如果你使用 chat completions 方式且音频转换失败：
+- 确保容器中可用 FFmpeg
+- 尝试录制为其他格式（wav 或 mp3）
+- 切回标准转录方式
+
+更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+
+## 与其他 STT 方案对比
 
 | Feature | Mistral Voxtral | OpenAI Whisper | Local Whisper |
 |---------|-----------------|----------------|---------------|
-| **Cost** | Per-minute pricing | Per-minute pricing | Free |
-| **Privacy** | Audio sent to Mistral | Audio sent to OpenAI | Audio stays local |
+| **Cost** | 按分钟计费 | 按分钟计费 | 免费 |
+| **Privacy** | 音频发送到 Mistral | 音频发送到 OpenAI | 音频保留本地 |
 | **Model Options** | voxtral-mini-latest | whisper-1 | tiny → large |
-| **GPU Required** | No | No | Recommended |
+| **GPU Required** | 否 | 否 | 推荐 |
 
-## Cost Considerations
+## 成本说明
 
-Mistral charges per minute of audio for STT. Check [Mistral's pricing page](https://mistral.ai/products/la-plateforme#pricing) for current rates.
+Mistral 的 STT 按音频分钟数计费。当前价格请查看 [Mistral 定价页](https://mistral.ai/products/la-plateforme#pricing)。
 
 :::tip
-For free STT, use **Local Whisper** (the default) or the browser's **Web API** for basic transcription.
+如果想使用免费 STT，可选择 **Local Whisper**（默认方案）或浏览器 **Web API** 进行基础转录。
 :::
