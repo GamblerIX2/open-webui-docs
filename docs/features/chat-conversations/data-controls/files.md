@@ -1,65 +1,68 @@
 ---
 sidebar_position: 5
-title: "📁 File Management"
+title: "📁 文件管理"
 ---
 
-Open WebUI provides a comprehensive file management system that allows you to upload, organize, and utilize your documents across various features like Knowledge Bases and RAG.
+Open WebUI 提供了一套完整的文件管理系统，让你可以在知识库、RAG 等多种功能场景中上传、整理并使用自己的文档。
 
-## Centralized File Manager
+## 集中文件管理器
 
-The **Centralized File Manager** provides a unified interface to view, search, and manage every file you have uploaded to your Open WebUI instance, whether it was uploaded directly to a chat or into a Knowledge Base.
+**Centralized File Manager** 提供统一界面，用于查看、搜索和管理你在 Open WebUI 实例中上传的所有文件——无论它们是直接上传到聊天里，还是添加进知识库。
 
-### Accessing the File Manager
+### 进入文件管理器
 
-1. Click on your **profile name** or avatar in the bottom-left corner.
-2. Select **Settings** from the menu.
-3. Navigate to the **Data Controls** tab.
-4. Locate the **Manage Files** row and click the **Manage** button.
+1. 点击左下角的**用户名**或头像
+2. 在菜单中选择 **Settings**
+3. 进入 **Data Controls** 标签
+4. 找到 **Manage Files** 这一行并点击 **Manage** 按钮
 
-### Key Features
+### 核心功能
 
-The File Manager modal offers several powerful tools for maintaining your data:
+文件管理弹窗提供了多种强大的数据维护能力：
 
-- **Universal Search**: Quickly find any file by its filename using the integrated search bar.
-- **Advanced Sorting**: Organize your file list by:
-  - **Filename**: Sort alphabetically to find specific documents.
-  - **Created At**: See your most recent uploads or find older files.
-- **File Details**: View important information at a glance, including:
-  - **File Size**: See how much space each document occupies (e.g., KB, MB).
-  - **Upload Date**: Track when each file was added to your instance.
-- **Built-in Viewer**: Click on any file to open the **File Item Viewer**, which displays the file's metadata and specific details (such as size and type).
-- **Safe Deletion**: Easily remove files you no longer need.
-  - :::info **Knowledge Base Cleanup**
-    When you delete a file through the File Manager, Open WebUI automatically performs a deep cleanup. It removes the file from all associated Knowledge Bases and deletes its corresponding vector embeddings, ensuring your database stays clean and efficient.
+- **全局搜索**：通过内置搜索栏按文件名快速查找任意文件
+- **高级排序**：你可以按以下方式整理文件列表：
+  - **Filename**：按字母顺序排序，便于查找特定文档
+  - **Created At**：查看最新上传文件或回溯较旧文件
+- **文件详情**：一眼查看重要信息，包括：
+  - **File Size**：查看每个文档占用的空间大小（如 KB、MB）
+  - **Upload Date**：跟踪文件何时被添加到实例中
+- **内置查看器**：点击任意文件即可打开 **File Item Viewer**，显示文件元数据和详细信息（如大小、类型）
+- **安全删除**：轻松移除不再需要的文件
+  - :::info **知识库清理**
+    当你通过文件管理器删除文件时，Open WebUI 会自动执行深度清理：它会将该文件从所有关联知识库中移除，并删除对应的向量 embedding，从而保持数据库整洁高效。
     :::
 
-## Using Files in Open WebUI
+## 在 Open WebUI 中使用文件
 
-Files are at the heart of the platform's advanced capabilities:
+文件是平台高级能力的核心组成部分：
 
-### 1. Retrieval Augmented Generation (RAG)
-By uploading documents (PDFs, Word docs, text files, etc.), you can ground your AI's responses in your own data.
-- **Chat Uploads**: Simply drag and drop files into a chat or use the upload icon.
-- **Knowledge Bases**: Add files to structured collections for more permanent and organized retrieval.
+### 1. Retrieval Augmented Generation（RAG）
 
-### 2. File Metadata
-Every file carries metadata that helps both you and the AI understand its context. This includes content type, original filename, and size.
+通过上传文档（PDF、Word、文本文件等），你可以让 AI 的回答建立在你自己的数据之上。
 
-## Best Practices
+- **聊天上传**：直接将文件拖拽到聊天中，或点击上传图标
+- **知识库**：把文件加入结构化集合，实现更持久、更有组织的检索
 
-- **Naming Conventions**: Use clear, descriptive filenames. This improves the accuracy of the File Manager's search and helps you identify specific documents.
-- **Regular Audits**: Periodically use the **Manage Files** dashboard to delete old or redundant documents. This saves disk/database space and improves the performance of your system by ensuring only relevant data is retained.
+### 2. 文件元数据
+
+每个文件都会携带元数据，帮助你和 AI 理解其上下文，包括内容类型、原始文件名和大小等。
+
+## 最佳实践
+
+- **命名规范**：使用清晰、描述性强的文件名。这能提升文件管理器搜索准确率，也便于你识别具体文档
+- **定期清理**：定期使用 **Manage Files** 面板删除旧文件或重复文档。这既能节省磁盘 / 数据库存储空间，也能通过保留更相关的数据来提升系统性能
 
 ## FAQ
 
-**Q: If I delete a file, is it gone from my chats?**  
-**A:** Yes. Deleting a file via the File Manager removes it from the system entirely. Any chat that referenced that file using RAG will no longer be able to pull information from it.
+**Q：如果我删除一个文件，它也会从聊天中消失吗？**  
+**A：** 会。通过文件管理器删除文件会把它从系统中完全移除。任何曾通过 RAG 引用该文件的聊天，此后都无法再从中提取信息。
 
-**Q: Can I download my files back from the File Manager?**  
-**A:** Currently, the File Manager focuses on viewing metadata and management (deletion). To download a file, you should typically access it from the original chat or Knowledge Base where it was used.
+**Q：我能从文件管理器把文件再下载回来吗？**  
+**A：** 目前文件管理器重点支持元数据查看和管理（删除）。如果你要下载文件，通常应从最初使用它的聊天或知识库中访问。
 
-**Q: Are there limits on the number of files I can manage?**  
-**A:** There is no hard-coded limit in Open WebUI. The scalability depends on your storage (disk/S3) and your Vector Database (e.g., ChromaDB, PGVector).
+**Q：可管理的文件数量有限制吗？**  
+**A：** Open WebUI 本身没有硬编码上限。可扩展性取决于你的存储系统（磁盘 / S3）以及向量数据库（如 ChromaDB、PGVector）。
 
-**Q: Does managing files require Admin privileges?**  
-**A:** Regular users can manage their *own* uploaded files. Administrators have additional tools to manage global files and configuration via the Admin Panel.
+**Q：管理文件需要管理员权限吗？**  
+**A：** 普通用户可以管理**自己**上传的文件；管理员则在 Admin Panel 中拥有更多全局文件和配置管理能力。

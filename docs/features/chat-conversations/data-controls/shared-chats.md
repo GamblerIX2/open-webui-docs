@@ -1,44 +1,44 @@
 ---
 sidebar_position: 2
-title: "🔗 Shared Chats"
+title: "🔗 共享聊天"
 ---
 
-Open WebUI provides a centralized dashboard to manage every chat conversation you have shared. This feature allows users to audit their shared content and quickly revoke access if needed.
+Open WebUI 提供一个集中式面板，用于管理你分享出去的所有聊天对话。借助这一功能，用户可以审查已共享内容，并在需要时快速撤销访问权限。
 
 :::info
-This page documents the **management dashboard** for shared chats. For information on how to share chats, see [Chat Sharing](/features/chat-conversations/chat-features/chatshare).
+本页记录的是共享聊天的**管理面板**。如果你想了解如何分享聊天，请参阅 [聊天分享](/features/chat-conversations/chat-features/chatshare)。
 :::
 
-## Accessing the Management Dashboard
+## 进入管理面板
 
-1. Click on your **profile name** or avatar in the bottom-left corner of the sidebar.
-2. Select **Settings** from the menu.
-3. Navigate to the **Data Controls** tab.
-4. Locate the **Shared Chats** row and click the **Manage** button.
+1. 点击侧边栏左下角的**用户名**或头像
+2. 在菜单中选择 **Settings**
+3. 进入 **Data Controls** 标签
+4. 找到 **Shared Chats** 这一行并点击 **Manage** 按钮
 
-## Dashboard Features
+## 面板功能
 
-The **Shared Chats** modal provides a unified interface for your public content:
+**Shared Chats** 弹窗为你的公开内容提供统一管理界面：
 
-- **Centralized List**: View all conversations that have an active share link.
-- **Search & Filter**: Quickly find specific shared chats by title. The search bar includes a **500ms debounce** to ensure smooth performance while typing.
-- **Advanced Sorting**: Organize your shared history by:
-  - **Updated At** (Default)
+- **集中列表**：查看所有仍具有有效分享链接的对话
+- **搜索与筛选**：通过标题快速查找特定已分享聊天。搜索栏带有 **500ms debounce**，以确保输入时性能平滑
+- **高级排序**：你可以按以下方式整理分享历史：
+  - **Updated At**（默认）
   - **Title**
-- **Copy Link**: Use the **Clipboard icon** next to any entry to instantly copy the share URL back to your clipboard.
-- **Revoke Access (Unshare)**: Use the **Unshare icon** (represented by a slashed link) to deactivate a share link.
+- **复制链接**：点击任意条目旁的 **Clipboard icon**，即可立即将分享 URL 复制到剪贴板
+- **撤销访问（Unshare）**：点击 **Unshare icon**（带斜杠的链接图标）即可停用分享链接
     - :::warning
-      Revoking access immediately invalidates the link. Anyone attempting to visit the URL will receive a "Not Found" error. This action is permanent, though you can generate a *new* unique link by sharing the chat again from the main interface.
+      撤销访问后，该链接会立刻失效。任何人再访问这个 URL 都会收到 “Not Found” 错误。此操作不可逆，不过你仍可稍后在主界面中重新分享该聊天，生成一个**新的**唯一链接。
       :::
-- **Pagination**: Efficiently browse through your history using the "Load More" functionality at the bottom of the list.
+- **分页**：通过列表底部的 “Load More” 高效浏览更长的分享历史
 
 ## FAQ
 
-**Q: Does unsharing a chat delete the original conversation?**  
-**A:** No. Unsharing only deletes the public link. Your original chat history remains completely intact.
+**Q：取消分享聊天会删除原始对话吗？**  
+**A：** 不会。取消分享只会删除公开链接，你原本的聊天历史会完整保留。
 
-**Q: Can I manage chats I've shared on the community platform here?**  
-**A:** No. This dashboard manages links generated on your local instance. For community-shared content, see [Deleting Shared Chats](/features/chat-conversations/chat-features/chatshare#deleting-shared-chats).
+**Q：我能在这里管理自己分享到社区平台的聊天吗？**  
+**A：** 不能。该面板只管理你本地实例生成的分享链接。对于分享到社区平台的内容，请参阅 [删除已分享聊天](/features/chat-conversations/chat-features/chatshare#deleting-shared-chats)。
 
-**Q: If I delete my original chat, what happens to the shared link?**  
-**A:** Deleting a chat also immediately invalidates and deletes any associated share links.
+**Q：如果我删除原始聊天，会对分享链接产生什么影响？**  
+**A：** 删除聊天也会立即使所有相关分享链接失效并一并删除。

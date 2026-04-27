@@ -1,42 +1,42 @@
 ---
 sidebar_position: 3
-title: "📦 Archived Chats"
+title: "📦 已归档聊天"
 ---
 
-Open WebUI allows you to archive conversations to declutter your sidebar while preserving them for future reference. The **Archived Chats** dashboard lets you manage all your archived conversations in one place.
+Open WebUI 允许你将对话归档，以便在保留它们供将来参考的同时，让侧边栏更整洁。**Archived Chats** 面板让你可以集中管理所有已归档对话。
 
-## Accessing Archived Chats
+## 进入已归档聊天
 
-1. Click on your **profile name** or avatar in the bottom-left corner of the sidebar.
-2. Select **Settings** from the menu.
-3. Navigate to the **Data Controls** tab.
-4. Locate the **Archived Chats** row and click the **Manage** button.
+1. 点击侧边栏左下角的**用户名**或头像
+2. 在菜单中选择 **Settings**
+3. 进入 **Data Controls** 标签
+4. 找到 **Archived Chats** 这一行并点击 **Manage** 按钮
 
-## Dashboard Features
+## 面板功能
 
-The **Archived Chats** modal provides tools to manage your archived conversations:
+**Archived Chats** 弹窗提供以下管理能力：
 
-- **Search**: Quickly find archived chats by title using the search bar.
-- **Restore**: Bring an archived chat back to your main sidebar.
-- **Delete**: Permanently remove an archived chat from your account.
+- **搜索**：通过标题快速查找已归档聊天
+- **恢复**：将已归档聊天恢复到主侧边栏
+- **删除**：从你的账号中永久移除某个已归档聊天
 
-## Bulk Operations
+## 批量操作
 
-From the Data Controls tab, you can also perform bulk operations:
+在 Data Controls 标签中，你还可以执行批量操作：
 
-- **Archive All Chats**: Move all your current conversations to the archive at once. This is useful for periodic cleanup.
-- **Delete All Chats**: Permanently remove all conversations (both active and archived). 
+- **Archive All Chats**：一次性将当前所有对话归档，适合定期整理
+- **Delete All Chats**：永久删除所有对话（包括活动和已归档聊天）
   - :::warning
-    This action cannot be undone. All chat history will be permanently deleted.
+    该操作无法撤销。所有聊天历史都会被永久删除。
     :::
 
 ## FAQ
 
-**Q: Can I search within archived chats?**  
-**A:** The archive dashboard searches by chat title. To search within message content, you would need to restore the chat first.
+**Q：我可以在已归档聊天里搜索内容吗？**  
+**A：** 归档面板目前只按聊天标题搜索。如果你想按消息内容搜索，需要先恢复该聊天。
 
-**Q: Is there a limit to how many chats I can archive?**  
-**A:** There is no hard limit. The scalability depends on your database configuration.
+**Q：可归档聊天数量有限制吗？**  
+**A：** 没有硬性上限。可扩展性取决于你的数据库配置。
 
-**Q: Do archived chats still use storage?**  
-**A:** Yes. Archived chats remain in your database. To free up space, you must permanently delete them.
+**Q：已归档聊天还会占用存储空间吗？**  
+**A：** 会。已归档聊天仍然保存在数据库中。若想释放空间，需要将其永久删除。
