@@ -6,71 +6,71 @@ title: "OpenAPI Tool Servers"
 
 # 🌟 OpenAPI Tool Servers
 
-This repository provides reference OpenAPI Tool Server implementations making it easy and secure for developers to integrate external tooling and data sources into LLM agents and workflows. Designed for maximum ease of use and minimal learning curve, these implementations utilize the widely adopted [OpenAPI specification](https://www.openapis.org/) as the standard protocol.
+这个仓库提供了一组参考性的 OpenAPI Tool Server 实现，帮助开发者以简单且安全的方式，把外部工具与数据源接入到 LLM agents 和工作流中。它以被广泛采用的 [OpenAPI specification](https://www.openapis.org/) 作为标准协议，目标是**上手门槛最低、集成效率最高**。
 
-By leveraging OpenAPI, we eliminate the need for a proprietary or unfamiliar communication protocol, ensuring you can quickly and confidently build or integrate servers. This means less time spent figuring out custom interfaces and more time building powerful tools that enhance your AI applications.
+借助 OpenAPI，我们无需引入专有或陌生的通信协议，因此你可以更快速、更有把握地构建或接入 server。这样一来，你无需把时间耗在理解自定义接口上，而能把精力集中在打造真正增强 AI 应用能力的工具上。
 
-## ☝️ Why OpenAPI?
+## ☝️ 为什么选择 OpenAPI？
 
-- **Established Standard**: OpenAPI is a widely used, production-proven API standard backed by thousands of tools, companies, and communities.
+- **成熟标准：** OpenAPI 是一个被广泛使用、经过生产验证的 API 标准，背后有海量工具、公司与社区支持
 
-- **No Reinventing the Wheel**: No additional documentation or proprietary spec confusion. If you build REST APIs or use OpenAPI today, you're already set.
+- **无需重复发明轮子：** 不需要额外文档，也不会陷入专有规范困境。如果你今天已经在构建 REST API 或使用 OpenAPI，那你已经具备所需基础
 
-- **Easy Integration & Hosting**: Deploy your tool servers externally or locally without vendor lock-in or complex configurations.
+- **易于集成与托管：** 你可以把 tool servers 部署在本地或外部环境中，无需 vendor lock-in，也不用做复杂配置
 
-- **Strong Security Focus**: Built around HTTP/REST APIs, OpenAPI inherently supports widely used, secure communication methods including HTTPS and well-proven authentication standards (OAuth, JWT, API Keys).
+- **强安全导向：** OpenAPI 基于 HTTP / REST API，自然支持 HTTPS、OAuth、JWT、API Keys 等广泛使用且经过验证的安全机制
 
-- **Future-Friendly & Stable**: OpenAPI benefits from broad adoption, long-term community support, and a well-defined evolution process.
+- **更稳定、更面向未来：** OpenAPI 受益于广泛采用、长期社区维护以及清晰的演进机制
 
-## ⚠️ Limitations
+## ⚠️ 限制
 
-While OpenAPI tools are powerful for extending Open WebUI with external services, they have some constraints compared to native Python tools:
+虽然 OpenAPI tools 非常适合用外部服务扩展 Open WebUI，但与原生 Python tools 相比，仍有一些限制：
 
-- **One-way events only**: OpenAPI tools can emit status updates, notifications, and other [one-way events](/features/extensibility/plugin/development/events#-external-tool-events) via the REST endpoint. Open WebUI passes `X-Open-WebUI-Chat-Id` and `X-Open-WebUI-Message-Id` headers to enable this. However, interactive events (user input prompts, confirmations) are only available for native Python tools.
-- **No streaming output**: Tool responses are returned as complete results, not streamed token-by-token.
+- **仅支持单向事件：** OpenAPI tools 可以通过 REST endpoint 发出状态更新、通知和其他[单向事件](/features/extensibility/plugin/development/events#-external-tool-events)。Open WebUI 会自动传递 `X-Open-WebUI-Chat-Id` 与 `X-Open-WebUI-Message-Id` headers 来支持这一点。但需要用户输入或确认的交互式事件，仅原生 Python tools 支持
+- **不支持流式输出：** Tool 响应会作为完整结果返回，而不是 token-by-token 地流式传回
 
-If you need interactive UI feedback (confirmations, user input prompts), consider implementing your tool as a [native Python Tool](/features/extensibility/plugin/tools/development) instead.
+如果你需要交互式 UI 反馈（例如确认框、用户输入），建议把工具实现为 [native Python Tool](/features/extensibility/plugin/tools/development)。
 
 ## 🚀 Quickstart
 
-Get started quickly with our reference FastAPI-based implementations provided in the `servers/` directory. (You can adapt these examples into your preferred stack as needed, such as using [FastAPI](https://fastapi.tiangolo.com/), [FastOpenAPI](https://github.com/mr-fatalyst/fastopenapi) or any other OpenAPI-compatible library):
+你可以直接使用 `servers/` 目录中提供的基于 FastAPI 的参考实现快速上手。（当然，你也可以把这些示例改写为自己喜欢的技术栈，例如 [FastAPI](https://fastapi.tiangolo.com/)、[FastOpenAPI](https://github.com/mr-fatalyst/fastopenapi) 或任何兼容 OpenAPI 的库）
 
 ```bash
 git clone https://github.com/open-webui/openapi-servers
 cd openapi-servers
 ```
 
-### With Bash
+### 使用 Bash
 
 ```bash
 
-# Example: Installing dependencies for a specific server 'filesystem'
+# 示例：为特定 server（如 filesystem）安装依赖
 cd servers/filesystem
 pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --reload
 ```
 
-The filesystem server should be reachable from: [http://localhost:8000](http://localhost:8000)
+filesystem server 应可通过以下地址访问： [http://localhost:8000](http://localhost:8000)
 
-The documentation path will be: [http://localhost:8000](http://localhost:8000)
+文档地址通常也会位于： [http://localhost:8000](http://localhost:8000)
 
-### With Docker
+### 使用 Docker
 
-If you have docker compose installed, bring the servers up with:
+如果你安装了 docker compose，可直接通过以下命令启动：
 
 ```bash
 docker compose up
 ```
 
-The services will be reachable from:
+这些服务默认可通过如下地址访问：
 
  * [Filesystem localhost:8081](http://localhost:8081)
  * [memory server localhost:8082](http://localhost:8082)
  * [time-server localhost:8083](http://localhost:8083)
 
-Now, simply point your OpenAPI-compatible clients or AI agents to your local or publicly deployed URL—no configuration headaches, no complicated transports.
+然后，只需把你的 OpenAPI-compatible clients 或 AI agents 指向本地或公网部署后的 URL 即可——无需繁琐配置，也无需复杂传输层。
 
 ## 🌱 Open WebUI Community
 
-- For general discussions, technical exchange, and announcements, visit our [Community Discussions](https://github.com/open-webui/openapi-servers/discussions) page.
-- Have ideas or feedback? Please open an issue!
+- 若要参与一般讨论、技术交流或查看公告，请访问我们的 [Community Discussions](https://github.com/open-webui/openapi-servers/discussions)
+- 有想法或反馈？欢迎直接提 issue！

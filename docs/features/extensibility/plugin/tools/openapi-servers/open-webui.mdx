@@ -3,238 +3,239 @@ sidebar_position: 1
 title: "Open WebUI Integration"
 ---
 
-## Overview
+## 概览
 
-Open WebUI v0.6+ supports seamless integration with external tools via the OpenAPI servers — meaning you can easily extend your LLM workflows using custom or community-powered tool servers 🧰.
+Open WebUI v0.6+ 支持通过 OpenAPI servers 无缝集成外部工具——这意味着你可以非常方便地使用自定义或社区提供的 tool servers 来扩展自己的 LLM 工作流 🧰。
 
-In this guide, you'll learn how to launch an OpenAPI-compatible tool server and connect it to Open WebUI through the intuitive user interface. Let's get started! 🚀
+在本指南中，你将学习如何启动一个兼容 OpenAPI 的 tool server，并通过直观的图形界面将其连接到 Open WebUI。开始吧！🚀
 
 ---
 
-## Step 1: Launch an OpenAPI Tool Server
+## 第 1 步：启动一个 OpenAPI Tool Server
 
-To begin, you'll need to start one of the reference tool servers available in the [openapi-servers repo](https://github.com/open-webui/openapi-servers). For quick testing, we'll use the time tool server as an example.
+首先，你需要启动 [openapi-servers repo](https://github.com/open-webui/openapi-servers) 中提供的某个参考 tool server。为了便于测试，这里以 time tool server 为例。
 
-🛠️ Example: Starting the `time` server locally
+🛠️ 示例：在本地启动 `time` server
 
 ```bash
 git clone https://github.com/open-webui/openapi-servers
 cd openapi-servers
 
-# Navigate to the time server
+# 进入 time server 目录
 cd servers/time
 
-# Install required dependencies
+# 安装所需依赖
 pip install -r requirements.txt
 
-# Start the server
+# 启动 server
 uvicorn main:app --host 0.0.0.0 --reload
 ```
 
-Once running, this will host a local OpenAPI server at http://localhost:8000, which you can point Open WebUI to.
+启动后，它会在 `http://localhost:8000` 提供一个本地 OpenAPI server，你可以把 Open WebUI 指向该地址。
 
 ![Time Server](/images/openapi-servers/open-webui/time-server.png)
 
 ---
 
-## Step 2: Connect Tool Server in Open WebUI
+## 第 2 步：在 Open WebUI 中连接 Tool Server
 
-Next, connect your running tool server to Open WebUI:
+接下来，把正在运行的 tool server 连接到 Open WebUI：
 
-1. Open WebUI in your browser.
-2. Open ⚙️ **Settings**.
-3. Click on ➕ **Tools** to add a new tool server.
-4. Enter the URL where your OpenAPI tool server is running (e.g., http://localhost:8000).
-5. Click "Save".
+1. 在浏览器中打开 Open WebUI
+2. 打开 ⚙️ **Settings**
+3. 点击 ➕ **Tools** 添加一个新的 tool server
+4. 输入你的 OpenAPI tool server 运行地址（例如 `http://localhost:8000`）
+5. 点击 “Save”
 
 ![Settings Page](/images/openapi-servers/open-webui/settings.png)
 
-### 🧑‍💻 User Tool Servers vs. 🛠️ Global Tool Servers
+### 🧑‍💻 用户级 Tool Servers vs. 🛠️ 全局 Tool Servers
 
-There are two ways to register tool servers in Open WebUI:
+在 Open WebUI 中，有两种注册 tool servers 的方式：
 
-#### 1. User Tool Servers (added via regular Settings)
+#### 1. 用户级 Tool Servers（通过普通 Settings 添加）
 
-- Only accessible to the user who registered the tool server.
-- The connection is made directly from the browser (client-side) by the user.
-- Perfect for personal workflows or when testing custom/local tools.
+- 仅对注册该 tool server 的用户可见
+- 连接由用户浏览器直接发起（client-side）
+- 非常适合个人工作流，或测试自定义 / 本地工具
 
-#### 2. Global Tool Servers (added via Admin Settings)
+#### 2. 全局 Tool Servers（通过 Admin Settings 添加）
 
-Admins can manage shared tool servers available to all or selected users across the entire deployment:
+管理员可以把共享 tool servers 配置给整个部署中的所有用户或部分用户：
 
-- Go to 🛠️ **Admin Settings > Tools**.
-- Add the tool server URL just as you would in user settings.
-- These tools are treated similarly to Open WebUI's built-in tools.
+- 前往 🛠️ **Admin Settings > Tools**
+- 按和普通用户设置相同的方式添加 tool server URL
+- 这些 tools 的行为与 Open WebUI 自带 tools 类似
 
-#### Main Difference: Where Are Requests Made From?
+#### 核心区别：请求是从哪里发出的？ {#main-difference-where-are-requests-made-from}
 
-The primary distinction between **User Tool Servers** and **Global Tool Servers** is where the API connection and requests are actually made:
+**User Tool Servers** 和 **Global Tool Servers** 的主要区别，在于 API 连接与请求的实际发起位置：
 
 - **User Tool Servers**
-  - Requests to the tool server are performed **directly from your browser** (the client).
-  - This means you can safely connect to localhost URLs (like `http://localhost:8000`)—even exposing private or development-only endpoints such as your local filesystem or dev tools—without risking exposure to the wider internet or other users.
-  - Your connection is isolated; only your browser can access that tool server.
+  - 请求由**你的浏览器直接发出**
+  - 这意味着你可以安全地连接 localhost 地址（如 `http://localhost:8000`）——甚至暴露你自己的本地文件系统或开发环境 endpoint，而不会把它们暴露给外网或其他用户
+  - 你的连接是隔离的，只有你的浏览器可以访问该 tool server
 
 - **Global Tool Servers**
-  - Requests are sent **from the Open WebUI backend/server** (not your browser).
-  - The backend must be able to reach the tool server URL you specify—so `localhost` means the backend server's localhost, *not* your computer's.
-  - Use this for sharing tools with other users across the deployment, but be mindful: since the backend makes the requests, you cannot access your personal local resources (like your own filesystem) through this method.
-  - Think security! Only expose remote/global endpoints that are safe and meant to be accessed by multiple users.
+  - 请求由 **Open WebUI 后端 / 服务器** 发出，而不是浏览器
+  - 因此这里的 `localhost` 指的是后端服务器自身，而不是你的个人电脑
+  - 适合需要在整个部署中共享的 tools，但要注意：由于是后端发请求，所以它不能通过这种方式访问你个人电脑上的本地资源（例如你自己的文件系统）
+  - 因此在安全上要格外注意：只暴露那些适合被多个用户访问的远程 / 全局 endpoint
 
-**Summary Table:**
+**总结表：**
 
-| Tool Server Type   | Request Origin        | Use Localhost? | Use Case Example                        |
+| Tool Server 类型   | 请求来源        | 是否可用 Localhost | 典型场景 |
 | ------------------ | -------------------- | ------------------ | ---------------------------------------- |
-| User Tool Server   | User's Browser (Client-side) | Yes (private to you) | Personal tools, local dev/testing        |
-| Global Tool Server | Open WebUI Backend (Server-side) | No (unless running on the backend itself) | Team/shared tools, enterprise integrations |
+| User Tool Server   | 用户浏览器（Client-side） | 可以（仅你可用） | 个人工具、本地开发 / 测试 |
+| Global Tool Server | Open WebUI 后端（Server-side） | 不可以（除非它本身就跑在后端机器上） | 团队共享工具、企业集成 |
 
 :::tip
 
-User Tool Servers are best for personal or experimental tools, especially those running on your own machine, while Global Tool Servers are ideal for production or shared environments where everyone needs access to the same tools.
+User Tool Servers 更适合个人或实验性工具，特别是运行在你自己机器上的工具；Global Tool Servers 则更适合生产环境或共享部署，让所有人都能访问同一组工具。
 
 :::
 
-### 👉 Optional: Using a Config File with mcpo
+### 👉 可选：结合 mcpo 使用配置文件
 
-If you're running multiple tools through mcpo using a config file, take note:
+如果你通过 mcpo 配置文件同时运行多个工具，需要注意：
 
-🧩 Each tool is mounted under its own unique path!
+🧩 每个工具都会挂载到一个独立路径下！
 
-For example, if you're using memory and time tools simultaneously through mcpo, they'll each be available at a distinct route:
+例如，如果你通过 mcpo 同时运行 memory 和 time 两个工具，它们会分别出现在不同 route 上：
 
-- http://localhost:8000/time
-- http://localhost:8000/memory
+- `http://localhost:8000/time`
+- `http://localhost:8000/memory`
 
-This means:
+这意味着：
 
-- When connecting a tool in Open WebUI, you must enter the full route to that specific tool — do NOT enter just the root URL (http://localhost:8000).
-- Add each tool individually in Open WebUI Settings using their respective subpath URLs.
+- 在 Open WebUI 中连接工具时，你必须填写该工具的**完整路径**
+- **不要**只填写根 URL（`http://localhost:8000`）
+- 你需要在 Open WebUI Settings 中用各自的子路径 URL 分别添加每个工具
 
 ![MCPO Config Tools Setting](/images/openapi-servers/open-webui/mcpo-config-tools.png)
 
-✅ Good:
+✅ 正确示例：
 
-http://localhost:8000/time
-http://localhost:8000/memory
+`http://localhost:8000/time`  
+`http://localhost:8000/memory`
 
-🚫 Not valid:
+🚫 错误示例：
 
-http://localhost:8000
+`http://localhost:8000`
 
-This ensures Open WebUI recognizes and communicates with each tool server correctly.
+这样 Open WebUI 才能正确识别并连接到每个独立的 tool server。
 
 ---
 
-## Step 3: Confirm Your Tool Server Is Connected ✅
+## 第 3 步：确认 Tool Server 已连接成功 ✅
 
-Once your tool server is successfully connected, Open WebUI will display a 👇 tool server indicator directly in the message input area:
+当 tool server 成功连接后，Open WebUI 会在消息输入区域直接显示一个 👇 tool server 指示器：
 
-📍 You'll now see this icon below the input box:
+📍 你会在输入框下方看到这个图标：
 
 ![Tool Server Indicator](/images/openapi-servers/open-webui/message-input.png)
 
-Clicking this icon opens a popup where you can:
+点击该图标后，会弹出一个窗口，你可以：
 
-- View connected tool server information
-- See which tools are available and which server they're provided by
-- Debug or disconnect any tool if needed
+- 查看已连接 tool server 的信息
+- 查看有哪些 tools 可用，以及它们来自哪个 server
+- 在需要时调试或断开某个工具
 
-🔍 Here's what the tool information modal looks like:
+🔍 下图是工具信息弹窗展开后的样子：
 
 ![Tool Info Modal Expanded](/images/openapi-servers/open-webui/info-modal.png)
 
-### 🛠️ Global Tool Servers Look Different — And Are Hidden by Default!
+### 🛠️ Global Tool Servers 显示方式不同——而且默认隐藏！
 
-If you've connected a Global Tool Server (i.e., one that's admin-configured), it will not appear automatically in the input area like user tool servers do.
+如果你连接的是 Global Tool Server（也就是管理员配置的工具），它不会像用户级 tool server 一样自动出现在输入区域。
 
-Instead:
+相反：
 
-- Global tools are hidden by default and must be explicitly activated per user.
-- To enable them, you'll need to click on the ➕ button in the message input area (bottom left of the chat box), and manually toggle on the specific global tool(s) you want to use.
+- 全局工具默认是隐藏的，必须按用户手动启用
+- 你需要点击聊天输入框左下角的 ➕ 按钮，并手动打开你想使用的特定 global tool
 
-Here's what that looks like:
+效果如下：
 
 ![Global Tool Server Message Input](/images/openapi-servers/open-webui/global-message-input.png)
 
-⚠️ Important Notes for Global Tool Servers:
+⚠️ 关于 Global Tool Servers 的重要说明：
 
-- They will not show up in the tool indicator popup until enabled from the ➕ menu.
-- Each global tool must be individually toggled on to become active inside your current chat.
-- Once toggled on, they function the same way as user tools.
-- Admins can control access to global tools via role-based permissions.
+- 在你从 ➕ 菜单启用之前，它们不会显示在 tool indicator popup 中
+- 每个 global tool 都必须单独打开，才能在当前聊天中生效
+- 一旦启用，它们的使用方式就和用户级 tools 一样
+- 管理员可通过基于角色的权限控制来限制全局工具访问
 
-This is ideal for team setups or shared environments, where commonly-used tools (e.g., document search, memory, or web lookup) should be centrally accessible by multiple users.
+这非常适合团队场景或共享环境：例如文档检索、memory 或 web lookup 这类常用工具，可以集中提供给多个用户使用。
 
 ---
 
-## (Optional) Step 4: Use "Native" Function Calling (ReACT-style) Tool Use 🧠
+## （可选）第 4 步：启用 “Native” Function Calling（ReACT 风格）🧠
 
 :::info
 
-For this to work effectively, **your selected model must support native tool calling**. Some local models claim support but often produce poor results. We strongly recommend using GPT-4o or another OpenAI model that supports function calling natively for the best experience.
+要想让它真正好用，**你所选的模型必须支持原生 tool calling**。某些本地模型虽然声称支持，但实际效果往往较差。为了获得最佳体验，我们强烈建议使用 GPT-4o 或其他原生支持 function calling 的 OpenAI 模型。
 
 :::
 
-Want to enable ReACT-style (Reasoning + Acting) native function calls directly inside your conversations? You can switch Open WebUI to use native function calling.
+如果你希望在对话中直接启用 ReACT 风格（Reasoning + Acting）的原生函数调用，可以把 Open WebUI 切换到 native function calling。
 
-✳️ How to enable native function calling:
+✳️ 启用方式：
 
-1. Open the chat window.
-2. Go to ⚙️ **Chat Controls > Advanced Params**.
-3. Change the **Function Calling** parameter from `Default` to `Native`.
+1. 打开聊天窗口
+2. 前往 ⚙️ **Chat Controls > Advanced Params**
+3. 将 **Function Calling** 参数从 `Default` 改为 `Native`
 
 ![Native Tool Call](/images/openapi-servers/open-webui/native.png)
 
 ---
 
-## Need More Tools? Explore & Expand! 🧱
+## 需要更多工具？继续探索与扩展！🧱
 
-The [openapi-servers repo](https://github.com/open-webui/openapi-servers) includes a variety of useful reference servers:
+[openapi-servers repo](https://github.com/open-webui/openapi-servers) 中还提供了多种有用的参考 server：
 
-- 📂 Filesystem access
-- 🧠 Memory & knowledge graphs
-- 🗃️ Git repo browsing
-- 🌎 Web search (WIP)
-- 🛢️ Database querying (WIP)
+- 📂 文件系统访问
+- 🧠 Memory 与知识图谱
+- 🗃️ Git 仓库浏览
+- 🌎 Web search（WIP）
+- 🛢️ 数据库查询（WIP）
 
-You can run any of these in the same way and connect them to Open WebUI by repeating the steps above.
+你可以按同样方式运行任意一个，并重复上述步骤把它接入 Open WebUI。
 
 ---
 
-## Troubleshooting & Tips 🧩
+## 故障排查与建议 🧩
 
-### Connection fails immediately after adding the URL
+### 添加 URL 后立刻连接失败
 
-**Check the protocol (HTTP vs HTTPS).** The "Add Tool Server" modal may pre-fill `https://` in the URL field. Most local tool servers don't use TLS, so you need plain `http://`. Change the URL to `http://localhost:8000` (or whichever port your server uses).
+**先检查协议（HTTP vs HTTPS）。** “Add Tool Server” 弹窗可能会默认填入 `https://`。但大多数本地 tool servers 并未启用 TLS，因此你需要改成普通的 `http://`。例如改为 `http://localhost:8000`（或你的实际端口）。
 
-**Check the port number.** The default port varies by server. For example, uvicorn defaults to `8000`, while Open Terminal defaults to `8888`. Make sure the port in your URL matches the port your tool server is actually listening on.
+**再检查端口号。** 默认端口取决于 server 实现。例如 uvicorn 默认是 `8000`，而 Open Terminal 默认是 `8888`。请确认你填入的 URL 中端口与实际监听端口一致。
 
-### Connection fails even though the server is running
+### 明明 server 在运行，但依然连接失败
 
-**Understand which machine "localhost" refers to.** This is the most common connectivity issue and depends on which type of tool server you are registering:
+**理解 “localhost” 指向的是哪台机器。** 这是最常见的问题，而且会随 tool server 类型不同而变化：
 
-- **User Tool Servers** — Requests come from **your browser**. `localhost` means *the machine running your browser*. This usually works for local development setups, but there is a catch (see below).
-- **Global Tool Servers** — Requests come from the **Open WebUI backend**. `localhost` means the *backend server*, not your personal machine. If the backend runs in Docker, `localhost` inside the container does not reach your host machine — use `host.docker.internal` or the machine's actual IP instead.
+- **User Tool Servers** —— 请求来自**你的浏览器**。这里的 `localhost` 指的是*运行浏览器的那台机器*
+- **Global Tool Servers** —— 请求来自 **Open WebUI 后端**。这里的 `localhost` 指的是*后端服务器本身*，而不是你的电脑。如果后端跑在 Docker 中，那么容器里的 `localhost` 不会指向宿主机——此时应改用 `host.docker.internal` 或后端服务器实际 IP
 
-:::warning User Tool Servers: Browser IP matters
+:::warning User Tool Servers：浏览器所在地址也很重要
 
-Even for User Tool Servers, `localhost` only works if you're accessing Open WebUI at `http://localhost:...` in your browser.
+即使是 User Tool Servers，只有当你在浏览器中通过 `http://localhost:...` 访问 Open WebUI 时，`localhost` 才通常会正常工作。
 
-If you're accessing Open WebUI at a different IP address — for example, connecting from another device on your LAN via `http://10.0.0.5:3000`, or using the network URL that `npm run dev` outputs — then your browser is *not* on `localhost` relative to the tool server. The browser will try to reach `localhost` on the device it's running on, not the machine hosting the tool server.
+如果你访问 Open WebUI 用的是其他 IP 地址——例如通过局域网里的 `http://10.0.0.5:3000` 从另一台设备访问，或者使用 `npm run dev` 输出的 network URL——那么此时浏览器眼中的 `localhost` 就**不是** tool server 所在机器，而是**浏览器当前运行的设备**。
 
-**Fix:** Replace `localhost` with the actual IP of the machine where your tool server is running (e.g., `http://10.0.0.5:8000`), and ensure the tool server is binding to `0.0.0.0` (not just `127.0.0.1`).
+**解决办法：** 把 `localhost` 换成实际运行 tool server 那台机器的 IP（例如 `http://10.0.0.5:8000`），并确保 tool server 绑定在 `0.0.0.0` 上，而不是仅绑定到 `127.0.0.1`。
 
 :::
 
-### CORS errors in the browser console
+### 浏览器控制台出现 CORS 错误
 
-If you see CORS errors, your tool server needs to allow requests from the Open WebUI origin. See the [FAQ entry on CORS](/features/extensibility/plugin/tools/openapi-servers/faq) for a FastAPI example.
+如果你看到了 CORS 报错，说明 tool server 需要允许来自 Open WebUI origin 的请求。你可以查看 [FAQ 中关于 CORS 的条目](/features/extensibility/plugin/tools/openapi-servers/faq)，其中提供了 FastAPI 示例。
 
-### General tips
+### 通用建议
 
-- 🔒 If you're using remote servers, check firewalls and HTTPS configs.
-- 📝 To make servers persist across reboots, consider deploying them in Docker or with system services.
-- 🔍 When in doubt, try opening the tool server URL (e.g., `http://localhost:8000/docs`) directly in the same browser you use for Open WebUI — if it loads, the browser can reach it.
+- 🔒 如果你使用远程 servers，请检查防火墙与 HTTPS 配置
+- 📝 如果你希望 server 在重启后仍保持运行，建议用 Docker 或系统服务来部署
+- 🔍 不确定时，直接在**同一个浏览器**中打开 tool server URL（例如 `http://localhost:8000/docs`）——如果能打开，说明浏览器能访问该 server
 
-Need help? Visit the 👉 [Discussions page](https://github.com/open-webui/openapi-servers/discussions) or [open an issue](https://github.com/open-webui/openapi-servers/issues).
+需要帮助？请访问 👉 [Discussions page](https://github.com/open-webui/openapi-servers/discussions) 或 [open an issue](https://github.com/open-webui/openapi-servers/issues)。
