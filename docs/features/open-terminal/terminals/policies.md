@@ -165,7 +165,7 @@ flowchart LR
 ---
 
 <details>
-<summary>API 参考（用于程序化访问）</summary>
+<summary>API 参考（用于程序化访问）</summary> {#api-参考}
 
 所有端点均以编排器上的 `/api/v1` 为前缀，并需要 `Authorization: Bearer {TERMINALS_API_KEY}` 标头。
 

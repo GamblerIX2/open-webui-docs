@@ -382,7 +382,7 @@ The content provided is empty. Please ensure that there is text or data present 
 
 :::
 
-#### 检查文件处理状态
+#### 检查文件处理状态 {#checking-file-processing-status}
 
 将文件添加到知识库之前，请通过状态接口验证处理已完成。
 

@@ -27,7 +27,7 @@ title: "知识库"
 
 启用[原生函数调用](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)后，模型不只是搜索。它们可以浏览您的知识库、逐页阅读文件，并在没有手动提示的情况下跨多个文档综合内容。
 
-### 有序范围访问
+### 有序范围访问 {#scoped-access-keeps-things-organized}
 
 将特定知识库附加到模型，使其只搜索相关内容。或不附加，让模型发现用户有权访问的所有内容。
 
@@ -46,7 +46,7 @@ title: "知识库"
 
 ---
 
-## 检索模式
+## 检索模式 {#retrieval-modes}
 
 将文件或知识库附加到模型时，点击已附加项在两种模式之间切换：
 

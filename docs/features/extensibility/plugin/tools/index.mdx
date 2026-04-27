@@ -97,7 +97,7 @@ Never import a Tool you don’t recognize or trust. These are Python scripts and
 
 ---
 
-## 工具调用模式：Default 模式与 Native 模式
+## 工具调用模式：Default 模式与 Native 模式 {#tool-calling-modes-default-vs-native}
 
 :::danger Default 模式已过时且不再受支持——请使用 Native 模式
 **所有模型都应配置为 Native（Agentic）模式。** Default 模式是一种遗留的提示注入回退，早于 LLM 中普遍的原生函数调用支持。它**不再受支持**：不会收到功能工作、错误修复或内置系统工具，并且与现代 Open WebUI 功能不兼容（Agentic Research、交错思考、内置 Memory/Notes/Knowledge/Channels 工具、网络搜索/图像生成/代码解释器工具注入）。
@@ -137,7 +137,7 @@ Native 模式（也称为 **Agentic 模式**）利用模型内置的能力处理
 - **自主决策**：模型可以决定何时搜索、使用哪些工具以及如何组合结果。
 - **系统工具**：只有 Native 模式才能解锁[内置系统工具](#built-in-system-tools-nativeagentic-mode)（记忆、笔记、知识、频道等）。
 
-#### 如何启用 Native 模式（Agentic 模式）
+#### 如何启用 Native 模式（Agentic 模式） {#how-to-enable-native-mode-agentic-mode}
 Native 模式可以在两个级别启用：
 
 1.  **所有模型的通用默认值（最快——推荐）**：
@@ -161,59 +161,59 @@ Native 模式可以在两个级别启用：
 
 
 
-#### Model Requirements & Caveats
+#### 模型要求与注意事项
 
-:::tip Recommended Models for Agentic Mode
-For reliable agentic tool calling, use high-tier frontier models:
+:::tip Agentic 模式推荐模型
+为了获得可靠的 Agentic 工具调用体验，建议使用高质量前沿模型：
 - **GPT-5** (OpenAI)
 - **Claude 4.5 Sonnet** (Anthropic)
 - **Gemini 3 Flash** (Google)
 - **MiniMax M2.5**
 
-These models excel at multi-step reasoning, proper JSON formatting, and autonomous tool selection.
+这些模型在多步骤推理、正确的 JSON 格式化以及自主工具选择方面表现尤为出色。
 :::
 
-- **Large Local Models**: Large local models (e.g., Qwen 3 32B, Llama 3.3 70B, DeepSeek V3/R1) work well with Native Mode; results scale with model quality.
-- **Small Local Models**: Small local models (under ~30B parameters) often produce malformed JSON or fail multi-step tool chains even in Native Mode. **The fix is to use a stronger model for tool-calling workloads**, not to fall back to Default Mode — Default is legacy and unsupported. If your hardware forces you to use a small model, accept that tool calling will be unreliable at this tier, or offload only tool-using conversations to a cloud model.
+- **大型本地模型**：大型本地模型（如 Qwen 3 32B、Llama 3.3 70B、DeepSeek V3/R1）通常能很好地配合 Native 模式工作，效果会随模型质量提升而明显改善。
+- **小型本地模型**：小型本地模型（约 30B 参数以下）即使在 Native 模式下，也经常输出格式错误的 JSON，或无法完成多步骤工具链。**正确的解决方法是为工具调用场景使用更强的模型**，而不是退回到 Default 模式——Default 已属遗留方案且不再受支持。如果你的硬件条件迫使你使用小模型，就需要接受该层级下工具调用不稳定的现实，或只把需要调用工具的对话卸载给云端模型。
 
-#### Known Model-Specific Issues
+#### 已知的模型特定问题
 
-:::caution DeepSeek V3.2 Function Calling Issues
-**DeepSeek V3.2** has known issues with native function calling that cause **reproducible failures**. Despite being a 600B+ parameter model, it often outputs malformed tool calls.
+:::caution DeepSeek V3.2 的函数调用问题
+**DeepSeek V3.2** 在原生函数调用方面存在已知问题，并且会导致**可稳定复现的失败**。尽管它是 600B+ 参数级别的大模型，却经常输出格式错误的工具调用。
 
-**The Problem**: DeepSeek V3.2 was trained using a proprietary format called **DSML (DeepSeek Markup Language)** for tool calls. When using native function calling, the model sometimes outputs raw DSML/XML-like syntax instead of proper JSON:
+**问题根源**：DeepSeek V3.2 在训练时使用了一种名为 **DSML（DeepSeek Markup Language）** 的专有工具调用格式。使用原生函数调用时，模型有时会输出原始 DSML/XML 风格语法，而不是标准 JSON：
 - `<functionInvoke name="fetch_url">` instead of valid JSON
 - `<function_calls>` / `</function_calls>` tags in content
 - Garbled hybrid text like `prominentfunction_cinvoke name="search_parameter`
 
-**Why it happens**: This is heavily **model-dependent behavior induced during DeepSeek's fine-tuning process**. DeepSeek chose to train their model on DSML rather than standard OpenAI-style JSON tool calls. While inference providers (VertexAI, OpenRouter, etc.) attempt to intercept DSML blocks and convert them to OpenAI-style JSON, this translation layer is unreliable under certain conditions (streaming, high temperature, high concurrency, multi-turn conversations). **The primary responsibility lies with DeepSeek** for using a non-standard format that requires fragile translation.
+**为什么会这样**：这是一种高度**依赖模型本身**的行为，由 DeepSeek 的微调过程引入。DeepSeek 选择让模型学习 DSML，而不是标准 OpenAI 风格的 JSON 工具调用。尽管一些推理服务商（如 VertexAI、OpenRouter 等）会尝试拦截 DSML 片段并转换成 OpenAI 风格 JSON，但在某些条件下（流式输出、高温度、高并发、多轮对话）这层转换并不可靠。**主要责任在 DeepSeek**，因为它采用了需要脆弱翻译层支撑的非标准格式。
 
-**Known contributing factors**:
-- Higher temperature values correlate with more malformed output
-- Multi-round conversations (6-8+ turns) can cause the model to stop calling functions entirely
-- Complex multi-step workflows (15-30 tool calls) may cause "schema drift" where argument formats degrade
+**已知诱因**：
+- 较高的 temperature 往往会带来更多格式错误输出
+- 多轮对话（6-8 轮以上）可能导致模型完全停止调用函数
+- 复杂的多步骤工作流（15-30 次工具调用）可能导致“schema drift”，即参数格式逐渐劣化
 
-**Workarounds**:
-- **Use a different model for agentic workloads.** Claude 4.5 Sonnet, GPT-5, Gemini 3 Flash, and MiniMax M2.5 are all reliable in Native Mode and are the recommended choice when DeepSeek V3.2 misbehaves.
-- Lower temperature when using tool calling with DeepSeek V3.2.
-- Limit multi-round tool-calling sessions.
+**临时规避方案**：
+- **为 Agentic 工作负载换用其他模型。** Claude 4.5 Sonnet、GPT-5、Gemini 3 Flash 和 MiniMax M2.5 在 Native 模式下都更可靠，是 DeepSeek V3.2 表现异常时的推荐替代。
+- 在 DeepSeek V3.2 上使用工具调用时，适当降低 temperature。
+- 限制多轮工具调用会话的长度。
 
-Default Mode is **not** a supported workaround even for DeepSeek — it is legacy and will not be extended to cover this case. This is a DeepSeek model/API issue, not an Open WebUI issue. Open WebUI correctly sends tools in standard OpenAI format; the malformed output originates from DeepSeek's non-standard internal DSML format.
+即使针对 DeepSeek，Default 模式**也不是**受支持的规避方案——它已是遗留模式，未来也不会为此扩展支持。这是 DeepSeek 模型/API 的问题，而不是 Open WebUI 的问题。Open WebUI 已按标准 OpenAI 格式正确发送工具定义；格式错误输出源自 DeepSeek 内部的非标准 DSML 格式。
 :::
 
-| Feature | Default Mode (Legacy / Unsupported) | Native Mode (The Only Supported Mode) |
+| 特性 | Default 模式（遗留 / 不受支持） | Native 模式（唯一受支持的模式） |
 |:---|:---|:---|
-| **Status** | ❌ Legacy, no longer supported | ✅ Required — all models should use this |
-| **Latency** | Medium/High | Low |
-| **KV Cache** | ❌ Breaks cache on every turn | ✅ Cache-friendly |
-| **Model Compatibility** | Any text model (obsolete concern) | Every mainstream model since 2024 |
-| **Logic** | Prompt-injection parsed by Open WebUI | Structured tool calls via provider API |
-| **System Tools** | ❌ Not available | ✅ Full access (Memory, Notes, Knowledge, Channels, Web Search, Image Gen, Code Interpreter) |
-| **Agentic Research / Interleaved Thinking** | ❌ Unsupported | ✅ Supported |
-| **Complex Chaining** | ⚠️ Unreliable | ✅ Excellent |
-| **Future development** | ❌ None | ✅ All new features target this mode |
+| **状态** | ❌ 遗留模式，已不再支持 | ✅ 必需 —— 所有模型都应使用它 |
+| **延迟** | 中 / 高 | 低 |
+| **KV 缓存** | ❌ 每轮都会破坏缓存 | ✅ 对缓存友好 |
+| **模型兼容性** | 任意文本模型（已不再重要） | 2024 年以来的所有主流模型 |
+| **执行逻辑** | 由 Open WebUI 解析提示注入 | 由提供商 API 处理结构化工具调用 |
+| **系统工具** | ❌ 不可用 | ✅ 完整访问（Memory、Notes、Knowledge、Channels、Web Search、Image Gen、Code Interpreter） |
+| **Agentic Research / 交错思考** | ❌ 不支持 | ✅ 支持 |
+| **复杂链式调用** | ⚠️ 不可靠 | ✅ 表现优秀 |
+| **未来开发方向** | ❌ 无 | ✅ 所有新功能都只面向此模式 |
 
-### 内置系统工具（Native/Agentic 模式）
+### 内置系统工具（Native/Agentic 模式） {#built-in-system-tools-nativeagentic-mode}
 
 🛠️ 当启用 **Native 模式（Agentic 模式）** 时，Open WebUI 自动注入强大的系统工具。这解锁了真正的 Agentic 行为，使有能力的模型（如 GPT-5、Claude 4.5 Sonnet、Gemini 3 Flash 或 MiniMax M2.5）能够自主执行多步骤研究、探索知识库或管理用户记忆。
 
@@ -275,9 +275,9 @@ Default Mode is **not** a supported workaround even for DeepSeek — it is legac
 | `get_current_timestamp` | Get the current UTC Unix timestamp and ISO date. |
 | `calculate_timestamp` | Calculate relative timestamps (e.g., "3 days ago"). |
 
-#### Knowledge Tool Availability (At a Glance)
+#### 知识工具可用性（速览）
 
-Use this quick matrix instead of memorizing per-row caveats.
+用这张速查表即可，无需死记每一行的注释说明。
 
 | Tool | Model has attached knowledge | Model has no attached knowledge |
 |------|------------------------------|---------------------------------|
@@ -293,7 +293,7 @@ Use this quick matrix instead of memorizing per-row caveats.
 
 快速规则：`list_knowledge` 和 `list_knowledge_bases` 是互斥的。
 
-#### Tool Reference
+#### 工具参考
 
 | Tool | Parameters | Output |
 |------|------------|--------|
@@ -399,24 +399,24 @@ Open WebUI 在你登录时自动检测并存储你的时区。这允许与时间
 当在管理设置中启用 `ENABLE_RAG_HYBRID_SEARCH` 时，原生 `query_knowledge_files` 工具使用**混合搜索 + 重排序**，为你提供与标准 RAG 管道相同的搜索质量。当混合搜索禁用时，它回退到简单的向量搜索。
 :::
 
-:::warning Knowledge is NOT Auto-Injected in Native Mode
-**Important:** When using Native Function Calling, attached knowledge is **not automatically injected** into the conversation. The model must actively call knowledge tools to search and retrieve information.
+:::warning Native 模式下知识不会自动注入
+**重要：** 使用 Native 函数调用时，附加知识**不会自动注入**到对话里。模型必须主动调用知识工具来搜索并检索信息。
 
-**If your model isn't using attached knowledge:**
-1. **Add instructions to your system prompt** telling the model to discover and query knowledge bases. Example: *"When users ask questions, first use list_knowledge to see what knowledge is available, then use query_knowledge_files to search the relevant knowledge base before answering. If no knowledge is attached to this model, use list_knowledge_bases first to discover available KBs."*
-2. **Or disable Native Function Calling** for that model to restore automatic RAG injection.
-3. **Or use "Full Context" mode** for attached knowledge (click on the attachment and select "Use Entire Document") which always injects the full content.
+**如果你的模型没有使用附加知识：**
+1. **在系统提示词中加入明确指令**，要求模型先发现再查询知识库。例如：*“当用户提问时，先使用 `list_knowledge` 查看可用知识，再用 `query_knowledge_files` 搜索相关知识库后再回答。如果该模型未附加知识，请先调用 `list_knowledge_bases` 来发现可用 KB。”*
+2. **或者为该模型禁用 Native Function Calling**，恢复自动 RAG 注入。
+3. **或者把附件切换为“全文上下文”模式**（点击附件并选择 “Use Entire Document”），这样会始终直接注入全文内容。
 
-See [Knowledge Scoping with Native Function Calling](/features/workspace/knowledge#scoped-access-keeps-things-organized) for more details.
+详情参见 [Native Function Calling 下的知识范围控制](/features/workspace/knowledge#scoped-access-keeps-things-organized)。
 :::
 
-**Why use these?** It allows for **Deep Research** (searching the web multiple times, or querying knowledge bases), **Contextual Awareness** (looking up previous chats or notes), **Dynamic Personalization** (saving facts), and **Precise Automation** (generating content based on existing notes or documents).
+**为什么要使用这些工具？** 因为它们能支持 **深度研究**（多次搜索网页或反复查询知识库）、**上下文感知**（查阅历史对话或笔记）、**动态个性化**（保存事实）以及 **精确自动化**（基于既有笔记或文档生成内容）。
 
-#### Disabling Builtin Tools (Per-Model)
+#### 禁用内置工具（按模型）
 
-The **Builtin Tools** capability can be toggled on or off for each model in the **Workspace > Models** editor under **Capabilities**. When enabled (the default), all the system tools listed above are automatically injected when using Native Mode.
+你可以在 **Workspace > 模型** 编辑器的 **Capabilities** 区域，按模型开启或关闭 **Builtin Tools**。启用后（默认状态），使用 Native 模式时会自动注入上面列出的所有系统工具。
 
-**When to disable Builtin Tools:**
+**何时适合禁用 Builtin Tools：**
 
 | Scenario | Reason to Disable |
 |----------|-------------------|
@@ -425,15 +425,15 @@ The **Builtin Tools** capability can be toggled on or off for each model in the 
 | **Security/control concerns** | Prevents the model from actively querying knowledge bases, searching chats, accessing memories, etc. |
 | **Token efficiency** | Tool specifications consume tokens; disabling saves context window space |
 
-**What happens when Builtin Tools is disabled:**
+**禁用 Builtin Tools 后会发生什么：**
 
 1. **No tool injection**: The model won't receive any of the built-in system tools, even in Native Mode.
 2. **RAG still works** (if File Context is enabled): Attached files are still processed via RAG and injected as context.
 3. **No autonomous retrieval**: The model cannot decide to search knowledge bases or fetch additional information—it works only with what's provided upfront.
 
-#### Granular Builtin Tool Categories (Per-Model)
+#### 细粒度内置工具分类（按模型）
 
-When the **Builtin Tools** capability is enabled, you can further control which **categories** of builtin tools are available to the model. This appears in the Model Editor as a set of checkboxes under **Builtin Tools**.
+当 **Builtin Tools** 能力已启用时，你还可以进一步控制模型可用的内置工具**类别**。在模型编辑器中，这会显示为 **Builtin Tools** 下的一组复选框。
 
 ![Builtin Tools categories in the Model Editor](/images/features/plugin/tools/builtin_tools.png)
 
@@ -454,17 +454,17 @@ When the **Builtin Tools** capability is enabled, you can further control which 
 
 All categories are **enabled by default**. Disabling a category prevents those specific tools from being injected, while keeping other categories active.
 
-:::info Skills / view_skill — Not a Category Toggle
-The `view_skill` tool does **not** appear in the Builtin Tools category checkboxes. It is injected when at least one skill is **attached to the model** via **Workspace → Models → Edit → Skills**. When skills are attached:
+:::info Skills / view_skill —— 不属于分类开关
+`view_skill` 工具**不会**出现在 Builtin Tools 分类复选框中。只有当至少一个技能通过 **Workspace → 模型 → 编辑 → Skills** **附加到模型**时，它才会被注入。附加技能后：
 
-1. The model receives a summary of each attached skill (name + description) in its system prompt via `<available_skills>` tags
-2. The `view_skill` tool is injected so the model can load full instructions on demand
-3. If no skills are attached, `view_skill` is not available
+1. 模型会通过 `<available_skills>` 标签，在系统提示词中收到每个附加技能的摘要（名称 + 描述）
+2. 系统会注入 `view_skill` 工具，供模型按需加载完整说明
+3. 如果没有附加技能，`view_skill` 就不可用
 
-Users can also select skills per-chat (via the chat input bar), which injects the skill's full content directly into the system prompt instead of requiring a `view_skill` call.
+用户也可以按对话选择技能（通过聊天输入栏），此时会直接把技能完整内容注入系统提示词，而无需调用 `view_skill`。
 :::
 
-**Use cases for granular control:**
+**适合使用细粒度控制的场景：**
 
 | Scenario | Recommended Configuration |
 |----------|---------------------------|
@@ -474,15 +474,15 @@ Users can also select skills per-chat (via the chat input bar), which injects th
 | **Knowledge-centric bot** | Disable everything except Knowledge Base and Time |
 
 :::note
-These per-category toggles only appear when the main **Builtin Tools** capability is enabled. If you disable Builtin Tools entirely, no tools are injected regardless of category settings.
+这些分类级开关只会在主 **Builtin Tools** 能力启用时出现。如果你完全关闭 Builtin Tools，那么无论类别设置如何，都不会注入任何工具。
 :::
 
-:::info Global Features Take Precedence
-Enabling a per-model category toggle does **not** override global feature flags. For example, if `ENABLE_NOTES` is disabled globally (Admin Panel), Notes tools will not be available even if the "Notes" category is enabled for the model. The per-model toggles only allow you to *further restrict* what's already available—they cannot enable features that are disabled at the global level.
+:::info 全局功能开关优先
+启用某个模型级分类开关**不会**覆盖全局功能开关。比如，如果 `ENABLE_NOTES` 在全局（管理面板）被关闭，那么即便模型启用了 “Notes” 分类，笔记工具也仍然不可用。模型级开关只能在已可用的基础上**进一步收紧**，不能开启全局已禁用的功能。
 :::
 
-:::warning User-Level Permissions Also Apply
-Builtin tools that correspond to an RBAC feature permission are also gated by the user's **Features** permissions. Even if a tool category is enabled on the model and the global feature flag is on, the tool will **not** be injected if the user lacks the corresponding `features.*` permission. Admins always pass these checks.
+:::warning 用户级权限同样生效
+那些对应到 RBAC 功能权限的内置工具，同样受用户 **Features** 权限约束。即便某个工具分类已在模型上启用，且全局功能开关也是开启状态，只要用户缺少对应的 `features.*` 权限，该工具就**不会**被注入。管理员始终通过这些权限检查。
 
 | Tool Category | Required `features.*` Permission |
 |---------------|----------------------------------|
@@ -495,25 +495,25 @@ Builtin tools that correspond to an RBAC feature permission are also gated by th
 | Automations | `features.automations` |
 | Calendar | `features.calendar` |
 
-This ensures that RBAC permissions are respected end-to-end — disabling a feature for a user prevents the model from calling those tools on their behalf, not just hiding the UI.
+这确保了 RBAC 权限在端到端链路中都被真正执行——禁用某项功能后，不只是 UI 被隐藏，模型也无法代表用户调用对应工具。
 :::
 
-:::tip Per-Chat Feature Toggles (Web Search, Image Generation, Code Interpreter)
-**Web Search**, **Image Generation**, and **Code Interpreter** built-in tools have an additional layer of control: the **per-chat feature toggle** in the chat input bar. For these tools to be injected in Native Mode, **all three conditions** must be met:
+:::tip 按对话功能开关（Web Search、Image Generation、Code Interpreter）
+**Web Search**、**Image Generation** 和 **Code Interpreter** 这些内置工具还有额外一层控制：聊天输入栏中的**按对话功能开关**。在 Native 模式下，要让这些工具被注入，**必须同时满足以下三个条件**：
 
-1. **Global config enabled** — the feature is turned on in Admin Panel (e.g., `ENABLE_WEB_SEARCH`)
-2. **Model capability enabled** — the model has the capability checked in Workspace > Models (e.g., "Web Search")
-3. **Per-chat toggle enabled** — the user has activated the feature for this specific chat via the chat input bar toggles
+1. **全局配置已启用** —— 该功能已在管理面板中打开（如 `ENABLE_WEB_SEARCH`）
+2. **模型能力已启用** —— 该模型在 Workspace > 模型 中已勾选相应能力（如 “Web Search”）
+3. **按对话开关已启用** —— 用户已在当前聊天的输入栏开关中启用该功能
 
-This means users can disable web search (or image generation, or code interpreter) on a per-conversation basis, even if it's enabled globally and on the model. This is useful for chats where information must stay offline or where you want to prevent unintended tool usage.
+这意味着，即便某项能力已在全局和模型层面启用，用户仍可在单个对话中关闭网页搜索（或图像生成、代码解释器）。这对于必须离线处理信息的对话，或需要防止意外工具调用的场景非常有用。
 :::
 
-:::tip Full Agentic Experience
-For the best out-of-the-box agentic experience, administrators can enable **Web Search**, **Image Generation**, and **Code Interpreter** as default features for a model. In the **Admin Panel > Settings > Models**, find the **Model Specific Settings** for your target model and toggle these three on under **Default Features**. This ensures they are active in every new chat by default, so users get the full tool-calling experience without manually enabling each toggle. Users can still turn them off per-chat if needed.
+:::tip 完整的 Agentic 体验
+如果希望用户开箱即拥有完整 Agentic 体验，管理员可以把 **Web Search**、**Image Generation** 和 **Code Interpreter** 设为模型默认功能。在 **Admin Panel > Settings > Models** 中找到目标模型的 **Model Specific Settings**，并在 **Default Features** 下启用这三项。这样它们会默认在每个新对话中生效，用户无需逐一手动打开。若有需要，用户仍然可以在单个对话中将其关闭。
 :::
 
-:::tip Builtin Tools vs File Context
-**Builtin Tools** controls whether the model gets *tools* for autonomous retrieval. It does **not** control whether file content is injected via RAG—that's controlled by the separate **File Context** capability.
+:::tip Builtin Tools 与 File Context 的区别
+**Builtin Tools** 控制的是模型是否获得用于自主检索的*工具*。它**不**控制文件内容是否通过 RAG 注入——那是独立的 **File Context** 能力负责的。
 
 - **File Context** = Whether Open WebUI extracts and injects file content (RAG processing)
 - **Builtin Tools** = Whether the model gets tools to autonomously search/retrieve additional content
