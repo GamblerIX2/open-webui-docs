@@ -1,0 +1,5 @@
+
+> docs@0.0.0 build
+> docusaurus build
+
+sh: 1: docusaurus: not found
