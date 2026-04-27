@@ -2,6 +2,7 @@
 	"label": "语音转文本",
 	"position": 5,
 	"link": {
-		"type": "generated-index"
+		"type": "generated-index",
+		"slug": "/category/speech-to-text"
 	}
 }

@@ -55,14 +55,14 @@ docker run -p 9099:9099 --add-host=host.docker.internal:host-gateway -v pipeline
 
 在 *Admin Settings* 中，新建并保存一个 OpenAI API 类型连接，参数如下：
 
-- **URL:** <http://host.docker.internal:9099> （即前面启动的 Docker 容器地址）。
+- **URL:** `http://host.docker.internal:9099`（即前面启动的 Docker 容器地址）。
 - **Password:** 0p3n-w3bu!（默认密码）
 
 ![Open WebUI Settings](https://langfuse.com/images/docs/openwebui-setup-settings.png)
 
 ### 第 4 步：添加 Langfuse 过滤 Pipeline
 
-然后进入 *Admin Settings*->*Pipelines* 并添加 Langfuse Filter Pipeline。将 Pipelines 监听地址设为 <http://host.docker.internal:9099> （与前文一致），并通过 *Install from Github URL* 使用下方 URL 安装 [Langfuse Filter Pipeline](https://github.com/open-webui/pipelines/blob/039f9c54f8e9f9bcbabde02c2c853e80d25c79e4/examples/filters/langfuse_v3_filter_pipeline.py)：
+然后进入 *Admin Settings*->*Pipelines* 并添加 Langfuse Filter Pipeline。将 Pipelines 监听地址设为 `http://host.docker.internal:9099`（与前文一致），并通过 *Install from Github URL* 使用下方 URL 安装 [Langfuse Filter Pipeline](https://github.com/open-webui/pipelines/blob/039f9c54f8e9f9bcbabde02c2c853e80d25c79e4/examples/filters/langfuse_v3_filter_pipeline.py)：
 
 ```txt
 https://github.com/open-webui/pipelines/blob/main/examples/filters/langfuse_v3_filter_pipeline.py

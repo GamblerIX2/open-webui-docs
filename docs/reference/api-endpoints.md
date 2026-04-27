@@ -357,6 +357,7 @@ curl -X POST http://localhost:3000/ollama/v1/responses \
   ```
 
 - **Python 示例**:
+  ```python
       url = 'http://localhost:3000/api/v1/files/'
       headers = {
           'Authorization': f'Bearer {token}',
