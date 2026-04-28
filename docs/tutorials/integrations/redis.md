@@ -719,6 +719,6 @@ REDIS_HEALTH_CHECK_INTERVAL=60
 2. 检查完整配置是否有拼写错误
 3. 验证所有容器可以在 Docker 网络上通信
 4. 收集 Open WebUI 和 Redis 容器的相关日志
-5. 加入 [Open WebUI Discord](https://discord.gg/5rJgQTnV4s) 获取社区支持
+5. 前往 [GitHub Discussions](https://github.com/open-webui/open-webui/discussions) 获取社区支持
 
 按照这些步骤和故障排除提示，您应该能够为 Open WebUI 配置 Redis，实现应用程序状态管理和 WebSocket 支持，从而实现可靠的多实例部署和客户端与应用程序之间的实时通信。

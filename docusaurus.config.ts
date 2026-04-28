@@ -105,13 +105,6 @@ const config: Config = {
 					className: "header-github-link",
 					"aria-label": "GitHub 仓库",
 				},
-				{
-					label: "Discord",
-					href: "https://discord.com/invite/5rJgQTnV4s",
-					position: "right",
-					className: "header-discord-link",
-					"aria-label": "Discord 服务器",
-				},
 			],
 		},
 		footer: {
@@ -142,8 +135,8 @@ const config: Config = {
 							href: "https://github.com/open-webui/open-webui",
 						},
 						{
-							label: "Discord",
-							href: "https://discord.gg/5rJgQTnV4s",
+							label: "GitHub Discussions",
+							href: "https://github.com/open-webui/open-webui/discussions",
 						},
 						{
 							label: "Reddit",
