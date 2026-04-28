@@ -208,3 +208,76 @@ npm run build
 4. 残留英文和结构检查脚本。
 5. 验证命令和修复循环。
 6. 最终审查和提交策略。
+
+## 实施进度
+
+*最后更新：2026-04-28*
+
+### 当前进度快照
+
+当前翻译进度以仓库根目录中的 `all_docs.txt`、`modified_docs.txt` 和 `untranslated_docs.txt` 为准。
+
+- 翻译范围内总文件数：308
+- 已完成翻译：98
+- 剩余待翻译：210
+- 当前完成率：31.8%
+
+`modified_docs.txt` 中另有 1 个额外文件 `.github/agents/docs-manager.agent.md`，它不在原始 `all_docs.txt` 统计范围内，因此不计入上述完成率。
+
+### 已完成的主要区域
+
+截至本次更新，以下区域已完成或基本完成中文化：
+
+- `docs/features/open-terminal/**`
+- `docs/features/extensibility/**` 的已翻译子集
+- `docs/features/authentication-access/**` 的已翻译子集
+- `docs/features/administration/**` 的已翻译子集
+- `docs/tutorials/auth-sso/**`
+- `docs/tutorials/integrations/**` 的已翻译子集
+- `docs/tutorials/maintenance/**`
+- `docs/features/workspace/**`
+- `docs/reference/` 下的部分页面
+
+详细文件清单以仓库根目录 `modified_docs.txt` 为准。
+
+### 仍需推进的主要区域
+
+当前剩余工作主要集中在以下目录：
+
+- `docs/features/chat-conversations/**`（剩余 79 个）
+- `docs/getting-started/quick-start/**`（剩余 31 个）
+- `docs/features/extensibility/**`（剩余 11 个）
+- `docs/features/open-terminal/**`（剩余 8 个）
+- `docs/reference/https/**`（剩余 7 个）
+- `docs/tutorials/integrations/**`（剩余 7 个）
+- `docs/getting-started/advanced-topics/**`（剩余 5 个）
+- `docs/reference/tab-nginx/**`（剩余 5 个）
+- `docs/enterprise/**`
+- 根级页面与分类文件，如 `docs/brand.mdx`、`docs/contributing.mdx`、`docs/faq.mdx` 以及各目录下的 `_category_.json`
+
+详细待翻译文件清单以仓库根目录 `untranslated_docs.txt` 为准。
+
+### 进度记录与合并前要求
+
+在继续翻译或准备合并 PR 前，应保持以下记录与验证习惯：
+
+1. 每完成一批翻译后，同步更新 `modified_docs.txt` 与 `untranslated_docs.txt`。
+2. 若翻译范围发生变化，重新生成 `all_docs.txt`，确保基数一致。
+3. 合并前至少运行：
+   - `npm run prettier:check`
+   - `npm run mdx-check`
+   - `npm run build`
+4. 如环境允许，继续补跑：
+   - `npm run typecheck`
+   - `npm run lint`
+5. 对于保留英文的品牌名、命令、环境变量、路径、API 字段和代码块内容，需在审查时明确标注为“合理保留”，避免被误判为漏翻。
+
+### 下一阶段建议
+
+为尽快逼近全站 100% 中文化，建议优先按以下顺序推进：
+
+1. `docs/features/chat-conversations/**`
+2. `docs/getting-started/**`
+3. `docs/reference/**`
+4. `docs/enterprise/**`
+5. 全量 `_category_.json` 与根级零散页面收尾
