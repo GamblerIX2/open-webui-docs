@@ -1,5 +1,5 @@
 ---
-title: "Workload Identity Authentication"
+title: "Workload Identity 认证"
 ---
 
 :::warning
@@ -11,13 +11,13 @@ title: "Workload Identity Authentication"
 
 ## 概览
 
-本指南说明如何在 Azure Kubernetes Service（AKS）上配置 Open WebUI，并使用 Workload Identity authentication 访问 Azure OpenAI。
+本指南说明如何在 Azure Kubernetes Service（AKS）上配置 Open WebUI，并使用 Workload Identity 认证访问 Azure OpenAI。
 
-Workload Identity 允许 AKS pods 通过 Azure Entra ID（原 Azure AD）访问 Azure 服务，而无需在集群中存储任何凭证。这是一种安全、托管式的身份方案，可用于访问 Azure OpenAI。
+Workload Identity 允许 AKS Pod 通过 Azure Entra ID（原 Azure AD）访问 Azure 服务，而无需在集群中存储任何凭证。这是一种安全、托管式的身份方案，可用于访问 Azure OpenAI。
 
 ## 前提条件
 
-### OpenWebUI
+### Open WebUI
 
 - **Open WebUI**：版本为 0.6.30 或更高
 - **AKS 集群配置**：你的 AKS 集群必须启用以下能力
@@ -30,11 +30,11 @@ Workload Identity 允许 AKS pods 通过 Azure Entra ID（原 Azure AD）访问 
 
 ## Terraform 配置
 
-下面是一份完整的 Terraform 配置示例，用于配置 Workload Identity authentication：
+下面是一份完整的 Terraform 配置示例，用于配置 Workload Identity 认证：
 
-### 1. 创建 Kubernetes Namespace
+### 1. 创建 Kubernetes 命名空间
 
-首先需要创建一个 Kubernetes namespace，这样后续就能把它统一用于 Helm 部署，也能在后续步骤中赋给 user-assigned identity 和 federated identity credential。
+首先需要创建一个 Kubernetes 命名空间，这样后续就能把它统一用于 Helm 部署，也能在后续步骤中赋给用户分配身份和联合身份凭据。
 
 ```hcl
 resource "kubernetes_namespace" "this" {
@@ -44,9 +44,9 @@ resource "kubernetes_namespace" "this" {
 }
 ```
 
-### 2. 创建 User Assigned Identity
+### 2. 创建用户分配身份（User Assigned Identity）
 
-首先创建一个 Azure User Assigned Identity，后续 Open WebUI pods 将使用它来访问 Azure 服务。
+首先创建一个 Azure 用户分配身份（User Assigned Identity），后续 Open WebUI Pod 将使用它来访问 Azure 服务。
 
 ```hcl
 resource "azurerm_user_assigned_identity" "uai" {
@@ -56,9 +56,9 @@ resource "azurerm_user_assigned_identity" "uai" {
 }
 ```
 
-### 3. 创建 Federated Identity Credential
+### 3. 创建联合身份凭据（Federated Identity Credential）
 
-Federated Identity Credential 会在 Kubernetes service account 与 Azure User Assigned Identity 之间建立信任关系，从而允许 pods 使用 Kubernetes token 交换 Azure token。
+联合身份凭据（Federated Identity Credential）会在 Kubernetes service account 与 Azure 用户分配身份之间建立信任关系，从而允许 Pod 使用 Kubernetes token 交换 Azure token。
 
 ```hcl
 resource "azurerm_federated_identity_credential" "federated_identity" {
@@ -73,10 +73,10 @@ resource "azurerm_federated_identity_credential" "federated_identity" {
 
 ### 4. 为 Azure OpenAI 访问分配 RBAC 角色
 
-在 Azure 与 User Assigned Identity 建立信任关系后，你就可以为这个 identity 分配角色。这里我们赋予它 `Cognitive Services OpenAI User` 角色；如果将来你还需要访问其他 Azure 能力，也可以继续添加更多 role assignments。
+在 Azure 与用户分配身份建立信任关系后，你就可以为这个身份分配角色。这里我们赋予它 `Cognitive Services OpenAI User` 角色；如果将来你还需要访问其他 Azure 能力，也可以继续添加更多角色分配。
 
 :::note
-默认情况下，User Assigned Identity 对任何资源都没有访问权限，因此你必须显式授予所需 Azure RBAC 角色。
+默认情况下，用户分配身份对任何资源都没有访问权限，因此你必须显式授予所需 Azure RBAC 角色。
 :::
 
 :::warning
@@ -93,7 +93,7 @@ resource "azurerm_role_assignment" "workload_identity_azure_openai" {
 
 ### 5. 通过 Helm 部署 Open WebUI
 
-下面会把 Open WebUI 部署到 AKS 集群中，并配置好所需的 service account annotations 与 pod labels，以启用 Workload Identity authentication。
+下面会把 Open WebUI 部署到 AKS 集群中，并配置好所需的 Service Account 注解与 Pod 标签，以启用 Workload Identity 认证。
 
 ```hcl
 resource "helm_release" "openwebui" {
@@ -129,34 +129,34 @@ resource "helm_release" "openwebui" {
 
 当 Open WebUI 部署完成后，可以按以下步骤配置 Azure OpenAI 连接：
 
-1. 前往 **Admin Panel** → **Connections**
-2. 点击 **Add Connection**
-3. 选择 **Azure OpenAI** 作为 provider
-4. 选择 **Entra ID** 作为 authentication type
-5. 填写 Azure OpenAI endpoint 与 deployment 细节
+1. 前往 **管理面板** → **连接**
+2. 点击 **添加连接**
+3. 选择 **Azure OpenAI** 作为提供商
+4. 选择 **Entra ID** 作为认证类型
+5. 填写 Azure OpenAI 终结点与部署细节
 6. 保存连接
 
 ## 关键组件说明
 
-### Service Account Annotations
+### Service Account 注解
 
-Service account 必须带上如下 annotation，才能与 Azure User Assigned Identity 关联：
+Service Account 必须带上如下注解，才能与 Azure 用户分配身份关联：
 
 ```yaml
 azure.workload.identity/client-id: <USER_ASSIGNED_IDENTITY_CLIENT_ID>
 ```
 
-### Pod Labels
+### Pod 标签
 
-Pods 必须包含以下 label，才能启用 workload identity：
+Pod 必须包含以下标签，才能启用 Workload Identity：
 
 ```yaml
 azure.workload.identity/use: "true"
 ```
 
-### Federated Identity Credential
+### 联合身份凭据（Federated Identity Credential）
 
-Federated identity credential 会在以下三者之间建立信任关系：
+联合身份凭据会在以下三者之间建立信任关系：
 - 你的 AKS 集群 OIDC issuer
 - Kubernetes service account
 - Azure User Assigned Identity
@@ -172,37 +172,37 @@ system:serviceaccount:<namespace>:<service-account-name>
 
 1. **认证失败**
    - 确认 AKS 集群已启用 OIDC issuer
-   - 确认 AKS 集群已启用 workload identity
-   - 确认 federated identity credential 的 subject 与 namespace / service account name 完全匹配
+  - 确认 AKS 集群已启用 Workload Identity
+  - 确认联合身份凭据的 subject 与 namespace / service account name 完全匹配
 
 2. **权限错误**
-   - 确认 user-assigned identity 已被赋予 `Cognitive Services OpenAI User` 角色
-   - 确认 role assignment 的 scope 覆盖了你的 Azure OpenAI resource
+  - 确认用户分配身份已被赋予 `Cognitive Services OpenAI User` 角色
+  - 确认角色分配的 scope 覆盖了你的 Azure OpenAI 资源
 
 3. **Pod Identity 问题**
-   - 确认 pod 带有 `azure.workload.identity/use: "true"` label
-   - 确认 service account 带有正确的 `azure.workload.identity/client-id` annotation
-   - 确认 service account name 与 federated credential 配置一致
+  - 确认 Pod 带有 `azure.workload.identity/use: "true"` 标签
+  - 确认 Service Account 带有正确的 `azure.workload.identity/client-id` 注解
+  - 确认 Service Account 名称与联合凭据配置一致
 
 ### 验证命令
 
-检查 service account annotations：
+检查 Service Account 注解：
 ```bash
 kubectl get serviceaccount <service-account-name> -n <namespace> -o yaml
 ```
 
-查看 pod labels：
+查看 Pod 标签：
 ```bash
 kubectl get pod <pod-name> -n <namespace> -o yaml
 ```
 
-检查 workload identity webhook：
+检查 Workload Identity webhook：
 ```bash
 kubectl get mutatingwebhookconfiguration azure-wi-webhook-controller-manager-mutating-webhook-configuration
 ```
 
 ## 更多资源
 
-- [Azure Workload Identity Documentation](https://azure.github.io/azure-workload-identity/)
-- [AKS Workload Identity Overview](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
+- [Azure Workload Identity 文档](https://azure.github.io/azure-workload-identity/)
+- [AKS Workload Identity 概览](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
 - [Open WebUI Helm Chart](https://github.com/open-webui/helm-charts)

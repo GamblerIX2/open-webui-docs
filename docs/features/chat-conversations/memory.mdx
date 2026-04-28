@@ -6,15 +6,15 @@ title: "记忆与个性化"
 # 记忆与个性化 🧠
 
 :::warning 实验性功能
-Memory 系统目前仍处于 **Beta / Experimental** 阶段。你可能会遇到模型存储或检索信息不一致的问题，未来更新中其存储格式也可能发生变化。
+记忆系统目前仍处于 **Beta / Experimental** 阶段。你可能会遇到模型存储或检索信息不一致的问题，未来更新中其存储格式也可能发生变化。
 :::
 
 Open WebUI 内置了一套较为完善的记忆系统，使模型能够跨不同对话记住你的事实信息、偏好和上下文。
-随着 **Native Tool Calling** 的引入，这一系统已从被动注入机制升级为由模型主动管理的“长期记忆”。
+随着 **原生工具调用** 的引入，这一系统已从被动注入机制升级为由模型主动管理的“长期记忆”。
 
 ## 工作原理
 
-记忆系统会存储关于你的若干信息片段（例如 “I prefer Python for backend tasks” 或 “I live in Vienna”）。这些记忆有两种使用方式：
+记忆系统会存储关于你的若干信息片段（例如 “我偏好用 Python 处理后端任务” 或 “我住在维也纳”）。这些记忆有两种使用方式：
 
 ### 1. 手动管理（设置中）
 
@@ -23,7 +23,7 @@ Open WebUI 内置了一套较为完善的记忆系统，使模型能够跨不同
 
 ### 2. 原生记忆工具（Agentic Mode）
 
-当你使用启用了 **Native Function Calling (Agentic Mode)** 的模型时，高质量模型可以通过 5 个内置工具自主管理你的记忆。关于管理员如何配置和管理这些系统级工具，请参阅 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。
+当你使用启用了 **Native Function Calling（Agentic Mode）** 的模型时，高质量模型可以通过 5 个内置工具自主管理你的记忆。关于管理员如何配置和管理这些系统级工具，请参阅 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。
 
 :::tip 适合记忆管理的高质量模型
 自主记忆管理最适合 frontier 级模型（如 GPT-5、Claude 4.5+、Gemini 3+），因为它们更擅长判断哪些事实值得保存、以及何时该取回哪些记忆。较小的本地模型在记忆选择上可能表现不稳定。
@@ -37,7 +37,7 @@ Open WebUI 内置了一套较为完善的记忆系统，使模型能够跨不同
 
 ## 新记忆系统的优势
 
--   **主动学习**：你无需手动输入偏好。模型可以在后台调用 `add_memory`，例如说：*"I'll remember that you prefer dark mode for your UI projects"*
+-   **主动学习**：你无需手动输入偏好。模型可以在后台调用 `add_memory`，例如说：*"我会记住你在 UI 项目里偏好深色模式"*
 -   **上下文检索**：如果对话突然转回几个月前提到的话题，模型可以通过 `search_memories` 去“搜索大脑”，找回相关细节
 -   **动态修正**：如果模型记错了内容，它可以使用 `replace_memory_content` 修正该事实，而不是创建一条重复记忆
 -   **清理能力**：模型可以通过 `delete_memory` 清除过期或无关事实，保持记忆库整洁
@@ -46,8 +46,8 @@ Open WebUI 内置了一套较为完善的记忆系统，使模型能够跨不同
 
 ## 启用记忆工具
 
-1.  **管理员启用**：确保管理员已经[全局启用](#administrative-controls) Memory 功能，并确认你拥有所需权限
-2.  **Native Mode (Agentic Mode)**：在模型高级参数中启用 **Native Function Calling**（**Admin Panel > Settings > Models > Model Specific Settings > Advanced Parameters**）
+1.  **管理员启用**：确保管理员已经[全局启用](#administrative-controls)记忆功能，并确认你拥有所需权限
+2.  **Native Mode（Agentic Mode）**：在模型高级参数中启用 **Native Function Calling**（**Admin Panel > Settings > Models > Model Specific Settings > Advanced Parameters**）
 3.  **需要高质量模型**：若要稳定获得这些能力，请优先使用具备较强推理能力的 frontier 模型（例如 GPT-5、Claude 4.5 Sonnet、Gemini 3 Flash、MiniMax M2.5）。较小本地模型可能无法有效自主管理记忆
 4.  **按模型分类开关**：确保该模型在 **Workspace > Models > Edit > Builtin Tools** 中启用了 **Memory** 分类（默认开启）
 
@@ -61,13 +61,13 @@ Open WebUI 内置了一套较为完善的记忆系统，使模型能够跨不同
 
 ### 全局开关
 
-Memory 功能可以对整个实例开启或关闭。关闭后，所有用户都会看不到 “Personalization” 标签，同时相关 memory API endpoint 也会被阻止。
+记忆功能可以对整个实例开启或关闭。关闭后，所有用户都会看不到 “Personalization” 标签，同时相关记忆 API endpoint 也会被阻止。
 - **Admin UI**：Admin Panel > Settings > General > Features > **Memories**
 - **Environment Variable**：[`ENABLE_MEMORIES`](/reference/env-configuration#enable_memories)（默认：`True`）
 
 ### 细粒度权限
 
-管理员还可以通过权限界面，按角色或用户组控制 Memory 访问。
+管理员还可以通过权限界面，按角色或用户组控制记忆访问。
 - **Admin UI**：Admin Panel > Users > Permissions > Features > **Memories**
 - **Environment Variable**：[`USER_PERMISSIONS_FEATURES_MEMORIES`](/reference/env-configuration#user_permissions_features_memories)（默认：`True`）
 

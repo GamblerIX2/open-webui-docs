@@ -11,28 +11,28 @@ title: "DDGS"
 
 :::tip
 
-若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [环境配置文档](/reference/env-configuration#web-search)。
 
 :::
 
-:::tip Troubleshooting
+:::tip 故障排查
 
-如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
+如果你在 web search 上遇到问题，请查看 [Web Search 故障排查指南](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
 ## DDGS（Dux Distributed Global Search）
 
-DDGS 是一个元搜索引擎，允许你通过统一接口搜索多个 provider。
+DDGS 是一个元搜索引擎，允许你通过统一接口搜索多个提供商。
 
 ### 设置
 
 1.  在管理员设置中启用 **Web Search**
 2.  将 **Web Search Engine** 设为 **DDGS**
-3.  从下拉菜单中选择你想使用的 **DDGS Backend**
+3.  从下拉菜单中选择你想使用的 **DDGS 后端**
 
-#### DDGS Backend 选项
-- **Auto (Random)**：从可用 provider 中随机选择
+#### DDGS 后端选项
+- **Auto (Random)**：从可用提供商中随机选择
 - **Bing**
 - **Brave**
 - **DuckDuckGo**
@@ -45,7 +45,7 @@ DDGS 是一个元搜索引擎，允许你通过统一接口搜索多个 provider
 
 #### 环境变量
 
-你也可以通过 `DDGS_BACKEND` 环境变量配置 backend。
+你也可以通过 `DDGS_BACKEND` 环境变量配置后端。
 
 ```bash
 DDGS_BACKEND="google"

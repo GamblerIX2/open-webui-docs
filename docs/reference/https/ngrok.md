@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
-title: "HTTPS using ngrok"
+title: "使用 ngrok 的 HTTPS"
 ---
 
-# 使用 ngrok 的 HTTPS
+## 使用 ngrok 的 HTTPS
 
 **为本地 Open WebUI 立刻获得公网 HTTPS。零配置、零开放端口。**
 
@@ -94,7 +94,7 @@ docker run -d \
 ```
 
 :::warning
-ngrok 免费层的 URL 会在每次重启 tunnel 后变化。请相应更新 `WEBUI_URL`，或者使用 [ngrok custom domain](https://ngrok.com/docs/guides/how-to-set-up-a-custom-domain/)（付费）来获得固定 URL。
+ngrok 免费层的 URL 会在每次重启 tunnel 后变化。请相应更新 `WEBUI_URL`，或者使用 [ngrok 自定义域名](https://ngrok.com/docs/guides/how-to-set-up-a-custom-domain/)（付费）来获得固定 URL。
 :::
 
 ---
@@ -117,7 +117,7 @@ ngrok http 8080 --url=your-name.ngrok-free.app
 | :--- | :--- |
 | 启动 tunnel | `ngrok http 8080` |
 | 自定义域名 | `ngrok http 8080 --url=your-name.ngrok-free.app` |
-| Dashboard | [dashboard.ngrok.com](https://dashboard.ngrok.com) |
+| 控制台 | [dashboard.ngrok.com](https://dashboard.ngrok.com) |
 | 查看请求流量 | `http://localhost:4040`（ngrok 本地调试面板） |
 | 设置 CORS origin | `CORS_ALLOW_ORIGIN=https://your-name.ngrok-free.app` |
 

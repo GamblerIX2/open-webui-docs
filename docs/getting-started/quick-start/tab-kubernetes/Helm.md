@@ -35,7 +35,7 @@ Helm 可以帮助你管理 Kubernetes 应用。
 
 **重要：** 默认向量数据库（ChromaDB）使用的是本地基于 SQLite 的客户端，**不适用于多副本或多 worker 部署**。SQLite 连接不具备 fork 安全性，多个进程并发写入会直接导致 worker 崩溃。你**必须**通过 [`VECTOR_DB`](https://docs.openwebui.com/reference/env-configuration#vector_db) 切换到外部向量数据库（PGVector、Milvus、Qdrant），或者通过 [`CHROMA_HTTP_HOST`](https://docs.openwebui.com/reference/env-configuration#chroma_http_host) 将 ChromaDB 作为独立 HTTP 服务运行。
 
-关于完整扩展流程，请参见 [扩展 Open WebUI](https://docs.openwebui.com/getting-started/advanced-topics/scaling)。若需排查多副本问题，请查看 [Scaling & HA guide](https://docs.openwebui.com/troubleshooting/multi-replica)。
+关于完整扩展流程，请参见 [扩展 Open WebUI](https://docs.openwebui.com/getting-started/advanced-topics/scaling)。若需排查多副本问题，请查看 [扩展与高可用指南](https://docs.openwebui.com/troubleshooting/multi-replica)。
 
 :::
 

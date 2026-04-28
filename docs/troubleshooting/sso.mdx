@@ -67,7 +67,7 @@ ENABLE_OAUTH_SIGNUP=true
 ```
 
 **解决方法：**
-- 始终以官方 [environment configuration documentation](https://docs.openwebui.com/reference/env-configuration/) 为准
+- 始终以官方 [环境变量配置文档](https://docs.openwebui.com/reference/env-configuration/) 为准
 - 逐项检查你的部署环境：
   - 确认所有必需环境变量都按文档中的精确名字设置
   - 如果你是自托管，请确认这些变量已出现在 Docker Compose、Kubernetes manifest 或 `.env` 文件中
@@ -432,5 +432,5 @@ ls -la /app/backend/data/
 :::warning Token 撤销依赖 Redis
 如果没有 Redis，**退出登录并不会撤销 JWT token**——它们会一直有效直到过期（默认：4 周）。对 SSO/OAuth 部署来说，这一点尤其重要，因为你可能需要在用户离职等场景下快速撤销访问权限。没有 Redis 时，密码修改和管理员停用账号也无法让已签发 token 立即失效。
 
-对于生产环境中的 SSO 部署，请配置 Redis，或缩短 `JWT_EXPIRES_IN` 来降低暴露窗口。更多信息请参阅 [Token Revocation](/getting-started/advanced-topics/hardening#token-revocation) 和 [Redis tutorial](/tutorials/integrations/redis)。
+对于生产环境中的 SSO 部署，请配置 Redis，或缩短 `JWT_EXPIRES_IN` 来降低暴露窗口。更多信息请参阅 [Token 撤销](/getting-started/advanced-topics/hardening#token-revocation) 和 [Redis 教程](/tutorials/integrations/redis)。
 :::

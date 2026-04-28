@@ -5,7 +5,7 @@ title: "后端控制的 API 流程"
 
 ---
 
-# 后端控制、兼容前端的 API 流程
+## 后端控制、兼容前端的 API 流程
 
 :::warning
 
@@ -58,25 +58,25 @@ ASSISTANT_MSG_ID=$(uuidgen || python3 -c "import uuid; print(uuid.uuid4())")
 
 Open WebUI 前端将消息渲染为一个**树形结构**。每条消息必须包含 `childrenIds` 数组，列出其直接子消息的 ID。没有这个字段，前端无法遍历消息树，**消息将无法显示**，即使它们已存在于数据库中。
 
-- A **user message** must list its assistant reply IDs in `childrenIds`
-- An **assistant message** typically has `childrenIds: []` (empty) unless there are follow-up messages
+- **用户消息**必须在 `childrenIds` 中列出其对应的助手回复 ID
+- **助手消息**通常使用 `childrenIds: []`（空数组），除非后面还有继续对话的消息
 
-### The `currentId` Field
+### `currentId` 字段
 
-The `history` object must use `currentId` (**camelCase**, not `current_id`). This tells the frontend which message is at the end of the active conversation thread.
+`history` 对象必须使用 `currentId`（**camelCase**，不是 `current_id`）。这个字段告诉前端当前活动对话线程最后一条消息是哪一条。
 
-## Implementation Guide
+## 实现指南
 
-### Critical Step: Enrich Chat Response with Assistant Message
+### 关键步骤：在聊天响应中补充助手消息
 
-The assistant message needs to exist in the chat data as a critical prerequisite **before** triggering the completion. This step is essential because the Open WebUI frontend expects assistant messages to exist in a specific structure.
+在触发补全之前，助手消息必须作为关键前提先存在于聊天数据中。这个步骤至关重要，因为 Open WebUI 前端期望助手消息具有特定的结构。
 
-The assistant message must appear in both locations:
+助手消息必须同时出现在以下两个位置：
 
-- `chat.messages[]` — The main message array (used for legacy compatibility)
-- `chat.history.messages[<assistantId>]` — The indexed message history (used by the frontend to render the tree)
+- `chat.messages[]` — 主要消息数组（用于旧版兼容）
+- `chat.history.messages[<assistantId>]` — 按 ID 索引的消息历史（前端用它来渲染树状结构）
 
-**Expected structure of the assistant message:**
+**助手消息的预期结构：**
 
 ```json
 {
@@ -93,17 +93,17 @@ The assistant message must appear in both locations:
 }
 ```
 
-Without this enrichment, the assistant's response will not appear in the frontend interface, even if the completion is successful.
+如果不做这一步补充，即使补全成功，助手的回复也不会出现在前端界面中。
 
-## Step-by-Step Implementation
+## 分步实现
 
-### Step 1: Create Chat with User and Assistant Messages
+### 第 1 步：创建包含用户和助手消息的对话
 
-This creates the chat with **both** the user message and an empty assistant placeholder in a single request. The response returns a `chatId` (in the `id` field) that will be used in subsequent requests.
+这一步会在一次请求中同时创建用户消息和一个空的助手占位符。响应会返回一个 `chatId`（位于 `id` 字段），后续请求会使用它。
 
 :::tip
 
-You can combine chat creation and assistant enrichment into this single step. The key is to include both the user message and an empty assistant message in the initial payload, with proper `parentId`, `childrenIds`, and `currentId` fields.
+你可以把创建对话和补充助手消息合并到这一步。关键是在初始载荷中同时包含用户消息和空的助手消息，并正确设置 `parentId`、`childrenIds` 和 `currentId` 字段。
 
 :::
 
@@ -170,17 +170,17 @@ curl -X POST https://<host>/api/v1/chats/new \
   }'
 ```
 
-**Save the `id` field from the response** — this is your `chatId` for all subsequent steps.
+**请保存响应中的 `id` 字段** —— 这就是后续步骤要用的 `chatId`。
 
 :::note
 
-The `messages[]` array at the top level is a flat list used for legacy compatibility. The `history.messages{}` object is the authoritative structure — it is a dictionary keyed by message ID that the frontend uses to build the conversation tree via `parentId` and `childrenIds`.
+顶层的 `messages[]` 数组是用于旧版兼容的扁平列表。`history.messages{}` 对象才是权威结构——它是一个以消息 ID 为键的字典，前端会通过 `parentId` 和 `childrenIds` 用它来构建对话树。
 
 :::
 
-### Step 2: Trigger Assistant Completion
+### 第 2 步：触发助手补全
 
-Generate the actual AI response using the completion endpoint. Use the `chatId` from Step 1:
+使用补全端点生成实际的 AI 响应。请使用第 1 步得到的 `chatId`：
 
 ```bash
 curl -X POST https://<host>/api/chat/completions \
@@ -220,13 +220,13 @@ curl -X POST https://<host>/api/chat/completions \
 
 :::note
 
-The `session_id` should be a unique UUID that you generate for this session. It helps maintain conversation context and is also used for WebSocket event routing if the frontend is open.
+`session_id` 应该是你为本次会话生成的唯一 UUID。它有助于保持对话上下文，如果前端处于打开状态，它也会用于 WebSocket 事件路由。
 
 :::
 
-#### Step 2.1: Trigger Assistant Completion with Knowledge Integration (RAG)
+#### 第 2.1 步：结合知识集成（RAG）触发助手补全
 
-For advanced use cases involving knowledge bases or document collections, include knowledge files in the completion request:
+对于涉及知识库或文档集合的高级用例，可以在补全请求中包含知识文件：
 
 ```bash
 curl -X POST https://<host>/api/chat/completions \
@@ -271,17 +271,17 @@ curl -X POST https://<host>/api/chat/completions \
   }'
 ```
 
-### Step 3: Wait for Assistant Response Completion
+### 第 3 步：等待助手响应完成
 
-Assistant responses can be handled in two ways depending on your implementation needs:
+根据你的实现需求，助手响应可以通过两种方式处理：
 
-#### Option A: Stream Processing (Recommended)
+#### 选项 A：流式处理（推荐）
 
-If using `stream: true` in the completion request, you can process the streamed response in real-time and wait for the stream to complete. This is the approach used by the OpenWebUI web interface and provides immediate feedback.
+如果在补全请求中使用 `stream: true`，你就可以实时处理流式响应，并等待流结束。这是 OpenWebUI Web 界面采用的方式，能提供即时反馈。
 
-#### Option B: Polling Approach
+#### 选项 B：轮询方式
 
-For implementations that cannot handle streaming, poll the chat endpoint until the response is ready. Use a retry mechanism with exponential backoff:
+对于无法处理流式响应的实现，可以轮询聊天端点，直到响应准备好。请使用带指数退避的重试机制：
 
 ```bash
 
@@ -303,38 +303,38 @@ while true; do
 done
 ```
 
-### Step 4: Fetch Final Chat
+### 第 4 步：获取最终对话
 
-Retrieve the completed conversation:
+获取已完成的对话：
 
 ```bash
 curl -X GET https://<host>/api/v1/chats/<chatId> \
   -H "Authorization: Bearer <token>"
 ```
 
-## Additional API Endpoints
+## 其他 API 端点
 
-### Fetch Knowledge Collection
+### 获取知识集合
 
-Retrieve knowledge base information for RAG integration:
+获取用于 RAG 集成的知识库信息：
 
 ```bash
 curl -X GET https://<host>/api/v1/knowledge/<knowledge-id> \
   -H "Authorization: Bearer <token>"
 ```
 
-### Fetch Model Information
+### 获取模型信息
 
-Get details about a specific model:
+获取某个特定模型的详细信息：
 
 ```bash
 curl -X GET https://<host>/api/v1/models/model?id=<model-name> \
   -H "Authorization: Bearer <token>"
 ```
 
-### Send Additional Messages to an Existing Chat
+### 向现有对话发送更多消息
 
-For multi-turn conversations, you can add new messages to an existing chat. You must include the full updated message tree with proper `parentId` and `childrenIds` linkage:
+对于多轮对话，你可以向现有聊天中追加新消息。你必须提供完整更新后的消息树，并正确维护 `parentId` 和 `childrenIds` 的关联：
 
 ```bash
 NEW_USER_MSG_ID=$(uuidgen || python3 -c "import uuid; print(uuid.uuid4())")
@@ -403,11 +403,11 @@ When updating an existing chat via `POST /api/v1/chats/<chatId>`, the payload is
 
 :::
 
-## Response Processing
+## 响应处理
 
-### Parsing Assistant Responses
+### 解析助手回复
 
-Assistant responses may be wrapped in markdown code blocks. Here's how to clean them:
+助手回复有时会被包裹在 Markdown 代码块中。可以按以下方式清理：
 
 ```bash
 
@@ -427,16 +427,16 @@ echo "$cleaned_response" | jq '.'
 
 This cleaning process handles:
 
-- Removal of ````json` prefix
-- Removal of ```` suffix
-- Trimming whitespace
-- JSON validation
+- 移除 ````json` 前缀
+- 移除结尾的 ``` 代码块标记
+- 去除首尾空白字符
+- 验证 JSON 格式
 
-## API Reference
+## API 参考
 
-### DTO Structures
+### DTO 结构
 
-#### Chat DTO (Complete Structure)
+#### Chat DTO（完整结构）
 
 ```json
 {
@@ -614,9 +614,9 @@ This cleaning process handles:
 }
 ```
 
-### Response Examples
+### 响应示例
 
-#### Create Chat Response
+#### 创建对话响应
 
 ```json
 {
@@ -680,7 +680,7 @@ This cleaning process handles:
 }
 ```
 
-#### Final Chat Response (After Completion)
+#### 最终对话响应（完成后）
 
 ```json
 {
@@ -718,7 +718,7 @@ This cleaning process handles:
 }
 ```
 
-#### OWUIKnowledge DTO (Knowledge Collection)
+#### OWUIKnowledge DTO（知识集合）
 
 ```json
 {
@@ -732,7 +732,7 @@ This cleaning process handles:
 }
 ```
 
-#### Model Information Response
+#### 模型信息响应
 
 ```json
 {
@@ -757,34 +757,34 @@ This cleaning process handles:
 }
 ```
 
-### Field Reference Guide
+### 字段参考
 
-#### Required vs Optional Fields
+#### 必填与可选字段
 
-**Chat Creation - Required Fields:**
+**创建对话 - 必填字段：**
 
 - `title` — Chat title (string)
 - `models` — Array of model names (string[])
 - `messages` — Initial message array
 - `history` — Message tree with `currentId` and `messages` map
 
-**Chat Creation - Optional Fields:**
+**创建对话 - 可选字段：**
 
 - `files` — Knowledge files for RAG (defaults to empty array)
 - `tags` — Chat tags (defaults to empty array)
 - `params` — Model parameters (defaults to empty object)
 
-**Message Structure - User Message:**
+**消息结构 - 用户消息：**
 
 - **Required:** `id`, `role`, `content`, `timestamp`, `models`, `childrenIds`
 - **Optional:** `parentId` (for threading; omit for the first message in a chat)
 
-**Message Structure - Assistant Message:**
+**消息结构 - 助手消息：**
 
 - **Required:** `id`, `role`, `content`, `parentId`, `childrenIds`, `model`, `modelName`, `modelIdx`, `timestamp`
 - **Optional:** `done` (boolean, defaults to false), additional metadata fields
 
-**ChatCompletionsRequest - Required Fields:**
+**ChatCompletionsRequest - 必填字段：**
 
 - `chat_id` — Target chat ID
 - `id` — Assistant message ID
@@ -792,7 +792,7 @@ This cleaning process handles:
 - `model` — Model identifier
 - `session_id` — Session identifier (caller-generated UUID)
 
-**ChatCompletionsRequest - Optional Fields:**
+**ChatCompletionsRequest - 可选字段：**
 
 - `stream` — Enable streaming (defaults to false)
 - `background_tasks` — Control automatic tasks
@@ -801,90 +801,90 @@ This cleaning process handles:
 - `filter_ids` — Pipeline filters
 - `files` — Knowledge collections for RAG
 
-#### Field Constraints
+#### 字段约束
 
-**Timestamps:**
+**时间戳：**
 
 - Format: Unix timestamp in **seconds** (not milliseconds) for message timestamps in `history.messages`
 - The top-level chat `timestamp` field uses milliseconds
 - Example: `1720000000` (July 3, 2024)
 
-**UUIDs:**
+**UUID：**
 
 - All ID fields (`id`, `parentId`, `session_id`) should use valid UUID v4 format
 - Example: `550e8400-e29b-41d4-a716-446655440000`
 - IDs are **generated by the caller**, not assigned by the server
 
-**Model Names:**
+**模型名称：**
 
 - Must match available models in your Open WebUI instance
 - Common examples: `gpt-4o`, `gpt-3.5-turbo`, `claude-3-sonnet`
 
-**Session IDs:**
+**会话 ID：**
 
 - Can be any unique string identifier
 - Recommendation: Use UUID format for consistency
 
-**Knowledge File Status:**
+**知识文件状态：**
 
 - Valid values: `"processed"`, `"processing"`, `"error"`
 - Only use `"processed"` files for completions
 
-## Important Notes
+## 重要说明
 
 - This workflow is compatible with Open WebUI + backend orchestration scenarios
 - **Critical: Use `currentId` (camelCase)** in the history object, not `current_id` (snake_case)
 - **Critical: Include `childrenIds`** on every message — the frontend uses this to build the message tree
 - No frontend code changes are required for this approach
-- The `stream: true` parameter allows for real-time response streaming if needed
-- `outlet()` filters run inline during `/api/chat/completions` when `chat_id` and `id` (message ID) are present in the request body. Pure API callers that omit these fields will have outlet silently skipped — see [Filter Functions: Toggleable Filters vs. Always-On Filters](/features/extensibility/plugin/functions/filter#toggleable-filters-vs-always-on-filters) for related behavior details. The separate `/api/chat/completed` endpoint is deprecated and no longer needed
-- Background tasks like title generation can be controlled via the `background_tasks` object
-- Session IDs help maintain conversation context across requests
-- **Knowledge Integration:** Use the `files` array to include knowledge collections for RAG capabilities
-- **Response Parsing:** Handle JSON responses that may be wrapped in markdown code blocks
-- **Error Handling:** Implement proper retry mechanisms for network timeouts and server errors
+- `stream: true` 参数可在需要时提供实时流式响应
+- 当请求体中同时包含 `chat_id` 和 `id`（消息 ID）时，`outlet()` 过滤器会在 `/api/chat/completions` 中同步执行。纯 API 调用如果省略这些字段，outlet 会被静默跳过——相关行为细节请参见 [过滤函数：可切换过滤器 vs. 始终启用过滤器](/features/extensibility/plugin/functions/filter#toggleable-filters-vs-always-on-filters)。单独的 `/api/chat/completed` 端点已弃用，不再需要
+- 标题生成等后台任务可以通过 `background_tasks` 对象控制
+- 会话 ID 有助于在多个请求之间保持对话上下文
+- **知识集成：** 使用 `files` 数组包含知识集合，以支持 RAG 能力
+- **响应解析：** 处理可能被 Markdown 代码块包裹的 JSON 响应
+- **错误处理：** 为网络超时和服务器错误实现合适的重试机制
 
-## Common Pitfalls
+## 常见问题
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| Chat created but messages don't appear in UI | Missing `childrenIds` on messages | Add `childrenIds` array linking parent → child messages |
-| Chat shows "How can I help you today?" | Using `current_id` instead of `currentId` | Use camelCase `currentId` in the history object |
-| Completion works but response only appears as notification | Assistant message not in chat history before triggering completion | Include empty assistant placeholder in Step 1 |
-| Messages exist in DB but frontend shows empty chat | Missing `parentId` or broken tree linkage | Ensure every message has correct `parentId` and parent's `childrenIds` includes the child |
+| 现象 | 原因 | 解决办法 |
+| --- | --- | --- |
+| 已创建对话但消息没有显示在 UI 中 | 消息缺少 `childrenIds` | 添加 `childrenIds` 数组，把父消息和子消息连接起来 |
+| 对话显示“今天我能帮你做什么？” | 使用了 `current_id`，而不是 `currentId` | 在 history 对象中使用 camelCase 的 `currentId` |
+| 补全成功但回复只以通知形式出现 | 触发补全前，助手消息没有先写入聊天历史 | 在第 1 步中包含空的助手占位符 |
+| 数据库里有消息，但前端显示空对话 | 缺少 `parentId` 或树状关联断裂 | 确保每条消息都有正确的 `parentId`，且父消息的 `childrenIds` 包含该子消息 |
 
-## Summary
+## 总结
 
-Use the Open WebUI backend APIs to:
+使用 Open WebUI 后端 API 来：
 
-1. **Start a chat with messages** — Create the conversation with user input and an empty assistant placeholder (including proper `childrenIds` and `currentId`)
-2. **Trigger a reply** — Generate the AI response (with optional knowledge integration)
-3. **Monitor completion** — Wait for the assistant response using streaming or polling
-4. **Fetch the final chat** — Retrieve and parse the completed conversation
+1. **用消息创建对话** — 使用用户输入和空的助手占位符创建对话（包含正确的 `childrenIds` 和 `currentId`）
+2. **触发回复** — 生成 AI 响应（可选地结合知识集成）
+3. **监控完成状态** — 使用流式或轮询方式等待助手回复
+4. **获取最终对话** — 获取并解析已完成的对话
 
-**Enhanced Capabilities:**
+**增强能力：**
 
-- **RAG Integration** — Include knowledge collections for context-aware responses
-- **Asynchronous Processing** — Handle long-running AI operations with streaming or polling
-- **Response Parsing** — Clean and validate JSON responses from the assistant
-- **Session Management** — Maintain conversation context across requests
+- **RAG 集成** — 通过知识集合提供上下文感知回复
+- **异步处理** — 使用流式或轮询处理耗时较长的 AI 操作
+- **响应解析** — 清理并验证助手返回的 JSON 响应
+- **会话管理** — 在多个请求之间保持对话上下文
 
-This enables backend-controlled workflows that still appear properly in the Web UI frontend chat interface, providing seamless integration between programmatic control and user experience.
+这样即可实现由后端控制的工作流，同时在 Web UI 前端聊天界面中正常呈现，兼顾程序化控制与用户体验。
 
-The key advantage of this approach is that it maintains full compatibility with the Open WebUI frontend while allowing complete backend orchestration of the conversation flow, including advanced features like knowledge integration and asynchronous response handling.
+这种方案的关键优势在于，它在允许后端完全编排对话流程的同时，仍与 Open WebUI 前端保持完整兼容，并支持知识集成、异步响应处理等高级能力。
 
-## Testing
+## 测试
 
-You can test your implementation by following the step-by-step CURL examples provided above. Make sure to replace placeholder values with your actual:
+你可以按照上面提供的分步 `curl` 示例测试实现。请务必把占位符替换成你自己的实际值：
 
-- Host URL
-- Authentication token
-- Chat IDs (from the create chat response)
-- Message IDs (UUIDs you generate)
-- Model names (matching your configured models)
+- 主机 URL
+- 认证令牌
+- 对话 ID（来自创建对话响应）
+- 消息 ID（你生成的 UUID）
+- 模型名称（与你配置的模型一致）
 
 :::tip
 
-Start with a simple user message and gradually add complexity like knowledge integration and advanced features once the basic flow is working.
+先从一个简单的用户消息开始，确认基础流程正常后，再逐步加入知识集成和高级功能。
 
 :::

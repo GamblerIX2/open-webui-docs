@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD041 -->
+
 ## 前置条件
 
 - 已安装并运行 [Docker Engine](https://docs.docker.com/engine/install/)

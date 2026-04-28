@@ -19,7 +19,7 @@ OpenClaw 提供**兼容 OpenAI 的 API** 端点，因此 Open WebUI 是非常自
 :::info 你需要准备
 - 本机已安装 **OpenClaw**（见[快速开始](https://openclaw.ai)）
 - **Node.js 22+**（推荐 24）
-- 来自受支持 LLM 提供商的 **API key**（Anthropic、OpenAI 等）
+- 来自受支持 LLM 提供商的 **API 密钥**（Anthropic、OpenAI 等）
 - 正在运行的 **Open WebUI**（Docker、pip 或桌面应用均可）
 - 大约 **15 分钟** 完成设置
 :::
@@ -89,16 +89,16 @@ openclaw gateway status
 ### 第 4 步：在 Open WebUI 中添加连接
 
 1. 在浏览器中打开 Open WebUI。
-2. 进入 ⚙️ **Admin Settings** → **Connections** → **OpenAI**。
-3. 点击 ➕ **Add Connection**。
+2. 进入 ⚙️ **管理面板** → **连接** → **OpenAI**。
+3. 点击 ➕ **添加连接**。
 4. 填写以下内容：
 
 | 设置项 | 值 |
 |---|---|
 | **URL** | `http://localhost:18789/v1` |
-| **API Key** | 你的 OpenClaw Gateway bearer token |
+| **API 密钥** | 你的 OpenClaw Gateway bearer token |
 
-5. 点击 ✅ 勾选按钮进行验证，然后点击 **Save**。
+5. 点击 ✅ 勾选按钮进行验证，然后点击 **保存**。
 
 :::tip 如果 Open WebUI 运行在 Docker 中？
 请把 `localhost` 替换为 `host.docker.internal`：
@@ -115,7 +115,7 @@ http://host.docker.internal:18789/v1
 :::tip 指定具体 Agent
 OpenClaw 使用 model 字段将请求路由到不同 Agent：
 
-| Model ID | 路由到 |
+| 模型 ID | 路由到 |
 |---|---|
 | `openclaw/default` | 你配置的默认 Agent |
 | `openclaw/<agentId>` | 某个指定命名 Agent |
@@ -138,19 +138,19 @@ Channels 插件是**社区贡献集成**，并非由 Open WebUI 或 OpenClaw 官
 ### 第 1 步：在 Open WebUI 中创建机器人账户
 
 1. 以**管理员**身份登录 Open WebUI。
-2. 进入 **Admin Panel** → **Users**。
+2. 进入 **管理面板** → **用户**。
 3. 为机器人创建一个新账户（例如 `openclaw-bot@yourdomain.com`）。
 4. 将该机器人用户加入你希望它监听的频道。
 
 :::note
-请确认你的 Open WebUI 实例已经启用了 **Channels**（**Admin Settings** → **General**）。
+请确认你的 Open WebUI 实例已经启用了 **Channels**（**管理面板** → **常规**）。
 :::
 
 ### 第 2 步：安装插件
 
 在与你的 OpenClaw Agent 的私密聊天环境中（可通过其内建控制台或终端），对它说：
 
-> *“I want to use the Open WebUI Channels plugin: `https://github.com/skyzi000/openclaw-open-webui-channels`”*
+> *“我想使用 Open WebUI Channels 插件：`https://github.com/skyzi000/openclaw-open-webui-channels`”*
 
 OpenClaw 会自动下载并安装该插件。
 
@@ -158,16 +158,16 @@ OpenClaw 会自动下载并安装该插件。
 
 接着告诉你的 OpenClaw Agent：
 
-> *“I want to connect to Open WebUI Channels.”*
+> *“我想连接到 Open WebUI Channels。”*
 
 它会提示你填写以下信息：
 
 | 设置项 | 填写内容 |
 |---|---|
-| **Base URL** | 你的 Open WebUI 地址（例如 `http://localhost:3000`） |
-| **Email** | 第 1 步中创建的机器人邮箱 |
-| **Password** | 机器人账户密码 |
-| **Channel IDs** | （可选）要监听的特定频道 ID；留空则监听全部 |
+| **基础 URL** | 你的 Open WebUI 地址（例如 `http://localhost:3000`） |
+| **邮箱** | 第 1 步中创建的机器人邮箱 |
+| **密码** | 机器人账户密码 |
+| **频道 ID** | （可选）要监听的特定频道 ID；留空则监听全部 |
 
 :::warning 安全提示
 请务必在**私密**聊天环境中配置这些凭据。插件会将其保存在 `~/.openclaw/openclaw.json` 的 `channels.open-webui` 部分。
@@ -214,7 +214,7 @@ docker run --add-host=host.docker.internal:host-gateway ...
 ### Channels 机器人没有响应
 
 - 确认机器人用户已加入目标频道
-- 确认实例已在 **Admin Settings** → **General** 中启用 Channels
+- 确认实例已在 **管理面板** → **常规** 中启用 Channels
 - 确认 OpenClaw 插件配置（`~/.openclaw/openclaw.json`）中的机器人凭据正确
 
 ---

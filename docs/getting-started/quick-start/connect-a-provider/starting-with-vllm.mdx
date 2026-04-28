@@ -5,7 +5,7 @@ title: "vLLM"
 
 ## 概览
 
-vLLM 提供**兼容 OpenAI 的 API**（Chat Completions），因此可以很容易接入 Open WebUI。本指南将展示如何连接你的 vLLM 服务器。
+vLLM 提供**兼容 OpenAI 的 API**（聊天补全），因此可以很容易接入 Open WebUI。本指南将展示如何连接你的 vLLM 服务器。
 
 :::tip
 对于实现该规范的提供商，Open WebUI 也支持实验性的 [Open Responses](/getting-started/quick-start/connect-a-provider/starting-with-open-responses) 规范。
@@ -41,7 +41,7 @@ http://localhost:8000/v1
 
 ## 第 3 步：开始使用模型
 
-从 Model Selector 中选择 vLLM 服务器提供的任意模型，然后开始聊天。
+从模型选择器中选择 vLLM 服务器提供的任意模型，然后开始聊天。
 
 :::tip 连接超时配置
 
@@ -52,6 +52,6 @@ http://localhost:8000/v1
 AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=30
 ```
 
-如果你保存了一个不可达 URL，导致界面卡住，请查看 [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) 故障排查页面。
+如果你保存了一个不可达 URL，导致界面卡住，请查看 [模型列表加载问题](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) 故障排查页面。
 
 :::

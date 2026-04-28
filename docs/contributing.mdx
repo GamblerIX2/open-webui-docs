@@ -21,15 +21,15 @@ Open WebUI 是一个独立项目，由一个小型且专注核心团队构建并
 
 ## 贡献方式
 
-### 测试 dev (开发) 分支
+### 测试开发分支（dev）
 
-最有价值的贡献之一完全不需要编写代码。只需运行 dev 分支，在日常中使用它，并报告出现的问题。
+最有价值的贡献之一完全不需要编写代码。只需运行开发分支，在日常中使用它，并报告出现的问题。
 
 ```bash
 docker run -d -p 3000:8080 -v open-webui:/app/backend/data --name open-webui ghcr.io/open-webui/open-webui:dev
 ```
 
-dev 分支更新很快，因此请**定期拉取最新更新**。如果你不想使用 Docker，请改为遵循 [开发 Open WebUI](/getting-started/advanced-topics/development) 指南。
+开发分支更新很快，因此请**定期拉取最新更新**。如果你不想使用 Docker，请改为遵循 [开发 Open WebUI](/getting-started/advanced-topics/development) 指南。
 
 在 [GitHub](https://github.com/open-webui/open-webui/issues) 上报告问题时，请提供清晰的复现步骤。没有社区的测试，我们无法交付高质量的发布版本。
 
@@ -63,7 +63,7 @@ Open WebUI 在 `src/lib/i18n/locales` 中使用 JSON 格式的翻译文件。每
 3. 翻译每个 JSON 文件中的字符串值，同时保留对象结构不变
 4. 在 `src/lib/i18n/locales/languages.json` 中注册该语言
 
-### 改进无障碍支持 (Accessibility)
+### 改进无障碍支持
 
 无障碍体验是优秀设计的核心部分。在贡献 UI 更改时：
 

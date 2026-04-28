@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-title: "MCP Support"
+title: "MCP 支持"
 ---
 
 本文说明如何快速配置并部署由 Open WebUI 提供的 [**MCP（Model Context Protocol）到 OpenAPI 的代理服务器（mcpo）**](https://github.com/open-webui/mcpo)。你将了解如何把基于 MCP 的 tool server 暴露为标准且熟悉的 OpenAPI endpoints，供终端用户与开发者使用。
@@ -13,7 +13,7 @@ title: "MCP Support"
 如果你通过 API Key 或 Auth Token 将 Open WebUI 连接到这个代理，你**必须**在 Open WebUI Docker 配置中设置 `WEBUI_SECRET_KEY`。如果该 key 发生变化（例如容器重启后变化），Open WebUI 将无法解密为该工具保存的凭证。
 :::
 
-### 📌 什么是 MCP Proxy Server？
+### 📌 什么是 MCP 代理服务器？
 
 MCP-to-OpenAPI proxy server 允许你通过标准 REST / OpenAPI API 直接使用基于 MCP（Model Context Protocol）实现的 tool servers，而无需接触陌生或复杂的自定义协议。如果你是终端用户或应用开发者，这意味着你可以通过熟悉的 REST 风格 endpoint，轻松访问强大的 MCP 工具能力。
 
@@ -53,7 +53,7 @@ mcpo 则解决了这些问题：
 **支持的 Events：** 虽然 mcpo 会把 MCP tools 暴露为 OpenAPI endpoints，但它们依然可以通过 Open WebUI 的 [event REST endpoint](/features/extensibility/plugin/development/events#-external-tool-events) 发出事件（如状态更新、通知）。Open WebUI 会自动传递所需的 `X-Open-WebUI-Chat-Id` 和 `X-Open-WebUI-Message-Id` headers。不过，要求用户输入的交互式事件仍然只对原生 Python tools 可用。
 :::
 
-### ✅ Quickstart：在本地运行代理
+### ✅ 快速开始：在本地运行代理
 
 借助轻量、易用的 **mcpo** 工具（[GitHub Repository](https://github.com/open-webui/mcpo)），你可以非常简单地启动 MCP-to-OpenAPI proxy server：
 

@@ -52,11 +52,11 @@ Open WebUI 提供多项内置设置，用于配置推理模型行为。你可以
 - **Workspace** → **Models** → **Edit Model** → **Advanced Parameters** —— 按模型设置（仅管理员）
 - **Admin Panel** → **Settings** → **Models** → 选择某个模型 → **Advanced Parameters** —— 另一个按模型设置入口
 
-### Reasoning Tags 设置
+### 推理标签设置
 
 该设置控制 Open WebUI 如何解析并显示 thinking / reasoning 区块：
 
-| Option | Description |
+| 选项 | 说明 |
 |--------|-------------|
 | **Default** | 使用系统默认行为 |
 | **Enabled** | 显式启用推理标签检测，默认按 `<think>...</think>` 解析 |
@@ -89,7 +89,7 @@ Open WebUI 提供多项内置设置，用于配置推理模型行为。你可以
 该设置会把 `think` 参数直接发送给 Ollama。它与 Open WebUI 对响应内容的解析逻辑是分开的——若想获得完整体验，通常需要同时启用这个设置**以及**正确配置 reasoning tags。
 :::
 
-### Reasoning Effort
+### 推理力度
 
 对于支持可变推理深度的模型（如某些 API 提供商模型），该设置用于控制模型投入多少“推理力度”：
 
@@ -160,13 +160,13 @@ Open WebUI 遵循 **OpenAI Chat Completions API 标准**。推理内容会作为
 
 ---
 
-## Streaming 与 Non-Streaming
+## 流式与非流式
 
-### Streaming 模式（默认）
+### 流式模式（默认）
 
 在 streaming 模式（`stream: true`）下，Open WebUI 会边接收 token 边处理，因此能够实时检测 reasoning 区块。通常情况下无需额外配置即可良好工作。
 
-### Non-Streaming 模式
+### 非流式模式
 
 在 non-streaming 模式（`stream: false`）下，整段响应会一次性返回。**大多数解析问题都发生在这里**，因为：
 
@@ -200,7 +200,7 @@ Open WebUI 遵循 **OpenAI Chat Completions API 标准**。推理内容会作为
 
 ## 故障排查
 
-### Thinking 内容与最终答案混在一起
+### 推理内容与最终答案混在一起
 
 **症状：** 使用推理模型时，整段响应（包括 `<think>...</think>` 区块）被直接显示为最终答案，而不是被拆分到隐藏 / 可折叠的 thinking 区域中。
 
@@ -262,9 +262,9 @@ ollama serve --reasoning-parser deepseek_r1
 2. 提出一个需要推理的问题（例如数学题或逻辑题）
 3. 现在回复应该会把 thinking 内容显示为可折叠区块
 
-### 可用的 Reasoning Parsers
+### 可用的推理解析器
 
-| Parser | Description | Use Case |
+| 解析器 | 说明 | 用途 |
 |--------|-------------|----------|
 | `deepseek_r1` | DeepSeek R1 格式 | 大多数推理模型，包括 Qwen3 |
 | `deepseek_v3` | DeepSeek V3 格式 | 某些 DeepSeek 变体 |
@@ -330,7 +330,7 @@ ollama run your-model:tag "Explain step by step: What is 15 + 27?"
 - 结构化 delta 字段（`reasoning_content`、`reasoning`、`thinking`）
 - Open WebUI 能识别的基于文本的标签（并确保已启用 reasoning tag detection）
 
-### Anthropic Extended Thinking 与工具调用不兼容
+### Anthropic 扩展思考与工具调用不兼容
 
 **症状：** 使用 Anthropic Claude 模型，并开启 extended thinking 时，工具调用报错，例如：
 

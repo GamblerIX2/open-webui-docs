@@ -18,28 +18,28 @@ title: "Mistral OCR"
 - Open WebUI 实例
 - Mistral AI 账号
 
-# 集成步骤
+## 集成步骤
 
 ### 第 1 步：注册或登录 Mistral AI Console
 
 - 前往 `https://console.mistral.ai`
 - 按页面提示完成流程
-- 授权成功后，你应该能进入 Console Home
+- 授权成功后，你应该能进入控制台首页
 
-### 第 2 步：生成 API key
+### 第 2 步：生成 API 密钥
 
-- 前往 `API Keys` 或 `https://console.mistral.ai/api-keys`
-- 创建一个新的 key，并务必复制保存
+- 前往 `API 密钥` 或 `https://console.mistral.ai/api-keys`
+- 创建一个新的密钥，并务必复制保存
 
 ### 第 3 步：配置 Open WebUI 使用 Mistral OCR
 
 - 登录你的 Open WebUI 实例
-- 进入 `Admin Panel`
-- 点击 `Settings`
-- 打开 `Documents` 标签
-- 将 `Default` 内容提取引擎下拉框切换为 `Mistral OCR`
-- 在对应字段中粘贴 API Key
-- 保存 Admin Panel 设置
+- 进入 `管理面板`
+- 点击 `设置`
+- 打开 `文档` 标签
+- 将 `默认` 内容提取引擎下拉框切换为 `Mistral OCR`
+- 在对应字段中粘贴 API 密钥
+- 保存管理面板设置
 
 ## 验证 Mistral OCR
 

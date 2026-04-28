@@ -1,57 +1,57 @@
 ---
 sidebar_position: 202
-title: "HTTPS using Caddy"
+title: "使用 Caddy 的 HTTPS"
 ---
 
 
-## HTTPS Using Caddy
+## 使用 Caddy 的 HTTPS {#https-using-caddy}
 
-Ensuring secure communication between your users and the Open WebUI is paramount. HTTPS (HyperText Transfer Protocol Secure) encrypts the data transmitted, protecting it from eavesdroppers and tampering. By configuring Caddy as a reverse proxy, you can seamlessly add HTTPS to your Open WebUI deployment, enhancing both security and trustworthiness.
+确保用户与 Open WebUI 之间的通信安全至关重要。HTTPS（HyperText Transfer Protocol Secure）会对传输中的数据进行加密，防止窃听和篡改。通过将 Caddy 配置为反向代理，你可以轻松为 Open WebUI 部署添加 HTTPS，同时提升安全性和可信度。
 
-This guide is simple walkthrough to set up a Ubuntu server with Caddy as a reverse proxy for Open WebUI, enabling HTTPS with automatic certificate management.
+本指南提供一个简单的实操流程，帮助你在 Ubuntu 服务器上使用 Caddy 作为 Open WebUI 的反向代理，并借助自动证书管理启用 HTTPS。
 
-There's a few steps we'll follow to get everything set up:
+接下来我们将按以下步骤完成配置：
 
-- [HTTPS Using Caddy](#https-using-caddy)
+- [使用 Caddy 的 HTTPS](#https-using-caddy)
 - [Docker](#docker)
-  - [Installing Docker](#installing-docker)
-- [OpenWebUI](#openwebui)
-  - [Installing OpenWebUI](#installing-openwebui)
+  - [安装 Docker](#installing-docker)
+- [Open WebUI](#openwebui)
+  - [安装 Open WebUI](#installing-openwebui)
 - [Caddy](#caddy)
-  - [Installing Caddy](#installing-caddy)
-  - [Configure Caddy](#configure-caddy)
-- [Testing HTTPS](#testing-https)
-- [Updating Open WebUI](#updating-open-webui)
-  - [Stopping Open WebUI](#stopping-open-webui)
-  - [Pulling the latest image](#pulling-the-latest-image)
-  - [Starting Open WebUI](#starting-open-webui)
+  - [安装 Caddy](#installing-caddy)
+  - [配置 Caddy](#configure-caddy)
+- [测试 HTTPS](#testing-https)
+- [更新 Open WebUI](#updating-open-webui)
+  - [停止 Open WebUI](#stopping-open-webui)
+  - [拉取最新镜像](#pulling-the-latest-image)
+  - [启动 Open WebUI](#starting-open-webui)
 
 ## Docker
 
-Follow the guide to set up Docker's apt repository [Docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
+按照 Docker 官方指南配置 apt 仓库：[Docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
-I've included `docker-compose` as it's needed to run `docker compose`.
+我在示例中也包含了 `docker-compose`，因为运行 `docker compose` 时会用到它。
 
-### Installing Docker
+### 安装 Docker {#installing-docker}
 
-Here's the command I've used to install Docker on Ubuntu:
+下面是我在 Ubuntu 上安装 Docker 时使用的命令：
 
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 ```
 
-## OpenWebUI
+## Open WebUI {#openwebui}
 
-I'd go ahead and create a directory for the Open WebUI project:
+先为 Open WebUI 项目创建一个目录：
 
 ```bash
 mkdir -p ~/open-webui
 cd ~/open-webui
 ```
 
-### Installing OpenWebUI
+### 安装 Open WebUI {#installing-openwebui}
 
-Create a `docker-compose.yml` file in the `~/open-webui` directory. I've left in a commented section for setting some environment varibles for Qdrant, but you can follow that for any other [environment variables](https://docs.openwebui.com/reference/env-configuration) you might need to set.
+在 `~/open-webui` 目录中创建一个 `docker-compose.yml` 文件。示例里保留了一段注释，用于演示如何为 Qdrant 设置环境变量；如果你还需要配置其他[环境变量](https://docs.openwebui.com/reference/env-configuration)，也可以按同样方式添加。
 
 ```yaml
 services:
@@ -70,23 +70,23 @@ services:
 
 ## Caddy
 
-Caddy is a powerful web server that automatically manages TLS certificates for you, making it an excellent choice for serving Open WebUI over HTTPS.
+Caddy 是一个强大的 Web 服务器，会自动替你管理 TLS 证书，因此非常适合通过 HTTPS 提供 Open WebUI 服务。
 
-### Installing Caddy
+### 安装 Caddy {#installing-caddy}
 
-Follow the [guide to set up Caddy's on Ubuntu](https://caddyserver.com/docs/install#debian-ubuntu-raspbian).
+请参考 [Caddy 在 Ubuntu 上的安装指南](https://caddyserver.com/docs/install#debian-ubuntu-raspbian)。
 
-### Configure Caddy
+### 配置 Caddy {#configure-caddy}
 
-You're going to need to change the `CaddyFile` to use your domain.
+接下来需要修改 `Caddyfile`，将其替换为你的域名。
 
-To do that, edit the file `/etc/caddy/Caddyfile`.
+编辑 `/etc/caddy/Caddyfile` 文件：
 
 ```bash
 sudo nano /etc/caddy/Caddyfile
 ```
 
-Then the configuration should have the following:
+然后将配置更新为如下内容：
 
 ```caddyfile
 your-domain.com {
@@ -94,42 +94,42 @@ your-domain.com {
 }
 ```
 
-Make sure to replace `your-domain.com` with your actual domain name.
+请务必将 `your-domain.com` 替换为你的真实域名。
 
-## Testing HTTPS
+## 测试 HTTPS {#testing-https}
 
-Now assuming you've already set up your DNS records to point to your server's IP address, you should be able to test if Open WebUI is accessible via HTTPS by running `docker compose up` in the `~/open-webui` directory.
+假设你已经将 DNS 记录指向服务器 IP，现在可以在 `~/open-webui` 目录中运行 `docker compose up`，测试 Open WebUI 是否可以通过 HTTPS 访问。
 
 ```bash
 cd ~/open-webui
 docker compose up -d
 ```
 
-You should now be able to access Open WebUI at `https://your-domain.com`.
+现在你应该可以通过 `https://your-domain.com` 访问 Open WebUI。
 
-## Updating Open WebUI
+## 更新 Open WebUI {#updating-open-webui}
 
-I wanted to include a quick note on how to update Open WebUI without losing your data. Since we're using a volume to store the data, you can simply pull the latest image and restart the container.
+再补充一条：如何在不丢失数据的情况下更新 Open WebUI。由于我们使用 volume 存储数据，因此只需拉取最新镜像并重启容器即可。
 
-### Stopping Open WebUI
+### 停止 Open WebUI {#stopping-open-webui}
 
-First we need to stop and remove the existing container:
+首先停止并删除现有容器：
 
 ```bash
 docker rm -f open-webui
 ```
 
-### Pulling the latest image
+### 拉取最新镜像 {#pulling-the-latest-image}
 
-Then you can start the container again:
+然后拉取最新镜像：
 
 ```bash
 docker pull ghcr.io/open-webui/open-webui:main
 ```
 
-### Starting Open WebUI
+### 启动 Open WebUI {#starting-open-webui}
 
-Now you can start the Open WebUI container again:
+最后重新启动 Open WebUI 容器：
 
 ```bash
 docker compose up -d

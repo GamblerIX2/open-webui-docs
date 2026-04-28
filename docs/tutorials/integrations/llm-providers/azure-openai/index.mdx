@@ -1,9 +1,9 @@
 ---
 sidebar_position: 1
-title: "使用 EntraID 的 Azure OpenAI"
+title: "使用 Entra ID 的 Azure OpenAI"
 ---
 
-# 使用 EntraID 的 Azure OpenAI
+# 使用 Entra ID 的 Azure OpenAI
 
 :::warning
 
@@ -19,7 +19,7 @@ title: "使用 EntraID 的 Azure OpenAI"
 
 ## 概览
 
-Open WebUI 支持通过 **Entra ID authentication** 集成 Azure OpenAI，这使你无需存储 API key 即可完成认证，带来以下优势：
+Open WebUI 支持通过 **Entra ID 认证** 集成 Azure OpenAI，这使你无需存储 API key 即可完成认证，带来以下优势：
 
 - **更高安全性**：无需管理或轮换静态 API key
 - **Azure RBAC 集成**：可通过 Azure 角色分配实现细粒度权限控制
@@ -53,11 +53,11 @@ _这样它就只会使用你选定的 credential 类型。_
 - `dev`：表示只尝试 `SharedTokenCacheCredential`、`AzureCliCredential`、`AzurePowershellCredential`、`AzureDeveloperCliCredential`
 :::
 
-### Azure CLI Authentication
+### Azure CLI 认证
 
 **最适合：** 本地开发
 
-Azure CLI authentication 使用你本机上的 Azure 凭证来访问 Azure OpenAI。
+Azure CLI 认证使用你本机上的 Azure 凭证来访问 Azure OpenAI。
 这是最容易上手的方式，非常适合开发环境。
 
 **特点：**
@@ -66,39 +66,34 @@ Azure CLI authentication 使用你本机上的 Azure 凭证来访问 Azure OpenA
 - 使用你的个人 Azure 凭证
 - 需要预先安装 Azure CLI
 
-[**→ 查看如何配置 Azure CLI Authentication**](./azure-cli-auth.mdx)
+[**→ 查看如何配置 Azure CLI 认证**](./azure-cli-auth.mdx)
 
-### 2. Workload Identity Authentication
+### 2. Workload Identity 认证
 
 **最适合：** Azure Kubernetes Service（AKS）生产部署，以及多租户环境
 
-Workload Identity 为 AKS 集群提供托管身份方案，使 pods 在无需存储任何集群内凭证的情况下即可访问 Azure 服务。
+- **工作负载身份（Workload Identity）** 为 AKS 集群提供托管身份方案，使 Pod 在无需存储任何集群内凭证的情况下即可访问 Azure 服务。
 
 **特点：**
-- 集群中无需存储凭证
-- 原生 Kubernetes 认证方式
-- 支持 federated identity credentials
-- 生产级安全模型
-- 可通过 Terraform 做基础设施即代码管理
 
-[**→ 查看如何配置 Workload Identity Authentication**](./workload-identity-auth.mdx)
+[**→ 查看如何配置 Workload Identity 认证**](./workload-identity-auth.mdx)
 
 ## 前提条件
 
 无论你选择哪种认证方式，都需要以下条件：
 
-- **Azure Subscription**：拥有 Azure OpenAI 资源访问权限
+- **Azure 订阅**：拥有 Azure OpenAI 资源访问权限
 - **Open WebUI**：版本为 0.6.30 或更高
 - **Azure RBAC 角色**：你的身份需要被分配 `Cognitive Services OpenAI User` 角色
-- **Azure OpenAI Resource**：已经部署好的 Azure OpenAI 实例
+- **Azure OpenAI 资源**：已经部署好的 Azure OpenAI 实例
 
 ## 快速对比
 
-|                        | Azure CLI Auth           | Workload Identity                                 |
+|                        | Azure CLI 认证           | Workload Identity 认证                            |
 |------------------------|--------------------------|---------------------------------------------------|
 | **环境**               | 本地开发                 | Azure Kubernetes Service (AKS)                    |
 | **配置复杂度**         | 简单                     | 中等（需要 Terraform 或一定 Azure 经验）          |
-| **安全模型**           | Azure CLI 凭证           | Workload identity                                 |
+| **安全模型**           | Azure CLI 凭证           | Workload Identity 认证                            |
 | **最适合**             | 开发与测试               | 生产部署                                          |
 | **凭证存储**           | 本地 `.azure` 目录       | 无（federated tokens）                            |
 
@@ -106,7 +101,7 @@ Workload Identity 为 AKS 集群提供托管身份方案，使 pods 在无需存
 
 请选择与你部署环境最匹配的认证方式：
 
-- **本地开发或 Docker 部署**：从 [Azure CLI Authentication](./azure-cli-auth.mdx) 开始
-- **生产环境 AKS 部署**：使用 [Workload Identity Authentication](./workload-identity-auth.mdx)
+- **本地开发或 Docker 部署**：从 [Azure CLI 认证](./azure-cli-auth.mdx) 开始
+- **生产环境 AKS 部署**：使用 [Workload Identity 认证](./workload-identity-auth.mdx)
 
 这两种方式都能为 Azure OpenAI 提供安全、无密钥的认证能力，并且在基础设施准备完成后，都可通过 Open WebUI 管理界面进行配置。

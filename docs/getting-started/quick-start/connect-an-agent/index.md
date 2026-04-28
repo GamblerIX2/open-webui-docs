@@ -57,5 +57,5 @@ Agent 会根据你的消息决定何时、如何使用这些工具，而 Open We
 5. 你在熟悉的聊天界面中看到结果，同时保留完整会话历史、用户体系以及 Open WebUI 的全部功能
 
 :::tip
-由于多数 Agent 都实现了标准 OpenAI Chat Completions 协议，因此添加一个 Agent 往往只需在 **Admin Settings → Connections → OpenAI** 中填入 URL 和 API key。无需插件、无需 pipes、无需中间层。
+由于多数 Agent 都实现了标准 OpenAI 聊天补全协议，因此添加一个 Agent 往往只需在 **管理面板 → 连接 → OpenAI** 中填入 URL 和 API 密钥。无需插件、无需 pipes、无需中间层。
 :::

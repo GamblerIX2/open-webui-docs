@@ -11,13 +11,13 @@ title: "Yandex"
 
 :::tip
 
-若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [环境配置文档](/reference/env-configuration#web-search)。
 
 :::
 
-:::tip Troubleshooting
+:::tip 故障排查
 
-如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
+如果你在 web search 上遇到问题，请查看 [Web Search 故障排查指南](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
@@ -44,6 +44,6 @@ services:
 
 ### 配置项说明
 
-*   **YANDEX_WEB_SEARCH_URL**：Yandex Search API endpoint，默认值为 `https://searchapi.api.cloud.yandex.net/v2/web/search`
-*   **YANDEX_WEB_SEARCH_API_KEY**：你的 Yandex Cloud API Key
-*   **YANDEX_WEB_SEARCH_CONFIG**：一个可选 JSON 字符串，用于自定义搜索请求。你可以通过它设置 Yandex Search API 支持的任意参数
+* **YANDEX_WEB_SEARCH_URL**：Yandex Search API 端点，默认值为 `https://searchapi.api.cloud.yandex.net/v2/web/search`
+* **YANDEX_WEB_SEARCH_API_KEY**：你的 Yandex Cloud API Key
+* **YANDEX_WEB_SEARCH_CONFIG**：一个可选的 JSON 字符串，用于自定义搜索请求。你可以通过它设置 Yandex Search API 支持的任意参数

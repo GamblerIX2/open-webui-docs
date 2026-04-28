@@ -157,6 +157,6 @@ git checkout -b my-feature-branch
 ```
 
 3. **保持分支同步**，定期从 `dev` 合并更新
-4. 以清晰的标题和描述向 `dev` 分支**提交 pull request**
+4. 以清晰的标题和描述向 `dev` 分支**提交拉取请求（pull request）**
 
 贡献规范请参见 [Contributing](/contributing)。

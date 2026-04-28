@@ -1,18 +1,18 @@
-### Self-Signed Certificate
+# 自签名证书
 
-Using self-signed certificates is suitable for development or internal use where trust is not a critical concern.
+自签名证书适合开发或内部使用，尤其是在你并不特别在意信任链的场景下。
 
-#### Self-Signed Certificate Steps
+## 自签名证书步骤
 
-1. **Create Directories for Nginx Files:**
+1. **为 Nginx 文件创建目录：**
 
     ```bash
     mkdir -p conf.d ssl
     ```
 
-2. **Create Nginx Configuration File:**
+2. **创建 Nginx 配置文件：**
 
-    **`conf.d/open-webui.conf`:**
+    **`conf.d/open-webui.conf`：**
 
     ```nginx
     server {
@@ -40,20 +40,20 @@ Using self-signed certificates is suitable for development or internal use where
             client_max_body_size 20M;
             proxy_read_timeout 10m;
 
-            # Disable caching for auth endpoints
+            # 认证端点不缓存
             proxy_no_cache 1;
             proxy_cache_bypass 1;
             add_header Cache-Control "no-store, no-cache, must-revalidate" always;
             expires -1;
         }
 
-        # Profile and model images - cached for performance
+        # 个人资料和模型图片 - 缓存以提升性能
         location ~ ^/api/v1/(users/[^/]+/profile/image|models/model/profile/image)$ {
             proxy_pass http://host.docker.internal:3000;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
 
-            # Cache images for 1 day
+            # 图片缓存 1 天
             expires 1d;
             add_header Cache-Control "public, max-age=86400";
         }
@@ -83,8 +83,8 @@ Using self-signed certificates is suitable for development or internal use where
             proxy_cache off;
 
             client_max_body_size 20M;
-            
-            # Extended timeout for long LLM completions (30 minutes)
+
+            # 长时间 LLM 补全的扩展超时（30 分钟）
             proxy_read_timeout 1800;
             proxy_send_timeout 1800;
             proxy_connect_timeout 1800;
@@ -94,7 +94,7 @@ Using self-signed certificates is suitable for development or internal use where
     }
     ```
 
-3. **Generate Self-Signed SSL Certificates:**
+3. **生成自签名 SSL 证书：**
 
     ```bash
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -103,9 +103,9 @@ Using self-signed certificates is suitable for development or internal use where
     -subj "/CN=your_domain_or_IP"
     ```
 
-4. **Update Docker Compose Configuration:**
+4. **更新 Docker Compose 配置：**
 
-    Add the Nginx service to your `docker-compose.yml`:
+    在 `docker-compose.yml` 中添加 Nginx 服务：
 
     ```yaml
     services:
@@ -120,15 +120,15 @@ Using self-signed certificates is suitable for development or internal use where
           - open-webui
     ```
 
-5. **Start Nginx Service:**
+5. **启动 Nginx 服务：**
 
     ```bash
     docker compose up -d nginx
     ```
 
-#### Access the WebUI
+## 访问 WebUI
 
-Access Open WebUI via HTTPS at:
+通过以下 HTTPS 地址访问 Open WebUI：
 
 [https://your_domain_or_IP](https://your_domain_or_IP)
 

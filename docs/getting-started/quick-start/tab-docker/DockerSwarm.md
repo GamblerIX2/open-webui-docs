@@ -11,7 +11,7 @@
 
 默认的 ChromaDB 模式（未设置 `CHROMA_HTTP_HOST`）使用本地基于 SQLite 的 `PersistentClient`，**不具备 fork 安全性**——多个 worker 进程并发写入会立刻导致 worker 崩溃。将 ChromaDB 作为独立服务运行，可以通过 HTTP 连接避免直接访问 SQLite。
 
-如果你打算把 `openWebUI` 服务扩展到多个副本，还应同时把主数据库切换到 PostgreSQL，并配置 Redis。完整要求请参见 [Scaling & HA guide](https://docs.openwebui.com/troubleshooting/multi-replica)。
+如果你打算把 `openWebUI` 服务扩展到多个副本，还应同时把主数据库切换到 PostgreSQL，并配置 Redis。完整要求请参见 [扩展与高可用指南](https://docs.openwebui.com/troubleshooting/multi-replica)。
 
 :::
 

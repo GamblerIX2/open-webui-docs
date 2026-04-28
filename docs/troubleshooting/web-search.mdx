@@ -19,8 +19,8 @@ Open WebUI 中的 Web Search 让语言模型能够访问互联网中的实时信
 
 ✅ **解决方法：**
 
-1. 前往：**Admin Panel > Settings > Web Search**
-2. 启用 **Trust Proxy Environment**
+1. 前往：**管理面板 > 设置 > Web Search**
+2. 启用 **信任代理环境**
 3. 保存修改
 
 或者设置环境变量 [`WEB_SEARCH_TRUST_ENV`](/reference/env-configuration#web_search_trust_env)：
@@ -30,7 +30,7 @@ WEB_SEARCH_TRUST_ENV=True
 ```
 
 :::info
-这是一个 **PersistentConfig** 变量，意味着它既可以在启动时通过环境变量设置，也可以通过 Admin Panel UI 配置。一旦你在 UI 中设置了它，数据库中的值就会优先生效。
+这是一个 **PersistentConfig** 变量，意味着它既可以在启动时通过环境变量设置，也可以通过管理面板 UI 配置。一旦你在 UI 中设置了它，数据库中的值就会优先生效。
 
 这个设置会让 Open WebUI 的网页内容加载器遵循环境变量中的代理设置（`http_proxy`、`https_proxy`）。如果不开启，即使你的搜索引擎本身能通过代理工作，从返回 URL 抓取内容时仍然会失败。
 :::
@@ -62,7 +62,7 @@ search:
 
 ✅ **解决方法：**
 
-- **增大上下文长度**：网页通常包含 4,000-8,000+ token。如果你的模型限制是 2048 token，那你实际上会丢掉大部分内容。请在 **Admin Panel > Models > Settings > Advanced Parameters** 中将其提高到 16384+（低于这个值时，网页内容效果通常都比较差）。
+- **增大上下文长度**：网页通常包含 4,000-8,000+ token。如果你的模型限制是 2048 token，那你实际上会丢掉大部分内容。请在 **管理面板 > 模型 > 设置 > 高级参数** 中将其提高到 16384+（低于这个值时，网页内容效果通常都比较差）。
 
 - **检查结果数量**：通过调整 `WEB_SEARCH_RESULT_COUNT` 控制抓取的结果数。
 
@@ -90,11 +90,11 @@ search:
 
 ## 环境变量参考
 
-完整的 Web Search 环境变量列表，请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+完整的 Web Search 环境变量列表，请参阅 [环境变量配置文档](/reference/env-configuration#web-search)。
 
 常用变量：
 
-| Variable | 说明 |
+| 变量 | 说明 |
 |----------|-------------|
 | `WEB_SEARCH_TRUST_ENV` | 为内容抓取启用代理支持 |
 | `WEB_SEARCH_RESULT_COUNT` | 要抓取的搜索结果数量 |

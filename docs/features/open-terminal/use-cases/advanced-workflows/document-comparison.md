@@ -19,9 +19,9 @@ title: "文档对比"
 4. 高亮你指定的具体内容（付款条款、责任条款）
 5. 创建包含重要变更对比视图的对比报告
 
-{/* TODO: Screenshot — Chat showing the AI's analysis: "Found 14 changes. 3 substantive:" followed by a highlighted comparison showing a payment term change ("Net 30" → "Net 60") with surrounding context. */}
+<!-- TODO: 截图——聊天界面显示 AI 的分析：“发现 14 处变更，其中 3 处为实质性变更：”随后展示高亮对比，显示付款条款变更（“Net 30” → “Net 60”）及其上下文。 -->
 
-{/* TODO: Screenshot — A generated diff report showing additions in green and removals in red, with change categories labeled. */}
+<!-- TODO: 截图——生成的差异报告：新增内容以绿色显示、删除内容以红色显示，并标注各类变更。 -->
 
 ## 技能内容
 

@@ -9,19 +9,19 @@ title: "URL 参数"
 
 下表列出了可用 URL 参数、其作用和示例用法。
 
-| **Parameter**         | **Description**                                                                   | **Example**                      |
-|-----------------------|-----------------------------------------------------------------------------------|----------------------------------|
-| `models`              | 指定要使用的模型列表，多个模型以逗号分隔 | `/?models=model1,model2`         |
-| `model`               | 为该聊天会话指定单个模型 | `/?model=model1`                 |
-| `youtube`             | 指定要在聊天中转录的 YouTube 视频 ID | `/?youtube=VIDEO_ID`             |
-| `load-url`            | 指定要抓取并作为文档上传到聊天中的网站 URL | `/?load-url=https://google.com`  |
-| `web-search`          | 若设为 `true`，则启用网络搜索功能 | `/?web-search=true`              |
-| `tools` or `tool-ids` | 指定要在聊天中启用的工具 ID 列表，多个以逗号分隔 | `/?tools=tool1,tool2`            |
-| `call`                | 若设为 `true`，则启用通话叠层 | `/?call=true`                    |
-| `q`                   | 为聊天设置初始查询或提示词 | `/?q=Hello%20there`              |
-| `temporary-chat`      | 若设为 `true`，则将聊天标记为临时会话 | `/?temporary-chat=true`          |
-| `code-interpreter`    | 若设为 `true`，则启用代码解释器功能 | `/?code-interpreter=true`        |
-| `image-generation`    | 若设为 `true`，则启用图像生成功能 | `/?image-generation=true`        |
+|**参数**|**说明**|**示例**|
+|---|---|---|
+|`models`|指定要使用的模型列表，多个模型以逗号分隔|`/?models=model1,model2`|
+|`model`|为该聊天会话指定单个模型|`/?model=model1`|
+|`youtube`|指定要在聊天中转录的 YouTube 视频 ID|`/?youtube=VIDEO_ID`|
+|`load-url`|指定要抓取并作为文档上传到聊天中的网站 URL|`/?load-url=https://google.com`|
+|`web-search`|若设为 `true`，则启用网络搜索功能|`/?web-search=true`|
+|`tools` or `tool-ids`|指定要在聊天中启用的工具 ID 列表，多个以逗号分隔|`/?tools=tool1,tool2`|
+|`call`|若设为 `true`，则启用通话叠层|`/?call=true`|
+|`q`|为聊天设置初始查询或提示词|`/?q=Hello%20there`|
+|`temporary-chat`|若设为 `true`，则将聊天标记为临时会话|`/?temporary-chat=true`|
+|`code-interpreter`|若设为 `true`，则启用代码解释器功能|`/?code-interpreter=true`|
+|`image-generation`|若设为 `true`，则启用图像生成功能|`/?image-generation=true`|
 
 ### 1. **模型与模型选择**
 

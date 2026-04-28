@@ -72,21 +72,15 @@ docker exec -it open-webui sqlite3 /app/backend/data/webui.db "UPDATE config SET
 ### 常规
 
 #### `WEBUI_URL`
-
+-
 - 类型：`str`
 - 默认值：`http://localhost:3000`
-- 描述：Specifies the URL where your Open WebUI installation is reachable. Needed for search engine support and OAuth/SSO.
+- 描述：指定实例可访问的 URL；OAuth/SSO 和搜索引擎支持都需要它。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::warning
 
-This variable has to be set before you start using OAuth/SSO for authentication.
-Since this is a persistent config environment variable, you can only change it through one of the following options:
-
- - Temporarily disabling persistent config using `ENABLE_PERSISTENT_CONFIG`
- - Changing `WEBUI_URL` in the admin panel > settings and changing "WebUI URL".
-
-Failure to set WEBUI_URL before using OAuth/SSO will result in failure to log in.
+首次使用 OAuth/SSO 之前必须先设置 `WEBUI_URL`。由于它是持久化配置，建议通过 `ENABLE_PERSISTENT_CONFIG` 或管理面板修改；否则登录会失败。
 
 :::
 
@@ -94,44 +88,40 @@ Failure to set WEBUI_URL before using OAuth/SSO will result in failure to log in
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Toggles user account creation.
+- 描述：控制是否允许创建新用户账户。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_SIGNUP_PASSWORD_CONFIRMATION`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：If set to True, a "Confirm Password" field is added to the sign-up page to help users avoid typos when creating their password.
+- 描述：为注册页添加“确认密码”字段，减少输错密码。
 
 #### `WEBUI_ADMIN_EMAIL`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Specifies the email address for an admin account to be created automatically on first startup when no users exist. This enables headless/automated deployments without manual account creation. When combined with `WEBUI_ADMIN_PASSWORD`, the admin account is created during application startup, and `ENABLE_SIGNUP` is automatically disabled to prevent unauthorized account creation.
+- 默认值：空字符串（`''`）
+- 描述：首次启动且数据库中没有用户时自动创建管理员账号的邮箱。
 
 :::info
 
-This variable is designed for automated/containerized deployments where manual admin account creation is impractical. The admin account is only created if:
-- No users exist in the database (fresh installation)
-- Both `WEBUI_ADMIN_EMAIL` and `WEBUI_ADMIN_PASSWORD` are configured
-
-After the admin account is created, sign-up is automatically disabled for security. You can re-enable it later via the Admin Panel if needed.
+只有在数据库为空且同时配置了 `WEBUI_ADMIN_EMAIL` 和 `WEBUI_ADMIN_PASSWORD` 时，才会创建管理员账号。创建后会自动禁用注册。
 
 :::
 
 #### `WEBUI_ADMIN_PASSWORD`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Specifies the password for the admin account to be created automatically on first startup when no users exist. Must be used in conjunction with `WEBUI_ADMIN_EMAIL`. The password is securely hashed before storage using the same mechanism as manual account creation.
+- 默认值：空字符串（`''`）
+- 描述：自动创建的管理员账号密码，需与 `WEBUI_ADMIN_EMAIL` 一起使用。
 
 :::danger
 
-**Security Considerations**
-- Use a strong, unique password for production deployments
-- Consider using secrets management (Docker secrets, Kubernetes secrets, environment variable injection) rather than storing the password in plain text configuration files
-- After initial setup, change the admin password through the UI for enhanced security
-- Never commit this value to version control
+**安全注意事项**
+- 生产环境请使用强且唯一的密码
+- 建议使用 secrets 管理，不要明文保存
+- 初始设置后建议通过 UI 更改管理员密码
+- 不要提交到版本控制
 
 :::
 
@@ -139,38 +129,37 @@ After the admin account is created, sign-up is automatically disabled for securi
 
 - 类型：`str`
 - 默认值：`Admin`
-- 描述：Specifies the display name for the automatically created admin account. This is used when `WEBUI_ADMIN_EMAIL` and `WEBUI_ADMIN_PASSWORD` are configured for headless admin creation.
+- 描述：自动创建管理员账号的显示名称。
 
 #### `ENABLE_LOGIN_FORM`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Toggles email, password, sign-in and "or" (only when `ENABLE_OAUTH_SIGNUP` is set to True) elements.
+- 描述：控制登录表单、邮箱/密码字段及“或”分隔元素的显示。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_PASSWORD_CHANGE_FORM`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls visibility of the password change UI in **Settings > Account**. When set to `False`, users do not see the password update form, which is useful for SSO-focused deployments where password changes should not be presented in the UI.
+- 描述：控制 **设置 > 账户** 中密码修改界面的可见性。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_PASSWORD_AUTH`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Allows both password and SSO authentication methods to coexist when set to True. When set to False, it disables all password-based login attempts on the /signin and /ldap endpoints, enforcing strict SSO-only authentication. Disable this setting in production environments with fully configured SSO to prevent credential-based account takeover attacks; keep it enabled if you require password authentication as a backup or have not yet completed SSO configuration. Should never be disabled if OAUTH/SSO is not being used. This setting controls backend authentication behavior, while `ENABLE_PASSWORD_CHANGE_FORM` controls UI visibility of password-change controls.
+- 描述：控制密码认证是否可用。关闭后只允许 SSO/OAuth。
 
 :::tip
 
-This SHOULD be set to `False` if you only use SSO/OAUTH for Login and expose your Open WebUI publicly as to prevent password based logins.
+如果你只使用 SSO/OAuth 登录并公开部署 Open WebUI，建议将此项设为 `False` 以避免基于密码的登录。
 
 :::
 
 :::danger
 
-This should **only** ever be set to `False` when [ENABLE_OAUTH_SIGNUP](https://docs.openwebui.com/reference/env-configuration/#enable_oauth_signup)
-is also being used and set to `True`. **Never disable this if OAUTH/SSO is not being used.** Failure to do so will result in the inability to login.
+只有在同时启用 `ENABLE_OAUTH_SIGNUP` 时才应关闭此项；否则会导致无法登录。
 
 :::
 
@@ -178,143 +167,137 @@ is also being used and set to `True`. **Never disable this if OAUTH/SSO is not b
 
 - 类型：`str`
 - 默认值：`en`
-- 描述：Sets the default locale for the application.
+- 描述：设置应用程序的默认语言环境。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `DEFAULT_MODELS`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None`.
-- 描述：Sets a default Language Model.
+- 默认值：空字符串（`''`）
+- 描述：设置默认模型列表。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `DEFAULT_PINNED_MODELS`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Comma-separated list of model IDs to pin by default for new users who haven't customized their pinned models. This provides a pre-selected set of frequently used models in the model selector for new accounts.
-- Example: `gpt-4,claude-3-opus,llama-3-70b`
+- 默认值：空字符串（`''`）
+- 描述：为新用户预置默认置顶模型的 ID 列表，使用逗号分隔。
+- 示例：`gpt-4,claude-3-opus,llama-3-70b`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `DEFAULT_MODEL_METADATA`
 
 - 类型：`dict` (JSON object)
 - 默认值：`{}`
-- 描述：Sets global default metadata (capabilities and other model info) for all models. These defaults act as a baseline — per-model overrides always take precedence. For capabilities, the defaults and per-model values are merged (per-model wins on conflicts). For other metadata fields, the default is only applied if the model has no value set. Configurable via **Admin Settings → Models**.
-- 持久化：这是一个 `PersistentConfig` 变量。 Stored at config key `models.default_metadata`.
+- 描述：为所有模型设置全局默认元数据；模型自己的设置始终优先。
+- 持久化：这是一个 `PersistentConfig` 变量。存储在配置键 `models.default_metadata`。
 
 #### `DEFAULT_MODEL_PARAMS`
 
 - 类型：`dict` (JSON object)
 - 默认值：`{}`
-- 描述：Sets global default parameters (temperature, top_p, max_tokens, seed, etc.) for all models. These defaults are applied as a baseline at chat completion time — per-model parameter overrides always take precedence. Configurable via **Admin Settings → Models**.
-- 持久化：这是一个 `PersistentConfig` 变量。 Stored at config key `models.default_params`.
+- 描述：为所有模型设置全局默认参数（temperature、top_p、max_tokens、seed 等）。
+- 持久化：这是一个 `PersistentConfig` 变量。存储在配置键 `models.default_params`。
 
 :::info
 
-`DEFAULT_MODEL_PARAMS` is read from the environment as a JSON string at startup.
-
-- Use valid JSON (for example: `{"temperature":0.7,"function_calling":"native"}`)
-- If parsing fails, Open WebUI logs the error and falls back to `{}`
+`DEFAULT_MODEL_PARAMS` 会在启动时以 JSON 字符串从环境变量读取；解析失败时会回退到 `{}`。
 
 :::
 
 #### `DEFAULT_USER_ROLE`
 
 - 类型：`str`
-- Options:
-  - `pending` - New users are pending until their accounts are manually activated by an admin.
-  - `user` - New users are automatically activated with regular user permissions.
-  - `admin` - New users are automatically activated with administrator permissions.
+- 选项：`pending`、`user`、`admin`
 - 默认值：`pending`
-- 描述：Sets the default role assigned to new users.
+- 描述：设置新用户默认角色。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `DEFAULT_GROUP_ID`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Sets the default group ID to assign to new users upon registration.
+- 默认值：空字符串（`''`）
+- 描述：设置新用户默认加入的组 ID。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `DEFAULT_GROUP_SHARE_PERMISSION`
 
 - 类型：`str`
-- Options: `members`, `true`, `false`
+- 选项：`members`、`true`、`false`
 - 默认值：`members`
-- 描述：Controls the default "Who can share to this group" setting for newly created groups. `members` means only group members can share to the group, `true` means anyone can share, and `false` means no one can share to the group. This applies both to groups created manually and groups created automatically (e.g. via SCIM or OAuth group sync). Existing groups are not affected — this only sets the initial default for new groups.
+- 描述：控制新建用户组的默认共享权限。
 
 #### `PENDING_USER_OVERLAY_TITLE`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Sets a custom title for the pending user overlay.
+- 默认值：空字符串（`''`）
+- 描述：为待处理用户遮罩设置自定义标题。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `PENDING_USER_OVERLAY_CONTENT`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Sets a custom text content for the pending user overlay.
+- 默认值：空字符串（`''`）
+- 描述：为待处理用户遮罩设置自定义文本内容。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_CALENDAR`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables the Calendar feature. When enabled, users can create calendars, manage events, and share calendars with other users or groups via access grants. Active automations are automatically surfaced as virtual events on a dedicated "Scheduled Tasks" calendar. Requires the `features.calendar` user permission (admins always pass).
+- 描述：用于启用或禁用日历功能，支持创建、管理和共享日历。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_CHANNELS`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables or disables channel support.
+- 描述：用于启用或禁用频道支持。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_FOLDERS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables the folders feature, allowing users to organize their chats into folders in the sidebar.
+- 描述：用于启用或禁用文件夹功能，允许用户在侧边栏中整理聊天。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `FOLDER_MAX_FILE_COUNT`
 
 - 类型：`int`
-- 默认值：`("") empty string`
-- 描述：Sets the maximum number of files processing allowed per folder.
-- 持久化：这是一个 `PersistentConfig` 变量。 It can be configured in the **Admin Panel > Settings > General > Folder Max File Count**. Default is none (empty string) which is unlimited.
+- 默认值：空字符串（无限制）
+- 描述：设置每个文件夹允许处理的最大文件数。
+- 持久化：这是一个 `PersistentConfig` 变量。可在 **Admin Panel > Settings > General > Folder Max File Count** 中配置。
 
 #### `ENABLE_AUTOMATIONS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables the Automations feature globally. When disabled, the scheduler skips automation processing, the automation API endpoints return `403 Forbidden`, automation builtin tools are not injected, and the Automations entry is hidden from the sidebar. Requires the `features.automations` user permission (admins always pass).
+- 描述：用于全局启用或禁用自动化功能。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `AUTOMATION_MAX_COUNT`
 
 - 类型：`int`
-- 默认值：`("") empty string` (unlimited)
-- 描述：Sets the maximum number of automations a non-admin user can create. When set to a positive integer, users who reach this limit will receive a `403 Forbidden` error when attempting to create additional automations. Admins bypass this limit.
+- 默认值：空字符串（无限制）
+- 描述：限制非管理员用户可创建的自动化数量。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `AUTOMATION_MIN_INTERVAL`
 
 - 类型：`int` (seconds)
-- 默认值：`("") empty string` (no minimum)
-- 描述：Sets the minimum allowed interval in seconds between automation recurrences for non-admin users. When set, any automation schedule that recurs more frequently than this value will be rejected with a `400 Bad Request` error. One-time automations (`COUNT=1`) are exempt from this check. Admins bypass this limit.
+- 默认值：空字符串（无最小值）
+- 描述：限制非管理员用户自动化重复执行的最小间隔（秒）。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::tip Common values for AUTOMATION_MIN_INTERVAL
 
-| Value | Meaning |
+| 数值 | 含义 |
 |-------|---------|
-| `60` | Minimum 1 minute between runs |
-| `300` | Minimum 5 minutes between runs |
-| `900` | Minimum 15 minutes between runs |
-| `3600` | Minimum 1 hour between runs |
+| `60` | 两次运行之间最少 1 分钟 |
+| `300` | 两次运行之间最少 5 分钟 |
+| `900` | 两次运行之间最少 15 分钟 |
+| `3600` | 两次运行之间最少 1 小时 |
 
 :::
 
@@ -322,81 +305,81 @@ is also being used and set to `True`. **Never disable this if OAUTH/SSO is not b
 
 - 类型：`int` (seconds)
 - 默认值：`10`
-- 描述：Sets the interval in seconds between scheduler ticks. The unified scheduler handles both automation execution and calendar event alerts. Accepts `AUTOMATION_POLL_INTERVAL` as a legacy fallback.
+- 描述：设置调度器轮询间隔，统一调度器同时处理自动化执行和日历提醒。
 
 #### `CALENDAR_ALERT_LOOKAHEAD_MINUTES`
 
 - 类型：`int` (minutes)
 - 默认值：`10`
-- 描述：Default lookahead window in minutes for calendar event alerts. Events starting within this window from the current time will trigger toast and webhook notifications. Individual events can override this via the **Reminder** setting in the event editor (`meta.alert_minutes`).
+- 描述：日历提醒的默认提前窗口（分钟），窗口内的事件会触发通知。
 
 #### `ENABLE_NOTES`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables the notes feature, allowing users to create and manage personal notes within Open WebUI.
+- 描述：用于启用或禁用笔记功能。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_MEMORIES`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables the [memory feature](/features/chat-conversations/memory), allowing models to store and retrieve long-term information about users.
+- 描述：用于启用或禁用记忆功能，让模型存储和检索长期信息。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `WEBHOOK_URL`
 
 - 类型：`str`
-- 描述：Sets a webhook for integration with Discord/Slack/Microsoft Teams.
+- 描述：设置用于与 Discord/Slack/Microsoft Teams 集成的 webhook。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_ADMIN_EXPORT`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether admins can export data, chats and the database in the admin panel. Database exports only work for SQLite databases for now.
+- 描述：控制管理员是否可以导出数据、聊天记录和数据库。
 
 #### `ENABLE_ADMIN_CHAT_ACCESS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables admin users to directly access the chats of other users. When disabled, admins can no longer accesss user's chats in the admin panel. If you disable this, consider disabling `ENABLE_ADMIN_EXPORT` too, if you are using SQLite, as the exports also contain user chats.
+- 描述：允许管理员直接访问其他用户的聊天记录。
 
 #### `ENABLE_ADMIN_ANALYTICS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether the **Analytics** tab is visible and accessible in the admin panel. When set to `False`, the analytics API router is not mounted and the tab is hidden from the admin navigation. Useful for deployments where analytics data collection or display is not desired. Requires a restart to take effect.
+- 描述：控制管理面板中的 Analytics 选项卡是否可见且可访问。
 
 #### `BYPASS_ADMIN_ACCESS_CONTROL`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：When disabled, admin users are treated like regular users for workspace access (models, knowledge, prompts, tools, and notes) and only see items they have **explicit permission to access** through the existing access control system. This also applies to the visibility of models in the model selector - admins will be treated as regular users: base models and custom models they do not have **explicit permission to access**, will be hidden. If set to `True` (Default), admins have access to **all created items** in the workspace area (including other users' notes) and all models in the model selector, **regardless of access permissions**. This environment variable deprecates `ENABLE_ADMIN_WORKSPACE_CONTENT_ACCESS`. If you are still using `ENABLE_ADMIN_WORKSPACE_CONTENT_ACCESS` you should switch to `BYPASS_ADMIN_ACCESS_CONTROL`.
+- 描述：控制管理员是否绕过工作区访问控制，访问所有项目和模型。
 
 #### `ENABLE_USER_WEBHOOKS`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables or disables user webhooks.
+- 描述：用于启用或禁用用户 webhook。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `RESPONSE_WATERMARK`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Sets a custom text that will be included when you copy a message in the chat. e.g., `"This text is AI generated"` -> will add "This text is AI generated" to every message, when copied.
+- 默认值：空字符串（`''`）
+- 描述：设置复制消息时附加的自定义文本。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `THREAD_POOL_SIZE`
 
 - 类型：`int`
 - 默认值：`0`
-- 描述：Sets the thread pool size for FastAPI/AnyIO blocking calls. By default (when set to `0`) FastAPI/AnyIO use `40` threads. In case of large instances and many concurrent users, it may be needed to increase `THREAD_POOL_SIZE` to prevent blocking.
+- 描述：设置 FastAPI/AnyIO 阻塞调用的线程池大小。
 
 :::info
 
-If you are running larger instances, you WILL NEED to set this to a higher value like multiple hundreds if not thousands (e.g. `1000`) otherwise your app may get stuck the default pool size (which is 40 threads) is full and will not react anymore.
+大实例通常需要更高的线程池值，例如 `1000`，否则默认 40 线程可能被占满导致无响应。
 
 :::
 
@@ -404,89 +387,89 @@ If you are running larger instances, you WILL NEED to set this to a higher value
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Controls whether custom models should fall back to a default model if their assigned base model is missing. When set to `True`, if a custom model's base model is not found, the system will use the first model from the configured `DEFAULT_MODELS` list instead of returning an error.
+- 描述：当自定义模型的基础模型缺失时，是否回退到默认模型。
 
 #### `SHOW_ADMIN_DETAILS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Toggles whether to show admin user details in the interface.
+- 描述：切换是否在界面中显示管理员用户详情。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_PUBLIC_ACTIVE_USERS_COUNT`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether the active user count is visible to all users or restricted to administrators only. When set to `False`, only admin users can see how many users are currently active, reducing backend load and addressing privacy concerns in large deployments.
+- 描述：控制活跃用户数量对所有用户可见，还是仅管理员可见。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_USER_STATUS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Globally enables or disables user status functionality. When disabled, the status UI (including blinking active/away indicators and status messages) is hidden across the application, and user status API endpoints are restricted.
-- 持久化：这是一个 `PersistentConfig` 变量。 It can be toggled in the **Admin Panel > Settings > General > User Status**.
+- 描述：全局启用或禁用用户状态功能；关闭后状态 UI 与相关 API 会被隐藏/限制。
+- 持久化：这是一个 `PersistentConfig` 变量。可在 **Admin Panel > Settings > General > User Status** 中切换。
 
 #### `ENABLE_EASTER_EGGS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables easter egg features in the UI, such as special themes (e.g., the "Her" theme option in the theme selector). Set to `False` to hide these optional novelty features from users.
+- 描述：启用或禁用 UI 中的彩蛋功能，例如特殊主题（如 “Her” 主题）。
 
 #### `ADMIN_EMAIL`
 
 - 类型：`str`
-- 描述：Sets the admin email shown by `SHOW_ADMIN_DETAILS`
+- 描述：`SHOW_ADMIN_DETAILS` 显示的管理员邮箱。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENV`
 
 - 类型：`str`
-- Options:
-  - `dev` - Enables the FastAPI API documentation on `/docs`
-  - `prod` - Automatically configures several environment variables
-- Default:
-  - **Backend Default**: `dev`
-  - **Docker Default**: `prod`
-- 描述：Environment setting.
+- 选项：
+  - `dev` - 启用 `/docs` 上的 FastAPI API 文档
+  - `prod` - 自动配置若干环境变量
+- 默认值：
+  - **后端默认值**：`dev`
+  - **Docker 默认值**：`prod`
+- 描述：环境设置。
 
 #### `ENABLE_PERSISTENT_CONFIG`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether the system prioritizes configuration saved in the database over environment variables.
-  - **`True` (Default):** Values saved in the **database** (via the Admin UI) take precedence. If a value is set in the UI, the environment variable is ignored for that setting.
-  - **`False`:** **Environment variables** take precedence. The system will *not* load configuration from the database at startup if an environment variable is present (or it will use the default).
-    - **CRITICAL WARNING:** When set to `False`, you can still seemingly "change" settings in the Admin UI. These changes will apply to the **current running session** but **will be lost upon restart**. The system will revert to the values defined in your environment variables (or defaults) every time it boots up.
-    - **Use Case:** Set this to `False` if you want to strictly manage configuration via a `docker-compose.yaml` or `.env` file and prevent UI changes from persisting across restarts.
+- 描述：控制数据库配置与环境变量的优先级。
+  - **`True`（默认值）：** 数据库中保存的值优先。
+  - **`False`：** 环境变量优先；启动时不会再从数据库加载该配置。
+    - **严重警告：** 在 UI 中看似修改成功的设置，重启后会丢失。
+    - **使用场景：** 如果你希望完全通过 `docker-compose.yaml` 或 `.env` 管理配置，可设为 `False`。
 
 #### `CUSTOM_NAME`
 
 - 类型：`str`
-- 描述：Sets `WEBUI_NAME` but polls **api.openwebui.com** for metadata.
+- 描述：设置 `WEBUI_NAME`，同时向 **api.openwebui.com** 拉取元数据。
 
 #### `WEBUI_NAME`
 
 - 类型：`str`
 - 默认值：`Open WebUI`
-- 描述：Sets the main WebUI name. Appends `(Open WebUI)` if overridden.
+- 描述：设置主 WebUI 名称；若被覆盖，会追加 `(Open WebUI)`。
 
 
 #### `PORT`
 
 - 类型：`int`
 - 默认值：`8080`
-- 描述：Sets the port to run Open WebUI from.
+- 描述：设置 Open WebUI 运行端口。
 
 :::info
 
-If you're running the application via Python and using the `open-webui serve` command, you cannot set the port using the `PORT` configuration. Instead, you must specify it directly as a command-line argument using the `--port` flag. For example:
+如果你通过 Python 并使用 `open-webui serve` 启动应用，就不能通过 `PORT` 配置端口；需要直接使用命令行参数 `--port` 指定。例如：
 
 ```bash
 open-webui serve --port 9999
 ```
 
-This will run the Open WebUI on port `9999`. The `PORT` environment variable is disregarded in this mode.
+这会让 Open WebUI 运行在 `9999` 端口。此模式下会忽略 `PORT` 环境变量。
 
 :::
 
@@ -494,46 +477,46 @@ This will run the Open WebUI on port `9999`. The `PORT` environment variable is 
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：When enabled, the system saves each individual chunk of streamed chat data to the database in real time.
+- 描述：启用后，系统会把流式聊天的每个分块实时写入数据库。
 
 :::danger EXTREME PERFORMANCE RISK: DO NOT ENABLE IN PRODUCTION
-**It is strongly recommended to NEVER enable this setting in production or multi-user environments.**
+**强烈建议不要在生产或多用户环境中启用此项。**
 
-Enabling `ENABLE_REALTIME_CHAT_SAVE` causes every single token generated by the LLM to trigger a separate database write operation. In a multi-user environment, this will:
-1.  **Exhaust Database Connection Pools**: Rapid-fire writes will quickly consume all available database connections, leading to "QueuePool limit reached" errors and application-wide freezes.
-2.  **Severe Performance Impact**: The overhead of thousands of database transactions per minute will cause massive latency for all users.
-3.  **Hardware Strain**: It creates immense I/O pressure on your storage system.
+启用后，LLM 生成的每个 token 都会触发一次单独的数据库写入。在多用户环境中，这会：
+1. **耗尽数据库连接池**：快速写入会很快耗尽所有可用连接，导致 `QueuePool limit reached` 错误和全局卡死。
+2. **严重拖慢性能**：每分钟成千上万次数据库事务会给所有用户带来巨大延迟。
+3. **增加硬件压力**：会对存储系统造成极大的 I/O 压力。
 
-**Keep this set to `False` (the default).** Chats are still saved automatically once generation is complete. This setting is only intended for extreme debugging scenarios or single-user environments where sub-second persistence of every token is more important than stability.
+**请保持为 `False`（默认值）。** 对话仍会在生成完成后自动保存；此设置只适用于极端调试或单用户环境。
 :::
 
 #### `ENABLE_CHAT_RESPONSE_BASE64_IMAGE_URL_CONVERSION`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：When set to true, it automatically uploads base64-encoded images exceeding 1KB in markdown and converts them into image file URLs to reduce the size of response text. Some multimodal models directly output images as Base64 strings within the Markdown content. This results in larger response bodies, placing strain on CPU, network, Redis, and database resources.
+- 描述：启用后，会自动把 Markdown 中超过 1KB 的 base64 图片上传并转换为图片 URL，以减小响应文本体积。
 
 #### `ENABLE_IMAGE_CONTENT_TYPE_EXTENSION_FALLBACK`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：When enabled, uses a hardcoded extension-to-MIME dictionary as a last-resort fallback when both the system MIME database and the file's stored content type metadata fail to determine the content type of an image. This is primarily useful on minimal container images (e.g., wolfi-base) that lack `/etc/mime.types` and have legacy files without stored content type metadata. Supported extensions include `.webp`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.svg`, `.bmp`, `.tiff`, `.ico`, `.heic`, `.heif`, and `.avif`.
+- 描述：当系统 MIME 数据库和文件元数据都无法识别图片类型时，使用扩展名到 MIME 的硬编码兜底映射。
 
 #### `CHAT_RESPONSE_STREAM_DELTA_CHUNK_SIZE`
 
 - 类型：`int`
 - 默认值：`1`
-- 描述：Sets a system-wide minimum value for the number of tokens to batch together before sending them to the client during a streaming response. This allows an administrator to enforce a baseline level of performance and stability across the entire system by preventing excessively small chunk sizes that can cause high CPU load. The final chunk size used for a response will be the highest value set among this global variable, the model's advanced parameters, or the per-chat settings. The default is 1, which applies no minimum batching at the global level.
+- 描述：设置流式响应向客户端发送前的最小 token 批量大小。
 
 #### `CHAT_STREAM_RESPONSE_CHUNK_MAX_BUFFER_SIZE`
 
 - 类型：`int`
 - 默认值：Empty string (' '), which disables the limit (equivalent to None)
-- 描述：Sets the maximum buffer size in bytes for handling stream response chunks. When a single chunk exceeds this limit, the system returns an empty JSON object and skips subsequent oversized data until encountering normally-sized chunks. This prevents memory issues when dealing with extremely large responses from certain providers (e.g., models like gemini-2.5-flash-image or services returning extensive web search data exceeding). Set to an empty string or a negative value to disable chunk size limitations entirely. Recommended values are 16-20 MB (`16777216`) or larger depending on the image size of the image generation model (4K images may need even more).
+- 描述：设置处理流式响应分块的最大缓冲区大小。超过该值时会跳过过大的数据块。
 
 :::info
 
-It is recommended to set this to a high single-digit or low double-digit value if you run Open WebUI with high concurrency, many users, and very fast streaming models.
+如果你在高并发、多用户、且模型流式速度很快的场景下运行 Open WebUI，建议将其设为较大的个位数或两位数值。
 
 :::
 
@@ -541,11 +524,11 @@ It is recommended to set this to a high single-digit or low double-digit value i
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables stateful session handling for the Responses API by forwarding `previous_response_id` to the upstream endpoint. When enabled, Open WebUI anchors each response to the previous one, allowing the upstream provider to maintain conversation state server-side.
+- 描述：通过向上游传递 `previous_response_id` 启用有状态的 Responses API 会话。
 
 :::warning Experimental
 
-**Only enable this if your upstream Responses API endpoint supports stateful sessions** (i.e., server-side response storage with `previous_response_id` anchoring). Most proxies and third-party endpoints are stateless and **will break** if this is enabled. This is intended for direct connections to providers like OpenAI that natively support the Responses API with session state.
+**只有在上游 Responses API 端点明确支持有状态会话时才启用此项。** 大多数代理和第三方端点是无状态的，启用后会出问题。
 
 :::
 
@@ -553,19 +536,19 @@ It is recommended to set this to a high single-digit or low double-digit value i
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Bypasses model access control. When set to `true`, all users (and admins alike) will have access to all models, regardless of the model's privacy setting (Private, Public, Shared with certain groups). This is useful for smaller or individual Open WebUI installations where model access restrictions may not be needed.
+- 描述：控制是否绕过模型访问控制。启用后，所有用户都能访问所有模型。
 
 #### `WEBUI_BUILD_HASH`
 
 - 类型：`str`
 - 默认值：`dev-build`
-- 描述：Used for identifying the Git SHA of the build for releases.
+- 描述：用于标识发布构建对应的 Git SHA。
 
 #### `WEBUI_BANNERS`
 
 - 类型：`list` of `dict`
 - 默认值：`[]`
-- 描述：List of banners to show to users. The format for banners are:
+- 描述：要向用户显示的横幅列表，格式如下：
 
 ```json
 [{"id": "string", "type": "string [info, success, warning, error]", "title": "string", "content": "string", "dismissible": false, "timestamp": 1000}]
@@ -575,7 +558,7 @@ It is recommended to set this to a high single-digit or low double-digit value i
 
 :::info
 
-When setting this environment variable in a `.env` file, make sure to escape the quotes by wrapping the entire value in double quotes and using escaped quotes (`\"`) for the inner quotes. Example:
+在 `.env` 文件中设置此环境变量时，请用双引号包裹整个值，并对内部引号使用转义（`\"`）。例如：
 
 ```
 WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your messages are stored.\", \"content\": \"Your messages are stored and may be reviewed by human people. LLM's are prone to hallucinations, check sources.\", \"dismissible\": true, \"timestamp\": 1000}]"
@@ -587,51 +570,51 @@ WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your message
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Builds the Docker image with NVIDIA CUDA support. Enables GPU acceleration for local Whisper and embeddings.
+- 描述：构建时启用 NVIDIA CUDA 支持，为本地 Whisper 和 embeddings 提供 GPU 加速。
 
 #### `DOCKER`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Indicates whether Open WebUI is running inside a Docker container. Used internally for environment detection.
+- 描述：表示 Open WebUI 是否运行在 Docker 容器中，用于内部环境检测。
 
 #### `USE_CUDA`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Controls whether to use CUDA acceleration for local models. When set to `true`, attempts to detect and use available NVIDIA GPUs. The code reads the environment variable `USE_CUDA_DOCKER` to set this internal boolean variable.
+- 描述：控制是否为本地模型使用 CUDA 加速。设为 `true` 时会尝试检测并使用可用的 NVIDIA GPU。
 
 #### `DEVICE_TYPE`
 
 - 类型：`str`
 - 默认值：`cpu`
-- 描述：Specifies the device type for model execution. Automatically set to `cuda` if CUDA is available and enabled, or `mps` for Apple Silicon.
+- 描述：指定模型执行所用的设备类型；若 CUDA 可用且启用，则自动设为 `cuda`，Apple Silicon 则为 `mps`。
 
 #### `EXTERNAL_PWA_MANIFEST_URL`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：When defined as a fully qualified URL (e.g., https://path/to/manifest.webmanifest), requests sent to /manifest.json will use the external manifest file. When not defined, the default manifest.json file will be used.
+- 描述：当设置为完整 URL（例如 `https://path/to/manifest.webmanifest`）时，发往 `/manifest.json` 的请求会使用外部 manifest；否则使用默认 manifest.json。
 
 #### `ENABLE_TITLE_GENERATION`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables chat title generation.
+- 描述：启用或禁用聊天标题生成。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `LICENSE_KEY`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the license key to use (for Enterprise users only).
+- 描述：指定要使用的许可证密钥（仅限 Enterprise 用户）。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `SSL_ASSERT_FINGERPRINT`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the SSL assert fingerprint to use.
+- 描述：指定要使用的 SSL assert fingerprint。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_COMPRESSION_MIDDLEWARE`
@@ -700,17 +683,17 @@ WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your message
 #### `AIOHTTP_CLIENT_TIMEOUT_OPENAI_MODEL_LIST`
 
 - 类型：`int`
-- 描述：Sets the timeout in seconds for fetching the model list. This can be useful in cases where network latency requires a longer timeout duration to successfully retrieve the model list.
+- 描述：设置获取模型列表的超时时间（秒）。
 
 #### `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER`
 
 - 类型：`int`
-- 默认值：Inherits `AIOHTTP_CLIENT_TIMEOUT` when unset
-- 描述：Sets the timeout in seconds for executing tool server API calls (OpenAPI/MCP proxy calls made by Open WebUI). Use this to control how long Open WebUI waits for actual tool execution responses.
+- 默认值：未设置时继承 `AIOHTTP_CLIENT_TIMEOUT`
+- 描述：设置执行 tool server API 调用的超时时间（秒）。
 
 :::info
 
-If this variable is unset or invalid, Open WebUI falls back to `AIOHTTP_CLIENT_TIMEOUT`.
+如果此变量未设置或无效，Open WebUI 会回退到 `AIOHTTP_CLIENT_TIMEOUT`。
 
 :::
 
@@ -718,47 +701,47 @@ If this variable is unset or invalid, Open WebUI falls back to `AIOHTTP_CLIENT_T
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls SSL/TLS verification for AIOHTTP client sessions when connecting to external APIs (e.g., Ollama Embeddings).
+- 描述：控制连接外部 API 时 AIOHTTP 客户端会话的 SSL/TLS 验证。
 
 #### `AIOHTTP_CLIENT_TIMEOUT_TOOL_SERVER_DATA`
 
 - 类型：`int`
 - 默认值：`10`
-- 描述：Sets the timeout in seconds for retrieving tool server metadata/configuration (for example, loading server data/spec information).
+- 描述：设置获取 tool server 元数据/配置的超时时间（秒）。
 
 #### `AIOHTTP_CLIENT_SESSION_TOOL_SERVER_SSL`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls SSL/TLS verification specifically for tool server connections via AIOHTTP client.
+- 描述：控制通过 AIOHTTP 客户端连接 tool server 时的 SSL/TLS 验证。
 
 #### `AIOHTTP_POOL_CONNECTIONS`
 
 - 类型：`int`
-- 默认值：unset (unlimited)
-- 描述：Maximum number of total concurrent connections in the shared AIOHTTP client pool used for outbound requests (Ollama, OpenAI-compatible endpoints, etc.). When unset, there is no total cap. Lower this if you need to bound total upstream concurrency.
+- 默认值：未设置（无限制）
+- 描述：共享 AIOHTTP 客户端池中总并发连接数上限。
 
 #### `AIOHTTP_POOL_CONNECTIONS_PER_HOST`
 
 - 类型：`int`
-- 默认值：unset (unlimited)
-- 描述：Maximum number of concurrent connections to any single host in the shared AIOHTTP pool. When unset, there is no per-host cap. Useful for staying under provider-side rate or connection limits.
+- 默认值：未设置（无限制）
+- 描述：共享 AIOHTTP 池中单个主机的并发连接数上限。
 
 #### `AIOHTTP_POOL_DNS_TTL`
 
 - 类型：`int`
 - 默认值：`300`
-- 描述：DNS cache TTL in seconds for the shared AIOHTTP pool. Negative or invalid values fall back to `300`. Increase for stable infrastructure; decrease if upstream hosts change IPs frequently.
+- 描述：共享 AIOHTTP 池的 DNS 缓存 TTL（秒）。
 
 :::info
-Open WebUI reuses a single long-lived AIOHTTP client session for outbound HTTP traffic, enabling TCP/TLS connection reuse, a shared DNS cache, and bounded concurrency. The three variables above tune this pool; they do not need to be set in typical deployments.
+Open WebUI 会复用一个长期存在的 AIOHTTP 客户端会话来处理外发 HTTP 流量，以便复用 TCP/TLS 连接、共享 DNS 缓存并限制并发。上面这三个变量用于调优该连接池；在常规部署中通常无需设置。
 :::
 
 #### `REQUESTS_VERIFY`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls SSL/TLS verification for synchronous `requests` (e.g., Tika, External Reranker). Set to `False` to bypass certificate verification for self-signed certificates.
+- 描述：控制同步 `requests` 的 SSL/TLS 验证。
 
 ### Directories
 
@@ -766,24 +749,24 @@ Open WebUI reuses a single long-lived AIOHTTP client session for outbound HTTP t
 
 - 类型：`str`
 - 默认值：`./data`
-- 描述：Specifies the base directory for data storage, including uploads, cache, vector database, etc.
+- 描述：指定数据存储的基础目录，包括上传、缓存、向量数据库等。
 
 #### `FONTS_DIR`
 
 - 类型：`str`
-- 描述：Specifies the directory for fonts.
+- 描述：指定字体目录。
 
 #### `FRONTEND_BUILD_DIR`
 
 - 类型：`str`
 - 默认值：`../build`
-- 描述：Specifies the location of the built frontend files.
+- 描述：指定前端构建产物目录。
 
 #### `STATIC_DIR`
 
 - 类型：`str`
 - 默认值：`./static`
-- 描述：Specifies the directory for static files, such as the favicon.
+- 描述：指定静态文件目录，例如 favicon。
 
 ### Logging
 
@@ -791,72 +774,72 @@ Open WebUI reuses a single long-lived AIOHTTP client session for outbound HTTP t
 
 - 类型：`str`
 - 默认值：`INFO`
-- 描述：Sets the global logging level for all Open WebUI components. Valid values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`.
+- 描述：设置所有 Open WebUI 组件的全局日志级别。
 
 #### `LOG_FORMAT`
 
 - 类型：`str`
-- 默认值：Not set (plain-text logging)
-- 描述：Controls the log output format. Set to `json` to switch all stdout logging to single-line JSON objects, suitable for log aggregators like Loki, Fluentd, CloudWatch, and Datadog. When set to `json`, the ASCII startup banner is also suppressed to keep the log stream parseable. Any other value (or unset) uses the default plain-text format. See the [JSON Logging documentation](/getting-started/advanced-topics/logging#structured-json-logging) for details on log fields and examples.
+- 默认值：未设置（纯文本日志）
+- 描述：控制日志输出格式。设为 `json` 时，所有 stdout 日志都会变成单行 JSON 对象。
 
 #### `ENABLE_AUDIT_STDOUT`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Controls whether audit logs are output to stdout (console). Useful for containerized environments where logs are collected from stdout.
+- 描述：控制审计日志是否输出到 stdout（控制台）。
 
 #### `ENABLE_AUDIT_LOGS_FILE`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether audit logs are written to a file. When enabled, logs are written to the location specified by `AUDIT_LOGS_FILE_PATH`.
+- 描述：控制审计日志是否写入文件。
 
 #### `AUDIT_LOGS_FILE_PATH`
 
 - 类型：`str`
 - 默认值：`${DATA_DIR}/audit.log`
-- 描述：Configures where the audit log file is stored. Enables storing logs in separate volumes or custom locations for better organization and persistence.
-- Example: `/var/log/openwebui/audit.log`, `/mnt/logs/audit.log`
+- 描述：设置审计日志文件的存储位置。
+- 示例：`/var/log/openwebui/audit.log`、`/mnt/logs/audit.log`
 
 #### `AUDIT_LOG_FILE_ROTATION_SIZE`
 
 - 类型：`str`
 - 默认值：`10MB`
-- 描述：Specifies the maximum size of the audit log file before rotation occurs (e.g., `10MB`, `100MB`, `1GB`).
+- 描述：设置审计日志轮转前的最大文件大小。
 
 #### `AUDIT_UVICORN_LOGGER_NAMES`
 
 - 类型：`str`
 - 默认值：`uvicorn.access`
-- 描述：Comma-separated list of logger names to capture for audit logging. Defaults to Uvicorn's access logger.
+- 描述：要纳入审计日志的 logger 名称列表，以逗号分隔。
 
 #### `AUDIT_LOG_LEVEL`
 
 - 类型：`str`
 - 默认值：`NONE`
 - Options: `NONE`, `METADATA`, `REQUEST`, `REQUEST_RESPONSE`
-- 描述：Controls the verbosity level of audit logging. `METADATA` logs basic request info, `REQUEST` includes request bodies, `REQUEST_RESPONSE` includes both requests and responses.
+- 描述：控制审计日志的详细程度。
 
 #### `MAX_BODY_LOG_SIZE`
 
 - 类型：`int`
 - 默认值：`2048`
-- 描述：Sets the maximum size in bytes for request/response bodies in audit logs. Bodies larger than this are truncated.
+- 描述：设置审计日志中请求/响应 body 的最大字节数。
 
 #### `AUDIT_EXCLUDED_PATHS`
 
 - 类型：`str`
 - 默认值：`/chats,/chat,/folders`
-- 描述：Comma-separated list of URL paths to exclude from audit logging (blacklist mode). Paths are matched without leading slashes against `/api/` and `/api/v1/` prefixed routes. Ignored when `AUDIT_INCLUDED_PATHS` is set.
+- 描述：从审计日志中排除的 URL 路径列表，逗号分隔。
 
 #### `AUDIT_INCLUDED_PATHS`
 
 - 类型：`str`
-- 默认值：Empty string (disabled)
-- 描述：Comma-separated list of URL paths to include in audit logging (whitelist mode). When set, **only** matching paths are audited and `AUDIT_EXCLUDED_PATHS` is ignored. Paths are matched without leading slashes against `/api/` and `/api/v1/` prefixed routes. Auth endpoints (signin, signout, signup) are always logged regardless of filtering mode.
+- 默认值：空字符串（禁用）
+- 描述：要包含在审计日志中的 URL 路径列表，逗号分隔。
 
-:::tip Whitelist vs Blacklist
-By default, audit logging uses **blacklist mode** — all paths are logged except those in `AUDIT_EXCLUDED_PATHS`. If you set `AUDIT_INCLUDED_PATHS`, it switches to **whitelist mode** — only the specified paths are logged. If both are set, whitelist mode takes precedence and a warning is logged at startup.
+:::tip 白名单与黑名单
+默认情况下审计日志使用黑名单模式；如果设置了 `AUDIT_INCLUDED_PATHS`，则切换为白名单模式。若两者都设置，白名单优先。
 :::
 
 
@@ -873,31 +856,30 @@ By default, audit logging uses **blacklist mode** — all paths are logged excep
 
 - 类型：`str`
 - 默认值：`http://localhost:11434`
-- Docker Default:
-  - If `K8S_FLAG` is set: `http://ollama-service.open-webui.svc.cluster.local:11434`
-  - If `USE_OLLAMA_DOCKER=True`: `http://localhost:11434`
-  - Else `http://host.docker.internal:11434`
-- 描述：Configures the Ollama backend URL.
+- Docker 默认值：
+  - 如果设置了 `K8S_FLAG`：`http://ollama-service.open-webui.svc.cluster.local:11434`
+  - 如果 `USE_OLLAMA_DOCKER=True`：`http://localhost:11434`
+  - 否则：`http://host.docker.internal:11434`
+- 描述：配置 Ollama 后端 URL。
 
 #### `OLLAMA_BASE_URLS`
 
 - 类型：`str`
-- 描述：Configures load-balanced Ollama backend hosts, separated by `;`. See
-[`OLLAMA_BASE_URL`](#ollama_base_url). Takes precedence over[`OLLAMA_BASE_URL`](#ollama_base_url).
-- Example: `http://host-one:11434;http://host-two:11434`
+- 描述：配置负载均衡的 Ollama 后端主机，使用 `;` 分隔。优先于 `OLLAMA_BASE_URL`。
+- 示例：`http://host-one:11434;http://host-two:11434`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `USE_OLLAMA_DOCKER`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Builds the Docker image with a bundled Ollama instance.
+- 描述：构建包含内置 Ollama 实例的 Docker 镜像。
 
 #### `K8S_FLAG`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：If set, assumes Helm chart deployment and sets [`OLLAMA_BASE_URL`](#ollama_base_url) to `http://ollama-service.open-webui.svc.cluster.local:11434`
+- 描述：如果启用，则按 Helm 部署处理，并将 `OLLAMA_BASE_URL` 指向集群内的 Ollama 服务。
 
 ### OpenAI
 
@@ -905,94 +887,92 @@ By default, audit logging uses **blacklist mode** — all paths are logged excep
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables the use of OpenAI APIs.
+- 描述：启用 OpenAI API。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `OPENAI_API_BASE_URL`
 
 - 类型：`str`
 - 默认值：`https://api.openai.com/v1`
-- 描述：Configures the OpenAI base API URL.
+- 描述：配置 OpenAI API 基础 URL。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `OPENAI_API_BASE_URLS`
 
 - 类型：`str`
-- 描述：Supports balanced OpenAI base API URLs, semicolon-separated.
-- Example: `http://host-one:11434;http://host-two:11434`
+- 描述：支持负载均衡的 OpenAI 基础 API URL，使用分号分隔。
+- 示例：`http://host-one:11434;http://host-two:11434`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `OPENAI_API_KEY`
 
 - 类型：`str`
-- 描述：Sets the OpenAI API key.
-- Example: `sk-124781258123`
+- 描述：设置 OpenAI API 密钥。
+- 示例：`sk-124781258123`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::warning Provider Key Scope (Important)
-For OpenAI-compatible backends and proxies (including LiteLLM), configure least-privilege keys for regular user traffic whenever possible.
+对于兼容 OpenAI 的后端和代理（包括 LiteLLM），请尽可能为普通用户流量配置最小权限的密钥。
 
-Do not use provider management/master keys unless your deployment explicitly requires that trust level.
+除非你的部署明确需要更高信任级别，否则不要使用提供商的管理/主密钥。
 :::
 
 #### `OPENAI_API_KEYS`
 
 - 类型：`str`
-- 描述：Supports multiple OpenAI API keys, semicolon-separated.
-- Example: `sk-124781258123;sk-4389759834759834`
+- 描述：支持多个 OpenAI API 密钥，使用分号分隔。
+- 示例：`sk-124781258123;sk-4389759834759834`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_OPENAI_API_PASSTHROUGH`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：When enabled, the OpenAI proxy's catch-all endpoint (`/{path:path}`) forwards any request to the upstream OpenAI-compatible API using the admin-configured API key and without additional access control. When disabled (default), the catch-all returns `403 Forbidden`. Other routers (Ollama, Responses) do not have catch-all proxies.
+- 描述：启用后，OpenAI 代理的兜底端点（`/{path:path}`）会使用管理员配置的 API 密钥转发请求，且不再额外做访问控制。
 
 :::danger
 
-**Keep this disabled unless you explicitly need it.** The catch-all proxy forwards requests to the upstream API using the admin's API key with no model-level access control. Any authenticated user can reach any upstream endpoint — including endpoints not natively handled by Open WebUI — using the admin's credentials. Only enable this if you understand and accept these implications.
+**除非你明确需要，否则请保持关闭。** 该兜底代理会使用管理员密钥直通上游 API，且不做模型级访问控制。
 
 :::
 
-### Tasks
+### 任务模板
 
 #### `TASK_MODEL`
 
 - 类型：`str`
-- 描述：The default model to use for tasks such as title and web search query generation
-when using Ollama models.
+- 描述：在使用 Ollama 模型时，用于标题和网页搜索查询生成等任务的默认模型。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `TASK_MODEL_EXTERNAL`
 
 - 类型：`str`
-- 描述：The default model to use for tasks such as title and web search query generation
-when using OpenAI-compatible endpoints.
+- 描述：在使用兼容 OpenAI 的端点时，用于标题和网页搜索查询生成等任务的默认模型。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `TITLE_GENERATION_PROMPT_TEMPLATE`
 
 - 类型：`str`
-- 描述：Prompt to use when generating chat titles.
-- 默认值：The value of `DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE` environment variable.
+- 描述：生成聊天标题时使用的提示词模板。
+- 默认值：`DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE` 环境变量的值。
 
 `DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE`:
 
 ```
 
-### Task:
-Generate a concise, 3-5 word title with an emoji summarizing the chat history.
+### 任务：
+生成一个简洁的 3-5 个词的标题，并配上表情符号，用来概括聊天历史。
 
-### Guidelines:
-- The title should clearly represent the main theme or subject of the conversation.
-- Use emojis that enhance understanding of the topic, but avoid quotation marks or special formatting.
-- Write the title in the chat's primary language; default to English if multilingual.
-- Prioritize accuracy over excessive creativity; keep it clear and simple.
+### 指南：
+- 标题应清楚反映对话的主要主题或内容。
+- 使用有助于理解主题的表情符号，但避免引号或特殊格式。
+- 标题应使用聊天的主要语言；如果是多语言内容，则默认使用英语。
+- 优先保证准确性，而不是过度追求创意；保持清晰、简洁。
 
-### Output:
-JSON format: { "title": "your concise title here" }
+### 输出：
+JSON 格式：{ "title": "your concise title here" }
 
-### Examples:
+### 示例：
 - { "title": "📉 Stock Market Trends" },
 - { "title": "🍪 Perfect Chocolate Chip Recipe" },
 - { "title": "Evolution of Music Streaming" },
@@ -1000,7 +980,7 @@ JSON format: { "title": "your concise title here" }
 - { "title": "Artificial Intelligence in Healthcare" },
 - { "title": "🎮 Video Game Development Insights" }
 
-### Chat History:
+### 聊天历史：
 <chat_history>
 {{MESSAGES:END:2}}
 </chat_history>
@@ -1012,34 +992,34 @@ JSON format: { "title": "your concise title here" }
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables follow up generation.
+- 描述：启用或禁用后续问题生成。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `FOLLOW_UP_GENERATION_PROMPT_TEMPLATE`
 
 - 类型：`str`
-- 描述：Prompt to use for generating several relevant follow-up questions.
-- 默认值：The value of `DEFAULT_FOLLOW_UP_GENERATION_PROMPT_TEMPLATE` environment variable.
+- 描述：用于生成多个相关后续问题的提示词模板。
+- 默认值：`DEFAULT_FOLLOW_UP_GENERATION_PROMPT_TEMPLATE` 环境变量的值。
 
 `DEFAULT_FOLLOW_UP_GENERATION_PROMPT_TEMPLATE`:
 
 ```
 
-### Task:
-Suggest 3-5 relevant follow-up questions or prompts that the user might naturally ask next in this conversation as a **user**, based on the chat history, to help continue or deepen the discussion.
+### 任务：
+建议 3-5 个相关的后续问题或提示，这些问题应当是用户在这段对话中下一步可能自然提出的“用户视角”问题，用来延续或深化讨论，并基于聊天历史进行生成。
 
-### Guidelines:
-- Write all follow-up questions from the user’s point of view, directed to the assistant.
-- Make questions concise, clear, and directly related to the discussed topic(s).
-- Only suggest follow-ups that make sense given the chat content and do not repeat what was already covered.
-- If the conversation is very short or not specific, suggest more general (but relevant) follow-ups the user might ask.
-- Use the conversation's primary language; default to English if multilingual.
-- Response must be a JSON array of strings, no extra text or formatting.
+### 指南：
+- 所有后续问题都要从用户的角度撰写，并直接指向助手。
+- 问题应简洁、清晰，并与正在讨论的主题直接相关。
+- 只建议在聊天内容下合理、且不会重复已讨论内容的后续问题。
+- 如果对话很短或不够具体，则可以建议更通用但仍相关的后续问题。
+- 使用对话的主要语言；如果是多语言内容，则默认使用英语。
+- 回复必须是由字符串组成的 JSON 数组，不要有任何额外文本或格式。
 
-### Output:
-JSON format: { "follow_ups": ["Question 1?", "Question 2?", "Question 3?"] }
+### 输出：
+JSON 格式：{ "follow_ups": ["问题 1?", "问题 2?", "问题 3?"] }
 
-### Chat History:
+### 聊天历史：
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>"
@@ -1050,28 +1030,28 @@ JSON format: { "follow_ups": ["Question 1?", "Question 2?", "Question 3?"] }
 #### `TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE`
 
 - 类型：`str`
-- 描述：Prompt to use when calling tools.
-- 默认值：The value of `DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE` environment variable.
+- 描述：调用工具时使用的提示词模板。
+- 默认值：`DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE` 环境变量的值。
 
 `DEFAULT_TOOLS_FUNCTION_CALLING_PROMPT_TEMPLATE`:
 
 ```
-Available Tools: {{TOOLS}}
+可用工具：{{TOOLS}}
 
-Your task is to choose and return the correct tool(s) from the list of available tools based on the query. Follow these guidelines:
+你的任务是根据查询，从可用工具列表中选择并返回正确的工具。请遵循以下指南：
 
-- Return only the JSON object, without any additional text or explanation.
+- 仅返回 JSON 对象，不要附加任何额外文本或解释。
 
-- If no tools match the query, return an empty array:
+- 如果没有工具匹配查询，请返回一个空数组：
    {
      "tool_calls": []
    }
 
-- If one or more tools match the query, construct a JSON response containing a "tool_calls" array with objects that include:
-   - "name": The tool's name.
-   - "parameters": A dictionary of required parameters and their corresponding values.
+- 如果有一个或多个工具匹配查询，请构造一个 JSON 响应，其中包含一个 "tool_calls" 数组，数组里的对象应包含：
+   - "name"：工具名称。
+   - "parameters"：所需参数及其对应值的字典。
 
-The format for the JSON response is strictly:
+JSON 响应的严格格式如下：
 {
   "tool_calls": [
     {"name": "toolName1", "parameters": {"key1": "value1"}},
@@ -1088,49 +1068,49 @@ The format for the JSON response is strictly:
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables code execution.
+- 描述：启用或禁用代码执行。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_ENGINE`
 
 - 类型：`str`
 - 默认值：`pyodide`
-- 描述：Specifies the code execution engine to use.
+- 描述：指定要使用的代码执行引擎。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_JUPYTER_URL`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the Jupyter URL to use for code execution.
+- 描述：指定代码执行要使用的 Jupyter URL。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_JUPYTER_AUTH`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the Jupyter authentication method to use for code execution.
+- 描述：指定代码执行要使用的 Jupyter 认证方式。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_JUPYTER_AUTH_TOKEN`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the Jupyter authentication token to use for code execution.
+- 描述：指定代码执行要使用的 Jupyter 认证 token。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_JUPYTER_AUTH_PASSWORD`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the Jupyter authentication password to use for code execution.
+- 描述：指定代码执行要使用的 Jupyter 认证密码。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_EXECUTION_JUPYTER_TIMEOUT`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the timeout for Jupyter code execution.
+- 描述：指定 Jupyter 代码执行的超时时间。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 ### Code Interpreter
@@ -1139,62 +1119,62 @@ The format for the JSON response is strictly:
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables code interpreter.
+- 描述：启用或禁用代码解释器。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_ENGINE`
 
 - 类型：`str`
 - 默认值：`pyodide`
-- 描述：Specifies the code interpreter engine to use.
+- 描述：指定要使用的代码解释器引擎。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_BLACKLISTED_MODULES`
 
 - 类型：`str` (comma-separated list of module names)
 - 默认值：None
-- 描述：Specifies a comma-separated list of Python modules that are blacklisted and cannot be imported or used within the code interpreter. This enhances security by preventing access to potentially sensitive or system-level functionalities.
+- 描述：指定代码解释器中禁止导入或使用的 Python 模块列表，以逗号分隔。
 
 #### `CODE_INTERPRETER_PROMPT_TEMPLATE`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the prompt template to use for code interpreter.
+- 描述：指定代码解释器使用的提示词模板。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_JUPYTER_URL`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Jupyter URL to use for code interpreter.
+- 描述：指定代码解释器要使用的 Jupyter URL。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_JUPYTER_AUTH`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Jupyter authentication method to use for code interpreter.
+- 描述：指定代码解释器要使用的 Jupyter 认证方式。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_JUPYTER_AUTH_TOKEN`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Jupyter authentication token to use for code interpreter.
+- 描述：指定代码解释器要使用的 Jupyter 认证 token。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_JUPYTER_AUTH_PASSWORD`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Jupyter authentication password to use for code interpreter.
+- 描述：指定代码解释器要使用的 Jupyter 认证密码。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `CODE_INTERPRETER_JUPYTER_TIMEOUT`
 
 - 类型：`str`
 - 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the timeout for the Jupyter code interpreter.
+- 描述：指定 Jupyter 代码解释器的超时时间。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 ### Direct Connections (OpenAPI/MCPO Tool Servers)
@@ -1203,23 +1183,23 @@ The format for the JSON response is strictly:
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables direct connections.
+- 描述：启用或禁用直接连接。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `TOOL_SERVER_CONNECTIONS`
 
 - 类型：`str` (JSON array)
 - 默认值：`[]`
-- 描述：Specifies a JSON array of tool server connection configurations. Each connection should define the necessary parameters to connect to external tool servers that implement the OpenAPI/MCPO protocol. For mcpo-backed routes, `path` should point at the mounted tool route. The JSON must be properly formatted or it will fallback to an empty array.
-- Field reference:
-  - `url`: the server base URL.
-  - `path`: the specific tool route exposed by the server.
-  - `auth_type`: the authentication mode for the connection.
-  - `key`: the API key or token used by the selected auth mode.
-  - `config`: per-connection configuration object, such as `{ "enable": true }`.
-  - `info`: optional metadata shown in the UI, such as the connection name and description.
-  - `spec_type` / `spec`: OpenAPI spec location details when the connection is backed by a spec URL or file.
-- Example: 
+- 描述：指定 tool server 连接配置的 JSON 数组；格式无效时会回退为空数组。
+- 字段说明：
+  - `url`：服务器基础 URL。
+  - `path`：服务器暴露的具体工具路由。
+  - `auth_type`：连接使用的认证方式。
+  - `key`：所选认证方式使用的 API key 或 token。
+  - `config`：单个连接的配置对象，例如 `{ "enable": true }`。
+  - `info`：显示在 UI 中的可选元数据，如连接名称和描述。
+  - `spec_type` / `spec`：当连接基于 OpenAPI spec URL 或文件时，用于描述 spec 位置。
+- 示例：
 ```json
 [
   {
@@ -1253,8 +1233,8 @@ The JSON data structure of `TOOL_SERVER_CONNECTIONS` might evolve over time as n
 
 - 类型：`str` (JSON array)
 - 默认值：`[]`
-- 描述：Specifies a JSON array of terminal server connection configurations. Each connection defines the parameters needed to connect to an [Open Terminal](/features/open-terminal) instance or a [Terminals orchestrator](/features/open-terminal/terminals/). Unlike user-level tool server connections, these are admin-configured and proxied through Open WebUI, which means the terminal URL and API key are never exposed to the browser. Supports group-based access control via `access_grants`.
-- Example (direct Open Terminal connection):
+- 描述：指定终端服务器连接配置的 JSON 数组。每个连接定义了连接 [Open Terminal](/features/open-terminal) 实例或 [Terminals orchestrator](/features/open-terminal/terminals/) 所需的参数。与用户级 tool server 不同，这些连接由管理员配置并通过 Open WebUI 代理，因此终端 URL 和 API key 不会暴露给浏览器。支持通过 `access_grants` 实现基于组的访问控制。
+- 示例（直接连接 Open Terminal）：
 ```json
 [
   {
@@ -1269,7 +1249,7 @@ The JSON data structure of `TOOL_SERVER_CONNECTIONS` might evolve over time as n
   }
 ]
 ```
-- Example (Terminals orchestrator connection):
+- 示例（连接 Terminals orchestrator）：
 ```json
 [
   {
@@ -1289,27 +1269,27 @@ The JSON data structure of `TOOL_SERVER_CONNECTIONS` might evolve over time as n
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::tip Helm chart auto-configuration
-When deploying on Kubernetes with the Open WebUI Helm chart and `terminals.enabled: true`, this variable is set automatically to point at the in-cluster orchestrator service. See the [Terminals (Orchestrator) guide](/features/open-terminal/terminals/) for details.
+当使用 Open WebUI Helm chart 在 Kubernetes 上部署并设置 `terminals.enabled: true` 时，该变量会自动指向集群内的 orchestrator 服务。详情请参阅 [Terminals（Orchestrator）指南](/features/open-terminal/terminals/)。
 :::
 
 :::warning
 
-The JSON data structure of `TERMINAL_SERVER_CONNECTIONS` might evolve over time as new features are added.
+`TERMINAL_SERVER_CONNECTIONS` 的 JSON 数据结构可能会随着新功能的加入而变化。
 
 :::
 
-### Autocomplete
+### 自动补全
 
 #### `ENABLE_AUTOCOMPLETE_GENERATION`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables autocomplete generation.
+- 描述：启用或禁用自动补全生成。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-When enabling `ENABLE_AUTOCOMPLETE_GENERATION`, ensure that you also configure `AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH` and `AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE` accordingly.
+启用 `ENABLE_AUTOCOMPLETE_GENERATION` 时，请同时正确配置 `AUTOCOMPLETE_GENERATION_INPUT_MAX_LENGTH` 和 `AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE`。
 
 :::
 
@@ -1317,164 +1297,164 @@ When enabling `ENABLE_AUTOCOMPLETE_GENERATION`, ensure that you also configure `
 
 - 类型：`int`
 - 默认值：`-1`
-- 描述：Sets the maximum input length for autocomplete generation.
+- 描述：设置自动补全生成的最大输入长度。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE`
 
 - 类型：`str`
-- 默认值：The value of the `DEFAULT_AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE` environment variable.
+- 默认值：环境变量 `DEFAULT_AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE` 的值。
 
 `DEFAULT_AUTOCOMPLETE_GENERATION_PROMPT_TEMPLATE`:
 
 ```
 
-### Task:
-You are an autocompletion system. Continue the text in `<text>` based on the **completion type** in `<type>` and the given language.
+### 任务：
+你是一套自动补全系统。请根据 `<type>` 中的**补全类型**以及给定语言，继续 `<text>` 中的文本。
 
-### **Instructions**:
-1. Analyze `<text>` for context and meaning.
-2. Use `<type>` to guide your output:
-   - **General**: Provide a natural, concise continuation.
-   - **Search Query**: Complete as if generating a realistic search query.
-3. Start as if you are directly continuing `<text>`. Do **not** repeat, paraphrase, or respond as a model. Simply complete the text.
-4. Ensure the continuation:
-   - Flows naturally from `<text>`.
-   - Avoids repetition, overexplaining, or unrelated ideas.
-5. If unsure, return: `{ "text": "" }`.
+### **说明**：
+1. 分析 `<text>` 的上下文和含义。
+2. 使用 `<type>` 指导你的输出：
+  - **General**：提供自然、简洁的续写。
+  - **Search Query**：按生成真实搜索查询的方式完成。
+3. 将自己视为正在直接续写 `<text>`。不要重复、释义或以模型身份回复。只需补全文本。
+4. 确保续写内容：
+  - 与 `<text>` 自然衔接。
+  - 避免重复、过度解释或无关内容。
+5. 如果不确定，请返回：`{ "text": "" }`。
 
-### **Output Rules**:
-- Respond only in JSON format: `{ "text": "<your_completion>" }`.
+### **输出规则**：
+- 仅以 JSON 格式返回：`{ "text": "<your_completion>" }`。
 
-### **Examples**:
+### **示例**：
 
-#### Example 1:
-Input:
+#### 示例 1：
+输入：
 <type>General</type>
 <text>The sun was setting over the horizon, painting the sky</text>
-Output:
+输出：
 { "text": "with vibrant shades of orange and pink." }
 
-#### Example 2:
-Input:
+#### 示例 2：
+输入：
 <type>Search Query</type>
 <text>Top-rated restaurants in</text>
-Output:
+输出：
 { "text": "New York City for Italian cuisine." }
 
 ---
 
-### Context:
+### 上下文：
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>
 <type>{{TYPE}}</type>
 <text>{{PROMPT}}</text>
 
-#### Output:
+#### 输出：
 ```
 
-- 描述：Sets the prompt template for autocomplete generation.
+- 描述：设置自动补全生成的提示词模板。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
-### Evaluation Arena Model
+### 评测竞技场模型
 
 #### `ENABLE_EVALUATION_ARENA_MODELS`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables evaluation arena models.
+- 描述：启用或禁用评测竞技场模型。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_MESSAGE_RATING`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables message rating feature.
+- 描述：启用消息评分功能。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ENABLE_COMMUNITY_SHARING`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Controls whether users can share content with the Open WebUI Community and access community resources. When enabled, this setting shows the following UI elements across the application:
-  - **Prompts Workspace**: "Made by Open WebUI Community" section with a link to discover community prompts, and a "Share" button in the prompt menu dropdown
-  - **Tools Workspace**: "Made by Open WebUI Community" section with a link to discover community tools, and a "Share" button in the tool menu dropdown
-  - **Models Workspace**: "Made by Open WebUI Community" section with a link to discover community model presets, and a "Share" button in the model menu dropdown
-  - **Functions Admin**: "Made by Open WebUI Community" section with a link to discover community functions
-  - **Share Chat Modal**: "Share to Open WebUI Community" button when sharing a chat conversation
-  - **Evaluation Feedbacks**: "Share to Open WebUI Community" button for contributing feedback history to the community leaderboard
-  - **Stats Sync Modal**: Enables syncing usage statistics with the community
+- 描述：控制用户是否可以与 Open WebUI Community 共享内容并访问社区资源。启用后，该设置会在整个应用中显示以下 UI 元素：
+  - **Prompts 工作区**：显示“Open WebUI 社区制作”区域，附带发现社区提示词的链接，以及提示词菜单下拉中的“分享”按钮
+  - **Tools 工作区**：显示“Open WebUI 社区制作”区域，附带发现社区工具的链接，以及工具菜单下拉中的“分享”按钮
+  - **Models 工作区**：显示“Open WebUI 社区制作”区域，附带发现社区模型预设的链接，以及模型菜单下拉中的“分享”按钮
+  - **Functions 管理页**：显示“Open WebUI 社区制作”区域，附带发现社区函数的链接
+  - **Share Chat 弹窗**：在分享聊天会话时显示“分享到 Open WebUI Community”按钮
+  - **Evaluation Feedbacks**：用于将反馈历史贡献到社区排行榜的“分享到 Open WebUI Community”按钮
+  - **Stats Sync 弹窗**：启用与社区同步使用统计数据
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-When `ENABLE_COMMUNITY_SHARING` is set to `False`, all community sharing buttons and community resource discovery sections will be hidden from the UI. Users will still be able to export content locally, but the option to share directly to the Open WebUI Community will not be available.
+当 `ENABLE_COMMUNITY_SHARING` 设为 `False` 时，所有社区共享按钮和社区资源发现区块都会从 UI 中隐藏。用户仍然可以将内容导出到本地，但无法再直接分享到 Open WebUI Community。
 
 :::
 
-### Tags Generation
+### 标签生成
 
 #### `ENABLE_TAGS_GENERATION`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables tag generation.
+- 描述：启用或禁用标签生成。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `TAGS_GENERATION_PROMPT_TEMPLATE`
 
 - 类型：`str`
-- 默认值：The value of `DEFAULT_TAGS_GENERATION_PROMPT_TEMPLATE` environment variable.
+- 默认值：环境变量 `DEFAULT_TAGS_GENERATION_PROMPT_TEMPLATE` 的值。
 
 `DEFAULT_TAGS_GENERATION_PROMPT_TEMPLATE`:
 
 ```
 
-### Task:
-Generate 1-3 broad tags categorizing the main themes of the chat history, along with 1-3 more specific subtopic tags.
+### 任务：
+生成 1-3 个概括聊天历史主要主题的宽泛标签，并额外给出 1-3 个更具体的子主题标签。
 
-### Guidelines:
-- Start with high-level domains (e.g., Science, Technology, Philosophy, Arts, Politics, Business, Health, Sports, Entertainment, Education)
-- Consider including relevant subfields/subdomains if they are strongly represented throughout the conversation
-- If content is too short (less than 3 messages) or too diverse, use only ["General"]
-- Use the chat's primary language; default to English if multilingual
-- Prioritize accuracy over specificity
+### 指南：
+- 以高层领域开头（例如：科学、技术、哲学、艺术、政治、商业、健康、体育、娱乐、教育）
+- 如果整段对话中有明显体现相关子领域/子学科，可一并包含
+- 如果内容过短（少于 3 条消息）或过于分散，则只使用 ["General"]
+- 使用聊天的主要语言；如果是多语言内容则默认使用英语
+- 优先保证准确性，而非过度追求细粒度
 
-### Output:
-JSON format: { "tags": ["tag1", "tag2", "tag3"] }
+### 输出：
+JSON 格式：{ "tags": ["tag1", "tag2", "tag3"] }
 
-### Chat History:
+### 聊天历史：
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>
 ```
 
-- 描述：Sets the prompt template for tag generation.
+- 描述：设置标签生成的提示词模板。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
-### API Key Endpoint Restrictions
+### API Key 端点限制
 
 #### `ENABLE_API_KEYS`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables the API key creation feature, allowing users to generate API keys for programmatic access to Open WebUI.
+- 描述：启用 API Key 创建功能，允许用户生成 API Key 以程序化访问 Open WebUI。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-This variable replaces the deprecated `ENABLE_API_KEY` environment variable.
+此变量取代了已弃用的 `ENABLE_API_KEY` 环境变量。
 
 :::
 
 :::info
 
-For API Key creation (and the API keys themselves) to work:
-1. Enable API keys globally using this setting (`ENABLE_API_KEYS`)
-2. For non-admin users, grant the "API Keys" permission via Default Permissions or User Groups
+要让 API Key 创建功能（以及 API Key 本身）正常工作：
+1. 使用此设置（`ENABLE_API_KEYS`）全局启用 API Key
+2. 对于非管理员用户，通过默认权限或用户组授予“API Keys”权限
 
-**Note:** Administrators can generate API keys whenever `ENABLE_API_KEYS` is enabled, even without `features.api_keys`.
+**注意：** 只要启用了 `ENABLE_API_KEYS`，管理员即使没有 `features.api_keys` 也可以生成 API Key。
 
 :::
 
@@ -1482,56 +1462,56 @@ For API Key creation (and the API keys themselves) to work:
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables API key endpoint restrictions for added security and configurability, allowing administrators to limit which endpoints can be accessed using API keys.
+- 描述：启用 API Key 端点限制，以增强安全性和可配置性，允许管理员限制 API Key 可访问的端点。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-This variable replaces the deprecated `ENABLE_API_KEY_ENDPOINT_RESTRICTIONS` environment variable.
+此变量取代了已弃用的 `ENABLE_API_KEY_ENDPOINT_RESTRICTIONS` 环境变量。
 
 :::
 
 #### `API_KEYS_ALLOWED_ENDPOINTS`
 
 - 类型：`str`
-- 描述：Specifies a comma-separated list of allowed API endpoints when API key endpoint restrictions are enabled.
-- Example: `/api/v1/messages,/api/v1/channels,/api/v1/chat/completions`
+- 描述：在启用 API Key 端点限制时，指定允许访问的 API 端点逗号分隔列表。
+- 示例：`/api/v1/messages,/api/v1/channels,/api/v1/chat/completions`
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::note
 
-The value of `API_KEYS_ALLOWED_ENDPOINTS` should be a comma-separated list of endpoint URLs, such as `/api/v1/messages, /api/v1/channels`.
+`API_KEYS_ALLOWED_ENDPOINTS` 的值应为以逗号分隔的端点 URL 列表，例如 `/api/v1/messages, /api/v1/channels`。
 
 :::
 
 :::info
 
-This variable replaces the deprecated `API_KEY_ALLOWED_ENDPOINTS` environment variable.
+此变量取代了已弃用的 `API_KEY_ALLOWED_ENDPOINTS` 环境变量。
 
 :::
 
-### Model Caching
+### 模型缓存
 
 #### `ENABLE_BASE_MODELS_CACHE`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：When enabled, caches the list of base models from connected Ollama and OpenAI-compatible endpoints in memory. This reduces the number of API calls made to external model providers when loading the model selector, improving performance particularly for deployments with many users or slow connections to model endpoints. Can also be configured from Admin Panel > Settings > Connections > "Cache Base Model List".
+- 描述：启用后，会将已连接的 Ollama 和 OpenAI 兼容端点返回的基础模型列表缓存在内存中。这样在加载模型选择器时，可以减少对外部模型提供方的 API 调用，尤其适合用户较多或模型端点连接较慢的部署。也可以在 `Admin Panel > Settings > Connections > "Cache Base Model List"` 中配置。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
-**How the cache works:**
+**缓存的工作方式：**
 
-- **Initialization**: When enabled, base models are fetched and cached during application startup.
-- **Storage**: The cache is stored in application memory (`app.state.BASE_MODELS`).
-- **Cache Hit**: Subsequent requests for models return the cached list without contacting external endpoints.
-- **Cache Refresh**: The cache is refreshed when:
-  - The application restarts
-  - The connection settings are saved in the **Admin Panel > Settings > Connections** (clicking the **Save** button on the bottom right will trigger a refresh and update the cache with the newly fetched models)
-- **No TTL**: There is no automatic time-based expiration.
+- **初始化**：启用后，基础模型会在应用启动时获取并缓存。
+- **存储**：缓存存放在应用内存中（`app.state.BASE_MODELS`）。
+- **缓存命中**：后续模型请求会直接返回缓存列表，而不会联系外部端点。
+- **缓存刷新**：缓存会在以下情况刷新：
+  - 应用重启
+  - 在 **Admin Panel > Settings > Connections** 中保存连接设置（点击右下角的 **Save** 按钮会触发刷新，并用新获取的模型更新缓存）
+- **无 TTL**：没有基于时间的自动过期机制。
 
-:::tip Performance Consideration
+:::tip 性能考量
 
-Enable this setting in production environments where model lists are relatively stable. For development environments or when frequently adding/removing models from Ollama, you may prefer to leave it disabled for real-time model discovery.
+建议在模型列表相对稳定的生产环境中启用此设置。对于开发环境，或在 Ollama 中频繁增删模型的场景，你可能更希望保持关闭，以便实时发现模型。
 
 :::
 
@@ -1539,26 +1519,26 @@ Enable this setting in production environments where model lists are relatively 
 
 - 类型：`int`
 - 默认值：`1`
-- 描述：Sets the cache time-to-live in seconds for model list responses from OpenAI and Ollama endpoints. This reduces API calls by caching the available models list for the specified duration. Set to empty string to disable caching entirely.
+- 描述：为 OpenAI 和 Ollama 端点返回的模型列表设置缓存存活时间（秒）。它会在指定时长内缓存可用模型列表，从而减少 API 调用。将其设为空字符串即可完全禁用缓存。
 
-This caches the external model lists retrieved from configured OpenAI-compatible and Ollama API endpoints (not Open WebUI's internal model configurations). Higher values improve performance by reducing redundant API requests to external providers but may delay visibility of newly added or removed models on those endpoints. A value of 0 disables caching and forces fresh API calls each time.
+这会缓存从已配置的 OpenAI 兼容和 Ollama API 端点检索到的外部模型列表（不包括 Open WebUI 的内部模型配置）。更高的值可以通过减少对外部提供方的重复 API 请求来提升性能，但也可能延迟这些端点上新增或移除模型的可见时间。设为 0 会禁用缓存，并强制每次都发起新的 API 调用。
 
-:::tip High-Traffic Recommendation
+:::tip 高流量建议
 
-In high-traffic scenarios, increasing this value (e.g., to 300 seconds) can significantly reduce load on external API endpoints while still providing reasonably fresh model data.
+在高流量场景下，提高这个值（例如 300 秒）可以显著减少外部 API 端点的负载，同时仍能提供足够新的模型数据。
 
 :::
 
-:::info Two Caching Mechanisms
+:::info 两种缓存机制
 
-Open WebUI has **two model caching mechanisms** that work independently:
+Open WebUI 有**两种彼此独立的模型缓存机制**：
 
-| Setting | Type | Default | Refresh Trigger |
+| 设置 | 类型 | 默认值 | 刷新触发条件 |
 |---------|------|---------|-----------------|
-| `ENABLE_BASE_MODELS_CACHE` | In-memory | `False` | App restart OR Admin Save |
-| `MODELS_CACHE_TTL` | TTL-based | `1` second | Automatic after TTL expires |
+| `ENABLE_BASE_MODELS_CACHE` | 内存缓存 | `False` | 应用重启 或 管理员保存 |
+| `MODELS_CACHE_TTL` | 基于 TTL | `1` 秒 | TTL 到期后自动刷新 |
 
-For maximum performance, enable both: `ENABLE_BASE_MODELS_CACHE=True` with `MODELS_CACHE_TTL=300`.
+为了获得最佳性能，请同时启用两者：`ENABLE_BASE_MODELS_CACHE=True` 并将 `MODELS_CACHE_TTL` 设为 `300`。
 
 :::
 
@@ -1566,29 +1546,29 @@ For maximum performance, enable both: `ENABLE_BASE_MODELS_CACHE=True` with `MODE
 
 - 类型：`str`
 - 默认值：`4w`
-- 描述：Sets the JWT expiration time in seconds. Valid time units: `s`, `m`, `h`, `d`, `w` or `-1` for no expiration.
+- 描述：设置 JWT 的过期时间（秒）。有效时间单位：`s`、`m`、`h`、`d`、`w`，或使用 `-1` 表示不过期。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::warning
 
-Setting `JWT_EXPIRES_IN` to `-1` disables JWT expiration, making issued tokens valid forever. **This is extremely dangerous in production** and exposes your system to severe security risks if tokens are leaked or compromised.
+将 `JWT_EXPIRES_IN` 设为 `-1` 会禁用 JWT 过期，让签发的令牌永久有效。**这在生产环境中极其危险**，如果令牌泄露或被盗用，会给系统带来严重安全风险。
 
-**Always set a reasonable expiration time in production environments (e.g., `3600s`, `1h`, `7d` etc.) to limit the lifespan of authentication tokens.**
+**在生产环境中务必设置合理的过期时间（例如 `3600s`、`1h`、`7d` 等），以限制认证令牌的有效期。**
 
-**NEVER use `-1` in a production environment.**
+**切勿在生产环境中使用 `-1`。**
 
-If you have already deployed with `JWT_EXPIRES_IN=-1`, you can rotate or change your `WEBUI_SECRET_KEY` to immediately invalidate all existing tokens.
+如果你已经以 `JWT_EXPIRES_IN=-1` 部署，可以轮换或修改 `WEBUI_SECRET_KEY`，立即让所有现有令牌失效。
 
 :::
 
-## Security Variables
+## 安全变量
 
 #### `ENABLE_FORWARD_USER_INFO_HEADERS`
 
-- type: `bool`
+- 类型：`bool`
 - 默认值：`False`
-- 描述：Forwards user and session information as HTTP headers to OpenAI API, Ollama API, MCP servers, and Tool servers.
-If enabled, the following headers are forwarded:
+- 描述：将用户和会话信息作为 HTTP 标头转发到 OpenAI API、Ollama API、MCP 服务器和 Tool 服务器。
+  如果启用，会转发以下标头：
   - `X-OpenWebUI-User-Name`
   - `X-OpenWebUI-User-Id`
   - `X-OpenWebUI-User-Email`
@@ -1596,46 +1576,46 @@ If enabled, the following headers are forwarded:
   - `X-OpenWebUI-Chat-Id`
   - `X-OpenWebUI-Message-Id`
 
-This enables per-user authorization, auditing, rate limiting, and request tracing on external services. The chat and message ID headers are also required for [external tool event emitting](/features/extensibility/plugin/development/events#-external-tool-events).
+这使外部服务能够按用户进行授权、审计、限流和请求追踪。聊天 ID 和消息 ID 标头也是 [外部工具事件发送](/features/extensibility/plugin/development/events#-external-tool-events) 所必需的。
 
 #### `FORWARD_USER_INFO_HEADER_USER_NAME`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-User-Name`
-- 描述：Customizes the header name used to forward the user's display name. Change this if your infrastructure requires a specific header prefix.
+- 描述：自定义用于转发用户显示名称的标头名称。如果你的基础设施需要特定的标头前缀，可修改此项。
 
 #### `FORWARD_USER_INFO_HEADER_USER_ID`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-User-Id`
-- 描述：Customizes the header name used to forward the user's ID.
+- 描述：自定义用于转发用户 ID 的标头名称。
 
 #### `FORWARD_USER_INFO_HEADER_USER_EMAIL`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-User-Email`
-- 描述：Customizes the header name used to forward the user's email address.
+- 描述：自定义用于转发用户邮箱地址的标头名称。
 
 #### `FORWARD_USER_INFO_HEADER_USER_ROLE`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-User-Role`
-- 描述：Customizes the header name used to forward the user's role.
+- 描述：自定义用于转发用户角色的标头名称。
 
 #### `FORWARD_SESSION_INFO_HEADER_CHAT_ID`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-Chat-Id`
-- 描述：Customizes the header name used to forward the current chat/session ID.
+- 描述：自定义用于转发当前聊天/会话 ID 的标头名称。
 
 #### `FORWARD_SESSION_INFO_HEADER_MESSAGE_ID`
 
 - 类型：`str`
 - 默认值：`X-OpenWebUI-Message-Id`
-- 描述：Customizes the header name used to forward the current message ID. This header is required for [external tool event emitting](/features/extensibility/plugin/development/events#-external-tool-events).
+- 描述：自定义用于转发当前消息 ID 的标头名称。此标头也是 [外部工具事件发送](/features/extensibility/plugin/development/events#-external-tool-events) 所必需的。
 
-:::tip Custom Header Prefix
-Use these variables when integrating with services that require specific header naming conventions. For example, AWS Bedrock AgentCore requires headers prefixed with `X-Amzn-Bedrock-AgentCore-Runtime-Custom-`:
+:::tip 自定义标头前缀
+在集成需要特定标头命名规范的服务时使用这些变量。例如，AWS Bedrock AgentCore 要求标头带有 `X-Amzn-Bedrock-AgentCore-Runtime-Custom-` 前缀：
 
 ```bash
 FORWARD_USER_INFO_HEADER_USER_NAME=X-Amzn-Bedrock-AgentCore-Runtime-Custom-User-Name
@@ -1651,27 +1631,24 @@ FORWARD_SESSION_INFO_HEADER_MESSAGE_ID=X-Amzn-Bedrock-AgentCore-Runtime-Custom-M
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Bypass SSL Verification for RAG on Websites.
+- 描述：为网站上的 RAG 绕过 SSL 验证。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `WEBUI_SESSION_COOKIE_SAME_SITE`
 
 - 类型：`str`
-- Options:
-  - `lax` - Sets the `SameSite` attribute to lax, allowing session cookies to be sent with
-requests initiated by third-party websites.
-  - `strict` - Sets the `SameSite` attribute to strict, blocking session cookies from being sent
-with requests initiated by third-party websites.
-  - `none` - Sets the `SameSite` attribute to none, allowing session cookies to be sent with
-requests initiated by third-party websites, but only over HTTPS.
+- 选项：
+  - `lax` - 将 `SameSite` 属性设置为 lax，允许第三方网站发起的请求携带 session cookies。
+  - `strict` - 将 `SameSite` 属性设置为 strict，阻止第三方网站发起的请求携带 session cookies。
+  - `none` - 将 `SameSite` 属性设置为 none，允许第三方网站发起的请求携带 session cookies，但仅限 HTTPS。
 - 默认值：`lax`
-- 描述：Sets the `SameSite` attribute for session cookies.
+- 描述：为 session cookies 设置 `SameSite` 属性。
 
 :::warning
 
-When `ENABLE_OAUTH_SIGNUP` is enabled, setting `WEBUI_SESSION_COOKIE_SAME_SITE` to `strict` can cause login failures. This is because Open WebUI uses a session cookie to validate the callback from the OAuth provider, which helps prevent CSRF attacks.
+当启用 `ENABLE_OAUTH_SIGNUP` 时，将 `WEBUI_SESSION_COOKIE_SAME_SITE` 设为 `strict` 可能会导致登录失败。这是因为 Open WebUI 使用 session cookie 来验证来自 OAuth 提供方的回调，从而帮助防止 CSRF 攻击。
 
-However, a `strict` session cookie is not sent with the callback request, leading to potential login issues. If you experience this problem, use the default `lax` value instead.
+但是，`strict` session cookie 不会随回调请求发送，这会导致潜在的登录问题。如果遇到此问题，请改用默认的 `lax` 值。
 
 :::
 
@@ -1679,24 +1656,21 @@ However, a `strict` session cookie is not sent with the callback request, leadin
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Sets the `Secure` attribute for session cookies if set to `True`.
+- 描述：如果设为 `True`，为 session cookies 设置 `Secure` 属性。
 
 #### `WEBUI_AUTH_COOKIE_SAME_SITE`
 
 - 类型：`str`
-- Options:
-  - `lax` - Sets the `SameSite` attribute to lax, allowing auth cookies to be sent with
-requests initiated by third-party websites.
-  - `strict` - Sets the `SameSite` attribute to strict, blocking auth cookies from being sent
-with requests initiated by third-party websites.
-  - `none` - Sets the `SameSite` attribute to none, allowing auth cookies to be sent with
-requests initiated by third-party websites, but only over HTTPS.
+- 选项：
+  - `lax` - 将 `SameSite` 属性设置为 lax，允许认证 cookie 随第三方网站发起的请求发送。
+  - `strict` - 将 `SameSite` 属性设置为 strict，阻止认证 cookie 随第三方网站发起的请求发送。
+  - `none` - 将 `SameSite` 属性设置为 none，允许认证 cookie 随第三方网站发起的请求发送，但仅限 HTTPS。
 - 默认值：`lax`
-- 描述：Sets the `SameSite` attribute for auth cookies.
+- 描述：为认证 cookie 设置 `SameSite` 属性。
 
 :::info
 
-If the value is not set, `WEBUI_SESSION_COOKIE_SAME_SITE` will be used as a fallback.
+如果未设置该值，将回退使用 `WEBUI_SESSION_COOKIE_SAME_SITE`。
 
 :::
 
@@ -1704,11 +1678,11 @@ If the value is not set, `WEBUI_SESSION_COOKIE_SAME_SITE` will be used as a fall
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Sets the `Secure` attribute for auth cookies if set to `True`.
+- 描述：如果设为 `True`，为认证 cookie 设置 `Secure` 属性。
 
 :::info
 
-If the value is not set, `WEBUI_SESSION_COOKIE_SECURE` will be used as a fallback.
+如果未设置该值，将回退使用 `WEBUI_SESSION_COOKIE_SECURE`。
 
 :::
 
@@ -1716,14 +1690,11 @@ If the value is not set, `WEBUI_SESSION_COOKIE_SECURE` will be used as a fallbac
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：This setting enables or disables authentication.
+- 描述：此设置用于启用或禁用认证。
 
 :::danger
 
-If set to `False`, authentication will be disabled for your Open WebUI instance. However, it's
-important to note that turning off authentication is only possible for fresh installations without
-any existing users. If there are already users registered, you cannot disable authentication
-directly. Ensure that no users are present in the database if you intend to turn off `WEBUI_AUTH`.
+如果设为 `False`，你的 Open WebUI 实例将禁用认证。不过需要注意的是，只有全新安装且没有任何现有用户时才能关闭认证。如果已经有用户注册，则无法直接禁用认证。如果你打算关闭 `WEBUI_AUTH`，请确保数据库中没有任何用户。
 
 :::
 
@@ -1731,17 +1702,17 @@ directly. Ensure that no users are present in the database if you intend to turn
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables password complexity validation for user accounts. When enabled, passwords must meet the complexity requirements defined by `PASSWORD_VALIDATION_REGEX_PATTERN` during signup, password updates, and user creation operations. This helps enforce stronger password policies across the application.
+- 描述：为用户账户启用密码复杂度校验。启用后，在注册、修改密码和创建用户时，密码必须满足 `PASSWORD_VALIDATION_REGEX_PATTERN` 定义的复杂度要求。这有助于在整个应用中执行更强的密码策略。
 
 :::info
 
-Password validation is applied to:
-- New user registration (signup)
-- Password changes through user settings
-- Admin-initiated user creation
-- Password resets
+密码校验适用于：
+- 新用户注册（signup）
+- 通过用户设置修改密码
+- 管理员创建用户
+- 密码重置
 
-Existing users with passwords that don't meet the new requirements are **not automatically forced to update their passwords**, but will need to meet the requirements when they next change their password.
+现有用户如果密码不符合新要求，**不会被自动强制更新密码**；但在下一次修改密码时必须满足这些要求。
 
 :::
 
@@ -1749,83 +1720,83 @@ Existing users with passwords that don't meet the new requirements are **not aut
 
 - 类型：`str`
 - 默认值：`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$`
-- 描述：Regular expression pattern used to validate password complexity when `ENABLE_PASSWORD_VALIDATION` is enabled. The default pattern requires passwords to be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+- 描述：当启用 `ENABLE_PASSWORD_VALIDATION` 时，用于验证密码复杂度的正则表达式。默认模式要求密码至少 8 个字符，并且至少包含一个大写字母、一个小写字母、一个数字和一个特殊字符。
 
 :::warning
 
-**Custom Pattern Considerations**
+**自定义模式注意事项**
 
-When defining a custom regex pattern, ensure it:
-- Is a valid regular expression that Python's `re` module can compile
-- Balances security requirements with user experience
-- Is thoroughly tested before deployment to avoid locking users out
+定义自定义正则时，请确保它：
+- 是 Python 的 `re` 模块能够编译的有效正则表达式
+- 在安全要求与用户体验之间取得平衡
+- 在部署前经过充分测试，以避免把用户锁在系统外
 
-Invalid regex patterns will cause password validation to fail, potentially preventing user registration and password changes.
+无效的正则会导致密码校验失败，进而可能阻止用户注册和修改密码。
 
 :::
 
 #### `PASSWORD_VALIDATION_HINT`
 
 - 类型：`str`
-- 默认值：`""` (empty string)
-- 描述：Custom hint message displayed to users when their password fails validation. This message appears in error dialogs during signup, password changes, and admin user creation when the password doesn't meet the requirements defined by `PASSWORD_VALIDATION_REGEX_PATTERN`. Use this to explain your specific password requirements in user-friendly terms.
-- Example: `Password must be at least 12 characters with uppercase, lowercase, number, and special character.`
+- 默认值：`""`（空字符串）
+- 描述：当用户密码未通过校验时显示的自定义提示信息。此消息会在注册、修改密码和管理员创建用户时的错误对话框中出现，前提是密码不符合 `PASSWORD_VALIDATION_REGEX_PATTERN` 定义的要求。可用它以更易懂的语言解释你的密码要求。
+- 示例：`密码必须至少 12 个字符，并包含大写字母、小写字母、数字和特殊字符。`
 
 :::tip
 
-When setting a custom `PASSWORD_VALIDATION_REGEX_PATTERN`, always set `PASSWORD_VALIDATION_HINT` to explain the requirements in plain language. Without a hint, users will only see a generic "Invalid password" error with no guidance on what's required.
+在设置自定义 `PASSWORD_VALIDATION_REGEX_PATTERN` 时，务必同时设置 `PASSWORD_VALIDATION_HINT`，用通俗语言解释要求。没有提示时，用户只能看到通用的“无效密码”错误，而不知道具体需要什么。
 
 :::
 
 #### `WEBUI_SECRET_KEY`
 
 - 类型：`str`
-- 默认值：Automatically generated (see below)
-- 描述：The secret key used for signing JSON Web Tokens (JWTs) and **encrypting sensitive data** at rest (including OAuth tokens for MCP). Can be set via the `WEBUI_SECRET_KEY` environment variable or the legacy `WEBUI_JWT_SECRET_KEY` variable (deprecated).
+- 默认值：自动生成（见下文）
+- 描述：用于签名 JSON Web Tokens (JWTs) 以及在静态存储时**加密敏感数据**的密钥（包括 MCP 的 OAuth token）。可以通过 `WEBUI_SECRET_KEY` 环境变量或旧版 `WEBUI_JWT_SECRET_KEY` 变量（已弃用）进行设置。
 
-:::info How the secret key is generated
+:::info 密钥生成方式
 
-You do **not** need to manually set this variable for a secure installation — **all standard launch methods automatically generate and persist a cryptographically random key on first start:**
+你**不需要**为了安全安装而手动设置此变量——**所有标准启动方式都会在首次启动时自动生成并持久化一个密码学随机密钥：**
 
-| Launch method | Auto-generates? | Persisted to |
+| 启动方式 | 是否自动生成？ | 持久化到 |
 |---|---|---|
-| **Docker** (`start.sh`) | ✅ Yes | `.webui_secret_key` file inside the container |
-| **pip install** (`open-webui serve`) | ✅ Yes | `.webui_secret_key` file in the working directory |
-| **Development** (`open-webui dev`, direct `uvicorn`) | ❌ No | N/A — uses the code-level fallback |
+| **Docker** (`start.sh`) | ✅ 是 | 容器内的 `.webui_secret_key` 文件 |
+| **pip install** (`open-webui serve`) | ✅ 是 | 工作目录中的 `.webui_secret_key` 文件 |
+| **开发模式** (`open-webui dev`、直接 `uvicorn`) | ❌ 否 | 不适用——使用代码级回退值 |
 
-The code-level fallback value (`t0p-s3cr3t`) exists **only** for development convenience and is **never used** when Open WebUI is launched through the standard Docker or `open-webui serve` methods. Both of those methods check for the environment variable first, and if it is not set, generate a secure random key, save it to a file, and inject it into the environment — all before the application starts.
+代码级回退值（`t0p-s3cr3t`）**仅**用于开发方便，在通过标准 Docker 或 `open-webui serve` 方式启动 Open WebUI 时**绝不会**使用。这两种方式都会先检查环境变量；如果未设置，就会生成安全随机密钥、将其保存到文件中，并注入到环境变量里——整个过程都在应用启动之前完成。
 
 :::
 
-:::danger Recommended: Set an explicit, persistent value
+:::danger 推荐：设置显式且持久的值
 
-While the auto-generated key is secure, it is tied to a file inside the container or working directory. **If the container is recreated (not just restarted) and the key file is not in a persisted volume, a new key is generated**, which causes:
+虽然自动生成的密钥是安全的，但它绑定在容器或工作目录中的某个文件上。**如果容器被重新创建（而不只是重启），并且该密钥文件没有放在持久化卷中，就会生成新的密钥**，这会导致：
 
-1. **All existing user sessions become invalid** (users are logged out).
-2. **All OAuth sessions become invalid.**
-3. **MCP Tools break** (Error: `Error decrypting tokens`) because tokens encrypted with the previous key cannot be decrypted.
+1. **所有现有用户会话失效**（用户会被登出）。
+2. **所有 OAuth 会话失效。**
+3. **MCP Tools 会失效**（错误：`Error decrypting tokens`），因为使用旧密钥加密的 token 无法再解密。
 
-To avoid this, explicitly set `WEBUI_SECRET_KEY` to a secure, persistent value that survives container recreates:
+为避免这种情况，请显式将 `WEBUI_SECRET_KEY` 设置为一个安全、持久且能在容器重建后继续保留的值：
 
 ```bash
-# Generate a secure key
+# 生成一个安全密钥
 openssl rand -hex 32
 ```
 
-Then pass it as an environment variable in your Docker Compose or deployment configuration.
+然后把它作为环境变量传入 Docker Compose 或部署配置中。
 
 :::
 
 :::warning
 
-**Required for Multi-Worker and Multi-Node Deployments AND HIGHLY RECOMMENDED IN SINGLE-WORKER ENVIRONMENTS**
+**多 Worker 与多节点部署必需，且在单 Worker 环境中也强烈推荐**
 
-When deploying Open WebUI with `UVICORN_WORKERS > 1` or in a multi-node/worker cluster with a load balancer (e.g. helm/kubectl/kubernetes/k8s), you **must** set this variable to the **same value across all replicas**. Without it, the following issues will occur:
+当你以 `UVICORN_WORKERS > 1` 部署 Open WebUI，或者在带负载均衡器的多节点/多 Worker 集群中部署（例如 helm/kubectl/kubernetes/k8s）时，**必须**将此变量设置为**所有副本相同的值**。否则会出现以下问题：
 
-- Session management will fail across workers
-- Application state will be inconsistent between instances
-- Websocket connections will not function properly in distributed setups
-- Users may experience intermittent authentication failures
+- 会话管理在各 worker 之间失效
+- 不同实例之间的应用状态不一致
+- 分布式环境中的 WebSocket 连接无法正常工作
+- 用户可能遇到间歇性的认证失败
 
 :::
 
@@ -1833,11 +1804,11 @@ When deploying Open WebUI with `UVICORN_WORKERS > 1` or in a multi-node/worker c
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：When enabled, the application makes automatic update checks and notifies you about version updates.
+- 描述：启用后，应用会自动检查更新并通知你有版本更新。
 
 :::info
 
-If `OFFLINE_MODE` is enabled, this `ENABLE_VERSION_UPDATE_CHECK` flag is always set to `false` automatically.
+如果启用了 `OFFLINE_MODE`，这个 `ENABLE_VERSION_UPDATE_CHECK` 标志会自动设为 `false`。
 
 :::
 
@@ -1845,24 +1816,24 @@ If `OFFLINE_MODE` is enabled, this `ENABLE_VERSION_UPDATE_CHECK` flag is always 
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Disables Open WebUI's network connections for update checks and automatic model downloads.
+- 描述：禁用 Open WebUI 用于检查更新和自动下载模型的网络连接。
 
 :::info
 
-**Disabled when enabled:**
+**启用后会禁用：**
 
-- Automatic version update checks (see flag `ENABLE_VERSION_UPDATE_CHECK`)
-- Downloads of embedding models from Hugging Face Hub
-  - If you did not download an embedding model prior to activating `OFFLINE_MODE` any RAG, web search and document analysis functionality may not work properly
-- Update notifications in the UI (see flag `ENABLE_VERSION_UPDATE_CHECK`)
+- 自动版本更新检查（参见 `ENABLE_VERSION_UPDATE_CHECK`）
+- 从 Hugging Face Hub 下载嵌入模型
+  - 如果你在启用 `OFFLINE_MODE` 之前没有下载过嵌入模型，任何 RAG、web search 和文档分析功能都可能无法正常工作
+- UI 中的更新通知（参见 `ENABLE_VERSION_UPDATE_CHECK`）
 
-**Still functional:**
+**仍然可用：**
 
-- External LLM API connections (OpenAI, etc.)
-- OAuth authentication providers
-- Web search and RAG with external APIs
+- 外部 LLM API 连接（OpenAI 等）
+- OAuth 身份验证提供方
+- 使用外部 API 的 web search 和 RAG
 
-Read more about `offline mode` in the [offline mode guide](/tutorials/maintenance/offline-mode).
+有关 `offline mode` 的更多信息，请参阅 [离线模式指南](/tutorials/maintenance/offline-mode)。
 
 :::
 
@@ -1870,12 +1841,12 @@ Read more about `offline mode` in the [offline mode guide](/tutorials/maintenanc
 
 - 类型：`int`
 - 默认值：`0`
-- 描述：Tells Hugging Face whether we want to launch in offline mode, so to not connect to hugging face and prevent all automatic model downloads
+- 描述：告知 Hugging Face 是否以离线模式启动，从而不连接 Hugging Face 并阻止所有自动模型下载。
 
 :::info
 
-Downloads of models, sentence transformers and other configurable items will NOT WORK when this is set to `1`.
-RAG will also not work on a default installation, if this is set to `True`.
+当此值设为 `1` 时，模型、sentence transformers 和其他可配置项的下载都将无法工作。
+如果在默认安装中将其设为 `True`，RAG 也将无法工作。
 
 :::
 
@@ -1883,54 +1854,54 @@ RAG will also not work on a default installation, if this is set to `True`.
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Resets the `config.json` file on startup.
+- 描述：在启动时重置 `config.json` 文件。
 
 #### `SAFE_MODE`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables safe mode, which disables potentially unsafe features, deactivating all functions.
+- 描述：启用安全模式，禁用潜在不安全的功能并停用所有 functions。
 
 #### `CORS_ALLOW_ORIGIN`
 
 - 类型：`str`
 - 默认值：`*`
-- 描述：Sets the allowed origins for Cross-Origin Resource Sharing (CORS). Smicolon ';' separated list of allowed origins.
+- 描述：设置 Cross-Origin Resource Sharing (CORS) 允许的来源；使用分号 `;` 分隔允许来源列表。
 
 :::warning
 
-**This variable is required to be set**, otherwise you may experience Websocket issues and weird "\{\}" responses or "Unexpected token 'd', "data: \{"id"... is not valid JSON".
+**此变量必须设置**，否则你可能会遇到 WebSocket 问题以及奇怪的 `\{\}` 响应，或者 `Unexpected token 'd', "data: \{"id"... is not valid JSON` 之类的错误。
 
 :::
 
 :::info
 
-If you experience Websocket issues, check the logs of Open WebUI.
-If you see lines like this `engineio.base_server:_log_error_once:354 - https://yourdomain.com is not an accepted origin.` then you need to configure your CORS_ALLOW_ORIGIN more broadly.
+如果你遇到 WebSocket 问题，请检查 Open WebUI 的日志。
+如果看到类似 `engineio.base_server:_log_error_once:354 - https://yourdomain.com is not an accepted origin.` 的行，那么就需要更宽泛地配置 `CORS_ALLOW_ORIGIN`。
 
-Example:
+示例：
 CORS_ALLOW_ORIGIN: "https://yourdomain.com;http://yourdomain.com;https://yourhostname;http://youripaddress;http://localhost:3000"
 
-Add all valid IPs, Domains and Hostnames one might access your Open WebUI to the variable.
-Once you did, no more websocket issues or warnings in the console should occur.
+将所有可能访问你的 Open WebUI 的有效 IP、域名和主机名都添加到该变量中。
+完成后，控制台中就不应再出现 websocket 问题或警告。
 
 :::
 
 #### `CORS_ALLOW_CUSTOM_SCHEME`
 
-- Type `str`
-- 默认值：`""` (empty string)
-- 描述：Sets a list of further allowed schemes for Cross-Origin Resource Sharing (CORS). Allows you to specify additional custom URL schemes, beyond the standard `http` and `https`, that are permitted as valid origins for Cross-Origin Resource Sharing (CORS).
+- 类型：`str`
+- 默认值：`""`（空字符串）
+- 描述：设置额外允许的 Cross-Origin Resource Sharing (CORS) scheme 列表。你可以指定除标准 `http` 和 `https` 之外的自定义 URL scheme，作为有效的 CORS 来源。
 
 :::info
 
-This is particularly useful for scenarios such as:
- - Integrating with desktop applications that use custom protocols (e.g., `app://`, `custom-app-scheme://`).
- - Local development environments or testing setups that might employ non-standard schemes (e.g., `file://` if applicable, or `electron://`).
+这在以下场景中特别有用：
+ - 集成使用自定义协议的桌面应用（例如 `app://`、`custom-app-scheme://`）。
+ - 使用非标准 scheme 的本地开发环境或测试环境（例如在适用时使用 `file://`，或 `electron://`）。
 
-Provide a semicolon-separated list of scheme names without the `://`. For example: `app;file;electron;my-custom-scheme`.
+请提供不带 `://` 的 scheme 名称，并以分号分隔。例如：`app;file;electron;my-custom-scheme`。
 
-When configured, these custom schemes will be validated alongside `http` and `https` for any origins specified in `CORS_ALLOW_ORIGIN`.
+配置后，这些自定义 scheme 会与 `http` 和 `https` 一起被验证，用于 `CORS_ALLOW_ORIGIN` 中指定的任何来源。
 
 :::
 
@@ -1938,56 +1909,55 @@ When configured, these custom schemes will be validated alongside `http` and `ht
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Determines whether to allow custom models defined on the Hub in their own modeling files.
+- 描述：决定是否允许 Hub 上定义的自定义模型在其自己的模型文件中使用远程代码。
 
 
 #### `RAG_RERANKING_MODEL_TRUST_REMOTE_CODE`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Determines whether to allow custom models defined on the Hub in their own.
-modeling files for reranking.
+- 描述：决定是否允许 Hub 上定义的自定义模型在其自己的模型文件中用于重排序时使用远程代码。
 
 #### `RAG_EMBEDDING_MODEL_AUTO_UPDATE`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Toggles automatic update of the Sentence-Transformer model.
+- 描述：切换 Sentence-Transformer 模型的自动更新。
 
 #### `RAG_RERANKING_MODEL_AUTO_UPDATE`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Toggles automatic update of the reranking model.
+- 描述：切换重排序模型的自动更新。
 
-## Vector Database
+## 向量数据库
 
 #### `VECTOR_DB`
 
 - 类型：`str`
-- Options:
+- 选项：
 - `chroma`, `elasticsearch`, `mariadb-vector`, `milvus`, `opensearch`, `pgvector`, `qdrant`, `pinecone`, `s3vector`, `oracle23ai`, `weaviate`
 - 默认值：`chroma`
-- 描述：Specifies which vector database system to use. This setting determines which vector storage system will be used for managing embeddings.
+- 描述：指定要使用的向量数据库系统。此设置决定用于管理 embeddings 的向量存储系统。
 
-:::danger ChromaDB (Default) Is Not Safe for Multi-Worker or Multi-Replica Deployments
+:::danger ChromaDB（默认）不适用于多 Worker 或多副本部署
 
-The default ChromaDB configuration uses a **local `PersistentClient`** backed by **SQLite**. SQLite is not fork-safe — when uvicorn forks multiple worker processes (`UVICORN_WORKERS > 1`), each worker inherits a copy of the same SQLite connection. Concurrent writes from these forked processes cause immediate crashes (`Child process died`) or database corruption.
+默认的 ChromaDB 配置使用基于 **SQLite** 的本地 `PersistentClient`。SQLite 不是 fork-safe 的——当 uvicorn fork 出多个 worker 进程（`UVICORN_WORKERS > 1`）时，每个 worker 都会继承同一条 SQLite 连接的副本。来自这些 fork 出来的进程的并发写入会立即导致崩溃（`Child process died`）或数据库损坏。
 
-**This also applies to multi-replica deployments** (Kubernetes, Docker Swarm) where multiple containers point at the same ChromaDB data directory.
+**这同样适用于多副本部署**（Kubernetes、Docker Swarm），当多个容器指向同一个 ChromaDB 数据目录时也会发生。
 
-If you need multiple workers or replicas, you **must** either:
-1. **Switch to a client-server vector database** such as [PGVector](/reference/env-configuration#pgvector_db_url), [MariaDB Vector](/reference/env-configuration#mariadb_vector_db_url), Milvus, or Qdrant (recommended).
-2. **Run ChromaDB as a separate HTTP server** and configure [`CHROMA_HTTP_HOST`](/reference/env-configuration#chroma_http_host) / [`CHROMA_HTTP_PORT`](/reference/env-configuration#chroma_http_port) so that Open WebUI uses an `HttpClient` instead of the local `PersistentClient`.
+如果你需要多个 worker 或副本，**必须**二选一：
+1. **切换到客户端/服务器模式的向量数据库**，例如 [PGVector](/reference/env-configuration#pgvector_db_url)、[MariaDB Vector](/reference/env-configuration#mariadb_vector_db_url)、Milvus 或 Qdrant（推荐）。
+2. **将 ChromaDB 作为单独的 HTTP 服务器运行**，并配置 [`CHROMA_HTTP_HOST`](/reference/env-configuration#chroma_http_host) / [`CHROMA_HTTP_PORT`](/reference/env-configuration#chroma_http_port)，让 Open WebUI 使用 `HttpClient` 而不是本地 `PersistentClient`。
 
-See the [Scaling & HA guide](/troubleshooting/multi-replica) for full details.
+更多详情请参阅 [扩展与高可用指南](/troubleshooting/multi-replica)。
 
 :::
 
 :::note
 
-PostgreSQL Dependencies
-To use `pgvector`, ensure you have PostgreSQL dependencies installed:
+PostgreSQL 依赖
+要使用 `pgvector`，请确保已安装 PostgreSQL 相关依赖：
 
 ```bash
 pip install open-webui[all]
@@ -1997,125 +1967,125 @@ pip install open-webui[all]
 
 :::info
 
-Only PGVector and ChromaDB will be consistently maintained by the Open WebUI team.
-The other vector stores are community-added vector databases.
+只有 PGVector 和 ChromaDB 会由 Open WebUI 团队持续维护。
+其他向量存储均为社区添加的向量数据库。
 
 :::
 
 ### ChromaDB
 
-:::warning Local vs. HTTP Mode
+:::warning 本地模式与 HTTP 模式
 
-By default (when `CHROMA_HTTP_HOST` is **not** set), ChromaDB runs as a local `PersistentClient` using SQLite for storage. This mode is **only safe for single-worker, single-instance deployments** (`UVICORN_WORKERS=1`, one replica).
+默认情况下（未设置 `CHROMA_HTTP_HOST` 时），ChromaDB 会作为使用 SQLite 存储的本地 `PersistentClient` 运行。此模式**仅适用于单 worker、单实例部署**（`UVICORN_WORKERS=1`，一个副本）。
 
-For multi-worker or multi-replica setups, you **must** configure `CHROMA_HTTP_HOST` and `CHROMA_HTTP_PORT` to point to a standalone ChromaDB server, or switch to a different vector database entirely. See the [VECTOR_DB](#vector_db) warning above.
+对于多 worker 或多副本部署，你**必须**配置 `CHROMA_HTTP_HOST` 和 `CHROMA_HTTP_PORT`，将其指向独立的 ChromaDB 服务器，或者直接切换到其他向量数据库。请参阅上面的 [VECTOR_DB](#vector_db) 警告。
 
 :::
 
 #### `CHROMA_TENANT`
 
 - 类型：`str`
-- 默认值：The value of `chromadb.DEFAULT_TENANT` (a constant in the `chromadb` module)
-- 描述：Sets the tenant for ChromaDB to use for RAG embeddings.
+- 默认值：`chromadb` 模块中 `chromadb.DEFAULT_TENANT` 的值
+- 描述：设置 ChromaDB 用于 RAG embeddings 的 tenant。
 
 #### `CHROMA_DATABASE`
 
 - 类型：`str`
-- 默认值：The value of `chromadb.DEFAULT_DATABASE` (a constant in the `chromadb` module)
-- 描述：Sets the database in the ChromaDB tenant to use for RAG embeddings.
+- 默认值：`chromadb` 模块中 `chromadb.DEFAULT_DATABASE` 的值
+- 描述：设置 ChromaDB tenant 中用于 RAG embeddings 的数据库。
 
 #### `CHROMA_HTTP_HOST`
 
 - 类型：`str`
-- 描述：Specifies the hostname of a remote ChromaDB Server. Uses a local ChromaDB instance if not set. **Setting this variable is required for multi-worker or multi-replica deployments** — it switches ChromaDB from the local SQLite-backed `PersistentClient` to a fork-safe `HttpClient`.
+- 描述：指定远程 ChromaDB Server 的主机名。如果未设置，则使用本地 ChromaDB 实例。**多 worker 或多副本部署必须设置此变量**——它会将 ChromaDB 从本地 SQLite-backed `PersistentClient` 切换为 fork-safe 的 `HttpClient`。
 
 #### `CHROMA_HTTP_PORT`
 
 - 类型：`int`
 - 默认值：`8000`
-- 描述：Specifies the port of a remote ChromaDB Server.
+- 描述：指定远程 ChromaDB Server 的端口。
 
 #### `CHROMA_HTTP_HEADERS`
 
 - 类型：`str`
-- 描述：A comma-separated list of HTTP headers to include with every ChromaDB request.
-- Example: `Authorization=Bearer heuhagfuahefj,User-Agent=OpenWebUI`.
+- 描述：要随每个 ChromaDB 请求一起发送的 HTTP 标头逗号分隔列表。
+- 示例：`Authorization=Bearer heuhagfuahefj,User-Agent=OpenWebUI`
 
 #### `CHROMA_HTTP_SSL`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Controls whether or not SSL is used for ChromaDB Server connections.
+- 描述：控制是否在连接 ChromaDB Server 时使用 SSL。
 
 #### `CHROMA_CLIENT_AUTH_PROVIDER`
 
 - 类型：`str`
-- 描述：Specifies an authentication provider for remote ChromaDB Server.
-- Example: `chromadb.auth.basic_authn.BasicAuthClientProvider`
+- 描述：指定远程 ChromaDB Server 的认证提供方。
+- 示例：`chromadb.auth.basic_authn.BasicAuthClientProvider`
 
 #### `CHROMA_CLIENT_AUTH_CREDENTIALS`
 
 - 类型：`str`
-- 描述：Specifies auth credentials for remote ChromaDB Server.
-- Example: `username:password`
+- 描述：指定远程 ChromaDB Server 的认证凭据。
+- 示例：`username:password`
 
 ### Elasticsearch
 
 #### `ELASTICSEARCH_API_KEY`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Elasticsearch API key.
+- 默认值：空字符串（`''`），因为默认值设为 `None`
+- 描述：指定 Elasticsearch API key。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_CA_CERTS`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the path to the CA certificates for Elasticsearch.
+- 默认值：空字符串（`''`），因为默认值设为 `None`
+- 描述：指定 Elasticsearch 的 CA 证书路径。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_CLOUD_ID`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the Elasticsearch cloud ID.
+- 默认值：空字符串（`''`），因为默认值设为 `None`
+- 描述：指定 Elasticsearch 的 cloud ID。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_INDEX_PREFIX`
 
 - 类型：`str`
 - 默认值：`open_webui_collections`
-- 描述：Specifies the prefix for the Elasticsearch index.
+- 描述：指定 Elasticsearch 索引的前缀。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_PASSWORD`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the password for Elasticsearch.
+- 默认值：空字符串（`''`），因为默认值设为 `None`
+- 描述：指定 Elasticsearch 的密码。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_URL`
 
 - 类型：`str`
 - 默认值：`https://localhost:9200`
-- 描述：Specifies the URL for the Elasticsearch instance.
+- 描述：指定 Elasticsearch 实例的 URL。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `ELASTICSEARCH_USERNAME`
 
 - 类型：`str`
-- 默认值：Empty string (' '), since `None` is set as default.
-- 描述：Specifies the username for Elasticsearch.
+- 默认值：空字符串（`''`），因为默认值设为 `None`
+- 描述：指定 Elasticsearch 的用户名。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 ### Milvus
 
 :::warning
 
-Milvus is not actively maintained by the Open WebUI team. It is an addition by the community and is maintained by the community.
-If you want to use Milvus, be careful when upgrading Open WebUI (crate backups and snapshots for rollbacks) in case internal changes in Open WebUI lead to breakage.
+Milvus 目前并未由 Open WebUI 团队积极维护。它是社区添加的功能，由社区维护。
+如果你要使用 Milvus，请在升级 Open WebUI 时格外小心（请为回滚创建备份和快照），以防 Open WebUI 的内部变更导致故障。
 
 :::
 
@@ -2123,175 +2093,175 @@ If you want to use Milvus, be careful when upgrading Open WebUI (crate backups a
 
 - 类型：`str`
 - 默认值：`${DATA_DIR}/vector_db/milvus.db`
-- Example (Remote): `http://your-server-ip:19530`
-- 描述：Specifies the URI for connecting to the Milvus vector database. This can point to a local or remote Milvus server based on the deployment configuration.
+- 示例（远程）：`http://your-server-ip:19530`
+- 描述：指定连接 Milvus 向量数据库的 URI。根据部署配置，它可以指向本地或远程 Milvus 服务器。
 
 #### `MILVUS_DB`
 
 - 类型：`str`
 - 默认值：`default`
-- Example: `default`
-- 描述：Specifies the database to connect to within a Milvus instance.
+- 示例：`default`
+- 描述：指定 Milvus 实例中要连接的数据库。
 
 #### `MILVUS_TOKEN` **(Required for remote connections with authentication)**
 
 - 类型：`str`
 - 默认值：`None`
-- Example: `root:password` (format: `username:password`)
-- 描述：Specifies an optional connection token for Milvus. Required when connecting to a remote Milvus server with authentication enabled. Format is `username:password`.
+- 示例：`root:password`（格式：`username:password`）
+- 描述：指定 Milvus 的可选连接 token。连接启用认证的远程 Milvus 服务器时必须提供。格式为 `username:password`。
 
 #### `MILVUS_INDEX_TYPE`
 
 - 类型：`str`
 - 默认值：`HNSW`
-- Options: `AUTOINDEX`, `FLAT`, `IVF_FLAT`, `HNSW`, `DISKANN`
-- 描述：Specifies the index type to use when creating a new collection in Milvus. `AUTOINDEX` is generally recommended for Milvus standalone. `HNSW` may offer better performance but requires a clustered Milvus setup and is not meant for standalone setups.
+- 选项：`AUTOINDEX`、`FLAT`、`IVF_FLAT`、`HNSW`、`DISKANN`
+- 描述：指定在 Milvus 中创建新集合时使用的索引类型。对于 Milvus standalone，通常推荐 `AUTOINDEX`。`HNSW` 可能提供更好的性能，但需要集群化的 Milvus 部署，不适合 standalone 部署。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `MILVUS_METRIC_TYPE`
 
 - 类型：`str`
 - 默认值：`COSINE`
-- Options: `COSINE`, `IP`, `L2`
-- 描述：Specifies the metric type for vector similarity search in Milvus.
+- 选项：`COSINE`、`IP`、`L2`
+- 描述：指定 Milvus 中向量相似度搜索所使用的指标类型。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `MILVUS_HNSW_M`
 
 - 类型：`int`
 - 默认值：`16`
-- 描述：Specifies the `M` parameter for the HNSW index type in Milvus. This influences the number of bi-directional links created for each new element during construction. Only applicable if `MILVUS_INDEX_TYPE` is `HNSW`.
+- 描述：指定 Milvus 中 HNSW 索引类型的 `M` 参数。这会影响在构建过程中为每个新元素创建的双向链接数量。仅当 `MILVUS_INDEX_TYPE` 为 `HNSW` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `MILVUS_HNSW_EFCONSTRUCTION`
 
 - 类型：`int`
 - 默认值：`100`
-- 描述：Specifies the `efConstruction` parameter for the HNSW index type in Milvus. This influences the size of the dynamic list for the nearest neighbors during index construction. Only applicable if `MILVUS_INDEX_TYPE` is `HNSW`.
+- 描述：指定 Milvus 中 HNSW 索引类型的 `efConstruction` 参数。这会影响索引构建期间最近邻动态列表的大小。仅当 `MILVUS_INDEX_TYPE` 为 `HNSW` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `MILVUS_IVF_FLAT_NLIST`
 
 - 类型：`int`
 - 默认值：`128`
-- 描述：Specifies the `nlist` parameter for the IVF_FLAT index type in Milvus. This is the number of cluster units. Only applicable if `MILVUS_INDEX_TYPE` is `IVF_FLAT`.
+- 描述：指定 Milvus 中 IVF_FLAT 索引类型的 `nlist` 参数，也就是聚类单元的数量。仅当 `MILVUS_INDEX_TYPE` 为 `IVF_FLAT` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `MILVUS_DISKANN_MAX_DEGREE`
 
 - 类型：`int`
 - 默认值：`56`
-- 描述：Sets the max degree for Milvus if Milvus is in DISKANN indexing mode. Generally recommended to leave as is.
+- 描述：在 Milvus 处于 DISKANN 索引模式时设置最大度数。通常建议保持默认值。
 
 #### `MILVUS_DISKANN_SEARCH_LIST_SIZE`
 
 - 类型：`int`
 - 默认值：`100`
-- 描述：Sets the Milvus DISKANN search list size. Generally recommended to leave as is.
+- 描述：设置 Milvus DISKANN 的搜索列表大小。通常建议保持默认值。
 
 #### `ENABLE_MILVUS_MULTITENANCY_MODE`
 
 - 类型：`bool`
 - 默认值：`false`
-- 描述：Enables multitenancy pattern for Milvus collections management, which significantly reduces RAM usage and computational overhead by consolidating similar vector data structures. Controls whether Milvus uses multitenancy collection architecture. When enabled, all vector data is consolidated into 5 shared collections (memories, knowledge, files, web_search, hash_based) instead of creating individual collections per resource. Data isolation is achieved via a resource_id field rather than collection-level separation.
+- 描述：为 Milvus 集合管理启用多租户模式，通过合并相似的向量数据结构显著降低内存使用和计算开销。控制 Milvus 是否使用多租户集合架构。启用后，所有向量数据都会合并到 5 个共享集合中（memories、knowledge、files、web_search、hash_based），而不是为每个资源创建独立集合。数据隔离通过 `resource_id` 字段实现，而不是通过集合级别的分离。
 
 :::info
 
-**Benefits of multitenancy mode:**
-- Significantly reduced RAM consumption (5 collections vs potentially hundreds)
-- Lower computational overhead from collection management
-- Faster cold-start times
-- Reduced index maintenance burden
+**多租户模式的优势：**
+- 显著降低 RAM 占用（5 个集合，而不是潜在的数百个）
+- 通过集合管理降低计算开销
+- 更快的冷启动时间
+- 减少索引维护负担
 
-**Technical implementation:**
+**技术实现：**
 
-- All memories go into `{prefix}_memories`
-- All knowledge bases go into `{prefix}_knowledge`
-- All uploaded files go into `{prefix}_files`
-- Web search results go into `{prefix}_web_search`
-- Hash-based collections go into `{prefix}_hash_based`
-- Each entry includes a resource_id field matching the original collection name
-- Queries automatically filter by resource_id to maintain data isolation
+- 所有 memories 都进入 `{prefix}_memories`
+- 所有知识库都进入 `{prefix}_knowledge`
+- 所有上传文件都进入 `{prefix}_files`
+- web search 结果都进入 `{prefix}_web_search`
+- 基于哈希的集合都进入 `{prefix}_hash_based`
+- 每条记录都包含一个与原始集合名称匹配的 `resource_id` 字段
+- 查询会自动按 `resource_id` 过滤，以维持数据隔离
 
 :::
 
-| Collection Variable | Default Name (Suffix) | Trigger / Routing Logic in the Code | Purpose |
+| 集合变量 | 默认名称（后缀） | 代码中的触发 / 路由逻辑 | 用途 |
 | :--- | :--- | :--- | :--- |
-| `HASH_BASED_COLLECTION` | `_hash_based` | Collection name is a **63-char hex string** (SHA256 hash). | Caching direct URL fetches (Websites) with the `#` feature. |
-| `MEMORY_COLLECTION` | `_memories` | Collection name starts with **`user-memory-`**. | Storing user-specific long-term memories of the experimental memory system. |
-| `FILE_COLLECTION` | `_files` | Collection name starts with **`file-`**. | Storing uploaded documents (PDFs, DOCX, etc.). |
-| `WEB_SEARCH_COLLECTION`| `_web_search` | Collection name starts with **`web-search-`**. | Storing transient results from search engine queries. |
-| `KNOWLEDGE_COLLECTION` | `_knowledge` | **Everything else** (Default fallback). | Storing explicitly created Knowledge Bases. |
+| `HASH_BASED_COLLECTION` | `_hash_based` | 集合名称是一个 **63 位十六进制字符串**（SHA256 哈希）。 | 使用 `#` 功能缓存直接 URL 抓取（网站）。 |
+| `MEMORY_COLLECTION` | `_memories` | 集合名称以 **`user-memory-`** 开头。 | 存储实验性记忆系统中用户专属的长期记忆。 |
+| `FILE_COLLECTION` | `_files` | 集合名称以 **`file-`** 开头。 | 存储上传的文档（PDF、DOCX 等）。 |
+| `WEB_SEARCH_COLLECTION`| `_web_search` | 集合名称以 **`web-search-`** 开头。 | 存储来自搜索引擎查询的临时结果。 |
+| `KNOWLEDGE_COLLECTION` | `_knowledge` | **其他所有情况**（默认回退）。 | 存储显式创建的知识库。 |
 
 :::info
 
-**Migration from Legacy Mode to Multitenancy**
+**从旧模式迁移到多租户模式**
 
-**What happens when you enable multitenancy when you already have a normal milvus database with data in it:**
-- Existing collections (pattern: `open_webui_{collection_name}`) remain in Milvus but **become inaccessible** to Open WebUI
-- New data is written to the 5 shared multitenancy collections
-- Application treats knowledge bases as empty until reindexed
-- Files and memories are NOT automatically migrated to the new collection schema and will appear missing
+**当你在已有普通 Milvus 数据库且其中已有数据时启用多租户模式，会发生什么：**
+- 现有集合（模式：`open_webui_{collection_name}`）仍会保留在 Milvus 中，但会**对 Open WebUI 变得不可访问**
+- 新数据会写入这 5 个共享的多租户集合
+- 在重新索引之前，应用会将知识库视为空的
+- 文件和记忆**不会自动迁移**到新的集合架构中，因此看起来会像丢失了一样
 
-**Clean migration path from normal Milvus to multitenancy milvus:**
-- Before enabling multitenancy, export any critical knowledge content from the UI if possible
-- Set `ENABLE_MILVUS_MULTITENANCY_MODE=true` and restart Open WebUI
-- Navigate to `Admin Settings > Documents > Click Reindex Knowledge Base`
+**从普通 Milvus 迁移到多租户 Milvus 的清理迁移路径：**
+- 在启用多租户之前，尽可能先从 UI 导出任何关键知识内容
+- 设置 `ENABLE_MILVUS_MULTITENANCY_MODE=true` 并重启 Open WebUI
+- 前往 `Admin Settings > Documents`，然后点击 `Reindex Knowledge Base`
 
-**This rebuilds ONLY knowledge base vectors into the new multitenancy collections**
-**Files, user memories, and web search history are NOT migrated by this operation**
+**这只会将知识库向量重建到新的多租户集合中**
+**文件、用户记忆和 web search 历史不会被此次操作迁移**
 
-**Verify knowledge bases are accessible and functional**
-- Re-upload files if file-based retrieval is critical (file metadata remains but vectors are not migrated)
-- User chat memories will need to be regenerated through new conversations
+**验证知识库是否可访问且功能正常**
+- 如果基于文件的检索很关键，请重新上传文件（文件元数据会保留，但向量不会迁移）
+- 用户聊天记忆需要通过新的对话重新生成
 
-**Cleaning up legacy collections:**
-After successful migration (from milvus to multitenancy milvus), legacy collections still consume resources. Remove them manually:
-- Connect to Milvus using the native client (pymilvus or Attu UI)
-- Delete all old collections
+**清理旧集合：**
+在成功迁移（从 milvus 到多租户 milvus）后，旧集合仍会继续占用资源。请手动移除它们：
+- 使用原生客户端（pymilvus 或 Attu UI）连接到 Milvus
+- 删除所有旧集合
 
-**Current UI limitations:**
-- No one-click "migrate and cleanup" button exists
-- Vector DB reset from UI (Admin Settings > Documents > Reset Vector Storage/Knowledge) only affects the active mode's collections
-- Legacy collections require manual cleanup via Milvus client tools
-
-:::
-
-:::warning
-
-**Critical Considerations**
-
-**Before enabling multitenancy on an existing installation:**
-- Data loss risk: File vectors and user memory vectors are NOT migrated automatically. Only knowledge base content can be reindexed (migrated).
-- Collection naming dependency: Multitenancy relies on Open WebUI's internal collection naming conventions (user-memory-, file-, web-search-, hash patterns). **If Open WebUI changes these conventions in future updates, multitenancy routing may break, causing data corruption or incorrect data retrieval across isolated resources.**
-- No automatic rollback: Disabling multitenancy after data is written will not restore access to the shared collections. Data would need manual extraction and re-import.
-
-For fresh installations, no migration concerns exist
-
-**For existing installations with valuable data:**
-- Do not migrate to multitenancy mode if you do not want to handle migration and risk data loss
-- Understand that files and memories require re-upload/regeneration
-- Test migration on a backup/staging environment first
-- Consider if RAM savings justify the migration effort for your use case
-
-**To perform a full reset and switch to multitenancy:**
-- Backup any critical knowledge base content externally
-- Navigate to `Admin Settings > Documents`
-- Click `Reset Vector Storage/Knowledge` (this deletes all active mode collections and stored knowledge metadata)
-- Set `ENABLE_MILVUS_MULTITENANCY_MODE=true`
-- Restart Open WebUI
-- Re-upload/re-create knowledge bases from scratch
+**当前 UI 的限制：**
+- 没有一键“迁移并清理”的按钮
+- UI 中的向量数据库重置（Admin Settings > Documents > Reset Vector Storage/Knowledge）只会影响当前模式的集合
+- 旧集合需要使用 Milvus 客户端工具手动清理
 
 :::
 
 :::warning
 
-The mapping of multitenancy relies on current Open WebUI naming conventions for collection names.
+**关键注意事项**
 
-If Open WebUI changes how it generates collection names (e.g., "user-memory-" prefix, "file-" prefix, web search patterns, or hash formats), this mapping will break and route data to incorrect collections.
-POTENTIALLY CAUSING HUGE DATA CORRUPTION, DATA CONSISTENCY ISSUES AND INCORRECT DATA MAPPING INSIDE THE DATABASE.
+**在已有安装上启用多租户之前：**
+- 数据丢失风险：文件向量和用户记忆向量不会自动迁移。只有知识库内容可以重新索引（迁移）。
+- 集合命名依赖：多租户依赖 Open WebUI 内部的集合命名约定（user-memory-、file-、web-search-、hash 模式）。**如果 Open WebUI 在未来更新中更改这些约定，多租户路由就可能失效，导致隔离资源之间出现数据损坏或错误的数据检索。**
+- 无自动回滚：在数据写入后禁用多租户不会恢复对共享集合的访问。数据需要手动导出并重新导入。
 
-If you use Multitenancy Mode, you should always check for any changes to the collection names and data mapping before upgrading, and upgrade carefully (snapshots and backups for rollbacks)!
+对于全新安装，不存在迁移顾虑。
+
+**对于已有且包含重要数据的安装：**
+- 如果你不想处理迁移和数据丢失风险，就不要迁移到多租户模式
+- 了解文件和记忆都需要重新上传/重新生成
+- 先在备份/预发布环境中测试迁移
+- 评估 RAM 节省是否值得你为此付出的迁移成本
+
+**要执行完整重置并切换到多租户：**
+- 在外部备份任何关键知识库内容
+- 前往 `Admin Settings > Documents`
+- 点击 `Reset Vector Storage/Knowledge`（这会删除所有当前模式集合以及已存储的知识元数据）
+- 设置 `ENABLE_MILVUS_MULTITENANCY_MODE=true`
+- 重启 Open WebUI
+- 从头重新上传/创建知识库
+
+:::
+
+:::warning
+
+多租户映射依赖于 Open WebUI 当前的集合命名约定。
+
+如果 Open WebUI 更改了它生成集合名称的方式（例如 `user-memory-` 前缀、`file-` 前缀、web search 模式或哈希格式），此映射就会失效，并把数据路由到错误的集合。
+这可能导致严重的数据损坏、数据一致性问题，以及数据库内错误的数据映射。
+
+如果你使用多租户模式，在升级前务必检查集合名称和数据映射是否有任何变化，并谨慎升级（请准备快照和备份以便回滚）！
 
 :::
 
@@ -2299,90 +2269,90 @@ If you use Multitenancy Mode, you should always check for any changes to the col
 
 - 类型：`str`
 - 默认值：`open_webui`
-- 描述：Sets the prefix for Milvus collection names. In multitenancy mode, collections become `{prefix}_memories`, `{prefix}_knowledge`, etc. In legacy mode, collections are `{prefix}_{collection_name}`. Changing this value creates an entirely separate namespace—existing collections with the old prefix become invisible to Open WebUI but remain in Milvus consuming resources. Use this for true multi-instance isolation on a shared Milvus server, not for migration between modes. Milvus only accepts underscores, hyphens/dashes are not possible and will cause errors.
+- 描述：设置 Milvus 集合名称的前缀。在多租户模式下，集合会变成 `{prefix}_memories`、`{prefix}_knowledge` 等；在旧模式下，集合会变成 `{prefix}_{collection_name}`。修改此值会创建一个完全独立的命名空间——旧前缀的现有集合会对 Open WebUI 变得不可见，但仍会在 Milvus 中占用资源。它适用于在共享 Milvus 服务器上实现真正的多实例隔离，而不是用于模式迁移。Milvus 只接受下划线，不支持连字符/破折号，后者会导致错误。
 
 ### MariaDB Vector
 
 :::warning
 
-MariaDB Vector is not actively maintained by the Open WebUI team. It is an addition by the community and is maintained by the community.
-If you want to use MariaDB Vector, be careful when upgrading Open WebUI (create backups and snapshots for rollbacks) in case internal changes in Open WebUI lead to breakage.
+MariaDB Vector 目前并未由 Open WebUI 团队积极维护。它是社区添加的功能，由社区维护。
+如果你要使用 MariaDB Vector，请在升级 Open WebUI 时格外小心（请为回滚创建备份和快照），以防 Open WebUI 的内部变更导致故障。
 
 :::
 
 :::note
 
-MariaDB Dependencies
+MariaDB 依赖
 
-The `mariadb` Python connector is **not included by default** — it was removed from the bundled dependencies. To use `mariadb-vector`, you must install it explicitly:
+`mariadb` Python 连接器**默认不包含**——它已经从捆绑依赖中移除。要使用 `mariadb-vector`，你必须显式安装：
 
 ```bash
 pip install open-webui[mariadb]
 ```
 
-The official Docker image includes the system-level C library (`libmariadb-dev`) needed to compile the connector, so `pip install open-webui[mariadb]` will work inside the container without additional system packages. For non-Docker deployments, you must install the MariaDB C connector library (`libmariadb-dev` on Debian/Ubuntu) before installing the Python driver.
+官方 Docker 镜像包含编译连接器所需的系统级 C 库（`libmariadb-dev`），因此在容器内执行 `pip install open-webui[mariadb]` 无需额外系统包即可工作。对于非 Docker 部署，你必须先安装 MariaDB C 连接器库（Debian/Ubuntu 上为 `libmariadb-dev`），再安装 Python 驱动。
 
 :::
 
 :::info
 
-MariaDB Vector requires the **official MariaDB connector** (`mariadb+mariadbconnector://...`) as the connection scheme. This is mandatory because the official driver provides the correct `qmark` paramstyle and proper binary binding for `VECTOR(n)` float32 payloads. Other MySQL-compatible drivers will not work.
+MariaDB Vector 需要使用**官方 MariaDB 连接器**（`mariadb+mariadbconnector://...`）作为连接 scheme。这是强制要求，因为官方驱动提供了正确的 `qmark` paramstyle，以及对 `VECTOR(n)` float32 负载的正确二进制绑定。其他兼容 MySQL 的驱动都无法工作。
 
-Your MariaDB server must support `VECTOR` and `VECTOR INDEX` features (MariaDB 11.7+).
+你的 MariaDB 服务器必须支持 `VECTOR` 和 `VECTOR INDEX` 功能（MariaDB 11.7+）。
 
 :::
 
 #### `MARIADB_VECTOR_DB_URL`
 
 - 类型：`str`
-- 默认值：Empty string (`""`)
-- 描述：Sets the database URL for MariaDB Vector storage. Must use the `mariadb+mariadbconnector://` scheme (official MariaDB driver).
-- Example: `mariadb+mariadbconnector://user:password@localhost:3306/openwebui`
+- 默认值：空字符串（`""`）
+- 描述：设置 MariaDB Vector 存储的数据库 URL。必须使用 `mariadb+mariadbconnector://` scheme（官方 MariaDB 驱动）。
+- 示例：`mariadb+mariadbconnector://user:password@localhost:3306/openwebui`
 
 #### `MARIADB_VECTOR_INITIALIZE_MAX_VECTOR_LENGTH`
 
 - 类型：`int`
 - 默认值：`1536`
-- 描述：Specifies the maximum vector length (number of dimensions) for the `VECTOR(n)` column. Must match the dimensionality of your embedding model. Once the table is created, changing this value requires data migration — the backend will refuse to start if the configured dimension differs from the stored column dimension.
+- 描述：指定 `VECTOR(n)` 列允许的最大向量长度（维度数）。它必须与嵌入模型的维度一致。表创建后，修改此值需要进行数据迁移——如果配置维度与已存储的列维度不一致，后端会拒绝启动。
 
 #### `MARIADB_VECTOR_DISTANCE_STRATEGY`
 
 - 类型：`str`
-- Options:
-  - `cosine` - Uses `vec_distance_cosine()` for similarity measurement.
-  - `euclidean` - Uses `vec_distance_euclidean()` for similarity measurement.
+- 选项：
+  - `cosine` - 使用 `vec_distance_cosine()` 进行相似度测量。
+  - `euclidean` - 使用 `vec_distance_euclidean()` 进行相似度测量。
 - 默认值：`cosine`
-- 描述：Controls which distance function is used for the `VECTOR INDEX` and similarity search queries.
+- 描述：控制 `VECTOR INDEX` 和相似度搜索查询所使用的距离函数。
 
 #### `MARIADB_VECTOR_INDEX_M`
 
 - 类型：`int`
 - 默认值：`8`
-- 描述：HNSW index parameter that controls the maximum number of bi-directional connections per layer during index construction (`M=<int>` in the MariaDB `VECTOR INDEX` definition). Higher values improve recall but increase index size and build time.
+- 描述：HNSW 索引参数，用于控制索引构建期间每层最大双向连接数（MariaDB `VECTOR INDEX` 定义中的 `M=<int>`）。值越大召回率越高，但索引大小和构建时间也会增加。
 
 #### `MARIADB_VECTOR_POOL_SIZE`
 
 - 类型：`int`
 - 默认值：`None`
-- 描述：Sets the number of connections to maintain in the MariaDB Vector database connection pool. If not set, uses SQLAlchemy defaults. Setting this to `0` disables connection pooling entirely (uses `NullPool`).
+- 描述：设置 MariaDB Vector 数据库连接池中要维护的连接数。如果未设置，则使用 SQLAlchemy 默认值。将其设为 `0` 会完全禁用连接池（使用 `NullPool`）。
 
 #### `MARIADB_VECTOR_POOL_MAX_OVERFLOW`
 
 - 类型：`int`
 - 默认值：`0`
-- 描述：Specifies the maximum number of connections that can be created beyond `MARIADB_VECTOR_POOL_SIZE` when the pool is exhausted.
+- 描述：指定连接池耗尽时，除了 `MARIADB_VECTOR_POOL_SIZE` 之外还能创建的最大连接数。
 
 #### `MARIADB_VECTOR_POOL_TIMEOUT`
 
 - 类型：`int`
 - 默认值：`30`
-- 描述：Sets the timeout in seconds for acquiring a connection from the MariaDB Vector pool.
+- 描述：设置从 MariaDB Vector 连接池获取连接的超时时间（秒）。
 
 #### `MARIADB_VECTOR_POOL_RECYCLE`
 
 - 类型：`int`
 - 默认值：`3600`
-- 描述：Specifies the time in seconds after which connections are recycled in the MariaDB Vector pool to prevent stale connections.
+- 描述：指定 MariaDB Vector 连接池中连接在多久之后会被回收，以防止连接变旧。
 
 ### OpenSearch
 
@@ -2390,38 +2360,38 @@ Your MariaDB server must support `VECTOR` and `VECTOR INDEX` features (MariaDB 1
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables or disables OpenSearch certificate verification.
+- 描述：启用或禁用 OpenSearch 证书验证。
 
 #### `OPENSEARCH_PASSWORD`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Sets the password for OpenSearch.
+- 描述：设置 OpenSearch 的密码。
 
 #### `OPENSEARCH_SSL`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables or disables SSL for OpenSearch.
+- 描述：启用或禁用 OpenSearch 的 SSL。
 
 #### `OPENSEARCH_URI`
 
 - 类型：`str`
 - 默认值：`https://localhost:9200`
-- 描述：Sets the URI for OpenSearch.
+- 描述：设置 OpenSearch 的 URI。
 
 #### `OPENSEARCH_USERNAME`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Sets the username for OpenSearch.
+- 描述：设置 OpenSearch 的用户名。
 
 ### PGVector
 
 :::note
 
-PostgreSQL Dependencies
-To use `pgvector`, ensure you have PostgreSQL dependencies installed:
+PostgreSQL 依赖
+要使用 `pgvector`，请确保已安装 PostgreSQL 相关依赖：
 
 ```bash
 pip install open-webui[all]
@@ -2432,40 +2402,40 @@ pip install open-webui[all]
 #### `PGVECTOR_DB_URL`
 
 - 类型：`str`
-- 默认值：The value of the `DATABASE_URL` environment variable
-- 描述：Sets the database URL for model storage.
+- 默认值：`DATABASE_URL` 环境变量的值
+- 描述：设置用于模型存储的数据库 URL。
 
 #### `PGVECTOR_INITIALIZE_MAX_VECTOR_LENGTH`
 
 - 类型：`str`
 - 默认值：`1536`
-- 描述：Specifies the maximum vector length for PGVector initialization.
+- 描述：指定 PGVector 初始化时的最大向量长度。
 
 #### `PGVECTOR_CREATE_EXTENSION`
 
 - 类型：`str`
-- Default `true`
-- 描述：Creates the vector extension in the database
+- 默认值：`true`
+- 描述：在数据库中创建 vector 扩展。
 
 :::info
 
-If set to `false`, open-webui will assume the postgreSQL database where embeddings will be stored is pre-configured with the `vector` extension. This also allows open-webui to run as a non superuser database user.
+如果设为 `false`，open-webui 会假定存储 embeddings 的 PostgreSQL 数据库已预先配置好 `vector` 扩展。这也允许 open-webui 以非超级用户数据库账户运行。
 
 :::
 
 #### `PGVECTOR_INDEX_METHOD`
 
 - 类型：`str`
-- Options:
-  - `ivfflat` - Uses inverted file with flat compression, better for datasets with many dimensions.
-  - `hnsw` - Uses Hierarchical Navigable Small World graphs, generally provides better query performance.
-- 默认值：Not specified (pgvector will use its default)
-- 描述：Specifies the index method for pgvector. The choice affects query performance and index build time.
+- 选项：
+  - `ivfflat` - 使用扁平压缩的倒排文件，对高维数据集更友好。
+  - `hnsw` - 使用 Hierarchical Navigable Small World 图，通常能提供更好的查询性能。
+- 默认值：未指定（pgvector 会使用其默认值）
+- 描述：指定 pgvector 的索引方法。该选择会影响查询性能和索引构建时间。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-When choosing an index method, consider your dataset size and query patterns. HNSW generally provides better query performance but uses more memory, while IVFFlat can be more memory-efficient for larger datasets.
+选择索引方法时，请考虑数据集大小和查询模式。HNSW 通常查询性能更好，但会消耗更多内存；而 IVFFlat 对更大的数据集通常更节省内存。
 
 :::
 
@@ -2473,26 +2443,26 @@ When choosing an index method, consider your dataset size and query patterns. HN
 
 - 类型：`int`
 - 默认值：`16`
-- 描述：HNSW index parameter that controls the maximum number of bi-directional connections per layer during index construction. Higher values improve recall but increase index size and build time. Only applicable when `PGVECTOR_INDEX_METHOD` is set to `hnsw`.
+- 描述：HNSW 索引参数，用于控制索引构建期间每层最大双向连接数。值越大召回率越高，但索引大小和构建时间也会增加。仅当 `PGVECTOR_INDEX_METHOD` 设为 `hnsw` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `PGVECTOR_HNSW_EF_CONSTRUCTION`
 
 - 类型：`int`
 - 默认值：`64`
-- 描述：HNSW index parameter that controls the size of the dynamic candidate list during index construction. Higher values improve index quality but increase build time. Only applicable when `PGVECTOR_INDEX_METHOD` is set to `hnsw`.
+- 描述：HNSW 索引参数，用于控制索引构建期间动态候选列表的大小。值越大索引质量越高，但构建时间也会增加。仅当 `PGVECTOR_INDEX_METHOD` 设为 `hnsw` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `PGVECTOR_IVFFLAT_LISTS`
 
 - 类型：`int`
 - 默认值：`100`
-- 描述：IVFFlat index parameter that specifies the number of inverted lists (clusters) to create. A good starting point is `rows / 1000` for up to 1M rows and `sqrt(rows)` for over 1M rows. Only applicable when `PGVECTOR_INDEX_METHOD` is set to `ivfflat`.
+- 描述：IVFFlat 索引参数，指定要创建的倒排列表（聚类）数量。对于最多 100 万行的数据，一个不错的起点是 `rows / 1000`；超过 100 万行时，则可考虑 `sqrt(rows)`。仅当 `PGVECTOR_INDEX_METHOD` 设为 `ivfflat` 时适用。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 :::info
 
-For IVFFlat indexes, choosing the right number of lists is crucial for query performance. Too few lists will result in slow queries, while too many will increase index size without significant performance gains.
+对于 IVFFlat 索引，选择合适的列表数量对查询性能至关重要。列表太少会导致查询变慢，而列表太多则会增加索引大小，却不会带来明显的性能提升。
 
 :::
 
@@ -2500,79 +2470,79 @@ For IVFFlat indexes, choosing the right number of lists is crucial for query per
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables the use of `halfvec` data type instead of `vector` for storing embeddings. Required when `PGVECTOR_INITIALIZE_MAX_VECTOR_LENGTH` exceeds 2000 dimensions, as the `vector` type has a 2000-dimension limit.
+- 描述：启用使用 `halfvec` 数据类型代替 `vector` 来存储 embeddings。当 `PGVECTOR_INITIALIZE_MAX_VECTOR_LENGTH` 超过 2000 维时必须启用，因为 `vector` 类型有 2000 维限制。
 
 #### `PGVECTOR_PGCRYPTO`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables pgcrypto extension for encrypting sensitive data within PGVector. When enabled, `PGVECTOR_PGCRYPTO_KEY` must be set.
+- 描述：为 PGVector 启用 pgcrypto 扩展，用于加密敏感数据。启用后必须设置 `PGVECTOR_PGCRYPTO_KEY`。
 
 #### `PGVECTOR_PGCRYPTO_KEY`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the encryption key for pgcrypto when `PGVECTOR_PGCRYPTO` is enabled. Must be a secure, randomly generated key.
+- 描述：在启用 `PGVECTOR_PGCRYPTO` 时，为 pgcrypto 指定加密密钥。该密钥必须安全且随机生成。
 
 #### `PGVECTOR_POOL_SIZE`
 
 - 类型：`int`
 - 默认值：`None`
-- 描述：Sets the number of connections to maintain in the PGVector database connection pool. If not set, uses SQLAlchemy defaults.
+- 描述：设置 PGVector 数据库连接池中要维护的连接数。如果未设置，则使用 SQLAlchemy 默认值。
 
 #### `PGVECTOR_POOL_MAX_OVERFLOW`
 
 - 类型：`int`
 - 默认值：`0`
-- 描述：Specifies the maximum number of connections that can be created beyond `PGVECTOR_POOL_SIZE` when the pool is exhausted.
+- 描述：指定连接池耗尽时，除了 `PGVECTOR_POOL_SIZE` 之外还能创建的最大连接数。
 
 #### `PGVECTOR_POOL_TIMEOUT`
 
 - 类型：`int`
 - 默认值：`30`
-- 描述：Sets the timeout in seconds for acquiring a connection from the PGVector pool.
+- 描述：设置从 PGVector 连接池获取连接的超时时间（秒）。
 
 #### `PGVECTOR_POOL_RECYCLE`
 
 - 类型：`int`
 - 默认值：`3600`
-- 描述：Specifies the time in seconds after which connections are recycled in the PGVector pool to prevent stale connections.
+- 描述：指定 PGVector 连接池中连接在多久之后会被回收，以防止连接变旧。
 
 
 ### Qdrant
 
 :::warning
 
-Qdrant is not actively maintained by the Open WebUI team. It is an addition by the community and is maintained by the community.
-If you want to use Qdrant, be careful when upgrading Open WebUI (crate backups and snapshots for rollbacks) in case internal changes in Open WebUI lead to breakage.
+Qdrant 目前并未由 Open WebUI 团队积极维护。它是社区添加的功能，由社区维护。
+如果你要使用 Qdrant，请在升级 Open WebUI 时格外小心（请为回滚创建备份和快照），以防 Open WebUI 的内部变更导致故障。
 
 :::
 
 #### `QDRANT_API_KEY`
 
 - 类型：`str`
-- 描述：Sets the API key for Qdrant.
+- 描述：设置 Qdrant 的 API key。
 
 #### `QDRANT_URI`
 
 - 类型：`str`
-- 描述：Sets the URI for Qdrant.
+- 描述：设置 Qdrant 的 URI。
 
 #### `QDRANT_ON_DISK`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enable the usage of memmap(also known as on-disk) storage
+- 描述：启用 memmap（也称为 on-disk）存储。
 
 #### `QDRANT_PREFER_GRPC`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Use gPRC interface whenever possible.
+- 描述：尽可能使用 gRPC 接口。
 
 :::info
 
-If set to `True`, and `QDRANT_URI` points to a self-hosted server with TLS enabled and certificate signed by a private CA, set the environment variable `GRPC_DEFAULT_SSL_ROOTS_FILE_PATH` to the path of your PEM-encoded CA certificates file. See the [gRPC Core Docs](https://grpc.github.io/grpc/core/md_doc_environment_variables.html) for more information.
+如果将其设为 `True`，并且 `QDRANT_URI` 指向一个启用了 TLS 且证书由私有 CA 签名的自托管服务器，请将环境变量 `GRPC_DEFAULT_SSL_ROOTS_FILE_PATH` 设置为你的 PEM 编码 CA 证书文件路径。更多信息请参阅 [gRPC Core Docs](https://grpc.github.io/grpc/core/md_doc_environment_variables.html)。
 
 :::
 
@@ -2580,54 +2550,54 @@ If set to `True`, and `QDRANT_URI` points to a self-hosted server with TLS enabl
 
 - 类型：`int`
 - 默认值：`6334`
-- 描述：Sets the gRPC port number for Qdrant.
+- 描述：设置 Qdrant 的 gRPC 端口号。
 
 #### `QDRANT_TIMEOUT`
 
 - 类型：`int`
 - 默认值：`5`
-- 描述：Sets the timeout in seconds for all requests made to the Qdrant server, helping to prevent long-running queries from stalling the application.
+- 描述：设置对 Qdrant 服务器发出的所有请求的超时时间（秒），以防长时间运行的查询阻塞应用。
 
 #### `QDRANT_HNSW_M`
 
 - 类型：`int`
 - 默认值：`16`
-- 描述：Controls the HNSW (Hierarchical Navigable Small World) index construction. In standard mode, this sets the `m` parameter. In multi-tenancy mode, this value is used for the `payload_m` parameter to build indexes on the payload, as the global `m` is disabled for performance, following Qdrant best practices.
+- 描述：控制 HNSW（Hierarchical Navigable Small World）索引构建。在标准模式下，这会设置 `m` 参数；在多租户模式下，该值会用于 `payload_m` 参数，在 payload 上构建索引，因为全局 `m` 会因性能原因被禁用，这符合 Qdrant 的最佳实践。
 
 #### `ENABLE_QDRANT_MULTITENANCY_MODE`
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables multitenancy pattern for Qdrant collections management, which significantly reduces RAM usage and computational overhead by consolidating similar vector data structures. Recommend turn on
+- 描述：为 Qdrant 集合管理启用多租户模式，通过合并相似的向量数据结构显著降低 RAM 使用和计算开销。建议开启。
 
 :::info
 
-This will disconect all Qdrant collections created in the previous pattern, which is non-multitenancy. Go to  `Admin Settings` > `Documents` > `Reindex Knowledge Base` to migrate existing knowledges.
+这会断开所有先前非多租户模式下创建的 Qdrant 集合。前往 `Admin Settings` > `Documents` > `Reindex Knowledge Base` 迁移现有知识。
 
-The Qdrant collections created in the previous pattern will still consume resources.
+之前模式下创建的 Qdrant 集合仍会继续占用资源。
 
-Currently, there is no button in the UI to only reset the vector DB. If you want to migrate knowledge to multitenancy:
-- Remove all collections with the `open_webui-knowledge` prefix (or `open_webui` prefix to remove all collections related to Open WebUI) using the native Qdrant client
-- Go to `Admin Settings` > `Documents` > `Reindex Knowledge Base` to migrate existing knowledge base
+目前 UI 中没有仅重置向量数据库的按钮。如果你想迁移知识到多租户模式：
+- 使用原生 Qdrant 客户端移除所有带有 `open_webui-knowledge` 前缀的集合（或者移除带有 `open_webui` 前缀的所有集合，以删除所有与 Open WebUI 相关的集合）
+- 前往 `Admin Settings` > `Documents` > `Reindex Knowledge Base` 迁移现有知识库
 
-`Reindex Knowledge Base` will ONLY migrate the knowledge base
+`Reindex Knowledge Base` 只会迁移知识库
 
 :::
 
 :::danger
 
-If you decide to use the multitenancy pattern as your default and you don't need to migrate old knowledge, go to `Admin Settings` > `Documents` to reset vector and knowledge, which will delete all collections with the `open_webui` prefix and all stored knowledge.
+如果你决定将多租户模式作为默认模式，并且不需要迁移旧知识，请前往 `Admin Settings` > `Documents` 重置向量与知识，这会删除所有带有 `open_webui` 前缀的集合以及所有已存储的知识。
 
 :::
 
 :::warning
 
-The mapping of multitenancy relies on current Open WebUI naming conventions for collection names.
+多租户映射依赖于 Open WebUI 当前的集合命名约定。
 
-If Open WebUI changes how it generates collection names (e.g., "user-memory-" prefix, "file-" prefix, web search patterns, or hash formats), this mapping will break and route data to incorrect collections.
-POTENTIALLY CAUSING HUGE DATA CORRUPTION, DATA CONSISTENCY ISSUES AND INCORRECT DATA MAPPING INSIDE THE DATABASE.
+如果 Open WebUI 更改了它生成集合名称的方式（例如 `user-memory-` 前缀、`file-` 前缀、web search 模式或哈希格式），此映射就会失效，并把数据路由到错误的集合。
+这可能导致严重的数据损坏、数据一致性问题，以及数据库内错误的数据映射。
 
-If you use Multitenancy Mode, you should always check for any changes to the collection names and data mapping before upgrading, and upgrade carefully (snapshots and backups for rollbacks)!
+如果你使用多租户模式，在升级前务必检查集合名称和数据映射是否有任何变化，并谨慎升级（请准备快照和备份以便回滚）！
 
 :::
 
@@ -2635,193 +2605,193 @@ If you use Multitenancy Mode, you should always check for any changes to the col
 
 - 类型：`str`
 - 默认值：`open-webui`
-- 描述：Sets the prefix for Qdrant collection names. Useful for namespacing or isolating collections, especially in multitenancy mode. Changing this value will cause the application to use a different set of collections in Qdrant. Existing collections with a different prefix will not be affected.
+- 描述：设置 Qdrant 集合名称的前缀。它有助于为集合提供命名空间或隔离，尤其在多租户模式下。修改此值会让应用在 Qdrant 中使用另一组集合。现有使用不同前缀的集合不会受到影响。
 
 ### Pinecone
 
-When using Pinecone as the vector store, the following environment variables are used to control its behavior. Make sure to set these variables in your `.env` file or deployment environment.
+当使用 Pinecone 作为向量存储时，以下环境变量用于控制其行为。请确保在你的 `.env` 文件或部署环境中设置这些变量。
 
 #### `PINECONE_API_KEY`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Sets the API key used to authenticate with the Pinecone service.
+- 描述：设置用于与 Pinecone 服务认证的 API key。
 
 #### `PINECONE_ENVIRONMENT`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the Pinecone environment to connect to (e.g., `us-west1-gcp`, `gcp-starter`, etc.).
+- 描述：指定要连接的 Pinecone 环境（例如 `us-west1-gcp`、`gcp-starter` 等）。
 
 #### `PINECONE_INDEX_NAME`
 
 - 类型：`str`
 - 默认值：`open-webui-index`
-- 描述：Defines the name of the Pinecone index that will be used to store and query vector embeddings.
+- 描述：定义用于存储和查询向量嵌入的 Pinecone 索引名称。
 
 #### `PINECONE_DIMENSION`
 
 - 类型：`int`
 - 默认值：`1536`
-- 描述：The dimensionality of the vector embeddings. Must match the dimension expected by the index (commonly 768, 1024, 1536, or 3072 based on model used).
+- 描述：向量嵌入的维度。必须与索引预期的维度一致（通常基于所用模型为 768、1024、1536 或 3072）。
 
 #### `PINECONE_METRIC`
 
 - 类型：`str`
 - 默认值：`cosine`
-- Options: `cosine`, `dotproduct`, `euclidean`
-- 描述：Specifies the similarity metric to use for vector comparisons within the Pinecone index.
+- 选项：`cosine`、`dotproduct`、`euclidean`
+- 描述：指定 Pinecone 索引中用于向量比较的相似度指标。
 
 #### `PINECONE_CLOUD`
 
 - 类型：`str`
 - 默认值：`aws`
-- Options: `aws`, `gcp`, `azure`
-- 描述：Specifies the cloud provider where the Pinecone index is hosted.
+- 选项：`aws`、`gcp`、`azure`
+- 描述：指定 Pinecone 索引所在的云提供商。
 
 ### Weaviate
 
 :::info
 
-**Self-Hosted and Cloud Deployments**
+**自托管与云部署**
 
-Open WebUI uses `connect_to_custom` for Weaviate connections, which supports both locally hosted and remote Weaviate instances. This is essential for self-hosted deployments where HTTP and gRPC endpoints may be on different ingresses or hostnames, which is common in container orchestration platforms like Kubernetes or Azure Container Apps.
+Open WebUI 在 Weaviate 连接中使用 `connect_to_custom`，它同时支持本地部署和远程 Weaviate 实例。这对于自托管部署尤其重要，因为 HTTP 和 gRPC 端点可能位于不同的 ingress 或主机名上，这在 Kubernetes 或 Azure Container Apps 等容器编排平台中很常见。
 
 :::
 
 #### `WEAVIATE_HTTP_HOST`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Specifies the hostname of the Weaviate server for HTTP connections. For self-hosted deployments, this is typically your Weaviate HTTP endpoint hostname.
+- 默认值：空字符串（`' '`）
+- 描述：指定 Weaviate 服务器用于 HTTP 连接的主机名。对于自托管部署，这通常就是你的 Weaviate HTTP 端点主机名。
 
 #### `WEAVIATE_GRPC_HOST`
 
 - 类型：`str`
-- 默认值：Empty string (' ')
-- 描述：Specifies the hostname of the Weaviate server for gRPC connections. This can be different from `WEAVIATE_HTTP_HOST` when HTTP and gRPC are served on separate ingresses, which is common in container orchestration environments.
+- 默认值：空字符串（`' '`）
+- 描述：指定 Weaviate 服务器用于 gRPC 连接的主机名。当 HTTP 和 gRPC 分别通过不同的 ingress 提供时，它可以不同于 `WEAVIATE_HTTP_HOST`，这在容器编排环境中很常见。
 
 #### `WEAVIATE_HTTP_PORT`
 
 - 类型：`int`
 - 默认值：`8080`
-- 描述：Specifies the HTTP port for connecting to the Weaviate server.
+- 描述：指定连接 Weaviate 服务器时使用的 HTTP 端口。
 
 #### `WEAVIATE_GRPC_PORT`
 
 - 类型：`int`
 - 默认值：`50051`
-- 描述：Specifies the gRPC port for connecting to the Weaviate server.
+- 描述：指定连接 Weaviate 服务器时使用的 gRPC 端口。
 
 #### `WEAVIATE_HTTP_SECURE`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables HTTPS for HTTP connections to the Weaviate server. Set to `true` when connecting to a Weaviate instance with TLS enabled on the HTTP endpoint.
+- 描述：为与 Weaviate 服务器的 HTTP 连接启用 HTTPS。连接 HTTP 端点已启用 TLS 的 Weaviate 实例时，请将其设为 `true`。
 
 #### `WEAVIATE_GRPC_SECURE`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Enables TLS for gRPC connections to the Weaviate server. Set to `true` when connecting to a Weaviate instance with TLS enabled on the gRPC endpoint.
+- 描述：为与 Weaviate 服务器的 gRPC 连接启用 TLS。连接 gRPC 端点已启用 TLS 的 Weaviate 实例时，请将其设为 `true`。
 
 #### `WEAVIATE_API_KEY`
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Sets the API key for authenticating with Weaviate server.
+- 描述：设置用于与 Weaviate 服务器认证的 API key。
 
 #### `WEAVIATE_SKIP_INIT_CHECKS`
 
 - 类型：`bool`
 - 默认值：`False`
-- 描述：Skips Weaviate initialization checks when connecting. This can be useful in certain network configurations where the checks may fail but the connection itself works.
+- 描述：在连接时跳过 Weaviate 初始化检查。在某些网络配置下，检查可能失败但连接本身正常，这时该选项会很有用。
 
-### Oracle 23ai Vector Search (oracle23ai)
+### Oracle 23ai 向量搜索（oracle23ai）
 
 #### `ORACLE_DB_USE_WALLET`
 
--   **Type**: `bool`
--   **Default**: `false`
--   **Description**: Determines the connection method to the Oracle Database.
-    -   Set to `false` for direct connections (e.g., to Oracle Database 23ai Free or DBCS instances) using host, port, and service name in `ORACLE_DB_DSN`.
-    -   Set to `true` for wallet-based connections (e.g., to Oracle Autonomous Database (ADW/ATP)). When `true`, `ORACLE_WALLET_DIR` and `ORACLE_WALLET_PASSWORD` must also be configured.
+- 类型：`bool`
+- 默认值：`false`
+- 描述：决定与 Oracle Database 的连接方式。
+  - 设为 `false` 时，使用 `ORACLE_DB_DSN` 中的主机、端口和服务名进行直连（例如 Oracle Database 23ai Free 或 DBCS 实例）。
+  - 设为 `true` 时，使用基于 wallet 的连接（例如 Oracle Autonomous Database（ADW/ATP））。此时还必须配置 `ORACLE_WALLET_DIR` 和 `ORACLE_WALLET_PASSWORD`。
 
 #### `ORACLE_DB_USER`
 
--   **Type**: `str`
--   **Default**: `DEMOUSER`
--   **Description**: Specifies the username used to connect to the Oracle Database.
+- 类型：`str`
+- 默认值：`DEMOUSER`
+- 描述：指定用于连接 Oracle Database 的用户名。
 
 #### `ORACLE_DB_PASSWORD`
 
--   **Type**: `str`
--   **Default**: `Welcome123456`
--   **Description**: Specifies the password for the `ORACLE_DB_USER`.
+- 类型：`str`
+- 默认值：`Welcome123456`
+- 描述：指定 `ORACLE_DB_USER` 的密码。
 
 #### `ORACLE_DB_DSN`
 
--   **Type**: `str`
--   **Default**: `localhost:1521/FREEPDB1`
--   **Description**: Defines the Data Source Name for the Oracle Database connection.
-    -   If `ORACLE_DB_USE_WALLET` is `false`, this should be in the format `hostname:port/service_name` (e.g., `localhost:1521/FREEPDB1`).
-    -   If `ORACLE_DB_USE_WALLET` is `true`, this can be a TNS alias (e.g., `medium` for ADW/ATP), or a full connection string.
+- 类型：`str`
+- 默认值：`localhost:1521/FREEPDB1`
+- 描述：定义 Oracle Database 连接的 Data Source Name。
+  - 如果 `ORACLE_DB_USE_WALLET` 为 `false`，则应采用 `hostname:port/service_name` 格式（例如 `localhost:1521/FREEPDB1`）。
+  - 如果 `ORACLE_DB_USE_WALLET` 为 `true`，则可以是 TNS 别名（例如 ADW/ATP 的 `medium`），也可以是完整连接字符串。
 
 #### `ORACLE_WALLET_DIR`
 
--   **Type**: `str`
--   **Default**: Empty string (' ')
--   **Description**: **Required when `ORACLE_DB_USE_WALLET` is `true`**. Specifies the absolute path to the directory containing the Oracle Cloud Wallet files (e.g., `cwallet.sso`, `sqlnet.ora`, `tnsnames.ora`).
+- 类型：`str`
+- 默认值：空字符串（`' '`）
+- 描述：**在 `ORACLE_DB_USE_WALLET` 为 `true` 时必需**。指定包含 Oracle Cloud Wallet 文件（例如 `cwallet.sso`、`sqlnet.ora`、`tnsnames.ora`）的目录绝对路径。
 
 #### `ORACLE_WALLET_PASSWORD`
 
--   **Type**: `str`
--   **Default**: Empty string (' ')
--   **Description**: **Required when `ORACLE_DB_USE_WALLET` is `true`**. Specifies the password for the Oracle Cloud Wallet.
+- 类型：`str`
+- 默认值：空字符串（`' '`）
+- 描述：**在 `ORACLE_DB_USE_WALLET` 为 `true` 时必需**。指定 Oracle Cloud Wallet 的密码。
 
 #### `ORACLE_VECTOR_LENGTH`
 
--   **Type**: `int`
--   **Default**: `768`
--   **Description**: Sets the expected dimension or length of the vector embeddings stored in the Oracle Database. This must match the embedding model used.
+- 类型：`int`
+- 默认值：`768`
+- 描述：设置存储在 Oracle Database 中的向量嵌入的预期维度或长度。这必须与所用嵌入模型匹配。
 
 #### `ORACLE_DB_POOL_MIN`
 
--   **Type**: `int`
--   **Default**: `2`
--   **Description**: The minimum number of connections to maintain in the Oracle Database connection pool.
+- 类型：`int`
+- 默认值：`2`
+- 描述：Oracle Database 连接池中要维护的最小连接数。
 
 #### `ORACLE_DB_POOL_MAX`
 
--   **Type**: `int`
--   **Default**: `10`
--   **Description**: The maximum number of connections allowed in the Oracle Database connection pool.
+- 类型：`int`
+- 默认值：`10`
+- 描述：Oracle Database 连接池允许的最大连接数。
 
 #### `ORACLE_DB_POOL_INCREMENT`
 
--   **Type**: `int`
--   **Default**: `1`
--   **Description**: The number of connections to create when the pool needs to grow.
+- 类型：`int`
+- 默认值：`1`
+- 描述：当连接池需要扩容时创建的连接数。
 
-### S3 Vector Bucket
+### S3 向量桶
 
-When using S3 Vector Bucket as the vector store, the following environment variables are used to control its behavior. Make sure to set these variables in your `.env` file or deployment environment.
+当使用 S3 Vector Bucket 作为向量存储时，以下环境变量用于控制其行为。请确保在你的 `.env` 文件或部署环境中设置这些变量。
 
 :::info
 
-Note: this configuration assumes that AWS credentials will be available to your Open WebUI environment. This could be through environment variables like `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, or through IAM role permissions.
+注意：此配置假定 AWS 凭据可在你的 Open WebUI 环境中使用。这可以通过 `AWS_ACCESS_KEY_ID` 和 `AWS_SECRET_ACCESS_KEY` 等环境变量提供，也可以通过 IAM 角色权限提供。
 
 :::
 
 #### `S3_VECTOR_BUCKET_NAME`
 
 - 类型：`str`
-- 描述：Specifies the name of the S3 Vector Bucket to store vectors in.
+- 描述：指定要存储向量的 S3 Vector Bucket 名称。
 
 #### `S3_VECTOR_REGION`
 
 - 类型：`str`
-- 描述：Specifies the AWS region where the S3 Vector Bucket is hosted.
+- 描述：指定 S3 Vector Bucket 所在的 AWS 区域。
 
 ## RAG（检索增强生成）内容提取引擎配置
 
@@ -3058,26 +3028,26 @@ Enabling this feature increases the text volume indexed by BM25, which may impac
 
 ```
 
-### Task:
-Respond to the user query using the provided context, incorporating inline citations in the format [id] **only when the <source> tag includes an explicit id attribute** (e.g., <source id="1">).
+### 任务：
+使用提供的上下文回答用户查询，仅当 `<source>` 标签包含显式的 id 属性（例如 `<source id="1">`）时，才以 `[id]` 的格式加入行内引用。
 
-### Guidelines:
-- If you don't know the answer, clearly state that.
-- If uncertain, ask the user for clarification.
-- Respond in the same language as the user's query.
-- If the context is unreadable or of poor quality, inform the user and provide the best possible answer.
-- If the answer isn't present in the context but you possess the knowledge, explain this to the user and provide the answer using your own understanding.
-- **Only include inline citations using [id] (e.g., [1], [2]) when the <source> tag includes an id attribute.**
-- Do not cite if the <source> tag does not contain an id attribute.
-- Do not use XML tags in your response.
-- Ensure citations are concise and directly related to the information provided.
+### 指南：
+- 如果你不知道答案，请明确说明。
+- 如果不确定，请向用户请求澄清。
+- 用与用户查询相同的语言回复。
+- 如果上下文不可读或质量较差，请告知用户，并尽可能给出最佳答案。
+- 如果答案不在上下文中，但你掌握相关知识，请向用户说明这一点，并基于你的理解给出答案。
+- **只有当 `<source>` 标签包含 id 属性时，才使用 `[id]`（例如 `[1]`、`[2]`）这种行内引用。**
+- 如果 `<source>` 标签不包含 id 属性，则不要引用。
+- 回复中不要使用 XML 标签。
+- 确保引用简洁，并且与所提供的信息直接相关。
 
-### Example of Citation:
-If the user asks about a specific topic and the information is found in a source with a provided id attribute, the response should include the citation like in the following example:
-* "According to the study, the proposed method increases efficiency by 20% [1]."
+### 引用示例：
+如果用户询问某个具体主题，而信息来自带有 id 属性的来源，则回复应像下面这样包含引用：
+* “根据该研究，所提出的方法将效率提高了 20% [1]。”
 
-### Output:
-Provide a clear and direct response to the user's query, including inline citations in the format [id] only when the <source> tag with id attribute is present in the context.
+### 输出：
+请给出清晰、直接的回复，并且仅在上下文中的 `<source>` 标签带有 id 属性时，才以 `[id]` 的格式加入行内引用。
 
 <context>
 {{CONTEXT}}
@@ -3419,25 +3389,25 @@ You **MUST** provide the full URL, including the endpoint path (e.g., `https://a
 
 ```
 
-### Task:
-Analyze the chat history to determine the necessity of generating search queries, in the given language. By default, **prioritize generating 1-3 broad and relevant search queries** unless it is absolutely certain that no additional information is required. The aim is to retrieve comprehensive, updated, and valuable information even with minimal uncertainty. If no search is unequivocally needed, return an empty list.
+### 任务：
+分析聊天历史，以确定是否需要生成搜索查询，并使用给定语言进行回答。默认情况下，**优先生成 1-3 个宽泛且相关的搜索查询**，除非可以绝对确定不需要额外信息。目标是在即使不确定性很低的情况下，也尽可能检索到全面、最新且有价值的信息。如果无需搜索，请返回空列表。
 
-### Guidelines:
-- Respond **EXCLUSIVELY** with a JSON object. Any form of extra commentary, explanation, or additional text is strictly prohibited.
-- When generating search queries, respond in the format: { "queries": ["query1", "query2"] }, ensuring each query is distinct, concise, and relevant to the topic.
-- If and only if it is entirely certain that no useful results can be retrieved by a search, return: { "queries": [] }.
-- Err on the side of suggesting search queries if there is **any chance** they might provide useful or updated information.
-- Be concise and focused on composing high-quality search queries, avoiding unnecessary elaboration, commentary, or assumptions.
-- Today's date is: {{CURRENT_DATE}}.
-- Always prioritize providing actionable and broad queries that maximize informational coverage.
+### 指南：
+- **仅**以 JSON 对象回复。严格禁止任何形式的额外评论、解释或其他文本。
+- 生成搜索查询时，请按如下格式回复：{ "queries": ["query1", "query2"] }，并确保每个查询都独立、简洁且与主题相关。
+- 只有在完全确定搜索无法检索到任何有用结果时，才返回：{ "queries": [] }。
+- 只要有**任何可能**带来有用或最新信息，就应倾向于建议搜索查询。
+- 保持简洁，专注于编写高质量的搜索查询，避免不必要的展开、评论或假设。
+- 今天的日期是：{{CURRENT_DATE}}。
+- 始终优先提供可执行且足够宽泛、能最大化信息覆盖范围的查询。
 
-### Output:
-Strictly return in JSON format:
+### 输出：
+仅以 JSON 格式返回：
 {
   "queries": ["query1", "query2"]
 }
 
-### Chat History:
+### 聊天历史：
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>
@@ -4486,27 +4456,27 @@ When `AUDIO_TTS_ENGINE=mistral`, Open WebUI uses `mistral-tts-latest` when `AUDI
 
 - 类型：`str`
 - 默认值：`None`
-- 描述：Specifies the template to use for generating image prompts.
+- 描述：指定用于生成图片提示词的模板。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 `DEFAULT_IMAGE_PROMPT_GENERATION_PROMPT_TEMPLATE`:
 ```
-### Task:
-Generate a detailed prompt for an image generation task based on the given language and context. Describe the image as if you were explaining it to someone who cannot see it. Include relevant details, colors, shapes, and any other important elements.
+### 任务：
+根据给定的语言和上下文，为图片生成任务写出一段详细的提示词。请像在向一个看不见图片的人描述它一样来说明图像内容。包括相关细节、颜色、形状以及任何其他重要元素。
 
-### Guidelines:
-- Be descriptive and detailed, focusing on the most important aspects of the image.
-- Avoid making assumptions or adding information not present in the image.
-- Use the chat's primary language; default to English if multilingual.
-- If the image is too complex, focus on the most prominent elements.
+### 指南：
+- 描述要充分且具体，重点放在图像最重要的方面。
+- 不要做任何假设，也不要添加图片中不存在的信息。
+- 使用聊天的主要语言；如果是多语言内容，则默认使用英语。
+- 如果图像过于复杂，请聚焦最显著的元素。
 
-### Output:
-Strictly return in JSON format:
+### 输出：
+严格以 JSON 格式返回：
 {
-    "prompt": "Your detailed description here."
+  "prompt": "Your detailed description here."
 }
 
-### Chat History:
+### 聊天历史：
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>

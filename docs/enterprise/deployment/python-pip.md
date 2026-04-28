@@ -68,14 +68,14 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-将环境变量放在 `/etc/open-webui/env` 中（参见 [Critical Configuration](/enterprise/deployment#critical-configuration)）。
+将环境变量放在 `/etc/open-webui/env` 中（参见 [关键配置](/enterprise/deployment#critical-configuration)）。
 
 ## 扩展策略
 
 - **横向扩展**：让自动扩缩容组根据 CPU 利用率或请求数增减 VM。
 - **健康检查**：将负载均衡器健康检查指向 `/health` 端点（健康时返回 HTTP 200）。
 - **每台 VM 一个进程**：保持 `UVICORN_WORKERS=1`，把容量管理交给自动扩缩容系统。这样可以简化内存核算，并避免默认向量数据库的 fork 安全问题。
-- **Sticky Sessions**：在负载均衡器上配置基于 Cookie 的会话亲和性，确保 WebSocket 连接持续路由到同一实例。
+- **会话亲和性（粘性会话）**：在负载均衡器上配置基于 Cookie 的会话亲和性，确保 WebSocket 连接持续路由到同一实例。
 
 ## 关键注意事项
 
@@ -87,7 +87,7 @@ WantedBy=multi-user.target
 | **Tika Sidecar** | 可以在每台 VM 上运行 Tika 服务，也可以作为共享服务单独运行。共享实例更便于管理。 |
 | **更新** | 先把实例组缩容到 1 台，执行包更新（`pip install --upgrade open-webui`），等待数据库迁移完成，再扩容回来。 |
 
-pip 基础安装方式可参考 [Quick Start guide](/getting-started/quick-start)。
+pip 基础安装方式可参考 [快速入门指南](/getting-started/quick-start)。
 
 ---
 

@@ -20,11 +20,11 @@ title: "数据库分析"
 6. 生成图表（收入趋势、爆款产品、地区分布）
 7. 将所有内容保存为报告
 
-{/* TODO: Screenshot — Chat showing the AI connecting to a PostgreSQL database, listing tables, and then running a query. Results show a formatted table with product names, quantities sold, and revenue. */}
+<!-- TODO: 截图——聊天界面显示 AI 正在连接 PostgreSQL 数据库、列出表并随后执行查询。结果展示一个格式化表格，包含产品名称、销量和收入。 -->
 
-{/* TODO: Screenshot — Charts generated from the database query: a bar chart of top 10 products by revenue, a line chart showing monthly order trends, and a pie chart of sales by region. */}
+<!-- TODO: 截图——由数据库查询生成的图表：按收入排名前 10 的产品柱状图、展示月度订单趋势的折线图，以及按地区划分销售额的饼图。 -->
 
-:::tip 保安凭据
+:::tip 安全凭据
 通过在启动 Open Terminal 时以环境变量传入数据库凭据，或将其存储在容器中的 `.env` 文件中。切勿在对话中直接粘贴密码——它们会被保存到聊天历史记录中。示例：
 
 ```bash

@@ -3,9 +3,9 @@ sidebar_position: 10
 title: "代码审查"
 ---
 
-# 🔍 自动化代码审查
+## 🔍 自动化代码审查
 
-让 AI 审查 pull request、分支差异或文件，获得详细的代码审查报告——包括安全漏洞、性能问题、风格违调和改进建议。
+让 AI 审查拉取请求、分支变更或文件，获得详细的代码审查报告——包括安全漏洞、性能问题、风格问题和改进建议。
 
 > **你：** $Code Reviewer <br/>
 > 审查 `feature/auth-refactor` 分支相对于 `main` 的变更。
@@ -19,9 +19,9 @@ title: "代码审查"
 5. 提出带代码片段的具体修复建议
 6. 保存结构化审查报告
 
-{/* TODO: Screenshot — Chat showing the AI reviewing a branch diff. The response lists findings organized by severity: "🔴 Critical: SQL injection in user_query() — use parameterized queries. 🟡 Warning: N+1 query in get_orders(). 🔵 Suggestion: Extract validation logic into a helper." */}
+<!-- TODO: 截图——聊天界面显示 AI 正在审查分支差异。回复按严重性组织发现：“🔴 严重：user_query() 中存在 SQL 注入——应使用参数化查询。🟡 警告：get_orders() 中存在 N+1 查询。🔵 建议：将校验逻辑提取到辅助函数中。” -->
 
-{/* TODO: Screenshot — The generated review report in the file browser: a markdown file with sections for each file reviewed, findings with line numbers, and suggested fixes with code blocks. */}
+<!-- TODO: 截图——文件浏览器中的生成审查报告：一个 Markdown 文件，包含每个被审查文件的章节、带行号的发现以及附带代码块的修复建议。 -->
 
 ## 技能内容
 

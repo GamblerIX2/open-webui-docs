@@ -17,7 +17,7 @@ title: "Docling 文档提取"
 
 - Open WebUI 实例
 - 已在系统中安装 Docker
-- 已为 Open WebUI 准备 Docker network
+- 已为 Open WebUI 准备 Docker 网络
 
 ## 集成步骤
 
@@ -85,8 +85,8 @@ services:
 ### 第 2 步：配置 Open WebUI
 
 1. 登录你的 Open WebUI 实例
-2. 前往 **Admin Panel** → **Settings** → **Documents**
-3. 将 **Default** 内容提取引擎下拉框切换为 **Docling**
+2. 前往 **管理面板** → **设置** → **文档**
+3. 将 **默认** 内容提取引擎下拉框切换为 **Docling**
 4. 将提取引擎 URL 设置为 `http://host.docker.internal:5001`（Docker）或 `http://localhost:5001`（原生部署）
 5. 保存更改
 
@@ -94,7 +94,7 @@ services:
 
 若要启用文档中的 AI 图片描述：
 
-1. 在 **Documents** 标签中启用 **Describe Pictures in Documents**
+1. 在 **文档** 标签中启用 **文档中的图片描述**
 2. 选择描述模式：`local` 或 `API`
    - **local**：Vision 模型在 Docling 容器内部运行
    - **API**：Docling 调用外部服务（如 Ollama 或兼容 OpenAI 的 endpoint）
@@ -143,8 +143,8 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 
 ## Docling-Serve 环境变量参考
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| 变量 | 默认值 | 说明 |
+| -------- | ------- | ---- |
 | `DOCLING_SERVE_ENABLE_UI` | `false` | 在 `/ui` endpoint 启用 Web UI |
 | `DOCLING_SERVE_ENABLE_REMOTE_SERVICES` | `false` | **API 模式图片描述所必需** |
 | `DOCLING_SERVE_MAX_SYNC_WAIT` | `120` | 同步请求最大等待秒数 |
@@ -156,10 +156,10 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 
 ## Docling 参数参考（Open WebUI）
 
-可通过 **Admin Settings > Documents** 中的 `DOCLING_PARAMS` JSON，或通过环境变量进行配置。
+可通过 **管理面板 > 文档** 中的 `DOCLING_PARAMS` JSON，或通过环境变量进行配置。
 
-| Parameter | Type | Description | Allowed Values |
-|-----------|------|-------------|----------------|
+| 参数 | 类型 | 说明 | 允许值 |
+| ----------- | ---- | ---- | ---------------- |
 | `pdf_backend` | `string` | PDF 解析引擎 | `dlparse_v1`, `dlparse_v2`, `dlparse_v4`, `pypdfium2` |
 | `table_mode` | `string` | 表格提取质量 | `fast`, `accurate` |
 | `ocr_engine` | `string` | OCR 库 | `tesseract`, `easyocr`, `ocrmac`, `rapidocr` |
@@ -169,6 +169,7 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 | `ocr_lang` | `list[string]` | OCR 语言 | 见下方说明 |
 
 :::tip 语言代码
+
 - **Tesseract**：使用 3 位 ISO 639-2（例如 `eng`、`deu`、`fra`）
 - **EasyOCR**：使用 2 位 ISO 639-1（例如 `en`、`de`、`fr`）
 :::
@@ -201,7 +202,7 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 
 ### "Connections to remote services is only allowed when set explicitly"
 
-**原因：** Picture description 的 API 模式需要显式开启对外服务访问。
+**原因：** 图片描述的 API 模式需要显式开启对外服务访问。
 
 **解决方案：** 在 docling-serve 环境变量中加入 `DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true`。
 
@@ -210,6 +211,7 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 **原因：** 使用了过旧版本的 docling-serve 或 Open WebUI。
 
 **解决方案：**
+
 - 将 Open WebUI 更新到最新版（新版使用 `/v1/convert/file`）
 - 将 docling-serve 更新到 v1.0+（新版使用 `/v1` API）
 
@@ -224,12 +226,14 @@ DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 **原因：** 针对当前 OCR engine，`ocr_lang` 使用了错误格式。
 
 **解决方案：**
+
 - Tesseract 使用 3 位代码：`["eng", "deu"]`
 - EasyOCR 使用 2 位代码：`["en", "de"]`
 
 ### "Error calling Docling" 但没有具体细节
 
 **排查步骤：**
+
 1. 查看 docling-serve 日志：`docker logs docling-serve`
 2. 直接通过 `http://localhost:5001/ui` 测试 Docling
 3. 验证 Open WebUI 与 docling-serve 容器之间的网络连通性

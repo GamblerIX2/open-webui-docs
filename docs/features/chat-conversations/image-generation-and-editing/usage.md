@@ -3,29 +3,30 @@ sidebar_position: 1
 title: "使用方式"
 ---
 
-在使用图像生成功能前，请先确保已在 **Admin Panel** > **Settings** > **Images** 中启用 **Image Generation** 开关。
+在使用图像生成功能前，请先确保已在 **Admin Panel** > **Settings** > **Images** 中启用 **图像生成** 开关。
 
 ## 使用图像生成
 
-1. 打开 `Image Generation` 开关
+1. 打开 `图像生成` 开关
 2. 输入你的图像生成提示词
-3. 点击 `Send`
+3. 点击 `发送`
 
 ![Image Generation Tutorial](/images/tutorial_image_generation_2.png)
 
 ## 基于原生工具的生成（Agentic）
 
-如果你的模型配置了 **Native Function Calling**（参见 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），它就可以直接把图像生成功能当作工具调用。
+如果你的模型配置了 **原生函数调用**（参见 [**工具调用指南**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），它就可以直接把图像生成功能当作工具调用。
 
 ### 工作方式：
-- **要求：** 
-  - 必须已在 **Admin Panel → Settings → Images** 中全局启用 **Image Generation**
-  - 模型必须启用了 **Image Generation** capability
+
+- **要求：**
+  - 必须已在 **Admin Panel → Settings → Images** 中全局启用 **图像生成**
+  - 模型必须启用了 **图像生成** capability
 - **无需聊天内开关**：在 Native Mode 下，只要模型具备 `image_generation` capability，`generate_image` 工具就会自动加入；无需为每个聊天手动打开
-- **自然语言调用**：你可以直接告诉模型：*"Generate an image of a cybernetic forest."*
+- **自然语言调用**：你可以直接告诉模型：*"生成一张赛博风格森林的图像。"*
 - **执行方式**：若 **Native Mode** 已启用且模型具备该能力，模型会调用 `generate_image` 工具
 - **显示方式**：生成后的图像会直接显示在聊天界面中
-- **编辑支持**：同样支持通过 `edit_image` 工具进行 **Image Editing**（修复 / 局部编辑），例如：*"Make the sky in this image red"*
+- **编辑支持**：同样支持通过 `edit_image` 工具进行 **图像编辑**（修复 / 局部编辑），例如：*"把这张图里的天空改成红色。"*
 
 这种方式允许模型先“推理”提示词，再执行生成，甚至能在复杂请求中一次生成多张图像。
 
@@ -36,7 +37,7 @@ title: "使用方式"
 :::
 
 :::info
-**旧版 “Generate Image” 按钮：**  
+**旧版 “生成图像” 按钮：**
 自 Open WebUI v0.7.0 起，原生的 “Generate Image” 按钮（允许直接从消息内容生成图像）已被移除。如果你想恢复该功能，可以使用社区构建的 **[Generate Image Action](https://openwebui.com/posts/3fadc3ca-c955-4c9e-9582-7438f0911b62)**。
 :::
 
@@ -48,10 +49,10 @@ title: "使用方式"
 2. 点击 **Get** 将其导入到你的本地实例（或复制代码后粘贴到本地实例中）
 3. 导入后，前往 **Workspace** > **Functions**，确认 **Generate Image** action 已启用
 
-该 action 会在消息操作栏中加入一个 “Generate Image” 图标，让你可以直接根据 LLM 回复生成图像——这在你希望先让助手迭代优化提示词、满意后再执行生成时会很有帮助。
+该 action 会在消息操作栏中加入一个 “生成图像” 图标，让你可以直接根据 LLM 回复生成图像——这在你希望先让助手迭代优化提示词、满意后再执行生成时会很有帮助。
 
 :::info
-**要求：** 若要使用 **Image Editing** 或 **Image+Image Generation**，你必须在管理员设置中配置一个支持这些能力的 **Image Generation Model**（例如 OpenAI DALL-E，或具备相应 inpainting / img2img 能力的 ComfyUI / Automatic1111 模型）。
+**要求：** 若要使用 **图像编辑** 或 **图像 + 图像生成**，你必须在管理员设置中配置一个支持这些能力的 **图像生成模型**（例如 OpenAI DALL-E，或具备相应 inpainting / img2img 能力的 ComfyUI / Automatic1111 模型）。
 :::
 
 ## 图像编辑（Inpainting）
@@ -59,13 +60,13 @@ title: "使用方式"
 你可以在聊天中直接通过“图像 + 文本提示词”的方式编辑图片。
 
 1. **上传一张图片** 到聊天中
-2. **输入提示词** 描述你想要的改动（例如 “Change the background to a sunset” 或 “Add a hat”）
-3. 模型会根据你的提示词生成该图片的新版本
+2. **输入提示词** 描述你想要的改动（例如 “把背景改成日落” 或 “加一顶帽子”）
+3. 模型会根据你的提示词生成该图片的新版本。
 
 ## 图像合成（多图融合）
 
-你可以将多张图片无缝融合成一个统一场景——这在专业上通常称为 **Image Compositing** 或 **Multi-Image Fusion**。你可以把不同来源中的元素（例如一张图中的主体和另一张图中的背景）组合起来，同时协调光照、透视和风格。
+你可以将多张图片无缝融合成一个统一场景——这在专业上通常称为 **图像合成** 或 **多图融合**。你可以把不同来源中的元素（例如一张图中的主体和另一张图中的背景）组合起来，同时协调光照、透视和风格。
 
 1. **上传多张图片** 到聊天中（例如上传一张主体图和一张背景图）
-2. **输入提示词** 描述你想要的合成效果（例如 “Combine these images to show the cat sitting on the park bench, ensuring consistent lighting”）
-3. 模型会根据你的说明生成一张新的合成图像
+2. **输入提示词** 描述你想要的合成效果（例如 “把这些图片合成一只坐在公园长椅上的猫，并保持光照一致”）
+3. 模型会根据你的说明生成一张新的合成图像。

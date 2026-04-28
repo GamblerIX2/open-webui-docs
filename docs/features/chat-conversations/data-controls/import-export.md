@@ -42,7 +42,7 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
 
 导入文件必须是一个**JSON 数组**，其中每个元素都是聊天对象。系统接受两种格式：**标准格式**（Open WebUI 导出使用）与**旧格式**。
 
-### 标准格式（推荐）
+Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平台迁移对话。
 
 数组中的每个对象都应包含一个 `chat` 键，用于承载对话数据：
 
@@ -55,9 +55,6 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
       "history": {
         "currentId": "message-id-2",
         "messages": {
-          "message-id-1": {
-            "id": "message-id-1",
-            "parentId": null,
             "childrenIds": ["message-id-2"],
             "role": "user",
             "content": "Hello, how are you?",
@@ -67,15 +64,9 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
             "id": "message-id-2",
             "parentId": "message-id-1",
             "childrenIds": [],
-            "role": "assistant",
-            "content": "I'm doing well, thank you!",
-            "model": "llama3.2",
             "done": true,
             "timestamp": 1700000005
           }
-        }
-      }
-    },
     "meta": {
       "tags": ["greeting"]
     },
@@ -125,8 +116,8 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
 
 #### 顶层聊天对象（标准格式）
 
-| Field | Type | Required | Description |
-|---|---|---|---|
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
 | `chat` | object | ✅ | 对话数据（见下方 Chat Data） |
 | `meta` | object | ❌ | 元数据，如 `tags`（字符串数组）。默认 `{}` |
 | `pinned` | boolean | ❌ | 聊天是否置顶。默认 `false` |
@@ -136,8 +127,8 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
 
 #### Chat Data 对象
 
-| Field | Type | Required | Description |
-|---|---|---|---|
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
 | `title` | string | ❌ | 对话标题。默认 `"New Chat"` |
 | `models` | string[] | ❌ | 该对话使用的模型标识符列表 |
 | `history` | object | ✅ | 包含消息树（见下方 History） |
@@ -145,15 +136,15 @@ Open WebUI 提供工具让你备份聊天历史、稍后恢复，或从其他平
 
 #### History 对象
 
-| Field | Type | Required | Description |
-|---|---|---|---|
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
 | `currentId` | string | ✅ | 当前活动对话分支中最后一条消息的 ID |
 | `messages` | object | ✅ | 消息 ID → 消息对象的映射（见下方 Message） |
 
 #### Message 对象
 
-| Field | Type | Required | Description |
-|---|---|---|---|
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
 | `id` | string | ✅ | 消息唯一标识符 |
 | `parentId` | string \| null | ✅ | 父消息 ID；第一条消息则为 `null` |
 | `childrenIds` | string[] | ✅ | 子消息 ID 数组；最后一条消息为空数组 `[]` |

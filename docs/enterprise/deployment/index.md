@@ -69,7 +69,7 @@ ENABLE_DB_MIGRATIONS=false
 除一个实例外，**所有实例**都应设置 `ENABLE_DB_MIGRATIONS=false`。更新时，先缩容到单实例，等待迁移完成，再重新扩容。并发迁移可能损坏数据库。
 :::
 
-如需完整的逐步扩展指南，请参阅 [Scaling Open WebUI](/getting-started/advanced-topics/scaling)。完整环境变量参考见 [Environment Variable Configuration](/reference/env-configuration)。
+如需完整的逐步扩展指南，请参阅 [扩展 Open WebUI](/getting-started/advanced-topics/scaling)。完整环境变量参考见 [环境变量配置](/reference/env-configuration)。
 
 ---
 
@@ -135,7 +135,7 @@ LOG_FORMAT=json
 GLOBAL_LOG_LEVEL=INFO
 ```
 
-完整监控配置详情请参阅 [Monitoring](/reference/monitoring) 和 [OpenTelemetry](/reference/monitoring/otel)。
+完整监控配置详情请参阅 [监控](/reference/monitoring) 和 [OpenTelemetry](/reference/monitoring/otel)。
 
 ---
 
@@ -144,8 +144,8 @@ GLOBAL_LOG_LEVEL=INFO
 - **[架构与高可用性](/enterprise/architecture)** —— 深入了解 Open WebUI 的无状态设计与高可用能力。
 - **[安全](/enterprise/security)** —— 合规框架、SSO/LDAP 集成、RBAC 与审计日志。
 - **[集成](/enterprise/integration)** —— 连接 AI 模型、Pipeline，并扩展平台能力。
-- **[Scaling Open WebUI](/getting-started/advanced-topics/scaling)** —— 完整的逐步技术扩展指南。
-- **[Multi-Replica Troubleshooting](/troubleshooting/multi-replica)** —— 多副本扩展部署中的常见问题解决方案。
+- **[扩展 Open WebUI](/getting-started/advanced-topics/scaling)** —— 完整的逐步技术扩展指南。
+- **[多副本故障排查](/troubleshooting/multi-replica)** —— 多副本扩展部署中的常见问题解决方案。
 
 ---
 

@@ -17,7 +17,7 @@ title: "使用 Docker 部署 Openedai-speech"
 
 [openedai-speech](https://github.com/matatonic/openedai-speech) 是一个兼容 OpenAI audio/speech API 的文本转语音服务器。
 
-它提供 `/v1/audio/speech` endpoint，可带来免费、私有且支持自定义声音克隆的文本转语音体验。该服务与 OpenAI 没有任何官方关联，也不需要 OpenAI API key。
+它提供 `/v1/audio/speech` 端点，可带来免费、私有且支持自定义声音克隆的文本转语音体验。该服务与 OpenAI 没有任何官方关联，也不需要 OpenAI API 密钥。
 
 :::
 
@@ -150,20 +150,20 @@ docker run -d -p 8000:8000 -v voices:/app/voices -v config:/app/config --name op
 
 ![openedai-tts](https://github.com/silentoplayz/docs/assets/50341825/ea08494f-2ebf-41a2-bb0f-9b48dd3ace79)
 
-打开 Open WebUI 设置，进入 **Admin Panel > Settings > Audio** 下的 TTS 设置，并填写：
+打开 Open WebUI 设置，进入 **管理面板 > 设置 > 音频** 下的 TTS 设置，并填写：
 
-- **API Base URL**：`http://host.docker.internal:8000/v1`
-- **API Key**：`sk-111111111`（这是一个占位 key，因为 `openedai-speech` 实际上不需要 API key。此字段只要填了任意值即可。）
+- **API 基础 URL**：`http://host.docker.internal:8000/v1`
+- **API 密钥**：`sk-111111111`（这是一个占位 key，因为 `openedai-speech` 实际上不需要 API 密钥。此字段只要填了任意值即可。）
 
 ## 步骤 7：选择语音
 
-在同一音频设置菜单中的 `TTS Voice` 下，你可以为 `TTS Model` 选择 `openedai-speech` 支持的声音。以下声音主要针对英文优化：
+在同一音频设置菜单中的 `TTS 语音` 下，你可以为 `TTS 模型` 选择 `openedai-speech` 支持的声音。以下声音主要针对英文优化：
 
 - `tts-1` 或 `tts-1-hd`：`alloy`、`echo`、`echo-alt`、`fable`、`onyx`、`nova`、`shimmer`（`tts-1-hd` 可配置，默认使用 OpenAI 采样）
 
-## 步骤 8：点击 `Save` 应用设置并开始使用自然语音
+## 步骤 8：点击 `保存` 应用设置并开始使用自然语音
 
-点击 `Save` 让设置生效。刷新页面后效果会完全应用，你就可以在 Open WebUI 中通过 `openedai-speech` 集成来朗读文本回复，获得更自然的 TTS 体验。
+点击 `保存` 让设置生效。刷新页面后效果会完全应用，你就可以在 Open WebUI 中通过 `openedai-speech` 集成来朗读文本回复，获得更自然的 TTS 体验。
 
 ## 模型说明
 
@@ -179,7 +179,7 @@ docker run -d -p 8000:8000 -v voices:/app/voices -v config:/app/config --name op
 
 - **确认 `openedai-speech` 服务已运行**：检查服务是否正在运行，以及 `docker-compose.yml` 中指定的端口是否已暴露。
 - **检查 `host.docker.internal` 是否可访问**：确认 Open WebUI 容器内部能够解析 `host.docker.internal`。因为 `openedai-speech` 暴露在你电脑的 `localhost` 上，而 `open-webui` 容器默认无法直接访问宿主机 `localhost`。必要时可在 `docker-compose.yml` 中添加卷挂载，或调整网络方式。
-- **检查 API key 配置**：确认 API key 已填为任意占位值，或确保没有因未填写而被拒绝。
+- **检查 API 密钥配置**：确认 API 密钥已填为任意占位值，或确保没有因未填写而被拒绝。
 - **检查语音配置**：确认你要使用的 TTS 语音确实存在于 `voice_to_speaker.yaml` 中，且对应文件（如 voice XML）位于正确目录。
 - **确认语音模型路径正确**：如果语音模型加载失败，请再次核对 `voice_to_speaker.yaml` 中的路径是否与实际文件位置一致。
 
@@ -222,9 +222,9 @@ networks:
 
 然后使用 `http://openedai-speech:8000/v1`，而不是 `localhost`。
 
-更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+更多排查建议请参阅 [音频故障排查指南](/troubleshooting/audio)。
 
-## FAQ
+## 常见问题
 
 **如何控制生成语音的情绪表现？**
 
@@ -236,15 +236,15 @@ networks:
 
 ## 其他资源
 
-如需了解更多 Open WebUI 与 `openedai-speech` 的配置方式（包括环境变量），请参阅 [Open WebUI documentation](https://docs.openwebui.com/reference/env-configuration#text-to-speech)。
+如需了解更多 Open WebUI 与 `openedai-speech` 的配置方式（包括环境变量），请参阅 [Open WebUI 文档](https://docs.openwebui.com/reference/env-configuration#text-to-speech)。
 
-如需了解更多 `openedai-speech` 本身的信息，请访问其 [GitHub repository](https://github.com/matatonic/openedai-speech)。
+如需了解更多 `openedai-speech` 本身的信息，请访问其 [GitHub 仓库](https://github.com/matatonic/openedai-speech)。
 
 **如何为 openedai-speech 添加更多声音：**
 [Custom-Voices-HowTo](https://github.com/matatonic/openedai-speech?tab=readme-ov-file#custom-voices-howto)
 
 :::note
 
-你可以把 `docker-compose.yml` 中的端口改成任意空闲可用端口，但别忘了同步更新 Open WebUI Admin Audio 设置里的 **API Base URL**。
+你可以把 `docker-compose.yml` 中的端口改成任意空闲可用端口，但别忘了同步更新 Open WebUI 管理面板音频设置里的 **API 基础 URL**。
 
 :::

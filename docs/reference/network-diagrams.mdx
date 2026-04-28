@@ -20,15 +20,15 @@ import TabItem from '@theme/TabItem';
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Mac OS/Windows") {
+Boundary(b0, "主机 - Mac OS/Windows") {
    Person(user, "User")
-   Boundary(b1, "Docker Desktop's Linux VM") {
-      Component(openwebui, "Open WebUI", "Listening on port 8080")
+   Boundary(b1, "Docker Desktop 的 Linux 虚拟机") {
+      Component(openwebui, "Open WebUI", "监听 8080 端口")
    }
-   Component(ollama, "Ollama", "Listening on port 11434")
+   Component(ollama, "Ollama", "监听 11434 端口")
 }
-Rel(openwebui, ollama, "Makes API calls via Docker proxy", "http://host.docker.internal:11434")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "通过 Docker 代理发起 API 调用", "http://host.docker.internal:11434")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -41,42 +41,42 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Mac OS/Windows") {
+Boundary(b0, "主机 - Mac OS/Windows") {
    Person(user, "User")
-   Boundary(b1, "Docker Desktop's Linux VM") {
-      Boundary(b2, "Compose Stack") {
-         Component(openwebui, "Open WebUI", "Listening on port 8080")
-         Component(ollama, "Ollama", "Listening on port 11434")
+   Boundary(b1, "Docker Desktop 的 Linux 虚拟机") {
+      Boundary(b2, "Compose 栈") {
+         Component(openwebui, "Open WebUI", "监听 8080 端口")
+         Component(ollama, "Ollama", "监听 11434 端口")
       }
    }
 }
-Rel(openwebui, ollama, "Makes API calls via inter-container networking", "http://ollama:11434")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "通过容器间网络发起 API 调用", "http://ollama:11434")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
     </TabItem>
     <TabItem value="separate-networks-mac" label="独立网络">
 
-#### Ollama and Open WebUI, Separate Networks
+#### Ollama 和 Open WebUI 分属不同网络
 
-`Ollama` and `Open WebUI` are deployed in separate Docker networks. This leads to connectivity issues.
+`Ollama` 和 `Open WebUI` 部署在不同的 Docker 网络中，这会导致连通性问题。
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Mac OS/Windows") {
+Boundary(b0, "主机 - Mac OS/Windows") {
    Person(user, "User")
-   Boundary(b1, "Docker Desktop's Linux VM") {
-      Boundary(b2, "Network A") {
-         Component(openwebui, "Open WebUI", "Listening on port 8080")
+   Boundary(b1, "Docker Desktop 的 Linux 虚拟机") {
+      Boundary(b2, "网络 A") {
+         Component(openwebui, "Open WebUI", "监听 8080 端口")
       }
-      Boundary(b3, "Network B") {
-         Component(ollama, "Ollama", "Listening on port 11434")
+      Boundary(b3, "网络 B") {
+         Component(ollama, "Ollama", "监听 11434 端口")
       }
    }
 }
-Rel(openwebui, ollama, "Unable to connect")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "无法连接")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -89,13 +89,13 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Mac OS/Windows") {
+Boundary(b0, "主机 - Mac OS/Windows") {
    Person(user, "User")
    Boundary(b1, "Docker Desktop's Linux VM") {
-      Component(openwebui, "Open WebUI", "Listening on port 8080")
+      Component(openwebui, "Open WebUI", "监听 8080 端口")
    }
 }
-Rel(user, openwebui, "Unable to connect, host network is the VM's network")
+Rel(user, openwebui, "无法连接，主机网络就是虚拟机的网络")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -114,15 +114,15 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Linux") {
+Boundary(b0, "主机 - Linux") {
    Person(user, "User")
-   Boundary(b1, "Container Network") {
-      Component(openwebui, "Open WebUI", "Listening on port 8080")
+   Boundary(b1, "容器网络") {
+      Component(openwebui, "Open WebUI", "监听 8080 端口")
    }
-   Component(ollama, "Ollama", "Listening on port 11434")
+   Component(ollama, "Ollama", "监听 11434 端口")
 }
-Rel(openwebui, ollama, "Makes API calls via Docker proxy", "http://host.docker.internal:11434")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "通过 Docker 代理发起 API 调用", "http://host.docker.internal:11434")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -135,17 +135,17 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Linux") {
+Boundary(b0, "主机 - Linux") {
    Person(user, "User")
-   Boundary(b1, "Container Network") {
-      Boundary(b2, "Compose Stack") {
-         Component(openwebui, "Open WebUI", "Listening on port 8080")
-         Component(ollama, "Ollama", "Listening on port 11434")
+   Boundary(b1, "容器网络") {
+      Boundary(b2, "Compose 栈") {
+         Component(openwebui, "Open WebUI", "监听 8080 端口")
+         Component(ollama, "Ollama", "监听 11434 端口")
       }
    }
 }
-Rel(openwebui, ollama, "Makes API calls via inter-container networking", "http://ollama:11434")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "通过容器间网络发起 API 调用", "http://ollama:11434")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -158,17 +158,17 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Linux") {
+Boundary(b0, "主机 - Linux") {
    Person(user, "User")
-   Boundary(b2, "Container Network A") {
-      Component(openwebui, "Open WebUI", "Listening on port 8080")
+   Boundary(b2, "容器网络 A") {
+      Component(openwebui, "Open WebUI", "监听 8080 端口")
    }
-   Boundary(b3, "Container Network B") {
-      Component(ollama, "Ollama", "Listening on port 11434")
+   Boundary(b3, "容器网络 B") {
+      Component(ollama, "Ollama", "监听 11434 端口")
    }
 }
-Rel(openwebui, ollama, "Unable to connect")
-Rel(user, openwebui, "Makes requests via exposed port -p 3000:8080", "http://localhost:3000")
+Rel(openwebui, ollama, "无法连接")
+Rel(user, openwebui, "通过暴露端口 -p 3000:8080 发起请求", "http://localhost:3000")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 
@@ -181,13 +181,13 @@ UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 
 ```mermaid
 C4Context
-Boundary(b0, "Hosting Machine - Linux") {
+Boundary(b0, "主机 - Linux") {
    Person(user, "User")
-   Component(openwebui, "Open WebUI", "Listening on port 8080")
-   Component(ollama, "Ollama", "Listening on port 11434")
+   Component(openwebui, "Open WebUI", "监听 8080 端口")
+   Component(ollama, "Ollama", "监听 11434 端口")
 }
-Rel(openwebui, ollama, "Makes API calls via localhost", "http://localhost:11434")
-Rel(user, openwebui, "Makes requests via listening port", "http://localhost:8080")
+Rel(openwebui, ollama, "通过 localhost 发起 API 调用", "http://localhost:11434")
+Rel(user, openwebui, "通过监听端口发起请求", "http://localhost:8080")
 UpdateRelStyle(user, openwebui, $offsetX="-100", $offsetY="-50")
 ```
 

@@ -31,9 +31,9 @@ title: "性能与内存"
 **建议：** 为这些任务使用**非常快、体积小、成本低的非推理模型**。不要把大型 reasoning 模型（如 o1、r1、Claude）用于这类简单后台任务——它们既慢又贵。
 
 **配置方式：**
-在 **Admin Panel > Settings > Interface** 中有两项独立设置，系统会根据你当前聊天模型类型自动选择：
-- **Task Model (External)**：当你在使用外部模型（例如 OpenAI）聊天时使用
-- **Task Model (Local)**：当你在使用本地模型（例如 Ollama）聊天时使用
+在 **管理面板 > 设置 > Interface** 中有两项独立设置，系统会根据你当前聊天模型类型自动选择：
+- **任务模型（外部）**：当你在使用外部模型（例如 OpenAI）聊天时使用
+- **任务模型（本地）**：当你在使用本地模型（例如 Ollama）聊天时使用
 
 **推荐模型（2025）：**
 - **外部/云端**：`gpt-5-nano`、`gemini-2.5-flash-lite`、`llama-3.1-8b-instant`
@@ -60,16 +60,20 @@ title: "性能与内存"
 在同一轮对话中，复用为 Web Search / RAG 生成的搜索查询，避免重复调用 LLM。
 
 - **Env Var**：`ENABLE_QUERIES_CACHE=True`
-  - 说明：启用后，同一查询可在 RAG 与搜索中复用，从而减少推理成本和 API 调用
+- **管理面板**：`Settings > Connections > Cache Base Model List`
+- **环境变量**：`ENABLE_BASE_MODELS_CACHE=True`
 
 #### KV Cache 优化（RAG 性能）
+- **环境变量**：`MODELS_CACHE_TTL=300`
 在与大型文档或知识库对话时，可显著提升追问速度。
 
+- **环境变量**：`ENABLE_QUERIES_CACHE=True`
 - **Env Var**：`RAG_SYSTEM_CONTEXT=True`
 - **效果**：把 RAG 上下文注入 **system message**，而不是 user message
+- **环境变量**：`RAG_SYSTEM_CONTEXT=True`
 - **原因**：许多 LLM 引擎（Ollama、llama.cpp、vLLM）和云提供商（OpenAI、Vertex AI）支持 **KV prefix caching** 或 **Prompt Caching**。system message 始终处于对话开头，因此缓存命中率更高，后续追问速度会明显提升。
 
----
+ `DATABASE_URL`	| `postgres://user:password@localhost:5432/webui`
 
 <span id="-database-optimization"></span>
 ## 📦 数据库优化 {#-database-optimization}

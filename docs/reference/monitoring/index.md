@@ -3,29 +3,29 @@ sidebar_position: 6
 title: "监控"
 ---
 
-# 📊 监控
+## 📊 监控
 
 <a id="authentication-setup-for-api-key-"></a>
 
-**在用户发现问题之前就知道出了什么。**
+**在用户发现问题之前就先发现问题。**
 
-Open WebUI 提供健康检查和模型接口，与客居间监控、模型连通性检查和端到端响应测试对接简单直接。无论你运行的是单一实例还是多节点部署，这些检查都能让你确信服务正常运行、模型可访问并且推理确实工作。
+Open WebUI 提供健康检查和模型接口，便于与你现有的监控系统对接，用于模型连通性检查和端到端响应测试。无论你运行的是单实例还是多节点部署，这些检查都能帮助你确认服务正常、模型可访问，而且推理流程确实在工作。
 
 ---
 
 ## 为什么要监控？
 
-### 快速发现敌障
+### 快速发现故障
 
-每 60 秒运行一次健康检查，意味着你在一分钟内就能知道服务中断，而不是等到用户来反馈。
+每 60 秒运行一次健康检查，意味着你可以在一分钟内发现服务中断，而不是等用户来反馈。
 
 ### 验证模型连通性
 
-Open WebUI 可能运行正常，而你的模型提供商却已下线。监控 `/api/models` 接口可以发现这种情况。
+Open WebUI 可能运行正常，而你的模型提供商却已经离线。监控 `/api/models` 接口就能发现这类情况。
 
 ### 端到端信心
 
-最深度的检查会发送真实提示并验证响应。如果检查通过，你就知道整个流水线均正常运作：API、后端、模型提供商和推理。
+最深度的检查会发送真实提示并验证响应。如果检查通过，就说明整条链路都正常：API、后端、模型提供商以及推理本身。
 
 ---
 
@@ -34,9 +34,9 @@ Open WebUI 可能运行正常，而你的模型提供商却已下线。监控 `/
 | | |
 | :--- | :--- |
 | ✅ **健康检查接口** | 无需认证的 `/health` 检查，服务运行时返回 `200` |
-| 🔗 **模型连通性** | 带认证的 `/api/models` 检查验证提供商连接 |
+| 🔗 **模型连通性** | 带认证的 `/api/models` 检查，用于验证提供商连接 |
 | 🤖 **深度健康检查** | 发送真实聊天补全请求并验证响应 |
-| 🐻 **Uptime Kuma 配方** | 每个监控级别的即用配置 |
+| 🐻 **Uptime Kuma 配置示例** | 每个监控级别都提供可直接使用的配置 |
 
 ---
 
@@ -50,31 +50,31 @@ curl http://your-open-webui-instance:8080/health
 
 这验证 Web 服务器可用性、应用程序初始化和基本数据库连通性。
 
-### Uptime Kuma Setup
+### Uptime Kuma 配置（健康检查）
 
-1. **Add New Monitor** with type **HTTP(s)**
+1. **Add New Monitor**，类型选择 **HTTP(s)**
 2. **URL:** `http://your-open-webui-instance:8080/health`
 3. **Interval:** `60 seconds`
 4. **Retries:** `3`
 
 ---
 
-## Level 2: Model Connectivity Check
+## 第二级：模型连通性检查
 
-The `/api/models` endpoint **requires authentication** and confirms that Open WebUI can reach your model providers and list available models.
+`/api/models` 端点**需要认证**，它能确认 Open WebUI 可以访问你的模型提供商并列出可用模型。
 
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   http://your-open-webui-instance:8080/api/models
 ```
 
-You'll need an API key. See [API Keys](/features/authentication-access/api-keys) for setup instructions.
+你需要一个 API key。配置说明请参阅 [API 密钥](/features/authentication-access/api-keys)。
 
-:::tip Dedicated Monitoring Account
-Create a **non-admin user** (e.g., `monitoring-bot`), generate an API key from that account, and use it for all monitoring requests. This limits blast radius if the key is ever compromised.
+:::tip 专用监控账户
+创建一个**非管理员用户**（例如 `monitoring-bot`），从该账户生成 API key，并将其用于所有监控请求。这样即使密钥泄露，也能把影响范围降到最低。
 :::
 
-### Uptime Kuma Setup
+### Uptime Kuma 配置（模型连通性）
 
 1. **Monitor Type:** HTTP(s) - JSON Query
 2. **URL:** `http://your-open-webui-instance:8080/api/models`
@@ -86,19 +86,19 @@ Create a **non-admin user** (e.g., `monitoring-bot`), generate an API key from t
 
 ### Advanced JSONata Queries
 
-| Goal | Query |
+| 目标 | 查询 |
 | :--- | :--- |
-| At least one Ollama model | `$count(data[owned_by='ollama'])>0` |
-| Specific model exists | `$exists(data[id='gpt-4o'])` |
-| Multiple models exist | `$count(data[id in ['gpt-4o', 'gpt-4o-mini']]) = 2` |
+| 至少存在一个 Ollama 模型 | `$count(data[owned_by='ollama'])>0` |
+| 存在指定模型 | `$exists(data[id='gpt-4o'])` |
+| 存在多个模型 | `$count(data[id in ['gpt-4o', 'gpt-4o-mini']]) = 2` |
 
-Test queries at [jsonata.org](https://try.jsonata.org/) with a sample API response.
+可以在 [jsonata.org](https://try.jsonata.org/) 上使用示例 API 响应测试这些查询。
 
 ---
 
-## Level 3: Deep Health Check
+## 第三级：深度健康检查
 
-Send a real chat completion to verify the entire inference pipeline end-to-end.
+发送一条真实的聊天补全请求，以端到端验证整条推理链路。
 
 ```bash
 curl -X POST http://your-open-webui-instance:8080/api/chat/completions \
@@ -111,15 +111,15 @@ curl -X POST http://your-open-webui-instance:8080/api/chat/completions \
   }'
 ```
 
-A successful response returns `200 OK` with a chat completion containing "HEALTHY". This catches model loading failures, backend processing errors, and provider-side issues that Levels 1 and 2 would miss.
+成功响应会返回 `200 OK`，并带有包含 “HEALTHY” 的聊天补全结果。这样可以捕捉模型加载失败、后端处理错误以及第一级和第二级检查无法发现的提供商问题。
 
 :::info
-Setting up Level 3 in Uptime Kuma requires an HTTP(s) monitor with a POST body, authentication headers, and a JSON query to validate the response. See [Uptime Kuma docs](https://github.com/louislam/uptime-kuma) for POST monitor configuration.
+在 Uptime Kuma 中配置第三级检查，需要一个带 POST 请求体、认证头和 JSON 查询的 HTTP(s) 监控项来验证响应。有关 POST 监控配置，请参阅 [Uptime Kuma 文档](https://github.com/louislam/uptime-kuma)。
 :::
 
 ---
 
-## Next Steps
+## 下一步
 
-- **[OpenTelemetry](/reference/monitoring/otel)** - Distributed tracing, metrics, and logs with Grafana, Prometheus, Jaeger, and more
-- **[API Keys](/features/authentication-access/api-keys)** - Full guide on enabling and generating API keys for programmatic access
+- **[OpenTelemetry](/reference/monitoring/otel)** - 使用 Grafana、Prometheus、Jaeger 等实现分布式追踪、指标和日志
+- **[API 密钥](/features/authentication-access/api-keys)** - 启用和生成用于程序化访问的 API key 完整指南

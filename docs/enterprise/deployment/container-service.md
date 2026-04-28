@@ -49,14 +49,14 @@ flowchart TB
 ghcr.io/open-webui/open-webui:v0.x.x
 ```
 
-请避免在生产环境中使用 `:main` tag——它始终跟踪最新开发构建，可能在没有预警的情况下引入破坏性变更。最新稳定版本请查看 [Open WebUI releases](https://github.com/open-webui/open-webui/releases)。
+请避免在生产环境中使用 `:main` tag——它始终跟踪最新开发构建，可能在没有预警的情况下引入破坏性变更。最新稳定版本请查看 [Open WebUI 发布版本](https://github.com/open-webui/open-webui/releases)。
 
 ## 扩展策略
 
 - **平台原生自动扩缩容**：按 CPU 利用率、内存或请求数配置扩缩容规则。
-- **健康检查**：使用 `/health` 端点作为 liveness 与 readiness 检查。
+- **健康检查**：使用 `/health` 端点作为存活与就绪检查。
 - **任务级环境变量**：在任务定义中通过环境变量或密钥传入所有共享基础设施配置。
-- **会话亲和性**：在负载均衡器上启用 sticky sessions 以提升 WebSocket 稳定性。虽然 Redis 负责跨实例协调，但会话亲和性可减少不必要的会话切换。
+- **会话亲和性**：在负载均衡器上启用粘性会话以提升 WebSocket 稳定性。虽然 Redis 负责跨实例协调，但会话亲和性可减少不必要的会话切换。
 
 ## 关键注意事项
 
@@ -76,7 +76,7 @@ ghcr.io/open-webui/open-webui:v0.x.x
 | `WEBUI_SECRET_KEY` 不一致 | 登录循环、401 错误、会话无法跨任务保持 | 通过密钥管理器为所有任务设置同一密钥 |
 | 未配置 Redis | WebSocket 失败、配置不同步、“Model Not Found” 错误 | 设置 `REDIS_URL` 和 `WEBSOCKET_MANAGER=redis` |
 
-容器基础部署可参考 [Quick Start guide](/getting-started/quick-start)。
+容器基础部署可参考 [快速入门指南](/getting-started/quick-start)。
 
 ---
 

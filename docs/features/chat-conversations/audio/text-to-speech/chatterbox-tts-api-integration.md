@@ -13,7 +13,7 @@ title: "Chatterbox TTS —— 声音克隆"
 
 ## 什么是 `Chatterbox TTS API`？
 
-[Chatterbox TTS API](https://github.com/travisvn/chatterbox-tts-api) 是一个 API 封装层，支持声音克隆与文本转语音，可直接替代 OpenAI Speech API endpoint。
+[Chatterbox TTS API](https://github.com/travisvn/chatterbox-tts-api) 是一个 API 封装层，支持声音克隆与文本转语音，可直接替代 OpenAI Speech API 端点。
 
 [![Link to Resemble AI voice samples](https://img.shields.io/badge/listen-demo_samples-blue)](https://resemble-ai.github.io/chatterbox_demopage/)
 
@@ -99,7 +99,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 4123
 python main.py
 ```
 
-> 遇到问题？请查看 [troubleshooting section](https://github.com/travisvn/chatterbox-tts-api?tab=readme-ov-file#common-issues)
+> 遇到问题？请查看 [故障排查部分](https://github.com/travisvn/chatterbox-tts-api?tab=readme-ov-file#common-issues)
 
 ### 🐳 Docker（推荐）
 
@@ -195,7 +195,7 @@ cd frontend && npm install && npm run build
 ### 端口说明
 
 - **仅 API**：通过 `http://localhost:4123` 访问
-- **带 Frontend**：Web UI 位于 `http://localhost:4321`，API 请求通过反向代理转发
+- **带前端**：Web UI 位于 `http://localhost:4321`，API 请求通过反向代理转发
 
 因此，当使用 `--profile frontend` 运行时，Web 界面位于 `http://localhost:4321`，而 API 则在代理后端运行。
 
@@ -207,32 +207,32 @@ cd frontend && npm install && npm run build
 
 让 Open WebUI 使用 Chatterbox TTS API 的步骤如下：
 
-- 打开 Admin Panel 并进入 `Settings` -> `Audio`
+- 打开管理面板并进入 `设置` -> `音频`
 - 将 TTS 设置为：
-- - Text-to-Speech Engine: OpenAI
-  - API Base URL: `http://localhost:4123/v1` # 也可尝试 `http://host.docker.internal:4123/v1`
-  - API Key: `none`
-  - TTS Model: `tts-1` 或 `tts-1-hd`
-  - TTS Voice: 你克隆出来的语音名称（也可使用前端中定义的别名）
-  - Response splitting: `Paragraphs`
+- - 文本转语音引擎：OpenAI
+  - API 基础 URL：`http://localhost:4123/v1` # 也可尝试 `http://host.docker.internal:4123/v1`
+  - API 密钥：`none`
+  - TTS 模型：`tts-1` 或 `tts-1-hd`
+  - TTS 语音：你克隆出来的语音名称（也可使用前端中定义的别名）
+  - 响应切分：`Paragraphs`
 
 :::info
 
-默认 API key 为字符串 `none`（无需真实 API key）
+默认 API 密钥为字符串 `none`（无需真实 API 密钥）
 
 :::
 
-![Screenshot of Open WebUI Admin Settings for Audio adding the correct endpoints for this project](https://lm17s1uz51.ufs.sh/f/EsgO8cDHBTOUjUe3QjHytHQ0xqn2CishmXgGfeJ4o983TUMO)
+![Open WebUI 音频管理员设置截图，展示此项目所需的正确端点](https://lm17s1uz51.ufs.sh/f/EsgO8cDHBTOUjUe3QjHytHQ0xqn2CishmXgGfeJ4o983TUMO)
 
-## 如果觉得这个项目有帮助，请为 [repo on GitHub](https://github.com/travisvn/chatterbox-tts-api) 点个 ⭐️
+## 如果觉得这个项目有帮助，请为 [GitHub 仓库](https://github.com/travisvn/chatterbox-tts-api) 点个 ⭐️
 
 ## 需要帮助？
 
 Chatterbox 初次启动时可能比较折腾，如果某种安装方式不顺利，你可以尝试切换到其他安装路径。
 
-如需了解更多 `chatterbox-tts-api` 信息，请访问其 [GitHub repo](https://github.com/travisvn/chatterbox-tts-api)。
+如需了解更多 `chatterbox-tts-api` 信息，请访问其 [GitHub 仓库](https://github.com/travisvn/chatterbox-tts-api)。
 
-- 📖 **文档**：参见 [API Documentation](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/API_README.md) 和 [Docker Guide](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/DOCKER_README.md)
+- 📖 **文档**：参见 [API 文档](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/API_README.md) 和 [Docker 指南](https://github.com/travisvn/chatterbox-tts-api/blob/main/docs/DOCKER_README.md)
 - 💬 **Discord**：可加入该项目的 [Discord](http://chatterboxtts.com/discord)
 
 ## 故障排查
@@ -262,4 +262,4 @@ Chatterbox 的内存要求高于其他 TTS 方案：
 docker logs chatterbox-tts-api -f
 ```
 
-更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+更多排查建议请参阅 [音频故障排查指南](/troubleshooting/audio)。

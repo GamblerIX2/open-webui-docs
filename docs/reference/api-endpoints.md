@@ -244,7 +244,7 @@ Open WebUI 同时接受 **API Key**（以 `sk-` 为前缀）和 **JWT Token** �
       }'
   ```
 
-- **Python Example**:
+- **Python 示例**：
 
   ```python
   import requests
@@ -528,7 +528,7 @@ The content provided is empty. Please ensure that there is text or data present 
       }'
   ```
 
-- **Python Example**:
+- **Python 示例**：
 
   ```python
   import requests
@@ -657,7 +657,7 @@ result = upload_and_add_to_knowledge('/path/to/document.pdf', 'your-knowledge-id
       }'
   ```
 
-- **Python Example**:
+- **Python 示例**：
 
   ```python
   import requests

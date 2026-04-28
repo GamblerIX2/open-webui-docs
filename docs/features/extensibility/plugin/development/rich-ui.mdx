@@ -88,9 +88,9 @@ def create_chart(self, data: str) -> tuple:
 
 ## Action 用法
 
-Actions 的工作方式完全相同。富 UI 嵌入通过事件发射器传递到对话：
+Action 的工作方式完全相同。富 UI 嵌入会通过事件发射器传递到对话中：
 
-**Option A — HTMLResponse:**
+**方案 A — HTMLResponse：**
 
 ```python
 from fastapi.responses import HTMLResponse
@@ -100,7 +100,7 @@ async def action(self, body, __event_emitter__=None):
     return HTMLResponse(content=html, headers={"Content-Disposition": "inline"})
 ```
 
-**Option B — Tuple with headers:**
+**方案 B — 带标头的元组：**
 
 ```python
 async def action(self, body, __event_emitter__=None):
@@ -108,15 +108,15 @@ async def action(self, body, __event_emitter__=None):
     return (html, {"Content-Disposition": "inline", "Content-Type": "text/html"})
 ```
 
-## Pipe Function Usage
+## Pipe 函数用法
 
-When a **Tool** is called through Open WebUI's built-in tool calling layer (either native or legacy), the middleware automatically detects `HTMLResponse` results, extracts the HTML into embeds, and emits the `"embeds"` event. No extra work is needed.
+当 **Tool** 通过 Open WebUI 内置的工具调用层（无论是原生模式还是旧版模式）被调用时，中间件会自动识别 `HTMLResponse` 结果、提取 HTML 并将其作为嵌入内容发出，同时触发 `"embeds"` 事件，无需额外处理。
 
-However, when a **Pipe function** makes direct API calls to an external provider (e.g., Azure OpenAI, Anthropic), it bypasses the middleware entirely. The pipe manages the tool call cycle itself — sending tool definitions to the provider, receiving `tool_calls` in the response, executing the tool, and feeding the result back. In this scenario, the middleware never sees the `HTMLResponse`, so **the pipe must emit the embed manually**.
+不过，当 **Pipe 函数** 直接调用外部提供商的 API（例如 Azure OpenAI、Anthropic）时，它会完全绕过中间件。此时 Pipe 需要自己管理工具调用流程——向提供商发送工具定义、接收响应中的 `tool_calls`、执行工具并把结果回传。在这种场景下，中间件根本看不到 `HTMLResponse`，因此 **Pipe 必须手动发出嵌入内容**。
 
-### The Pattern
+### 实现模式
 
-In your pipe's tool execution logic, detect when a tool returns an `HTMLResponse`, extract the HTML body, emit it via the event emitter, and return a text summary to the LLM:
+在 Pipe 的工具执行逻辑中，检测工具是否返回 `HTMLResponse`，提取 HTML 正文，通过事件发射器发出，并向 LLM 返回一段文本摘要：
 
 ```python
 from fastapi.responses import HTMLResponse
@@ -151,20 +151,20 @@ async def execute_tool(self, tool_call, tools, __event_emitter__):
     return json.dumps(result)
 ```
 
-### Why This Is Needed
+### 为什么需要这样做
 
-Open WebUI's middleware processes tool results in `process_tool_result()`, which handles `HTMLResponse` detection, embed extraction, and event emission automatically. But that function is only called when the **middleware** orchestrates the tool call cycle. When a Pipe function handles tool calls itself (because it makes direct HTTP requests to an LLM provider), it must replicate the relevant parts of that logic.
+Open WebUI 的中间件会在 `process_tool_result()` 中处理工具结果，自动完成 `HTMLResponse` 检测、嵌入提取和事件发出。但只有当 **中间件** 负责协调工具调用流程时，这个函数才会被调用。若 Pipe 自己处理工具调用（因为它直接向 LLM 提供商发出 HTTP 请求），就必须自行复现这部分逻辑。
 
-### Key Steps
+### 关键步骤
 
-1. **Detect `HTMLResponse`** — Check if the tool's return value is an `HTMLResponse` with `Content-Disposition: inline`
-2. **Extract HTML** — Decode the response body
-3. **Emit `"embeds"` event** — Send the HTML via `__event_emitter__` so the frontend renders it as a Rich UI card
-4. **Return text to the LLM** — The model should receive a text summary (not raw HTML) so it can continue the conversation naturally
+1. **检测 `HTMLResponse`** —— 检查工具返回值是否为带有 `Content-Disposition: inline` 的 `HTMLResponse`
+2. **提取 HTML** —— 对响应正文进行解码
+3. **发出 `"embeds"` 事件** —— 通过 `__event_emitter__` 发送 HTML，让前端将其渲染为富 UI 卡片
+4. **向 LLM 返回文本** —— 模型应收到文本摘要（而不是原始 HTML），这样它才能自然地继续对话
 
-### Tuple Context Support
+### 元组上下文支持
 
-Just like with standard Tools, you can return a `(HTMLResponse, context)` tuple from your tool. In your pipe's execution logic, unpack it the same way:
+和标准 Tool 一样，你也可以从工具中返回 `(HTMLResponse, context)` 元组。在 Pipe 的执行逻辑里，按同样方式解包即可：
 
 ```python
 if isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], HTMLResponse):
@@ -173,17 +173,17 @@ if isinstance(result, tuple) and len(result) == 2 and isinstance(result[0], HTML
     # ... return result_context to the LLM instead of the generic message ...
 ```
 
-:::tip Community Reference
-The [Native Tool Calling Pipe](https://openwebui.com/posts/native_tool_calling_pipe_b3734a34) is a community-built pipe that implements the full OpenAI-native tool calling cycle with streaming and multi-call support. It can be adapted for Azure OpenAI or other providers and serves as a practical reference for implementing this pattern.
+:::tip 社区参考
+[Native Tool Calling Pipe](https://openwebui.com/posts/native_tool_calling_pipe_b3734a34) 是社区维护的一个 Pipe，完整实现了 OpenAI 原生工具调用流程，并支持流式与多次调用。它可以改造用于 Azure OpenAI 或其他提供商，是实现该模式的实用参考。
 :::
 
-## Iframe Height and Auto-Sizing
+## iframe 高度与自动调整
 
-Rich UI embeds are rendered inside a sandboxed iframe. The iframe needs to know how tall its content is in order to display without scrollbars. There are two mechanisms for this:
+富 UI 嵌入会渲染在一个沙箱化的 iframe 中。为了让内容在不出现滚动条的情况下完整显示，iframe 需要知道自身内容有多高。这里有两种机制：
 
-### postMessage Height Reporting (Recommended)
+### 通过 postMessage 报告高度（推荐）
 
-When `allowSameOrigin` is **off** (the default), the parent page cannot read the iframe's content height directly. Your HTML must report its own height by posting a message to the parent window:
+当 `allowSameOrigin` **关闭**（默认值）时，父页面无法直接读取 iframe 的内容高度。你的 HTML 必须通过向父窗口发送消息来报告自身高度：
 
 ```html
 <script>
@@ -197,81 +197,81 @@ When `allowSameOrigin` is **off** (the default), the parent page cannot read the
 </script>
 ```
 
-Add this script to the end of your `<body>` in every Rich UI embed. Without it, the iframe will stay at a small default height and your content will be cut off with a scrollbar.
+请把这段脚本放到每个 Rich UI 嵌入的 `<body>` 末尾。否则 iframe 会保持较小的默认高度，内容会被截断并出现滚动条。
 
-### Same-Origin Auto-Resize
+### 同源自动调整大小
 
-When `allowSameOrigin` is **on** (via the user setting `iframeSandboxAllowSameOrigin`), the parent page can directly measure the iframe's content height and resize it automatically — no script needed in your HTML. However, this comes with security trade-offs (see below).
+当 `allowSameOrigin` **开启**时（通过用户设置 `iframeSandboxAllowSameOrigin`），父页面可以直接测量 iframe 的内容高度并自动调整大小——你的 HTML 中不需要任何脚本。不过，这会带来安全上的权衡（见下文）。
 
-## Sandbox and Security
+## 沙箱与安全性
 
-Embedded iframes run inside a [sandbox](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox). The following sandbox flags are always enabled by default:
+嵌入的 iframe 运行在 [sandbox](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox) 中。以下沙箱标志默认始终启用：
 
-- `allow-scripts` — JavaScript execution
-- `allow-popups` — Popups (e.g. window.open)
-- `allow-downloads` — File downloads
+- `allow-scripts` —— 允许执行 JavaScript
+- `allow-popups` —— 允许弹出窗口（例如 `window.open`）
+- `allow-downloads` —— 允许文件下载
 
-Two additional flags can be toggled by the user in **Settings → Interface**:
+用户可以在 **设置 → 界面** 中切换另外两个标志：
 
-| Setting | Default | Description |
+| 设置 | 默认值 | 说明 |
 |---|---|---|
-| Allow Iframe Same-Origin Access | ❌ Off | Allows the iframe to access parent page context |
-| Allow Iframe Form Submissions | ❌ Off | Allows form submissions within embedded content |
+| 允许 Iframe 同源访问 | ❌ 关闭 | 允许 iframe 访问父页面上下文 |
+| 允许 Iframe 表单提交 | ❌ 关闭 | 允许在嵌入内容中提交表单 |
 
 ### allowSameOrigin
 
-This is the most important flag to be aware of. It is **off by default** for security reasons.
+这是最需要关注的标志。出于安全原因，它默认 **关闭**。
 
-**When off (default):**
-- The iframe is fully isolated from the parent page
-- It **cannot** read cookies, localStorage, or DOM of the parent
-- The parent **cannot** read the iframe's content height (so you must use the postMessage pattern above)
-- This is the safest option and recommended for most use cases
+**关闭时（默认）：**
+- iframe 与父页面完全隔离
+- 它 **无法** 读取父页面的 cookie、localStorage 或 DOM
+- 父页面 **无法** 读取 iframe 的内容高度（因此你必须使用上面的 postMessage 模式）
+- 这是最安全的选择，也最适合大多数场景
 
-**When on:**
-- The iframe can interact with the parent page's context
-- Auto-resizing works without any script in your HTML
-- Chart.js and Alpine.js dependencies are automatically injected if detected
-- ⚠️ **Use with caution** — only enable this when you trust the embedded content
+**开启时：**
+- iframe 可以与父页面上下文交互
+- 无需在 HTML 中写任何脚本即可自动调整大小
+- 如果检测到 Chart.js 和 Alpine.js 依赖，会自动注入
+- ⚠️ **请谨慎使用** —— 只有在你信任嵌入内容时才开启
 
-Users can toggle this setting in **Settings → Interface → Iframe Same-Origin Access**.
+用户可以在 **设置 → 界面 → Iframe 同源访问** 中切换此设置。
 
-:::caution Practical Impact of Sandbox Settings
-When `allowSameOrigin` is **off** (default), the Rich UI iframe is heavily sandboxed. This means:
-- **Downloads from within the embed** are difficult or impossible — especially on iOS, where sandboxed iframes cannot trigger file downloads at all
-- **JavaScript in the embed cannot interact with Open WebUI itself** — the iframe has no access to the parent page's DOM, cookies, localStorage, or any Open WebUI APIs
-- **Cross-frame communication** is limited to `postMessage` only — however, [prompt submission](#prompt-submission) works cross-origin with a user confirmation dialog
+:::caution 沙箱设置的实际影响
+当 `allowSameOrigin` **关闭**（默认）时，Rich UI iframe 会受到强沙箱限制。这意味着：
+- **嵌入内部的下载** 很难甚至无法完成——尤其是在 iOS 上，沙箱化 iframe 完全无法触发文件下载
+- **嵌入中的 JavaScript 无法与 Open WebUI 本身交互** —— iframe 无法访问父页面的 DOM、cookie、localStorage 或任何 Open WebUI API
+- **跨框架通信** 仅限于 `postMessage` —— 不过，[提示提交](#prompt-submission) 在跨域场景下仍可通过用户确认对话框工作
 
-If your Rich UI embed needs to trigger downloads, interact with Open WebUI's frontend, or execute JavaScript that impacts the parent page, **enabling same-origin iframe access is required**. Enable it in **Settings → Interface → Iframe Same-Origin Access**.
+如果你的 Rich UI 嵌入需要触发下载、与 Open WebUI 前端交互，或执行会影响父页面的 JavaScript，**就必须开启同源 iframe 访问**。请在 **设置 → 界面 → Iframe 同源访问** 中启用它。
 
-As an alternative for ephemeral interactions that need full page access, consider using the [`execute` event](/features/extensibility/plugin/development/events#execute-works-with-both-__event_call__-and-__event_emitter__) instead, which runs unsandboxed in the main page context.
+如果你只是需要一些临时交互，并且需要完整页面访问权限，可以考虑改用 [`execute` 事件](/features/extensibility/plugin/development/events#execute-works-with-both-__event_call__-and-__event_emitter__)，它会在主页面上下文中以未沙箱化的方式运行。
 :::
 
-:::tip Community Showcase: Streaming Rich UI with same-origin
-If you want to see how far Rich UI can go when same-origin is enabled, take a look at the community **[Inline Visualizer v2](https://github.com/Classic298/open-webui-plugins)** tool (also on the community site via the [Show-and-tell discussion](https://github.com/open-webui/open-webui/discussions/23901)).
+:::tip 社区展示：开启同源后的流式 Rich UI
+如果你想看看开启同源后 Rich UI 能走多远，可以看看社区的 **[Inline Visualizer v2](https://github.com/Classic298/open-webui-plugins)** 工具（也可在社区站点中通过 [演示讨论](https://github.com/open-webui/open-webui/discussions/23901) 访问）。
 
-It demonstrates patterns that aren't in the basic docs:
+它展示了基础文档里没有的几种模式：
 
-- **Live streaming HTML/SVG.** The tool returns an empty wrapper; the model then emits markup inline between plain-text `@@@VIZ-START / @@@VIZ-END` markers in its normal response. A same-origin observer inside the iframe tails the parent chat's DOM, extracts the growing block, and reconciles new nodes into the iframe as tokens arrive — so dashboards and diagrams paint live, token-by-token, instead of popping in at the end of the stream.
-- **Bidirectional bridges.** `sendPrompt(text)` turns any clickable node into a follow-up user message. `saveState(k, v)` / `loadState(k, fallback)` proxies parent `localStorage` scoped per-message so sliders and toggles survive reloads. `copyText`, `toast(msg, kind)`, and `openLink` round it out.
-- **A shipped design system.** Theme-aware CSS variables, a 9-ramp color palette, SVG utility classes, auto light/dark adaptation, and 230 localized strings across 46 languages — all delivered from a single tool with no core changes.
-- **Incremental DOM reconciliation.** A safe-cut HTML parser flushes the longest valid prefix on every tick; the reconciler only appends new nodes so existing elements never re-mount and animations never re-trigger during the stream.
+- **实时流式 HTML/SVG。** 这个工具返回一个空壳，模型随后会在正常响应中通过纯文本 `@@@VIZ-START / @@@VIZ-END` 标记之间插入标记内容。iframe 内部的同源观察者会跟踪父聊天的 DOM，提取不断增长的代码块，并在 token 到来时把新节点合并到 iframe 中——因此仪表盘和图表会逐步“画出来”，而不是等流结束后一次性出现。
+- **双向桥接。** `sendPrompt(text)` 可以把任意可点击节点变成一条后续用户消息。`saveState(k, v)` / `loadState(k, fallback)` 会代理父页面中按消息隔离的 `localStorage`，让滑块和开关在刷新后仍能保留。`copyText`、`toast(msg, kind)` 和 `openLink` 则补齐了其他常用能力。
+- **可直接交付的设计系统。** 主题感知的 CSS 变量、9 档颜色调色板、SVG 工具类、自动明暗主题适配，以及覆盖 46 种语言的 230 条本地化字符串——全部由一个工具直接提供，无需修改核心代码。
+- **渐进式 DOM 合并。** 安全截断的 HTML 解析器会在每个 tick 只释放最长有效前缀；合并器只追加新节点，因此现有元素不会重新挂载，动画也不会在流式过程中重复触发。
 
-This is a useful reference when you're trying to decide whether a generative-UI / streaming-UI feature needs a core change or can live purely in plugin-land. (Spoiler: almost always the latter.)
+当你需要判断某个生成式 UI / 流式 UI 功能是应该改核心还是只放在插件层时，这个案例很有参考价值。（剧透：大多数时候是后者。）
 :::
 
-## Rendering Position
+## 渲染位置
 
-- **Tool embeds** inside a tool call result render **inline** at the tool call indicator (the "View Result from..." line)
-- **Action embeds** and message-level embeds render **above** the message text content
+- **Tool 嵌入** 会在工具调用结果中 **内联** 显示，位置在工具调用指示器处（也就是 “View Result from...” 那一行）
+- **Action 嵌入** 和消息级嵌入会显示在消息正文的 **上方**
 
-## Advanced Communication
+## 高级通信
 
-The iframe and parent window can communicate beyond just height reporting. The following patterns are available:
+iframe 与父窗口之间的通信不止于高度上报。还可以使用以下模式：
 
-### Payload Requests
+### 负载请求
 
-The iframe can request a data payload from the parent. This is useful for passing dynamic data into the embed after it loads:
+iframe 可以向父页面请求数据负载。加载完成后把动态数据传入嵌入内容时，这很有用：
 
 ```html
 <script>
@@ -289,11 +289,11 @@ The iframe can request a data payload from the parent. This is useful for passin
 </script>
 ```
 
-The parent responds with `{ type: 'payload', requestId: ..., payload: ... }` containing the configured payload data.
+父页面会返回 `{ type: 'payload', requestId: ..., payload: ... }`，其中包含已配置好的负载数据。
 
-### Tool Args Injection (Tools Only)
+### 仅限工具的参数注入
 
-When a **Tool** returns a Rich UI embed, the tool call arguments (the parameters the model passed to the tool) are automatically injected into the iframe's `window.args`. This allows your embedded HTML to access the tool's input:
+当 **Tool** 返回富 UI 嵌入时，工具调用参数（也就是模型传给工具的参数）会自动注入到 iframe 的 `window.args` 中。这样你的嵌入 HTML 就能访问工具输入：
 
 ```html
 <script>
@@ -308,21 +308,21 @@ When a **Tool** returns a Rich UI embed, the tool call arguments (the parameters
 ```
 
 :::note
-This only works for Tool embeds rendered via the tool call display. Action embeds do not have `window.args` since they are triggered by the user, not the model.
+这只适用于通过工具调用显示渲染的 Tool 嵌入。Action 嵌入没有 `window.args`，因为它们是由用户而不是模型触发的。
 :::
 
-### Auto-Injected Libraries
+### 自动注入的库
 
-When `allowSameOrigin` is enabled, the iframe component auto-detects usage of certain libraries in your HTML and injects them automatically — no CDN `<script>` tags needed:
+当启用 `allowSameOrigin` 时，iframe 组件会自动检测你的 HTML 中是否使用了某些库，并自动注入它们——不需要再手写 CDN `<script>` 标签：
 
-- **Alpine.js** — Detected when any `x-data`, `x-init`, `x-show`, `x-bind`, `x-on`, `x-text`, `x-html`, `x-model`, `x-for`, `x-if`, `x-effect`, `x-transition`, `x-cloak`, `x-ref`, `x-teleport`, or `x-id` directives are found
-- **Chart.js** — Detected when `new Chart(` or `Chart.` appears in the HTML
+- **Alpine.js** —— 当 HTML 中出现任意 `x-data`、`x-init`、`x-show`、`x-bind`、`x-on`、`x-text`、`x-html`、`x-model`、`x-for`、`x-if`、`x-effect`、`x-transition`、`x-cloak`、`x-ref`、`x-teleport` 或 `x-id` 指令时就会被检测到
+- **Chart.js** —— 当 HTML 中出现 `new Chart(` 或 `Chart.` 时就会被检测到
 
-This means you can write Alpine or Chart.js code directly in your HTML and it will just work when same-origin is enabled, without importing scripts.
+这意味着你可以直接在 HTML 中编写 Alpine 或 Chart.js 代码；只要同源功能开启，它就会直接工作，无需导入脚本。
 
-### Ping/Pong Connectivity
+### Ping/Pong 连通性
 
-The iframe can test connectivity with the parent window using a simple ping/pong pattern:
+iframe 可以通过一个简单的 ping/pong 模式测试与父窗口的连通性：
 
 ```html
 <script>
@@ -337,15 +337,15 @@ The iframe can test connectivity with the parent window using a simple ping/pong
 </script>
 ```
 
-### Prompt Submission
+### 提示提交 {#prompt-submission}
 
-Rich UI embeds can interact with the chat input using three message types:
+Rich UI 嵌入可以通过三种消息类型与聊天输入框交互：
 
-| Message Type | Behavior |
+| 消息类型 | 行为 |
 |---|---|
-| `input:prompt` | Fills the chat input box with text (does not submit) |
-| `input:prompt:submit` | Fills and submits the prompt to the chat |
-| `action:submit` | Submits the current text already in the chat input |
+| `input:prompt` | 用文本填充聊天输入框（不提交） |
+| `input:prompt:submit` | 填充并提交提示词到聊天中 |
+| `action:submit` | 提交当前已在聊天输入框中的文本 |
 
 ```html
 <script>
@@ -360,49 +360,49 @@ Rich UI embeds can interact with the chat input using three message types:
 </script>
 ```
 
-**Same-origin vs cross-origin behavior:**
+**同源与跨域行为差异：**
 
-- When `allowSameOrigin` is **on**, `input:prompt:submit` submits the prompt **immediately** — no user interaction required.
-- When `allowSameOrigin` is **off** (default), `input:prompt:submit` from cross-origin iframes shows a **confirmation dialog** to the user before submitting. This prevents abuse while still enabling interactive embeds without requiring same-origin access.
-- `input:prompt` and `action:submit` work the same regardless of origin — they only fill or submit text that the user can already see.
+- 当 `allowSameOrigin` **开启**时，`input:prompt:submit` 会 **立即** 提交提示词——无需用户再次操作。
+- 当 `allowSameOrigin` **关闭**（默认）时，来自跨域 iframe 的 `input:prompt:submit` 会在提交前向用户显示一个 **确认对话框**。这既能防滥用，又不需要开启同源访问就能实现交互式嵌入。
+- `input:prompt` 和 `action:submit` 无论来源如何都行为一致——它们只会填充或提交用户已经能看到的文本。
 
 :::tip
-This means your Rich UI embed can include interactive buttons (e.g., "Explain this chart", "Regenerate with different parameters") that submit prompts to the chat, **without requiring the user to enable same-origin access**. The user simply sees a confirmation dialog and clicks "Confirm" to proceed.
+这意味着你的 Rich UI 嵌入可以包含交互式按钮（例如“解释这张图表”“用不同参数重新生成”），并把提示词提交到聊天中，**而不要求用户开启同源访问**。用户只会看到一个确认对话框，点击“确认”即可继续。
 :::
 
-## Rich UI Embeds vs Execute Event
+## 富 UI 嵌入与 `execute` 事件
 
-Rich UI embeds and the [`execute` event](/features/extensibility/plugin/development/events#execute-works-with-both-__event_call__-and-__event_emitter__) are complementary ways to create interactive experiences. Choose based on your needs:
+Rich UI 嵌入与 [`execute` 事件](/features/extensibility/plugin/development/events#execute-works-with-both-__event_call__-and-__event_emitter__) 是创建交互体验的两种互补方式。请根据需求选择：
 
-| | Rich UI Embed | `execute` Event |
+| | Rich UI 嵌入 | `execute` 事件 |
 |---|---|---|
-| **Runs in** | Sandboxed iframe | Main page context (no sandbox) |
-| **Persistence** | Persistent — saved in chat history | Ephemeral — gone on reload/navigate |
-| **Page access** | Isolated from parent by default | Full (DOM, cookies, localStorage) |
-| **Forms** | Requires `allowForms` setting enabled | Always works (no sandbox) |
-| **Best for** | Persistent visual content, dashboards, charts | Transient interactions, side effects, downloads, DOM manipulation |
+| **运行位置** | 沙箱化 iframe | 主页面上下文（无沙箱） |
+| **持久性** | 持久 —— 会保存到聊天历史中 | 短暂 —— 刷新或跳转后消失 |
+| **页面访问权限** | 默认与父页面隔离 | 完全访问（DOM、cookie、localStorage） |
+| **表单** | 需要开启 `allowForms` 设置 | 始终可用（无沙箱） |
+| **适用场景** | 持久的可视化内容、仪表盘、图表 | 临时交互、副作用、下载、DOM 操作 |
 
-Use Rich UI embeds for persistent visual content you want to stay in the conversation. Use `execute` for transient interactions like custom dialogs, triggering downloads, or reading page state.
+需要在对话中长期保留的可视化内容，请使用 Rich UI 嵌入。像自定义对话框、触发下载、读取页面状态这类临时交互，则请使用 `execute`。
 
-## Use Cases
+## 使用场景
 
-Rich UI embedding is perfect for:
+Rich UI 嵌入非常适合以下场景：
 
-- **Interactive dashboards** — Real-time data visualization and controls
-- **Charts and graphs** — Interactive plotting with libraries like Plotly, D3.js, or Chart.js
-- **Form interfaces** — Complex input forms with validation and dynamic behavior
-- **Media players** — Video, audio, or interactive media content
-- **Download triggers** — Especially useful for iOS PWA where native download links are blocked
-- **Custom widgets** — Specialized UI components for specific tool functionality
-- **External integrations** — Embedding content from external services or APIs
-- **Human-triggered visualizations** — Actions that display results when a user clicks a button, e.g. generating a report or triggering a download
+- **交互式仪表盘** —— 实时数据可视化与控制项
+- **图表与曲线** —— 结合 Plotly、D3.js 或 Chart.js 等库进行交互式绘图
+- **表单界面** —— 带校验和动态行为的复杂输入表单
+- **媒体播放器** —— 视频、音频或交互式媒体内容
+- **下载触发器** —— 在 iOS PWA 中尤其有用，因为原生下载链接会被阻止
+- **自定义组件** —— 面向特定工具功能的专用 UI 组件
+- **外部集成** —— 嵌入来自外部服务或 API 的内容
+- **人工触发的可视化** —— 用户点击按钮后显示结果的动作，例如生成报告或触发下载
 
-## Full Sample Action
+## 完整示例 Action
 
 <details>
-<summary>Complete working Sample Action with Rich UI embed</summary>
+<summary>包含 Rich UI 嵌入的完整可运行示例 Action</summary>
 
-This Action returns a styled card with stats, including the recommended height-reporting script:
+这个 Action 会返回一张带样式的统计卡片，其中包含推荐的高度上报脚本：
 
 ```python
 """
@@ -508,9 +508,9 @@ class Action:
 
 </details>
 
-## External Tool Example
+## 外部工具示例
 
-For external tools served via HTTP endpoints:
+对于通过 HTTP 端点提供的外部工具：
 
 ```python
 @app.post("/tools/dashboard")
@@ -536,13 +536,13 @@ async def create_dashboard():
     )
 ```
 
-The embedded content automatically inherits responsive design and integrates seamlessly with the chat interface, providing a native-feeling experience for users interacting with your tools.
+嵌入内容会自动继承响应式设计，并与聊天界面无缝集成，让用户在使用你的工具时获得近乎原生的体验。
 
-## CORS and Direct Tools
+## CORS 与直连工具
 
-Direct external tools are tools that run directly from the browser. In this case, the tool is called by JavaScript in the user's browser.
-Because we depend on the Content-Disposition header, when using CORS on a remote tool server, the Open WebUI cannot read that header due to Access-Control-Expose-Headers, which prevents certain headers from being read from the fetch result.
-To prevent this, you must set Access-Control-Expose-Headers to Content-Disposition. Check the example below of a tool using Node.js:
+直连外部工具是直接在浏览器中运行的工具。此时，工具由用户浏览器中的 JavaScript 调用。
+由于我们依赖 `Content-Disposition` 标头，在远程工具服务器上启用 CORS 时，Open WebUI 可能因为 `Access-Control-Expose-Headers` 的限制而读不到该标头，从而无法从 `fetch` 结果中获取某些头信息。
+为避免这种情况，你必须将 `Access-Control-Expose-Headers` 设为 `Content-Disposition`。下面是一个使用 Node.js 的工具示例：
 
 
 ```javascript
@@ -574,4 +574,4 @@ app.get('/tools/dashboard', (req,res) => {
 })
 ```
 
-More info about the header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers
+关于该标头的更多信息：https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Expose-Headers

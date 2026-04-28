@@ -3,6 +3,8 @@ sidebar_position: 50
 title: "数据库 Schema"
 ---
 
+<!-- markdownlint-disable MD060 -->
+
 <a id="database-encryption-with-sqlcipher"></a>
 
 :::warning
@@ -331,7 +333,7 @@ docker exec -it open-webui /bin/sh
 - 当使用新参与者列表更新事件时，将批量替换参与者。
 - 删除事件会级联删除所有参与者记录。
 
-## Chat File Table
+## Chat File 表
 
 | **Column Name** | **Data Type** | **Constraints**                  | **Description**                   |
 | --------------- | ------------- | -------------------------------- | --------------------------------- |
@@ -343,13 +345,13 @@ docker exec -it open-webui /bin/sh
 | created_at      | BigInteger    | NOT NULL                         | Creation timestamp                |
 | updated_at      | BigInteger    | NOT NULL                         | Last update timestamp             |
 
-Things to know about the chat_file table:
+关于 chat_file 表的注意事项：
 
 - Unique constraint on (`chat_id`, `file_id`) to prevent duplicate entries
 - 带有 CASCADE 删除的外键关系
 - Indexed on `chat_id`, `file_id`, `message_id`, and `user_id` for performance
 
-**Why this table was added:**
+**为何添加此表：**
 
 - **Query Efficiency**: Before this, files were embedded in message objects. This table allows direct indexed lookups for finding all files in a chat without iterating through every message.
 - **Data Consistency**: Acts as a single source of truth for file associations. In multi-node deployments, all nodes query this table instead of relying on potentially inconsistent embedded data.

@@ -7,7 +7,7 @@ title: "扩缩容与高可用"
 
 本指南针对在**多副本**环境（如 Kubernetes、Docker Swarm）部署 Open WebUI，或通过 **多个 worker**（`UVICORN_WORKERS > 1`）提升并发时常见的问题进行说明。
 
-如果你是第一次搭建扩缩容部署，请先阅读 [Scaling Open WebUI](/getting-started/advanced-topics/scaling) 获取完整步骤。
+如果你是第一次搭建扩缩容部署，请先阅读 [扩展 Open WebUI](/getting-started/advanced-topics/scaling) 获取完整步骤。
 
 <span id="core-requirements-checklist"></span>
 ## 核心要求检查清单 {#core-requirements-checklist}
@@ -297,10 +297,10 @@ RUN pip install --no-cache-dir python-docx requests beautifulsoup4
 
 ## 相关文档
 
-- [Scaling Open WebUI](/getting-started/advanced-topics/scaling) —— 从单实例扩展到生产环境的完整步骤
-- [Environment Variable Configuration](/reference/env-configuration)
-- [Optimization, Performance & RAM Usage](/troubleshooting/performance)
-- [Redis WebSocket Support](/tutorials/integrations/redis) —— 详细的 Redis 设置教程
-- [Troubleshooting Connection Errors](/troubleshooting/connection-error)
-- [RAG Troubleshooting](/troubleshooting/rag) —— 文档上传与嵌入问题
-- [Logging Open WebUI](/getting-started/advanced-topics/logging)
+- [扩展 Open WebUI](/getting-started/advanced-topics/scaling) —— 从单实例扩展到生产环境的完整步骤
+- [环境变量配置](/reference/env-configuration)
+- [优化、性能与 RAM 占用](/troubleshooting/performance)
+- [Redis WebSocket 支持](/tutorials/integrations/redis) —— 详细的 Redis 设置教程
+- [连接错误排查](/troubleshooting/connection-error)
+- [RAG 故障排查](/troubleshooting/rag) —— 文档上传与嵌入问题
+- [Open WebUI 日志](/getting-started/advanced-topics/logging)

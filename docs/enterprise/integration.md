@@ -37,7 +37,7 @@ Open WebUI 支持灵活的模型集成：
 
 企业软件生态本就复杂，你最不需要的就是再多一个孤岛。Open WebUI 的模块化架构意味着，它会与你现有基础设施**协同工作**，而不是与之对抗：
 
-| Integration Type | Examples |
+| 集成类型 | 示例 |
 | :--- | :--- |
 | **身份系统** | LDAP、Active Directory、SSO 提供商（SAML、OIDC）。 |
 | **企业工具** | 连接内部 API、数据库和业务系统。 |

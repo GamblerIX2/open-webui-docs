@@ -1,11 +1,11 @@
 ---
 sidebar_position: 0
-title: "OpenAI STT 集成"
+title: "OpenAI 语音转文本集成"
 ---
 
 # 使用 OpenAI 实现语音转文本
 
-本指南介绍如何在 Open WebUI 中使用 OpenAI Whisper API 进行 Speech-to-Text。这种方式提供云端转录能力，无需本地 GPU 资源。
+本指南介绍如何在 Open WebUI 中使用 OpenAI Whisper API 进行语音转文本。这种方式提供云端转录能力，无需本地 GPU 资源。
 
 :::tip 想配置 TTS？
 请查看配套指南：[使用 OpenAI 实现文本转语音](/features/chat-conversations/audio/text-to-speech/openai-tts-integration)
@@ -13,29 +13,29 @@ title: "OpenAI STT 集成"
 
 ## 前置要求
 
-- 拥有可访问 Audio API 的 OpenAI API key
+- 拥有可访问 Audio API 的 OpenAI API 密钥
 - Open WebUI 已安装并正常运行
 
 ## 快速配置（UI）
 
 1. 点击你的**头像图标**（左下角）
-2. 选择 **Admin Panel**
-3. 点击 **Settings** → **Audio** 标签
+2. 选择 **管理面板**
+3. 点击 **设置** → **音频** 标签
 4. 按如下方式配置：
 
-| Setting | Value |
+| 设置 | 值 |
 |---------|-------|
-| **Speech-to-Text Engine** | `OpenAI` |
-| **API Base URL** | `https://api.openai.com/v1` |
-| **API Key** | 你的 OpenAI API key |
-| **STT Model** | `whisper-1` |
-| **Supported Content Types** | 可留空使用默认值，或设置为 `audio/wav,audio/mpeg,audio/webm` |
+| **语音转文本引擎** | `OpenAI` |
+| **API 基础 URL** | `https://api.openai.com/v1` |
+| **API 密钥** | 你的 OpenAI API 密钥 |
+| **STT 模型** | `whisper-1` |
+| **支持的内容类型** | 可留空使用默认值，或设置为 `audio/wav,audio/mpeg,audio/webm` |
 
 5. 点击 **Save**
 
 ## 可用模型
 
-| Model | Description |
+| 模型 | 说明 |
 |-------|-------------|
 | `whisper-1` | OpenAI 在云端托管的 Whisper large-v2 模型 |
 
@@ -61,13 +61,13 @@ services:
 
 ### 全部 STT 环境变量（OpenAI）
 
-| Variable | Description | Default |
+| 变量 | 说明 | 默认值 |
 |----------|-------------|---------|
 | `AUDIO_STT_ENGINE` | 设置为 `openai` | empty（使用本地 Whisper） |
-| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI API Base URL | `https://api.openai.com/v1` |
-| `AUDIO_STT_OPENAI_API_KEY` | 你的 OpenAI API key | empty |
+| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI API 基础 URL | `https://api.openai.com/v1` |
+| `AUDIO_STT_OPENAI_API_KEY` | 你的 OpenAI API 密钥 | empty |
 | `AUDIO_STT_MODEL` | STT 模型 | `whisper-1` |
-| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | 允许的音频 MIME type | `audio/*,video/webm` |
+| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | 允许的音频 MIME 类型 | `audio/*,video/webm` |
 
 ### 支持的音频格式
 
@@ -89,13 +89,13 @@ OpenAI Whisper API 支持：`mp3`、`mp4`、`mpeg`、`mpga`、`m4a`、`wav`、`w
 
 ## OpenAI 与 Local Whisper 对比
 
-| Feature | OpenAI Whisper API | Local Whisper |
+| 特性 | OpenAI Whisper API | Local Whisper |
 |---------|-------------------|---------------|
-| **Latency** | 取决于网络 | 短音频通常更快 |
-| **Cost** | 按分钟计费 | 免费（使用你的硬件） |
-| **Privacy** | 音频发送到 OpenAI | 音频留在本地 |
-| **GPU Required** | 否 | 为了速度建议使用 |
-| **Model Options** | 仅 `whisper-1` | tiny、base、small、medium、large |
+| **延迟** | 取决于网络 | 短音频通常更快 |
+| **成本** | 按分钟计费 | 免费（使用你的硬件） |
+| **隐私** | 音频发送到 OpenAI | 音频留在本地 |
+| **需要 GPU** | 否 | 为了速度建议使用 |
+| **模型选项** | 仅 `whisper-1` | tiny、base、small、medium、large |
 
 在以下情况下推荐选择 **OpenAI**：
 - 你没有 GPU
@@ -113,7 +113,7 @@ OpenAI Whisper API 支持：`mp3`、`mp4`、`mpeg`、`mpga`、`m4a`、`wav`、`w
 
 1. 确保你正在使用 HTTPS 或 localhost
 2. 检查浏览器麦克风权限
-3. 查看 [Microphone Access Issues](/troubleshooting/audio#microphone-access-issues)
+3. 查看 [麦克风访问问题](/troubleshooting/audio#microphone-access-issues)
 
 ### 转录报错
 
@@ -125,7 +125,7 @@ OpenAI Whisper API 支持：`mp3`、`mp4`、`mpeg`、`mpga`、`m4a`、`wav`、`w
 
 OpenAI Whisper API 会自动检测语言。如果你需要强制指定语言，请考虑改用 Local Whisper，并设置 `WHISPER_LANGUAGE` 环境变量。
 
-更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+更多排查信息请参阅 [音频故障排查指南](/troubleshooting/audio)。
 
 ## 成本说明
 

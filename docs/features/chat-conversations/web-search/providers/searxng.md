@@ -11,7 +11,7 @@ title: "SearXNG"
 
 :::tip
 
-若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [环境配置文档](/reference/env-configuration#web-search)。
 
 :::
 
@@ -19,7 +19,7 @@ title: "SearXNG"
 
 ## SearXNG（Docker）
 
-> "**SearXNG is a free internet metasearch engine which aggregates results from various search services and databases. Users are neither tracked nor profiled.**"
+> "**SearXNG 是一个免费的互联网元搜索引擎，会汇总来自各种搜索服务和数据库的结果。用户不会被跟踪，也不会被画像。**"
 
 ## 1. 配置 SearXNG
 
@@ -29,7 +29,7 @@ title: "SearXNG"
 
 1. 克隆 `searxng-docker` 仓库
 
-   克隆后会生成一个名为 `searxng-docker` 的目录，其中包含 SearXNG 配置文件。更多说明请参阅 [SearXNG documentation](https://docs.searxng.org/)。
+  克隆后会生成一个名为 `searxng-docker` 的目录，其中包含 SearXNG 配置文件。更多说明请参阅 [SearXNG 文档](https://docs.searxng.org/)。
 
 ```bash
 git clone https://github.com/searxng/searxng-docker.git
@@ -327,10 +327,10 @@ docker exec -it open-webui curl http://host.docker.internal:8080/search?q=this+i
 
 ## 4. 图形界面配置
 
-1. 前往：`Admin Panel` -> `Settings` -> `Web Search`
-2. 打开 `Enable Web Search`
-3. 将 `Web Search Engine` 从下拉框设为 `searxng`
-4. 将 `Searxng Query URL` 设为以下格式之一：
+1. 前往：`管理面板` -> `Settings` -> `Web Search`
+2. 打开 `启用 Web Search`
+3. 将 `Web Search 引擎` 从下拉框设为 `searxng`
+4. 将 `SearXNG 查询 URL` 设为以下格式之一：
 
 - `http://localhost:8080/search?q=<query>`（使用宿主机与宿主机端口，适用于 Docker 部署）
 - `http://searxng:8080/search?q=<query>`（使用容器名与暴露端口，适用于 Docker 部署）
@@ -340,24 +340,24 @@ docker exec -it open-webui curl http://host.docker.internal:8080/search?q=this+i
 
 **请注意，`/search?q=<query>` 这一部分是必需的。**
 
-5. 根据需要调整 `Search Result Count` 与 `Concurrent Requests`
+5. 根据需要调整 `搜索结果数量` 与 `并发请求数`
 6. 保存更改
 
-![SearXNG GUI Configuration](/images/tutorial_searxng_config.png)
+![SearXNG 图形界面配置](/images/tutorial_searxng_config.png)
 
-:::tip Troubleshooting
+:::tip 故障排查
 
-如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时和内容为空等常见问题。
+如果你在 web search 上遇到问题，请查看 [Web Search 故障排查指南](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时和内容为空等常见问题。
 
 :::
 
 ## 5. 在聊天中使用 Web Search
 
-若要访问 Web Search，请点击 + 图标旁边的 Integrations 按钮。
+若要访问 Web Search，请点击 + 图标旁边的集成按钮。
 
 在那里你可以切换 Web Search 的开 / 关。
 
-![Web Search UI Toggle](/images/web_search_toggle.png)
+![Web Search 切换按钮](/images/web_search_toggle.png)
 
 完成以上步骤后，你就成功为 Open WebUI 配置好了 SearXNG，并能够在聊天中使用 SearXNG 引擎进行网页搜索。
 

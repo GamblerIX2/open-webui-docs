@@ -13,34 +13,34 @@ title: "音频"
 
 管理员可以配置全局默认音频设置：
 
-1. 点击你的 **profile icon**（左下角）
-2. 选择 **Admin Panel**
-3. 点击顶部导航中的 **Settings**
-4. 选择 **Audio** 标签
+1. 点击你的 **头像图标**（左下角）
+2. 选择 **管理面板**
+3. 点击顶部导航中的 **设置**
+4. 选择 **音频** 标签
 
 你可以在这里配置：
-- **Speech-to-Text Engine** —— 在本地 Whisper、OpenAI、Azure、Deepgram、Mistral 之间选择
-- **Whisper Model** —— 为本地 STT 选择模型大小（tiny、base、small、medium、large）
-- **Text-to-Speech Engine** —— 在 OpenAI-compatible、Mistral、ElevenLabs、Azure、本地 Transformers 或禁用后端 TTS（仅浏览器）之间选择
-- **TTS Voice** —— 选择默认音色
-- **API Keys and Base URLs** —— 配置外部服务连接
+- **语音转文本引擎** —— 在本地 Whisper、OpenAI、Azure、Deepgram、Mistral 之间选择
+- **Whisper 模型** —— 为本地 STT 选择模型大小（tiny、base、small、medium、large）
+- **文本转语音引擎** —— 在 OpenAI-compatible、Mistral、ElevenLabs、Azure、本地 Transformers 或禁用后端 TTS（仅浏览器）之间选择
+- **TTS 音色** —— 选择默认音色
+- **API 密钥与 Base URL** —— 配置外部服务连接
 
 ### 用户设置（每用户）
 
 每个用户都可以单独调整自己的音频体验：
 
-1. 点击你的 **profile icon**（左下角）
-2. 选择 **Settings**
-3. 点击 **Audio** 标签
+1. 点击你的 **头像图标**（左下角）
+2. 选择 **设置**
+3. 点击 **音频** 标签
 
 用户级选项包括：
-- **STT Engine Override** —— 选择 “Web API” 使用浏览器语音识别
-- **STT Language** —— 设置偏好的转录语言
-- **TTS Engine** —— 选择 “Browser Kokoro” 以使用浏览器本地 TTS
-- **TTS Voice** —— 选择可用音色
-- **Auto-playback** —— 自动播放 AI 回答
-- **Playback Speed** —— 调整播放速度
-- **Conversation Mode** —— 启用免手持语音交互
+- **STT 引擎覆盖** —— 选择 “Web API” 使用浏览器语音识别
+- **STT 语言** —— 设置偏好的转录语言
+- **TTS 引擎** —— 选择 “Browser Kokoro” 以使用浏览器本地 TTS
+- **TTS 音色** —— 选择可用音色
+- **自动播放** —— 自动播放 AI 回答
+- **播放速度** —— 调整播放速度
+- **对话模式** —— 启用免手持语音交互
 
 :::tip
 用户设置会覆盖管理员默认值。如果你遇到问题，请同时检查这两个位置，确认设置之间没有冲突。
@@ -50,12 +50,12 @@ title: "音频"
 
 ### 最快方案：OpenAI（付费）
 
-如果你有 OpenAI API key，这是最简单的配置方式：
+如果你有 OpenAI API 密钥，这是最简单的配置方式：
 
-**在 Admin Panel → Settings → Audio 中：**
-- **STT Engine:** `OpenAI` | **Model:** `whisper-1`
-- **TTS Engine:** `OpenAI` | **Model:** `tts-1` | **Voice:** `alloy`
-- 在两个部分都填入你的 OpenAI API key
+**在 管理面板 → 设置 → 音频 中：**
+- **STT 引擎:** `OpenAI` | **模型:** `whisper-1`
+- **TTS 引擎:** `OpenAI` | **模型:** `tts-1` | **音色:** `alloy`
+- 在两个部分都填入你的 OpenAI API 密钥
 
 或通过环境变量：
 ```yaml
@@ -74,10 +74,10 @@ environment:
 
 如果你更喜欢 Mistral 的音频栈：
 
-**在 Admin Panel → Settings → Audio 中：**
-- **STT Engine:** `MistralAI` | **Model:** `voxtral-mini-latest`（或留空）
-- **TTS Engine:** `MistralAI` | **Model:** `mistral-tts-latest`（或留空） | **Voice:** 从列表中选择
-- 在两个部分填入你的 Mistral API key
+**在 管理面板 → 设置 → 音频 中：**
+- **STT 引擎:** `MistralAI` | **模型:** `voxtral-mini-latest`（或留空）
+- **TTS 引擎:** `MistralAI` | **模型:** `mistral-tts-latest`（或留空） | **音色:** 从列表中选择
+- 在两个部分填入你的 Mistral API 密钥
 
 或通过环境变量：
 ```yaml
@@ -122,9 +122,9 @@ services:
 
 如果你只需要基础功能，不想启用任何服务端音频处理：
 
-**在 User Settings → Audio 中：**
-- **STT Engine:** `Web API`（使用浏览器内置语音识别；**不会调用后端 STT endpoint**）
-- **TTS Engine:** `Web API` 或 `Browser Kokoro`（使用浏览器内置 TTS 或客户端侧 Kokoro；**不会调用后端 TTS endpoint**）
+**在 用户设置 → 音频 中：**
+- **STT 引擎:** `Web API`（使用浏览器内置语音识别；**不会调用后端 STT endpoint**）
+- **TTS 引擎:** `Web API` 或 `Browser Kokoro`（使用浏览器内置 TTS 或客户端侧 Kokoro；**不会调用后端 TTS endpoint**）
 
 :::note
 当管理员把 `AUDIO_TTS_ENGINE` 留空（默认值）时，后端不会提供 TTS 服务，所有 TTS 都由客户端处理。类似地，如果用户在自己的设置中把 STT 设为 “Web API”，则不会使用后端本地 Whisper。
@@ -241,7 +241,7 @@ services:
 ### TTS 音色不存在 / 没有音频输出
 
 **检查清单：**
-1. 确认 **Admin Panel → Settings → Audio** 中的 TTS 引擎配置正确
+1. 确认 **管理面板 → 设置 → 音频** 中的 TTS 引擎配置正确
 2. 确认音色名称与你所选引擎支持的音色完全匹配
 3. 如果使用外部 TTS 服务，确认 Open WebUI 容器可以访问该 API Base URL
 4. 查看容器日志，检查是否有具体错误信息
@@ -275,8 +275,8 @@ services:
 #### 1. 升级到最新版本（推荐）
 最可靠的修复方式是更新到最新版本的 Open WebUI。新版本会正确尊重 `WHISPER_COMPUTE_TYPE`，并为 CUDA 环境提供更合理的默认值。
 
-#### 2. 手动设置 Compute Type
-如果你正在使用受影响版本，或在 GPU 上仍然遇到问题，请显式将 compute type 设为 `float16`：
+#### 2. 手动设置计算类型
+如果你正在使用受影响版本，或在 GPU 上仍然遇到问题，请显式将计算类型设为 `float16`：
 
 ```yaml
 environment:
@@ -298,18 +298,18 @@ ghcr.io/open-webui/open-webui:main
 CUDA 镜像的主要加速对象是 RAG embedding/reranking 模型和 Whisper STT。对于 Whisper 这类较小模型，CPU 模式往往已经足够，而且不会遇到旧 GPU 的兼容性问题。
 :::
 
-#### 调整 Whisper Compute Type
+#### 调整 Whisper 计算类型
 
-如果你仍希望保留 GPU 加速，可尝试调整 compute type：
+如果你仍希望保留 GPU 加速，可尝试调整计算类型：
 
 ```yaml
 environment:
   - WHISPER_COMPUTE_TYPE=float16  # GPU 推荐值
 ```
 
-**可用 compute type（来自 faster-whisper）：**
+**可用计算类型（来自 faster-whisper）：**
 
-| Compute Type | 最适合 | 说明 |
+| 计算类型 | 最适合 | 说明 |
 |--------------|----------|-------|
 | `int8` | **CPU（默认）** | 最快，但在旧 GPU 上不可用 |
 | `float16` | **CUDA/GPU（推荐）** | 在 GPU 上兼顾速度与兼容性 |
@@ -337,8 +337,8 @@ environment:
    ```
 3. **检查浏览器麦克风权限**（见上文）
 4. **改用 Web API 引擎：**
-   - 进入用户设置（不是 Admin Panel）
-   - 在 STT Settings 中把 Speech-to-Text Engine 改为 “Web API”
+  - 进入用户设置（不是管理面板）
+  - 在 STT 设置中把语音转文本引擎改为 “Web API”
    - 这样会使用浏览器内置语音识别
 
 ---
@@ -347,9 +347,9 @@ environment:
 
 Open WebUI 已原生支持 ElevenLabs。配置方法如下：
 
-1. 前往 **Admin Panel → Settings → Audio**
+1. 前往 **管理面板 → 设置 → 音频**
 2. 将 TTS 引擎选择为 **ElevenLabs**
-3. 输入你的 ElevenLabs API key
+3. 输入你的 ElevenLabs API 密钥
 4. 选择音色与模型
 5. 保存设置
 
@@ -358,13 +358,13 @@ Open WebUI 已原生支持 ElevenLabs。配置方法如下：
 ```yaml
 environment:
   - AUDIO_TTS_ENGINE=elevenlabs
-  - AUDIO_TTS_API_KEY=sk_...  # 你的 ElevenLabs API key
-  - AUDIO_TTS_VOICE=EXAVITQu4vr4xnSDxMaL  # ElevenLabs 面板中的 Voice ID
+  - AUDIO_TTS_API_KEY=sk_...  # 你的 ElevenLabs API 密钥
+  - AUDIO_TTS_VOICE=EXAVITQu4vr4xnSDxMaL  # ElevenLabs 面板中的音色 ID
   - AUDIO_TTS_MODEL=eleven_multilingual_v2
 ```
 
 :::note
-你可以在 ElevenLabs 控制台的 voice 设置中找到 Voice ID。常见模型选项包括 `eleven_multilingual_v2` 和 `eleven_monolingual_v1`。
+你可以在 ElevenLabs 控制台的 voice 设置中找到音色 ID。常见模型选项包括 `eleven_multilingual_v2` 和 `eleven_monolingual_v1`。
 :::
 
 ---
@@ -414,31 +414,31 @@ curl http://your-tts-service:port/health
 
 ### TTS 环境变量
 
-| Variable | 说明 |
+| 变量 | 说明 |
 |----------|-------------|
 | `AUDIO_TTS_ENGINE` | TTS 引擎：`""`（空，禁用后端 TTS，改用浏览器）、`openai`、`mistral`、`elevenlabs`、`azure`、`transformers` |
 | `AUDIO_TTS_MODEL` | 使用的 TTS 模型（默认：`tts-1`） |
 | `AUDIO_TTS_VOICE` | TTS 默认音色（默认：`alloy`） |
-| `AUDIO_TTS_API_KEY` | ElevenLabs 或 Azure TTS 的 API key |
-| `AUDIO_TTS_OPENAI_API_BASE_URL` | OpenAI-compatible TTS 的 Base URL |
-| `AUDIO_TTS_OPENAI_API_KEY` | OpenAI-compatible TTS 的 API key |
-| `AUDIO_TTS_MISTRAL_API_KEY` | Mistral TTS 的 API key |
+| `AUDIO_TTS_API_KEY` | ElevenLabs 或 Azure TTS 的 API 密钥 |
+| `AUDIO_TTS_OPENAI_API_BASE_URL` | 兼容 OpenAI 的 TTS Base URL |
+| `AUDIO_TTS_OPENAI_API_KEY` | 兼容 OpenAI 的 TTS API 密钥 |
+| `AUDIO_TTS_MISTRAL_API_KEY` | Mistral TTS 的 API 密钥 |
 | `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral TTS 的 Base URL |
 
 ### STT 环境变量
 
-| Variable | 说明 |
+| 变量 | 说明 |
 |----------|-------------|
 | `WHISPER_MODEL` | Whisper 模型：`tiny`、`base`、`small`、`medium`、`large`（默认：`base`） |
-| `WHISPER_COMPUTE_TYPE` | Compute type：`int8`、`float16`、`int8_float16`、`float32`（默认：`int8`） |
+| `WHISPER_COMPUTE_TYPE` | 计算类型：`int8`、`float16`、`int8_float16`、`float32`（默认：`int8`） |
 | `WHISPER_LANGUAGE` | ISO 639-1 语言代码（空值表示自动检测） |
 | `WHISPER_VAD_FILTER` | 启用 Voice Activity Detection 过滤器（默认：`False`） |
 | `AUDIO_STT_ENGINE` | STT 引擎：`""`（空，使用本地 Whisper）、`openai`、`azure`、`deepgram`、`mistral` |
-| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI-compatible STT 的 Base URL |
-| `AUDIO_STT_OPENAI_API_KEY` | OpenAI-compatible STT 的 API key |
-| `DEEPGRAM_API_KEY` | Deepgram API key |
+| `AUDIO_STT_OPENAI_API_BASE_URL` | 兼容 OpenAI 的 STT Base URL |
+| `AUDIO_STT_OPENAI_API_KEY` | 兼容 OpenAI 的 STT API 密钥 |
+| `DEEPGRAM_API_KEY` | Deepgram API 密钥 |
 
-完整的音频环境变量列表请参阅 [Environment Variable Configuration](/reference/env-configuration#audio)。
+完整的音频环境变量列表请参阅 [环境变量配置](/reference/env-configuration#audio)。
 
 ---
 

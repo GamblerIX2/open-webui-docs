@@ -3,7 +3,7 @@ sidebar_position: 3
 title: "RAG"
 ---
 
-Retrieval-Augmented Generation（RAG）让语言模型能够围绕外部内容——文档、知识库等——进行推理：先检索相关信息，再把它送入模型上下文。当结果不符合预期（例如模型“幻觉”或遗漏关键信息）时，问题往往并不在模型本身，而在上下文链路。
+检索增强生成（RAG）让语言模型能够围绕外部内容——文档、知识库等——进行推理：先检索相关信息，再把它送入模型上下文。当结果不符合预期（例如模型“幻觉”或遗漏关键信息）时，问题往往并不在模型本身，而在上下文链路。
 
 本页汇总了最常见的 RAG 问题及其处理方法。
 
@@ -216,14 +216,14 @@ def wait_for_processing(token, file_id, timeout=300):
 ```
 
 **状态值说明：**
-| Status | 含义 |
+| 状态 | 含义 |
 |--------|---------|
 | `pending` | 仍在处理中 |
 | `completed` | 可加入知识库 |
 | `failed` | 处理失败（检查 error 字段） |
 
 :::tip
-完整 API 工作流示例（包括正确的状态检查）请参阅 [API Endpoints documentation](/reference/api-endpoints#checking-file-processing-status)。
+完整 API 工作流示例（包括正确的状态检查）请参阅 [API 端点文档](/reference/api-endpoints#checking-file-processing-status)。
 :::
 
 ---
@@ -366,7 +366,7 @@ INFO:     Child process [pid] died
 ---
 
 <span id="13-knowledge-base-attached-to-model-not-working"></span>
-### 13. 模型附加的 Knowledge Base 不生效 {#13-knowledge-base-attached-to-model-not-working}
+### 13. 模型附加的知识库不生效 {#13-knowledge-base-attached-to-model-not-working}
 
 你在 **Workspace > Models > Edit** 中把某个知识库附加到了模型上，但聊天时模型似乎完全不知道知识库里的内容。
 
@@ -389,7 +389,7 @@ INFO:     Child process [pid] died
 关键结论：在 Native Mode（当前受支持模式）下，模型无论如何都必须使用知识工具；附加 KB 只是限制“可以搜索哪些 KB”。Default Mode 的自动注入行为只针对历史部署做兼容说明；Default Mode 已不再受支持，所有模型都应迁移到 Native Mode。
 
 :::tip 在 Native Mode 下阻止模型访问知识库
-如果你想阻止某个模型在 native mode 下访问**任何**知识库，不需要关闭整个 Builtin Tools。你只需在 **Workspace > Models > Edit > Builtin Tools** 中关闭 **Knowledge Base** 这个类别。这样会移除所有知识相关工具，但保留其他内置工具（web search、memory、notes 等）。完整分类请参阅 [Granular Builtin Tool Categories](/features/extensibility/plugin/tools#granular-builtin-tool-categories-per-model)。
+如果你想阻止某个模型在 native mode 下访问**任何**知识库，不需要关闭整个 Builtin Tools。你只需在 **Workspace > Models > Edit > Builtin Tools** 中关闭 **Knowledge Base** 这个类别。这样会移除所有知识相关工具，但保留其他内置工具（web search、memory、notes 等）。完整分类请参阅 [细粒度内置工具分类](/features/extensibility/plugin/tools#granular-builtin-tool-categories-per-model)。
 :::
 
 ![模型编辑器中的 Builtin Tools 分类](/images/features/plugin/tools/builtin_tools.png)
@@ -427,7 +427,7 @@ INFO:     Child process [pid] died
 Open WebUI 正在转向 **agentic RAG**：由模型自主决定何时以及如何搜索知识库。相比传统 RAG，这种方式更强大，因为模型可以在第一次搜索效果不佳时改用不同查询重新尝试。但这也要求模型本身具备较好的工具使用能力。对于较小或较旧、工具调用能力不足的模型，推荐直接关闭 Native Function Calling。
 :::
 
-关于知识作用域与检索模式的完整说明，请参阅 [Knowledge documentation](/features/workspace/knowledge#agentic-knowledge-tools) 和 [File Context vs Builtin Tools](/features/chat-conversations/rag#file-context-vs-builtin-tools)。
+关于知识作用域与检索模式的完整说明，请参阅 [知识文档](/features/workspace/knowledge#agentic-knowledge-tools) 和 [文件上下文与内置工具](/features/chat-conversations/rag#file-context-vs-builtin-tools)。
 
 ---
 

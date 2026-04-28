@@ -63,8 +63,8 @@ kubectl get crd terminals.openwebui.com
 | 资源 | 目的 |
 | :--- | :--- |
 | **CRD** (`terminals.openwebui.com`) | 定义 `Terminal` 自定义资源 |
-| **Operator Deployment** | Kopf 控制器，监听 Terminal CR 并配置 Pod、Service、PVC、Secret |
-| **Orchestrator Deployment + Service** | FastAPI 服务，接收来自 Open WebUI 的请求并代理到用户 Pod |
+| **Operator 部署** | Kopf 控制器，监听 Terminal CR 并配置 Pod、Service、PVC、Secret |
+| **编排器部署 + 服务** | FastAPI 服务，接收来自 Open WebUI 的请求并代理到用户 Pod |
 | **Secret** | 共享 API 密钥（如果未提供则自动生成） |
 
 对于**每个用户终端**，Operator 会创建一个 Pod、Service、Secret（API 密钥），以及可选的用于持久化存储的 PVC。
@@ -120,7 +120,7 @@ kubectl logs -n open-webui deployment/<release>-terminals-orchestrator --tail=50
 | `pipPackages` | 数组 | `[]` | 预安装的 Pip 包 |
 | `persistence.enabled` | 布尔值 | `true` | 启用持久化存储 |
 | `persistence.size` | 字符串 | `1Gi` | PVC 大小 |
-| `persistence.storageClass` | 字符串 | *(集群默认)* | Storage class (存储类) |
+| `persistence.storageClass` | 字符串 | *(集群默认)* | 存储类 |
 
 ### Status 字段
 

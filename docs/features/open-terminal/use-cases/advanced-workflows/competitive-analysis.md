@@ -18,9 +18,9 @@ title: "竞争对比"
 4. 建立对比电子表格并高亮主要差异
 5. 撰写战略观察
 
-{/* TODO: Screenshot — File browser previewing competitor_pricing.csv as a table: rows for features, columns for competitors, with prices and ✓/✗ marks. */}
+<!-- TODO: 截图——文件浏览器中预览 competitor_pricing.csv 的表格：行是功能，列是竞争对手，并带有价格和 ✓/✗ 标记。 -->
 
-{/* TODO: Screenshot — The summary: "Key findings: Competitor A has a free tier, Competitor C is 30% cheaper on Pro, but we're the only one with 24/7 support included." */}
+<!-- TODO: 截图——摘要：“关键发现：竞争对手 A 有免费套餐，竞争对手 C 的 Pro 方案便宜 30%，但只有我们包含 24/7 支持。” -->
 
 ## 技能内容
 

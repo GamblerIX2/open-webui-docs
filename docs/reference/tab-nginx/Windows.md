@@ -1,19 +1,19 @@
-### Using a Self-Signed Certificate and Nginx on Windows without Docker
+# 在 Windows 上使用自签名证书和 Nginx（无需 Docker）
 
-For basic internal/development installations, you can use nginx and a self-signed certificate to proxy Open WebUI to https, allowing use of features such as microphone input over LAN. (By default, most browsers will not allow microphone input on insecure non-localhost urls)
+对于基础的内部/开发部署，你可以使用 nginx 和自签名证书把 Open WebUI 代理到 https，从而在局域网中使用麦克风输入等功能。（默认情况下，大多数浏览器都不会允许在非 localhost 的不安全网址上使用麦克风。）
 
-This guide assumes you installed Open WebUI using pip and are running `open-webui serve`
+本指南假设你已经通过 pip 安装了 Open WebUI，并正在运行 `open-webui serve`。
 
-#### Step 1: Installing openssl for certificate generation
+## 第 1 步：安装用于生成证书的 openssl
 
-You will first need to install openssl
+你首先需要安装 openssl。
 
-You can download and install precompiled binaries from the [Shining Light Productions (SLP)](https://slproweb.com/) website.
+你可以从 [Shining Light Productions (SLP)](https://slproweb.com/) 网站下载并安装预编译二进制文件。
 
-Alternatively, if you have [Chocolatey](https://chocolatey.org/) installed, you can use it to install OpenSSL quickly:
+或者，如果你已经安装了 [Chocolatey](https://chocolatey.org/)，可以直接快速安装 OpenSSL：
 
-1. Open a command prompt or PowerShell.
-2. Run the following command to install OpenSSL:
+1. 打开命令提示符或 PowerShell。
+2. 运行以下命令安装 OpenSSL：
 
    ```bash
    choco install openssl -y
@@ -21,38 +21,38 @@ Alternatively, if you have [Chocolatey](https://chocolatey.org/) installed, you 
 
 ---
 
-### **Verify Installation**
+### **验证安装**
 
-After installation, open a command prompt and type:
+安装完成后，打开命令提示符并输入：
 
 ```bash
 openssl version
 ```
 
-If it displays the OpenSSL version (e.g., `OpenSSL 3.x.x ...`), it is installed correctly.
+如果它输出 OpenSSL 版本号（例如 `OpenSSL 3.x.x ...`），说明安装成功。
 
-#### Step 2: Installing nginx
+## 第 2 步：安装 nginx
 
-Download the official Nginx for Windows from [nginx.org](https://nginx.org) or use a package manager like Chocolatey.
- Extract the downloaded ZIP file to a directory (e.g., C:\nginx).
+从 [nginx.org](https://nginx.org) 下载 Windows 版官方 Nginx，或者使用 Chocolatey 之类的包管理器。
+将下载好的 ZIP 文件解压到某个目录（例如 `C:\nginx`）。
 
-#### Step 3: Generate certificate
+## 第 3 步：生成证书
 
-Run the following command:
+运行以下命令：
 
 ```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 ```
 
-Move the generated nginx.key and nginx.crt files to a folder of your choice, or to the C:\nginx directory
+将生成的 `nginx.key` 和 `nginx.crt` 文件移动到你选择的文件夹，或者直接放到 `C:\nginx` 目录中。
 
-#### Step 4: Configure nginx
+## 第 4 步：配置 nginx
 
-Open C:\nginx\conf\nginx.conf in a text editor
+用文本编辑器打开 `C:\nginx\conf\nginx.conf`。
 
-If you want Open WebUI to be accessible over your local LAN, be sure to note your LAN ip address using `ipconfig` e.g., 192.168.1.15
+如果你希望 Open WebUI 可以在本地 LAN 中访问，请先用 `ipconfig` 查看你的 LAN IP 地址，例如 `192.168.1.15`。
 
-Set it up as follows:
+将配置修改为如下内容：
 
 ```conf
 
@@ -121,13 +121,13 @@ http {
             expires -1;
         }
 
-        # Profile and model images - cached for performance
+        # 个人资料和模型图片 - 缓存以提升性能
         location ~ ^/api/v1/(users/[^/]+/profile/image|models/model/profile/image)$ {
             proxy_pass http://localhost:8080;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
 
-            # Cache images for 1 day
+            # 图片缓存 1 天
             expires 1d;
             add_header Cache-Control "public, max-age=86400";
         }
@@ -136,7 +136,7 @@ http {
             proxy_pass http://localhost:8080;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
-            
+
             expires 7d;
             add_header Cache-Control "public, immutable";
         }
@@ -156,8 +156,8 @@ http {
             proxy_buffering off;
             proxy_cache off;
             client_max_body_size 20M;
-            
-            # Extended timeout for long LLM completions (30 minutes)
+
+            # 长时间 LLM 补全的扩展超时（30 分钟）
             proxy_read_timeout 1800;
             proxy_send_timeout 1800;
             proxy_connect_timeout 1800;
@@ -168,10 +168,10 @@ http {
 }
 ```
 
-Save the file, and check the configuration has no errors or syntax issues by running `nginx -t`. You may need to `cd C:\nginx` first depending on how you installed it
+保存文件后，运行 `nginx -t` 检查配置是否有语法或错误。根据你的安装方式，可能需要先 `cd C:\nginx`。
 
-Run nginx by running `nginx`. If an nginx service is already started, you can reload new config by running `nginx -s reload`
+运行 `nginx` 启动服务。如果 nginx 服务已经在运行，可以通过 `nginx -s reload` 重新加载新配置。
 
 ---
 
-You should now be able to access Open WebUI on https://192.168.1.15 (or your own LAN ip as appropriate). Be sure to allow windows firewall access as needed.
+现在你应该可以通过 `https://192.168.1.15`（或你的实际 LAN IP）访问 Open WebUI。请根据需要允许 Windows 防火墙放行相关访问。

@@ -39,7 +39,7 @@ title: "将搜索结果保存到知识库"
 
 ### 管理员设置（全局默认）
 
-| Setting | Default | Description |
+| 设置项 | 默认值 | 说明 |
 |---------|---------|-------------|
 | `max_urls_per_action` | `10` | 单次 action 最多处理的 URL 数量 |
 | `enable_duplicate_check` | `True` | 添加前检查 URL 是否已存在于 Knowledge Base |
@@ -50,12 +50,12 @@ title: "将搜索结果保存到知识库"
 ### 用户设置（个人覆盖）
 
 用户也可以在自己的设置中覆盖全局默认值：
-- **Default Knowledge Base**：设置一个偏好的 KB，避免每次手动选择
-- **Skip Confirmation**：启用后可实现即时一键保存（要求已设置默认 KB）
-- **File Name Prefix**：自定义保存来源时的文件名前缀
+- **默认知识库（Default Knowledge Base）**：设置一个偏好的 KB，避免每次手动选择
+- **跳过确认（Skip Confirmation）**：启用后可实现即时一键保存（要求已设置默认 KB）
+- **文件名前缀（File Name Prefix）**：自定义保存来源时的文件名前缀
 
 :::tip 高级用法
-在你的 User Valves 中设置 **Default Knowledge Base**，并启用 **Skip Confirmation**，即可实现真正的一键式即时保存网页来源！
+在你的 User Valves 中设置 **默认知识库（Default Knowledge Base）**，并启用 **跳过确认（Skip Confirmation）**，即可实现真正的一键式即时保存网页来源！
 :::
 
 ## 故障排查

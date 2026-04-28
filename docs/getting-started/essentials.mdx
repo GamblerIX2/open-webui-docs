@@ -74,7 +74,7 @@ Open WebUI 的核心设计刻意保持精简。你在演示里看到的很多“
 
 在硬件较弱的环境中，自动补全是最值得优先关闭的“提速开关”——它每次按键都会触发，所以慢速任务模型会让整个输入框像陷进糖浆一样迟钝。
 
-更多说明：[性能与内存 → Dedicated Task Models](/troubleshooting/performance#1-dedicated-task-models)。
+更多说明：[性能与内存 → 专用 Task Models](/troubleshooting/performance#1-dedicated-task-models)。
 
 ---
 
@@ -94,7 +94,7 @@ Open WebUI 有意不内置统一裁剪器，因为：
 
 并不存在一个“唯一正确”的答案。官方支持的方式是安装一个**过滤器 Function**，按照你的规则裁剪会话。社区里已经有不少覆盖常见策略的过滤器可以一键安装；如果都不完全合适，代码通常也足够短，拷贝后改一下就能用。
 
-➡️ 完整指南（含可直接粘贴到实例中的最小版“保留最新 N 轮”过滤器）：[故障排查 → Context Window / Prompt Too Long](/troubleshooting/context-window)。
+➡️ 完整指南（含可直接粘贴到实例中的最小版“保留最新 N 轮”过滤器）：[故障排查 → 上下文窗口 / Prompt Too Long](/troubleshooting/context-window)。
 
 ---
 
@@ -139,8 +139,8 @@ Tools 会出现在聊天输入框旁边的 `+` 菜单中。只启用当前对话
 
 更多说明：
 - [Tools 参考](/features/extensibility/plugin/tools)
-- [工具调用模式（Default vs Native）](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)
-- [Open WebUI Community — Tools、Functions、Models](https://openwebui.com/)
+- [工具调用模式：Default 模式与 Native 模式](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)
+- [Open WebUI Community — 工具、函数、模型](https://openwebui.com/)
 
 ---
 

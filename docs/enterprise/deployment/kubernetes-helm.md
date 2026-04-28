@@ -168,7 +168,7 @@ extraEnvVars:
 | **Redis** | 对于大多数部署，单个 Redis 实例配合 `timeout 1800` 和 `maxclients 10000` 已足够。只有当 Redis 本身也必须高可用时，才需要 Sentinel 或 Cluster。 |
 | **网络** | 尽量让所有服务处于同一可用区。数据库延迟目标应低于 2 ms。并审查网络策略，确保 Pod 能访问 PostgreSQL、Redis 和存储后端。 |
 
-完整 Helm 配置指南请参阅 [Quick Start guide](/getting-started/quick-start)。多副本问题排查见 [Multi-Replica Troubleshooting](/troubleshooting/multi-replica)。
+完整 Helm 配置指南请参阅 [快速入门指南](/getting-started/quick-start)。多副本问题排查见 [多副本故障排查](/troubleshooting/multi-replica)。
 
 ---
 

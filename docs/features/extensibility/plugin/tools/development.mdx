@@ -1,23 +1,23 @@
 ---
 sidebar_position: 2
-title: "Development"
+title: "开发"
 ---
 
-# 🔧 Tool Development
+# 🔧 工具开发
 
-:::danger ⚠️ Critical Security Warning
-**Workspace Tools execute arbitrary Python code on your server.** Only install from trusted sources, review code before importing, and restrict Workspace access to trusted administrators only. Granting a user the ability to create or import Tools is equivalent to giving them shell access to the server. For full details, see the [Plugin Security Warning](/features/extensibility/plugin/).
+:::danger ⚠️ 关键安全警告
+**Workspace Tools 会在你的服务器上执行任意 Python 代码。** 只从可信来源安装，导入前先审查代码，并且只允许可信管理员访问 Workspace。赋予用户创建或导入 Tools 的能力，等同于给他们服务器的 shell 访问权。完整说明请参阅 [插件安全警告](/features/extensibility/plugin/)。
 :::
 
-## Writing A Custom Toolkit
+## 编写自定义工具包
 
-Toolkits are defined in a single Python file, with a top level docstring with metadata and a `Tools` class.
+工具包定义在一个 Python 文件中，文件顶部使用包含元数据的文档字符串，并提供一个 `Tools` 类。
 
-:::warning Use Async Functions for Future Compatibility
-Tool methods should generally be defined as `async` to ensure compatibility with future Open WebUI versions. The backend is progressively moving toward fully async execution, and synchronous functions may block execution or cause issues in future releases.
+:::warning 为未来兼容性使用异步函数
+工具方法通常应定义为 `async`，以确保与未来版本的 Open WebUI 兼容。后端正在逐步转向完全异步执行，同步函数在未来版本中可能会阻塞执行或引发问题。
 :::
 
-### Example Top-Level Docstring
+### 顶层文档字符串示例
 
 ```python
 """
@@ -33,9 +33,9 @@ licence: MIT
 """
 ```
 
-### Tools Class
+### Tools 类
 
-Tools have to be defined as methods within a class called `Tools`, with optional subclasses called `Valves` and `UserValves`, for example:
+Tools 必须定义为名为 `Tools` 的类中的方法，并可选地包含名为 `Valves` 和 `UserValves` 的子类，例如：
 
 ```python
 class Tools:
@@ -57,33 +57,33 @@ class Tools:
         return string[::-1]
 ```
 
-### Type Hints
-Each tool must have type hints for arguments. The types may also be nested, such as `queries_and_docs: list[tuple[str, int]]`. Those type hints are used to generate the JSON schema that is sent to the model. Tools without type hints will work with a lot less consistency.
+### 类型注解
+每个工具的参数都必须提供类型注解。类型也可以是嵌套的，例如 `queries_and_docs: list[tuple[str, int]]`。这些类型注解会用于生成发送给模型的 JSON Schema。没有类型注解的工具也能运行，但一致性会差很多。
 
-### Valves and UserValves - (optional, but HIGHLY encouraged)
+### Valves 和 UserValves（可选，但强烈建议）
 
-Valves and UserValves are used for specifying customizable settings of the Tool, you can read more on the dedicated [Valves & UserValves page](/features/extensibility/plugin/development/valves).
+Valves 和 UserValves 用于定义工具的可配置项。你可以在专门的 [Valves & UserValves 页面](/features/extensibility/plugin/development/valves) 了解更多。
 
-### Optional Arguments
-Below is a list of optional arguments your tools can depend on:
-- `__event_emitter__`: Emit events (see following section)
-- `__event_call__`: Same as event emitter but can be used for user interactions. The server-side timeout for event calls is configurable via [`WEBSOCKET_EVENT_CALLER_TIMEOUT`](/reference/env-configuration#websocket_event_caller_timeout) (default: 300s).
-- `__user__`: A dictionary with user information. It also contains the `UserValves` object in `__user__["valves"]`.
-- `__metadata__`: Dictionary with chat metadata
-- `__messages__`: List of previous messages
-- `__files__`: Attached files
-- `__model__`: A dictionary with model information
-- `__oauth_token__`: A dictionary containing the user's valid, automatically refreshed OAuth token payload. This is the **new, recommended, and secure** way to access user tokens for making authenticated API calls. The dictionary typically contains `access_token`, `id_token`, and other provider-specific data.
+### 可选参数
+下面是你的工具可以依赖的可选参数列表：
+- `__event_emitter__`：发出事件（见下一节）
+- `__event_call__`：与事件发射器类似，但可用于用户交互。事件调用的服务器端超时时间可通过 [`WEBSOCKET_EVENT_CALLER_TIMEOUT`](/reference/env-configuration#websocket_event_caller_timeout) 配置（默认：300 秒）。
+- `__user__`：包含用户信息的字典，其中还包含 `__user__["valves"]` 中的 `UserValves` 对象。
+- `__metadata__`：聊天元数据字典
+- `__messages__`：历史消息列表
+- `__files__`：附加文件
+- `__model__`：模型信息字典
+- `__oauth_token__`：包含用户有效、自动刷新的 OAuth 令牌负载的字典。这是获取用户令牌并进行认证 API 调用的 **新式、推荐且安全** 的方式。该字典通常包含 `access_token`、`id_token` 以及其他提供商相关数据。
 
-For more information about `__oauth_token__` and how to configure this token to be sent to tools, check out the OAuth section in the [environment variable docs page](https://docs.openwebui.com/reference/env-configuration/) and the [SSO documentation](https://docs.openwebui.com/features/auth/).
+关于 `__oauth_token__` 的更多信息，以及如何配置将该令牌传递给工具，请参阅 [环境变量文档页](https://docs.openwebui.com/reference/env-configuration/) 中的 OAuth 部分，以及 [SSO 文档](https://docs.openwebui.com/features/auth/)。
 
-Just add them as argument to any method of your Tool class just like `__user__` in the example above.
+只需像上面示例中的 `__user__` 一样，把它们作为参数添加到你的 Tool 类任意方法中即可。
 
-#### Using the OAuth Token in a Tool
+#### 在工具中使用 OAuth 令牌
 
-When building tools that need to interact with external APIs on the user's behalf, you can now directly access their OAuth token. This removes the need for fragile cookie scraping and ensures the token is always valid.
+当你构建需要代表用户与外部 API 交互的工具时，现在可以直接访问他们的 OAuth 令牌。这消除了脆弱的 cookie 抓取方式，并能确保令牌始终有效。
 
-**Example:** A tool that calls an external API using the user's access token.
+**示例：** 使用用户访问令牌调用外部 API 的工具。
 
 ```python
 import httpx
@@ -119,114 +119,114 @@ class Tools:
             return f"An unexpected error occurred: {e}"
 ```
 
-### Event Emitters
+### 事件发射器
 
-Event Emitters are used to add additional information to the chat interface. Similarly to Filter Outlets, Event Emitters are capable of appending content to the chat. Unlike Filter Outlets, they are not capable of stripping information. Additionally, emitters can be activated at any stage during the Tool.
+事件发射器用于向聊天界面补充额外信息。和 Filter 的 outlet 类似，事件发射器可以向聊天中追加内容；不同的是，它们不能移除信息。此外，发射器可以在工具执行的任意阶段启用。
 
-:::danger Author tools for Native Mode
-Default Mode is **legacy and no longer supported** — see the [Tool Calling Modes guide](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) for the full policy. Write your tools to work correctly under **Native (Agentic) Mode**, which is the only supported mode going forward. The event-emitter compatibility matrix below still documents Default Mode behavior for historical reference and for maintainers of pre-existing tools that haven't been migrated yet — but new tools should not depend on Default-Mode-only event types. If your tool's UX fundamentally requires an event type that only works in Default Mode (`message`, `chat:message:delta`, `chat:message`, `replace` mid-stream), redesign the UX around Native-compatible events (`status`, `notification`, `citation`, `chat:message:files`, `confirmation`, `chat:message:follow_ups`) rather than requiring users to switch their model to legacy mode.
+:::danger 为原生模式编写工具
+Default Mode **属于旧版且不再支持**——完整策略请参阅 [Tool Calling Modes 指南](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。请把工具写成能在 **Native（Agentic）模式** 下正常工作的形式，因为这才是未来唯一支持的模式。下面的事件发射器兼容性矩阵仍保留 Default Mode 的行为，仅供历史参考以及尚未迁移的旧工具维护者使用——新工具不应依赖只在 Default Mode 中生效的事件类型。如果你的工具 UX 本质上依赖某个只在 Default Mode 下可用的事件（`message`、`chat:message:delta`、`chat:message`、`replace` 的中途流式写入），请围绕 Native 兼容事件（`status`、`notification`、`citation`、`chat:message:files`、`confirmation`、`chat:message:follow_ups`）重新设计，而不是要求用户切换到旧模式。
 :::
 
-Event Emitter behavior differs between the two function calling modes. The function calling mode is controlled by the `function_calling` parameter:
+事件发射器在两种函数调用模式下的行为不同。函数调用模式由 `function_calling` 参数控制：
 
-- **Native Mode (Agentic Mode)** (`function_calling = "native"`) — the only supported mode. Uses the model's structured tool-call API. **Limited event-emitter surface** — see the matrix below for exactly which event types are supported.
-- **Default Mode** (`function_calling = "default"`) — legacy, prompt-injection-based. Full event-emitter surface, but the mode itself is unsupported and should not be selected for new deployments.
+- **Native Mode（Agentic Mode）**（`function_calling = "native"`）—— 唯一受支持的模式。它使用模型的结构化工具调用 API。**可用的事件发射器表面有限**——请查看下方矩阵以了解具体支持哪些事件类型。
+- **Default Mode**（`function_calling = "default"`）—— 旧版、基于 prompt injection 的模式。虽然事件发射器能力完整，但该模式本身不受支持，不应在新部署中选择。
 
-For the full mode policy, model requirements, and configuration, see the [**Tool Calling Modes guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native). In short: **use Native Mode**; the matrix below tells you which event types work there.
+完整的模式策略、模型要求和配置请参阅 [**Tool Calling Modes 指南**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。简单来说：**请使用 Native Mode**；下方矩阵会告诉你哪些事件类型在该模式下可用。
 
-#### Function Calling Mode Configuration
+#### 函数调用模式配置
 
-You can configure the function calling mode in two places:
+你可以在两个位置配置函数调用模式：
 
-1. **Administrator Level**: Go to **Admin Panel > Settings > Models > Model Specific Settings > Advanced Parameters > Function Calling** (set to "Default" or "Native").
-2. **Per-request basis**: Set `params.function_calling = "native"` or `"default"` in Chat Controls > Advanced Params.
+1. **管理员级别**：进入 **Admin Panel > Settings > Models > Model Specific Settings > Advanced Parameters > Function Calling**（设置为 `Default` 或 `Native`）。
+2. **按请求设置**：在 **Chat Controls > Advanced Params** 中设置 `params.function_calling = "native"` 或 `"default"`。
 
-If the model seems to be unable to call the tool, make sure it is enabled (either via the Model page or via the `+` sign next to the chat input field).
+如果模型似乎无法调用工具，请确认它已被启用（可在 Model 页面或聊天输入框旁边的 `+` 按钮中开启）。
 
 :::info Native Mode & Built-in Tools
-When writing custom tools, be aware that Open WebUI also provides **built-in system tools** when Native Mode is enabled. For details on built-in tools, function calling modes, and model requirements, see the [**Tool Calling Modes Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native).
+编写自定义工具时请注意：当启用 Native Mode 时，Open WebUI 还会提供 **内置系统工具**。有关内置工具、函数调用模式和模型要求的详情，请参阅 [**Tool Calling Modes Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)。
 :::
 
 
-#### Complete Event Type Compatibility Matrix
+#### 完整事件类型兼容性矩阵
 
-Here's the comprehensive breakdown of how each event type behaves across function calling modes:
+下面是各个事件类型在不同函数调用模式下行为的完整说明：
 
-| Event Type | Default Mode Functionality | Native Mode Functionality | Status |
+| 事件类型 | Default Mode 行为 | Native Mode 行为 | 状态 |
 |------------|---------------------------|--------------------------|--------|
-| `status` | ✅ Full support - Updates status history during tool execution | ✅ **Identical** - Tracks function execution status | **COMPATIBLE** |
-| `message` | ✅ Full support - Appends incremental content during streaming | ❌ **BROKEN** - Gets overwritten by native completion snapshots | **INCOMPATIBLE** |
-| `chat:completion` | ✅ Full support - Handles streaming responses and completion data | ⚠️ **LIMITED** - Carries function results but may overwrite tool updates | **PARTIALLY COMPATIBLE** |
-| `chat:message:delta` | ✅ Full support - Streams delta content during execution | ❌ **BROKEN** - Content gets replaced by native function snapshots | **INCOMPATIBLE** |
-| `chat:message` | ✅ Full support - Replaces entire message content cleanly | ❌ **BROKEN** - Gets overwritten by subsequent native completions | **INCOMPATIBLE** |
-| `replace` | ✅ Full support - Replaces content with precise control | ❌ **BROKEN** - Replaced content gets overwritten immediately | **INCOMPATIBLE** |
-| `chat:message:files` / `files` | ✅ Full support - Handles file attachments in messages | ✅ **Identical** - Processes files from function outputs | **COMPATIBLE** |
-| `chat:message:error` | ✅ Full support - Displays error notifications | ✅ **Identical** - Shows function call errors | **COMPATIBLE** |
-| `chat:message:follow_ups` | ✅ Full support - Shows follow-up suggestions | ✅ **Identical** - Displays function-generated follow-ups | **COMPATIBLE** |
-| `chat:title` | ✅ Full support - Updates chat title dynamically | ✅ **Identical** - Updates title based on function interactions | **COMPATIBLE** |
-| `chat:tags` | ✅ Full support - Modifies chat tags | ✅ **Identical** - Manages tags from function outputs | **COMPATIBLE** |
-| `chat:tasks:cancel` | ✅ Full support - Cancels ongoing tasks | ✅ **Identical** - Cancels native function executions | **COMPATIBLE** |
-| `citation` / `source` | ✅ Full support - Handles citations with full metadata | ✅ **Identical** - Processes function-generated citations | **COMPATIBLE** |
-| `notification` | ✅ Full support - Shows toast notifications | ✅ **Identical** - Displays function execution notifications | **COMPATIBLE** |
-| `confirmation` | ✅ Full support - Requests user confirmations | ✅ **Identical** - Confirms function executions | **COMPATIBLE** |
-| `execute` | ✅ Full support - Executes code dynamically | ✅ **Identical** - Runs function-generated code | **COMPATIBLE** |
-| `input` | ✅ Full support - Requests user input with full UI | ✅ **Identical** - Collects input for functions | **COMPATIBLE** |
+| `status` | ✅ 完全支持 —— 在工具执行期间更新状态历史 | ✅ **完全相同** —— 跟踪函数执行状态 | **兼容** |
+| `message` | ✅ 完全支持 —— 在流式过程中追加增量内容 | ❌ **已损坏** —— 会被原生 completion 快照覆盖 | **不兼容** |
+| `chat:completion` | ✅ 完全支持 —— 处理流式响应和 completion 数据 | ⚠️ **受限** —— 会携带函数结果，但可能覆盖工具更新 | **部分兼容** |
+| `chat:message:delta` | ✅ 完全支持 —— 在执行期间流式输出 delta 内容 | ❌ **已损坏** —— 内容会被原生函数快照替换 | **不兼容** |
+| `chat:message` | ✅ 完全支持 —— 干净地替换整条消息内容 | ❌ **已损坏** —— 会被后续原生 completion 覆盖 | **不兼容** |
+| `replace` | ✅ 完全支持 —— 可精确控制内容替换 | ❌ **已损坏** —— 被替换的内容会立刻再次被覆盖 | **不兼容** |
+| `chat:message:files` / `files` | ✅ 完全支持 —— 处理消息中的文件附件 | ✅ **完全相同** —— 处理来自函数输出的文件 | **兼容** |
+| `chat:message:error` | ✅ 完全支持 —— 显示错误通知 | ✅ **完全相同** —— 显示函数调用错误 | **兼容** |
+| `chat:message:follow_ups` | ✅ 完全支持 —— 显示后续建议 | ✅ **完全相同** —— 显示函数生成的后续问题 | **兼容** |
+| `chat:title` | ✅ 完全支持 —— 动态更新聊天标题 | ✅ **完全相同** —— 根据函数交互更新标题 | **兼容** |
+| `chat:tags` | ✅ 完全支持 —— 修改聊天标签 | ✅ **完全相同** —— 管理函数输出中的标签 | **兼容** |
+| `chat:tasks:cancel` | ✅ 完全支持 —— 取消进行中的任务 | ✅ **完全相同** —— 取消原生函数执行 | **兼容** |
+| `citation` / `source` | ✅ 完全支持 —— 处理带完整元数据的引用 | ✅ **完全相同** —— 处理函数生成的引用 | **兼容** |
+| `notification` | ✅ 完全支持 —— 显示 toast 通知 | ✅ **完全相同** —— 显示函数执行通知 | **兼容** |
+| `confirmation` | ✅ 完全支持 —— 请求用户确认 | ✅ **完全相同** —— 确认函数执行 | **兼容** |
+| `execute` | ✅ 完全支持 —— 动态执行代码 | ✅ **完全相同** —— 运行函数生成的代码 | **兼容** |
+| `input` | ✅ 完全支持 —— 提供完整 UI 供用户输入 | ✅ **完全相同** —— 收集函数所需输入 | **兼容** |
 
-#### Why Native Mode Breaks Certain Event Types
+#### 为什么原生模式会破坏某些事件类型
 
-In **Native Mode**, the server constructs content blocks from streaming model output and repeatedly emits `"chat:completion"` events with full serialized content snapshots. The client treats these snapshots as authoritative and completely replaces message content, effectively overwriting any prior tool-emitted updates like `message`, `chat:message`, or `replace` events.
+在 **Native Mode** 下，服务器会根据流式模型输出构造内容块，并反复发出带完整序列化内容快照的 `"chat:completion"` 事件。客户端会把这些快照视为权威数据，并彻底替换消息内容，从而实际上覆盖掉之前由工具发出的 `message`、`chat:message` 或 `replace` 更新。
 
-**Technical Details:**
-- `middleware.py` adds tools directly to form data for native model handling
-- Streaming handler emits repeated content snapshots via `chat:completion` events
-- Client's `chatCompletionEventHandler` treats snapshots as complete replacements: `message.content = content`
-- This causes tool-emitted content updates to flicker and disappear
+**技术细节：**
+- `middleware.py` 会把工具直接加入表单数据，以便原生模型处理
+- 流式处理器会通过 `chat:completion` 事件反复发送内容快照
+- 客户端的 `chatCompletionEventHandler` 会把快照当作完整替换：`message.content = content`
+- 这会导致工具发出的内容更新闪烁并消失
 
-#### Best Practices and Recommendations
+#### 最佳实践与建议
 
-**For Tools Requiring Real-time UI Updates:**
+**对于需要实时 UI 更新的工具：**
 ```python
 class Tools:
     def __init__(self):
-        # Add a note about function calling mode requirements
-        self.description = "This tool requires Default function calling mode for full functionality"
+        # 记录函数调用模式要求的说明
+        self.description = "此工具需要 Default function calling mode 才能完整运行"
 
     async def interactive_tool(self, prompt: str, __event_emitter__=None) -> str:
         """
-        ⚠️ This tool requires function_calling = "default" for proper event emission
+        ⚠️ 该工具需要 function_calling = "default" 才能正确发出事件
         """
         if not __event_emitter__:
-            return "Event emitter not available - ensure Default function calling mode is enabled"
+            return "事件发射器不可用——请确认已启用 Default function calling mode"
 
-        # Safe to use message events in Default mode
+        # 在 Default 模式下可以安全使用 message 事件
         await __event_emitter__({
             "type": "message",
-            "data": {"content": "Processing step 1..."}
+            "data": {"content": "正在处理第 1 步..."}
         })
         # ... rest of tool logic
 ```
 
-**For Tools That Must Work in Both Modes:**
+**对于必须在两种模式下都能工作的工具：**
 ```python
 async def universal_tool(self, prompt: str, __event_emitter__=None, __metadata__=None) -> str:
     """
-    Tool designed to work in both Default and Native function calling modes
+    设计为可在 Default 与 Native 两种函数调用模式下工作的工具
     """
-    # Check if we're in native mode (this is a rough heuristic)
+    # 检查是否处于 native 模式（这只是一个粗略启发式）
     is_native_mode = __metadata__ and __metadata__.get("params", {}).get("function_calling") == "native"
 
     if __event_emitter__:
         if is_native_mode:
-            # Use only compatible event types in native mode
+            # Native 模式下只使用兼容的事件类型
             await __event_emitter__({
                 "type": "status",
-                "data": {"description": "Processing in native mode...", "done": False}
+                "data": {"description": "正在 Native 模式下处理...", "done": False}
             })
         else:
-            # Full event functionality in default mode
+            # Default 模式下可使用完整事件能力
             await __event_emitter__({
                 "type": "message",
-                "data": {"content": "Processing with full event support..."}
+                "data": {"content": "正在以完整事件支持处理..."}
             })
 
     # ... tool logic here
@@ -234,27 +234,27 @@ async def universal_tool(self, prompt: str, __event_emitter__=None, __metadata__
     if __event_emitter__:
         await __event_emitter__({
             "type": "status",
-            "data": {"description": "Completed successfully", "done": True}
+            "data": {"description": "已成功完成", "done": True}
         })
 
-    return "Tool execution completed"
+    return "工具执行已完成"
 ```
 
-#### Troubleshooting Event Emitter Issues
+#### 事件发射器问题排查
 
-**Symptoms of Native Mode Conflicts:**
-- Tool-emitted messages appear briefly then disappear
-- Content flickers during tool execution
-- `message` or `replace` events seem to be ignored
-- Status updates work but content updates don't persist
+**Native 模式冲突的症状：**
+- 工具发出的消息短暂出现后又消失
+- 工具执行过程中内容出现闪烁
+- `message` 或 `replace` 事件似乎被忽略
+- 状态更新有效，但内容更新不会持久保留
 
-**Solutions:**
-1. **Switch to Default Mode**: Change `function_calling` from `"native"` to `"default"` in model settings
-2. **Use Compatible Event Types**: Stick to `status`, `citation`, `notification`, and other compatible event types in native mode
-3. **Implement Mode Detection**: Add logic to detect function calling mode and adjust event usage accordingly
-4. **Consider Hybrid Approaches**: Use compatible events for core functionality and degrade gracefully
+**解决方案：**
+1. **切换到 Default 模式**：在模型设置中把 `function_calling` 从 `"native"` 改为 `"default"`
+2. **使用兼容的事件类型**：在 Native 模式下坚持使用 `status`、`citation`、`notification` 和其他兼容事件类型
+3. **实现模式检测**：添加逻辑检测函数调用模式，并据此调整事件使用方式
+4. **考虑混合方案**：核心功能使用兼容事件，并在必要时优雅降级
 
-**Debugging Your Event Emitters:**
+**调试你的事件发射器：**
 ```python
 async def debug_events_tool(self, __event_emitter__=None, __metadata__=None) -> str:
     """Debug tool to test event emitter functionality"""
@@ -294,13 +294,13 @@ async def debug_events_tool(self, __event_emitter__=None, __metadata__=None) -> 
     return f"Event testing completed in {mode_info} mode. Check for missing or flickering content."
 ```
 
-There are several specific event types with different behaviors:
+下面这些特定事件类型的行为各不相同：
 
 #### Status Events ✅ FULLY COMPATIBLE
 
-**Status events work identically in both Default and Native function calling modes.** This is the most reliable event type for providing real-time feedback during tool execution.
+**Status 事件在 Default 和 Native 两种函数调用模式下行为完全一致。** 这是在工具执行期间提供实时反馈最可靠的事件类型。
 
-Status events add live status updates to a message while it's performing steps. These can be emitted at any stage during tool execution. Status messages appear right above the message content and are essential for tools that delay the LLM response or process large amounts of information.
+Status 事件会在消息执行步骤时添加实时状态更新，可以在工具执行的任意阶段发出。状态消息会显示在消息内容正上方，对于会延迟 LLM 响应或处理大量信息的工具来说非常关键。
 
 **Basic Status Event Structure:**
 ```python
@@ -314,13 +314,13 @@ await __event_emitter__({
 })
 ```
 
-**Status Event Parameters:**
-- `description`: The status message text shown to users
-- `done`: Boolean indicating if this status represents completion
-- `hidden`: Boolean to auto-hide the status once `done: True` is set
+**Status 事件参数：**
+- `description`：显示给用户的状态文本
+- `done`：布尔值，表示此状态是否代表完成
+- `hidden`：布尔值，当设置为 `done: True` 后是否自动隐藏该状态
 
 <details>
-<summary>Basic Status Example</summary>
+<summary>基础 Status 示例</summary>
 
 ```python
 async def data_processing_tool(
@@ -363,7 +363,7 @@ async def data_processing_tool(
 </details>
 
 <details>
-<summary>Advanced Status with Error Handling</summary>
+<summary>带错误处理的高级 Status 示例</summary>
 
 ```python
 async def api_integration_tool(
@@ -422,7 +422,7 @@ async def api_integration_tool(
 </details>
 
 <details>
-<summary>Multi-Step Progress Status</summary>
+<summary>多步骤进度 Status 示例</summary>
 
 ```python
 async def batch_processor_tool(
@@ -482,24 +482,24 @@ async def batch_processor_tool(
 ```
 </details>
 
-#### Message Events ⚠️ DEFAULT MODE ONLY
+#### Message 事件 ⚠️ 仅限 Default 模式
 
 :::warning
 
-**🚨 CRITICAL WARNING: Message events are INCOMPATIBLE with Native function calling mode!**
+**🚨 关键警告：Message 事件与 Native 函数调用模式不兼容！**
 
 :::
 
-Message events (`message`, `chat:message`, `chat:message:delta`, `replace`) allow you to append or modify message content at any stage during tool execution. This enables embedding images, rendering web pages, streaming content updates, and creating rich interactive experiences.
+Message 事件（`message`、`chat:message`、`chat:message:delta`、`replace`）允许你在工具执行的任意阶段追加或修改消息内容。这使得嵌入图片、渲染网页、流式更新内容以及创建丰富交互体验成为可能。
 
-**However, these event types have major compatibility issues:**
-- ✅ **Default Mode**: Full functionality - content persists and displays properly
-- ❌ **Native Mode**: BROKEN - content gets overwritten by completion snapshots and disappears
+**不过，这些事件类型存在严重兼容性问题：**
+- ✅ **Default Mode**：功能完整——内容会持久保存并正常显示
+- ❌ **Native Mode**：已损坏——内容会被 completion 快照覆盖并消失
 
-**Why Message Events Break in Native Mode:**
-Native function calling emits repeated `chat:completion` events with full content snapshots that completely replace message content, causing any tool-emitted message updates to flicker and disappear.
+**为什么 Message 事件在 Native 模式下会失效：**
+Native 函数调用会反复发出带完整内容快照的 `chat:completion` 事件，这些快照会完全替换消息内容，导致工具发出的任何消息更新闪烁并消失。
 
-**Safe Message Event Structure (Default Mode Only):**
+**安全的 Message 事件结构（仅限 Default 模式）：**
 ```python
 await __event_emitter__({
     "type": "message",  # Also: "chat:message", "chat:message:delta", "replace"
@@ -508,13 +508,13 @@ await __event_emitter__({
 })
 ```
 
-**Message Event Types:**
-- `message` / `chat:message:delta`: Appends content to existing message
-- `chat:message` / `replace`: Replaces entire message content
-- Both types will be overwritten in Native mode
+**Message 事件类型：**
+- `message` / `chat:message:delta`：向现有消息追加内容
+- `chat:message` / `replace`：替换整条消息内容
+- 这两类事件在 Native 模式下都会被覆盖
 
 <details>
-<summary>Safe Message Streaming (Default Mode)</summary>
+<summary>安全的 Message 流式输出（Default 模式）</summary>
 
 ```python
 async def streaming_content_tool(
@@ -578,7 +578,7 @@ async def streaming_content_tool(
 </details>
 
 <details>
-<summary>Dynamic Content Replacement (Default Mode)</summary>
+<summary>动态内容替换（Default 模式）</summary>
 
 ```python
 async def live_dashboard_tool(
@@ -696,7 +696,7 @@ This dashboard tool cannot function in Native mode because:
 </details>
 
 <details>
-<summary>Mode-Safe Message Tool</summary>
+<summary>模式安全的消息工具</summary>
 
 ```python
 async def adaptive_content_tool(
@@ -780,13 +780,13 @@ Generated content here... This content is returned as the tool result rather tha
 ```
 </details>
 
-#### Citations ✅ FULLY COMPATIBLE
+#### Citations ✅ 完全兼容
 
-**Citation events work identically in both Default and Native function calling modes.** This event type provides source references and citations in the chat interface, allowing users to click and view source materials.
+**Citation 事件在 Default 与 Native 两种函数调用模式下行为完全一致。** 这种事件类型会在聊天界面中提供来源引用，用户可以点击查看原始材料。
 
-Citations are essential for tools that retrieve information from external sources, databases, or documents. They provide transparency and allow users to verify information sources.
+Citation 对于从外部来源、数据库或文档中检索信息的工具至关重要。它们提供透明度，并允许用户验证信息来源。
 
-**Citation Event Structure:**
+**Citation 事件结构：**
 ```python
 await __event_emitter__({
     "type": "citation",
@@ -806,8 +806,8 @@ await __event_emitter__({
 })
 ```
 
-**Important Citation Setup:**
-When implementing custom citations, you **must** disable automatic citations in your `Tools` class:
+**重要的 Citation 配置：**
+实现自定义引用时，你 **必须** 在 `Tools` 类中禁用自动引用：
 
 ```python
 def __init__(self):
@@ -816,13 +816,13 @@ def __init__(self):
 
 :::warning
 
-**⚠️ Critical Citation Warning:**
-If you set `self.citation = True` (or don't set it to `False`), automatic citations will replace any custom citations you send. Always disable automatic citations when using custom citation events.
+**⚠️ 关键引用警告：**
+如果你设置了 `self.citation = True`（或者没有将其设为 `False`），自动引用会替换你发送的任何自定义引用。使用自定义 citation 事件时，请始终关闭自动引用。
 
 :::
 
 <details>
-<summary>Basic Citation Example</summary>
+<summary>基础 Citation 示例</summary>
 
 ```python
 class Tools:
@@ -885,7 +885,7 @@ class Tools:
 </details>
 
 <details>
-<summary>Advanced Multi-Source Citations</summary>
+<summary>高级多来源 Citation 示例</summary>
 
 ```python
 async def comprehensive_analysis_tool(
@@ -1026,7 +1026,7 @@ All sources have been properly cited and are available for review by clicking th
 </details>
 
 <details>
-<summary>Database Citation Tool</summary>
+<summary>数据库 Citation 工具</summary>
 
 ```python
 async def database_query_tool(
@@ -1101,9 +1101,9 @@ All data sources have been properly cited for transparency and verification.
 
 #### Additional Compatible Event Types ✅
 
-The following event types work identically in both Default and Native function calling modes:
+以下事件类型在 Default 和 Native 两种函数调用模式下行为完全一致：
 
-**Notification Events**
+**Notification 事件**
 ```python
 await __event_emitter__({
     "type": "notification",
@@ -1111,7 +1111,7 @@ await __event_emitter__({
 })
 ```
 
-**File Events**
+**文件事件**
 ```python
 await __event_emitter__({
     "type": "files", # or "chat:message:files"
@@ -1119,7 +1119,7 @@ await __event_emitter__({
 })
 ```
 
-**Follow-up Events**
+**后续问题事件**
 ```python
 await __event_emitter__({
     "type": "chat:message:follow_ups",
@@ -1127,7 +1127,7 @@ await __event_emitter__({
 })
 ```
 
-**Title Update Events**
+**标题更新事件**
 ```python
 await __event_emitter__({
     "type": "chat:title",
@@ -1135,7 +1135,7 @@ await __event_emitter__({
 })
 ```
 
-**Tag Events**
+**标签事件**
 ```python
 await __event_emitter__({
     "type": "chat:tags",
@@ -1143,7 +1143,7 @@ await __event_emitter__({
 })
 ```
 
-**Error Events**
+**错误事件**
 ```python
 await __event_emitter__({
     "type": "chat:message:error",
@@ -1151,7 +1151,7 @@ await __event_emitter__({
 })
 ```
 
-**Confirmation Events**
+**确认事件**
 ```python
 await __event_emitter__({
     "type": "confirmation",
@@ -1159,7 +1159,7 @@ await __event_emitter__({
 })
 ```
 
-**Input Request Events**
+**输入请求事件**
 ```python
 await __event_emitter__({
     "type": "input",
@@ -1167,7 +1167,7 @@ await __event_emitter__({
 })
 ```
 
-**Code Execution Events**
+**代码执行事件**
 ```python
 await __event_emitter__({
     "type": "execute",
@@ -1175,47 +1175,47 @@ await __event_emitter__({
 })
 ```
 
-#### Comprehensive Function Calling Mode Guide
+#### 函数调用模式综合指南
 
 :::danger Write tools for Native Mode — Default Mode is unsupported
-Default Mode is **legacy and no longer supported**. New tools should be written to work under Native Mode. The mode-comparison details below are retained so that maintainers of legacy Default-Mode tools understand the gap they need to close when migrating — they are **not** a recommendation to choose Default Mode for new work.
+Default Mode **属于旧版且不再支持**。新工具应编写为在 Native Mode 下工作。下面的模式对比细节仅保留给仍在维护旧版 Default-Mode 工具的人，帮助他们了解迁移时需要弥补的差距——这 **不是** 对新项目选择 Default Mode 的建议。
 
-If your tool design depends on a Default-Mode-only event type, redesign the UX around the Native-compatible surface (`status`, `notification`, `citation`, `chat:message:files`, `confirmation`, `chat:message:follow_ups`, plus returning a final content block from the tool method). Requiring users to switch their model to legacy mode to run your tool is not acceptable going forward.
+如果你的工具设计依赖某个只在 Default Mode 中存在的事件类型，请围绕 Native 兼容面重新设计 UX（`status`、`notification`、`citation`、`chat:message:files`、`confirmation`、`chat:message:follow_ups`，再加上从工具方法返回最终内容块）。要求用户为了运行你的工具而切换到旧模式，这种做法今后不可接受。
 :::
 
-**Mode Comparison Overview** *(for migration reference only — Native is the only supported target)*:
+**模式对比概览**（仅供迁移参考——Native 是唯一受支持的目标）：
 
-| Aspect | Default Mode (Legacy / Unsupported) | Native Mode (Supported) |
+| 方面 | Default Mode（旧版 / 不支持） | Native Mode（受支持） |
 |--------|-------------|-------------|
-| **Status** | ❌ Legacy, no longer supported | ✅ Required for new tools |
-| **Latency** | Higher — full prompt-injection pipeline | Lower — direct tool-call API |
-| **KV Cache** | ❌ Broken every turn | ✅ Preserved |
-| **Event Support** | Full event-type surface | Limited surface (see matrix above) |
-| **Streaming** | Mid-stream content rewrites work | Mid-stream rewrites are overwritten by completion snapshots |
-| **Status / Notifications / Citations** | ✅ | ✅ |
-| **Message content events (`message`, `chat:message`, `replace`)** | ✅ | ❌ Overwritten |
-| **Built-in system tools (Memory, Notes, Knowledge, Web Search, Image Gen, Code Interpreter)** | ❌ | ✅ |
+| **状态** | ❌ 旧版，已不再支持 | ✅ 新工具必须使用 |
+| **延迟** | 更高 —— 完整的 prompt injection 流水线 | 更低 —— 直接工具调用 API |
+| **KV 缓存** | ❌ 每一轮都会失效 | ✅ 保留 |
+| **事件支持** | 完整的事件类型表面 | 有限的表面（见上方矩阵） |
+| **流式处理** | 中途内容重写可用 | 中途重写会被 completion 快照覆盖 |
+| **Status / 通知 / 引用** | ✅ | ✅ |
+| **消息内容事件（`message`、`chat:message`、`replace`）** | ✅ | ❌ 会被覆盖 |
+| **内置系统工具（Memory、Notes、Knowledge、Web Search、Image Gen、Code Interpreter）** | ❌ | ✅ |
 
-**How to design for Native Mode:**
+**如何面向 Native Mode 设计：**
 
-- Deliver your tool's primary output as the **return value** of the tool method. That content is emitted by the model as part of its response and is not subject to the event-overwrite issue.
-- Use `status` and `notification` for progress and user-facing alerts — they are fully supported in Native Mode.
-- Use `citation` / `source` events for references — fully supported in Native Mode.
-- Use `confirmation` / `input` via `__event_call__` for interactive flows — fully supported in Native Mode.
-- Attach files via the `chat:message:files` event — fully supported in Native Mode.
-- Avoid depending on `message`, `chat:message:delta`, `chat:message`, or `replace` mid-stream — these are the four events that break under Native Mode. If you need progressive output, emit a series of `status` updates and return the final content from the tool.
+- 将工具的主要输出作为工具方法的 **返回值**。该内容会作为模型响应的一部分发出，不会受到事件覆盖问题影响。
+- 使用 `status` 和 `notification` 提供进度与面向用户的提醒——它们在 Native Mode 下完全受支持。
+- 使用 `citation` / `source` 事件提供引用——在 Native Mode 下完全受支持。
+- 使用通过 `__event_call__` 的 `confirmation` / `input` 处理交互流程——在 Native Mode 下完全受支持。
+- 通过 `chat:message:files` 事件附加文件——在 Native Mode 下完全受支持。
+- 避免在流式过程中依赖 `message`、`chat:message:delta`、`chat:message` 或 `replace`——这四种事件在 Native Mode 下会失效。如果你需要渐进式输出，请连续发出一系列 `status` 更新，并从工具返回最终内容。
 
 <details>
-<summary>Migrating a Default-Mode tool to Native Mode</summary>
+<summary>将 Default Mode 工具迁移到 Native Mode</summary>
 
-Common rewrites when moving a Default-Mode tool to Native:
+将 Default-Mode 工具迁移到 Native 时，常见的改写方式如下：
 
-- Replace mid-stream `message` events that append content with a single final return value containing the assembled content.
-- Replace `replace`-based progress bars with a sequence of `status` events (`"description": "Step 3 of 5 — fetching..."`).
-- Replace `chat:message`-based dashboards with a return value containing the rendered dashboard (Markdown / HTML is fine).
-- Keep `citation`, `notification`, `confirmation`, and file attachments as-is — they work identically in both modes.
+- 把中途追加内容的 `message` 事件改成一个单独的最终返回值，返回已组装好的完整内容。
+- 把基于 `replace` 的进度条改成一系列 `status` 事件（例如 `"description": "第 3/5 步——正在获取..."`）。
+- 把基于 `chat:message` 的仪表盘改成返回渲染后的仪表盘内容（Markdown / HTML 都可以）。
+- 保持 `citation`、`notification`、`confirmation` 和文件附件不变——它们在两种模式下行为一致。
 
-**Universal Compatibility Pattern:**
+**通用兼容模式：**
 ```python
 async def mode_adaptive_tool(
         self, query: str, __event_emitter__=None, __metadata__=None
@@ -1287,45 +1287,45 @@ async def mode_adaptive_tool(
 </details>
 
 <details>
-<summary>🔧 Debugging Event Emitter Issues</summary>
+<summary>🔧 事件发射器调试问题</summary>
 
-**Common Issues and Solutions:**
+**常见问题与解决方案：**
 
-**Issue: Content appears then disappears**
-- **Cause**: Using `message` / `chat:message` / `replace` events in Native Mode — completion snapshots overwrite them.
-- **Solution**: Return the content from the tool method and use `status` events for progress instead. Do **not** switch to Default Mode — Default Mode is legacy and no longer supported.
+**问题：内容出现后又消失**
+- **原因**：在 Native Mode 中使用了 `message` / `chat:message` / `replace` 事件——completion 快照会把它们覆盖掉。
+- **解决方案**：从工具方法返回内容，并使用 `status` 事件来表示进度。**不要**切换回 Default Mode——Default Mode 是旧版且不再支持。
 
-**Issue: Tool seems unresponsive**
-- **Cause**: Function calling not enabled for model
-- **Solution**: Enable tools in Model settings or via `+` button
+**问题：工具似乎没有响应**
+- **原因**：模型未启用函数调用
+- **解决方案**：在 Model 设置里或通过 `+` 按钮启用工具
 
-**Issue: Events not firing at all**
-- **Cause**: `__event_emitter__` parameter missing or None
-- **Solution**: Ensure parameter is included in tool method signature
+**问题：事件完全没有触发**
+- **原因**：缺少 `__event_emitter__` 参数，或者它是 `None`
+- **解决方案**：确保该参数包含在工具方法签名中
 
-**Issue: Citations being overwritten**
-- **Cause**: `self.citation = True` (or not set to False)
-- **Solution**: Set `self.citation = False` in `__init__` method
+**问题：引用被覆盖**
+- **原因**：`self.citation = True`（或者没有设为 `False`）
+- **解决方案**：在 `__init__` 方法中把 `self.citation = False`
 
-**Diagnostic Tool:**
+**诊断工具：**
 ```python
 async def event_diagnostics_tool(
         self, __event_emitter__=None, __metadata__=None, __user__=None
     ) -> str:
         """
-        Comprehensive diagnostic tool for event emitter debugging
+        用于事件发射器调试的综合诊断工具
         """
 
         report = ["# 🔍 Event Emitter Diagnostic Report\n"]
 
-        # Check event emitter availability
+        # 检查事件发射器是否可用
         if __event_emitter__:
             report.append("✅ Event emitter is available\n")
         else:
             report.append("❌ Event emitter is NOT available\n")
             return "".join(report)
 
-        # Check metadata availability
+        # 检查元数据是否可用
         if __metadata__:
             mode = __metadata__.get("params", {}).get("function_calling", "default")
             report.append(f"✅ Function calling mode: **{mode}**\n")
@@ -1333,14 +1333,14 @@ async def event_diagnostics_tool(
             report.append("⚠️ Metadata not available (mode unknown)\n")
             mode = "unknown"
 
-        # Check user context
+        # 检查用户上下文
         if __user__:
             report.append("✅ User context available\n")
         else:
             report.append("⚠️ User context not available\n")
 
-        # Test compatible events (work in both modes)
-        report.append("\n## Testing Compatible Events:\n")
+        # 测试兼容事件（两种模式都可用）
+        report.append("\n## 测试兼容事件：\n")
 
         try:
             await __event_emitter__({
@@ -1360,8 +1360,8 @@ async def event_diagnostics_tool(
         except Exception as e:
             report.append(f"❌ Notification events: FAILED - {str(e)}\n")
 
-        # Test problematic events (broken in Native mode)
-        report.append("\n## Testing Mode-Dependent Events:\n")
+        # 测试有模式差异的事件（在 Native 模式中会失效）
+        report.append("\n## 测试依赖模式的事件：\n")
 
         try:
             await __event_emitter__({
@@ -1372,33 +1372,33 @@ async def event_diagnostics_tool(
         except Exception as e:
             report.append(f"❌ Message events: FAILED - {str(e)}\n")
 
-        # Final status
+        # 最终状态
         await __event_emitter__({
             "type": "status",
             "data": {"description": "Diagnostic complete", "done": True}
         })
 
-        # Mode-specific recommendations
-        report.append("\n## Recommendations:\n")
+        # 按模式给出建议
+        report.append("\n## 建议：\n")
 
         if mode == "native":
             report.append("""
-⚠️ **Native Mode Detected**: Limited event support
-- ✅ Use: status, citation, notification, files events
-- ❌ Avoid: message, replace, chat:message events
-- 💡 Switch to Default mode for full functionality
+⚠️ **检测到 Native Mode**：事件支持有限
+- ✅ 可使用：status、citation、notification、files 事件
+- ❌ 应避免：message、replace、chat:message 事件
+- 💡 如需完整功能，请切换到 Default mode
 """)
         elif mode == "default":
             report.append("""
-✅ **Default Mode Detected**: Full event support available
-- All event types should work perfectly
-- Optimal for interactive and streaming tools
+✅ **检测到 Default Mode**：可用完整事件支持
+- 所有事件类型都应当正常工作
+- 最适合交互式和流式工具
 """)
         else:
             report.append("""
-❓ **Unknown Mode**: Check your model configuration
-- Ensure function calling is enabled
-- Verify model supports tool calling
+❓ **未知模式**：请检查模型配置
+- 确认已启用函数调用
+- 验证模型是否支持工具调用
 """)
 
         return "".join(report)
@@ -1406,18 +1406,18 @@ async def event_diagnostics_tool(
 </details>
 
 <details>
-<summary>📚 Event Emitter Quick Reference</summary>
+<summary>📚 事件发射器速查表</summary>
 
-**Always Compatible (Both Modes):**
+**始终兼容（两种模式都可用）：**
 ```python
 
-# Status updates - perfect for progress tracking
+# Status 更新——非常适合进度跟踪
 await __event_emitter__({
     "type": "status",
     "data": {"description": "Processing...", "done": False}
 })
 
-# Citations - essential for source attribution
+# Citation——来源标注的核心能力
 await __event_emitter__({
     "type": "citation",
     "data": {
@@ -1426,52 +1426,52 @@ await __event_emitter__({
     }
 })
 
-# Notifications - user alerts
+# Notification——用户提醒
 await __event_emitter__({
     "type": "notification",
     "data": {"content": "Task completed!"}
 })
 ```
 
-**Default Mode Only (Broken in Native):**
+**仅限 Default Mode（Native 中会失效）：**
 ```python
 
-# ⚠️ These will flicker/disappear in Native mode
+# ⚠️ 这些在 Native 模式中会闪烁/消失
 
-# Progressive content streaming
+# 渐进式内容流式输出
 await __event_emitter__({
     "type": "message",
     "data": {"content": "Streaming content..."}
 })
 
-# Content replacement
+# 内容替换
 await __event_emitter__({
     "type": "replace",
     "data": {"content": "New complete content"}
 })
 
-# Delta updates
+# Delta 更新
 await __event_emitter__({
     "type": "chat:message:delta",
     "data": {"content": "Additional content"}
 })
 ```
 
-**Mode Detection Pattern:**
+**模式检测模式：**
 ```python
 def get_function_calling_mode(__metadata__):
-    """Utility to detect current function calling mode"""
+    """用于检测当前函数调用模式的工具函数"""
     if not __metadata__:
         return "unknown"
     return __metadata__.get("params", {}).get("function_calling", "default")
 
-# Usage in tools:
+# 在工具中的使用方式：
 mode = get_function_calling_mode(__metadata__)
 is_native = (mode == "native")
 can_stream_messages = not is_native
 ```
 
-**Essential Imports:**
+**必要导入：**
 ```python
 import asyncio
 from datetime import datetime
@@ -1479,32 +1479,32 @@ from typing import Optional, Callable, Awaitable
 ```
 </details>
 
-### Rich UI Element Embedding
+### 富 UI 元素嵌入
 
-Tools and Actions can return HTML content that renders as interactive iframes directly in the chat. For full documentation, examples, security considerations, and CORS configuration, see the dedicated **[Rich UI Embedding](/features/extensibility/plugin/development/rich-ui)** guide.
+Tools 和 Actions 可以返回 HTML 内容，并在聊天中直接渲染为可交互的 iframe。完整文档、示例、安全注意事项和 CORS 配置请参阅专门的 **[Rich UI Embedding](/features/extensibility/plugin/development/rich-ui)** 指南。
 
 
-## External packages
+## 外部包
 
-In the Tools definition metadata you can specify custom packages. When you click `Save` the line will be parsed and `pip install` will be run on all requirements at once.
+在 Tools 定义元数据中，你可以指定自定义包。点击 `Save` 后，这一行会被解析，系统会一次性对所有依赖执行 `pip install`。
 
 :::warning
 
-**🚨 CRITICAL WARNING: Potential for Package Version Conflicts**
+**🚨 关键警告：可能存在包版本冲突**
 
-When multiple tools define different versions of the same package (e.g., Tool A requires `pandas==1.5.0` and Tool B requires `pandas==2.0.0`), Open WebUI installs them in a non-deterministic order. This can lead to unpredictable behavior and break one or more of your tools.
+当多个工具为同一个包定义了不同版本（例如，Tool A 需要 `pandas==1.5.0`，而 Tool B 需要 `pandas==2.0.0`）时，Open WebUI 会以非确定性顺序安装它们。这可能导致不可预测的行为，并破坏一个或多个工具。
 
-**The only robust solution to this problem is to use an OpenAPI tool server.**
+**解决这个问题最稳妥的办法是使用 OpenAPI 工具服务器。**
 
-We strongly recommend using an [OpenAPI tool server](/features/extensibility/plugin/tools/openapi-servers/) to avoid these dependency conflicts.
+我们强烈建议使用 [OpenAPI tool server](/features/extensibility/plugin/tools/openapi-servers/) 来避免这些依赖冲突。
 
 :::
 
-:::danger Production / Multi-Worker Deployments
+:::danger 生产 / 多 Worker 部署
 
-**Do not rely on runtime pip installation in production environments.** When running with `UVICORN_WORKERS > 1` or multiple replicas, each worker/replica attempts to install packages independently on startup. This causes **race conditions** where concurrent pip processes crash with `AssertionError` because pip's internal locking detects the simultaneous installs.
+**不要在生产环境中依赖运行时 pip 安装。** 当使用 `UVICORN_WORKERS > 1` 或多个副本运行时，每个 worker/replica 都会在启动时独立尝试安装包。这会导致 **竞态条件**：并发的 pip 进程会因为 pip 的内部锁检测到同时安装而以 `AssertionError` 崩溃。
 
-**Set [`ENABLE_PIP_INSTALL_FRONTMATTER_REQUIREMENTS=False`](/reference/env-configuration#enable_pip_install_frontmatter_requirements) in production** to disable runtime pip installs entirely. Then pre-install all required packages at image build time using a custom Dockerfile:
+**在生产环境中请设置 [`ENABLE_PIP_INSTALL_FRONTMATTER_REQUIREMENTS=False`](/reference/env-configuration#enable_pip_install_frontmatter_requirements)**，彻底禁用运行时 pip 安装。然后使用自定义 Dockerfile 在镜像构建阶段预先安装所有必需包：
 
 ```dockerfile
 FROM ghcr.io/open-webui/open-webui:main
@@ -1512,20 +1512,20 @@ FROM ghcr.io/open-webui/open-webui:main
 RUN pip install --no-cache-dir python-docx requests beautifulsoup4
 ```
 
-Runtime installation is only suitable for **single-worker development or homelab environments** where you're experimenting with new functions and tools. For any deployment serving multiple users, bake your dependencies into the container image.
+运行时安装只适用于**单 worker 开发或家庭实验环境**，也就是你在试验新函数和工具的时候。对于任何服务多个用户的部署，都应该把依赖打包进容器镜像。
 
 :::
 
 :::note
 
-Keep in mind that pip runs in the same process as Open WebUI, so the **UI will be completely unresponsive** during installation.
+请记住，pip 与 Open WebUI 运行在同一个进程中，因此安装期间 **UI 会完全无响应**。
 
-No measures are taken to handle package conflicts with Open WebUI's own dependencies. Specifying requirements can break Open WebUI if you're not careful. You might be able to work around this by specifying `open-webui` itself as a requirement.
+系统不会采取任何措施来处理与 Open WebUI 自身依赖之间的冲突。若不小心指定了 requirements，可能会把 Open WebUI 搞坏。你也许可以通过把 `open-webui` 本身也写进 requirements 来绕过这个问题。
 
 :::
 
 <details>
-<summary>Example</summary>
+<summary>示例</summary>
 
 ```python
 """

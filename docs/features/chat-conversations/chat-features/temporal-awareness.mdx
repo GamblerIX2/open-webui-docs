@@ -14,13 +14,13 @@ title: "时间感知"
 - **`CURRENT_TIME`**：以 HH:MM 格式注入
 - **`CURRENT_WEEKDAY`**：例如 Monday、Tuesday
 
-这些变量也可以在 [**Prompts**](/features/workspace/prompts) 或 [**Model Files**](/features/workspace/models) 中通过 `{{CURRENT_DATE}}` 语法手动使用。
+这些变量也可以在 [**提示词**](/features/workspace/prompts) 或 [**模型文件**](/features/workspace/models) 中通过 `{{CURRENT_DATE}}` 语法手动使用。
 
 ---
 
 ## 原生时间工具（Agentic）
 
-当你使用启用了 **Native Function Calling** 的模型时（参见 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），模型就能更细粒度地执行时间查询与时间计算。
+当你使用启用了 **原生函数调用** 的模型时（参见 [**集中式工具调用指南**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），模型就能更细粒度地执行时间查询与时间计算。
 
 ### 可用时间工具：
 - **`get_current_timestamp`**：模型可获取精确的当前 Unix 时间戳（UTC）和 ISO 日期字符串
@@ -29,7 +29,7 @@ title: "时间感知"
 ### 为什么时间要用原生工具调用？
 静态变量只能告诉模型“现在是什么时间”，而原生工具能让模型**对时间进行推理**。
 
-如果你问：*"Find the notes I wrote last Tuesday,"*，没有工具的模型可能会猜错具体日期；而有工具的模型会：
+如果你问：*"查找我上周二写的笔记"*，没有工具的模型可能会猜错具体日期；而有工具的模型会：
 1.  使用 `calculate_timestamp` **计算**出“上周二”的准确日期
 2.  再通过 `search_notes` 用该具体日期作为过滤条件去**搜索**你的笔记
 

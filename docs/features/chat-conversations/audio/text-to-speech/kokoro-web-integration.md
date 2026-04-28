@@ -33,18 +33,19 @@ services:
 
 运行：`docker compose up -d`
 
-### 2. 连接 OpenWebUI（30 秒）
+### 2. 连接 Open WebUI（30 秒）
 
-1. 在 OpenWebUI 中进入 `Admin Panel` → `Settings` → `Audio`
+1. 在 Open WebUI 中进入 `管理面板` → `设置` → `音频`
 2. 按如下方式配置：
-   - Text-to-Speech Engine：`OpenAI`
-   - API Base URL：`http://localhost:3000/api/v1`
-     （如果使用 Docker：`http://host.docker.internal:3000/api/v1`）
-   - API Key：`your-api-key`（来自步骤 1）
-   - TTS Model：`model_q8f16`（体积 / 音质平衡最佳）
-   - TTS Voice：`af_heart`（默认温暖自然的英文声音）。你也可以切换为 [Kokoro Web Demo](https://voice-generator.pages.dev) 中的其他语音或公式
 
-**完成！你的 OpenWebUI 现在已经具备 AI 语音能力。**
+    - 文本转语音引擎：`OpenAI`
+    - API 基础 URL：`http://localhost:3000/api/v1`
+      （如果使用 Docker：`http://host.docker.internal:3000/api/v1`）
+    - API 密钥：`your-api-key`（来自步骤 1）
+    - TTS 模型：`model_q8f16`（体积 / 音质平衡最佳）
+    - TTS 语音：`af_heart`（默认温暖自然的英文声音）。你也可以切换为 [Kokoro Web Demo](https://voice-generator.pages.dev) 中的其他语音或发音
+
+**完成！你的 Open WebUI 现在已经具备 AI 语音能力。**
 
 ## 🌍 支持的语言
 
@@ -59,14 +60,14 @@ Kokoro Web 支持 8 种语言，并为每种语言提供优化语音：
 - 意大利语 - it
 - 葡萄牙语（巴西）- pt-br
 
-每种语言都有专门语音，以获得更好的发音和自然度。完整语言专属语音列表请查看 [GitHub repository](https://github.com/eduardolat/kokoro-web)，或直接使用 [Kokoro Web Demo](https://voice-generator.pages.dev) 试听并创建自定义语音。
+每种语言都有专门语音，以获得更好的发音和自然度。完整语言专属语音列表请查看 [GitHub 仓库](https://github.com/eduardolat/kokoro-web)，或直接使用 [Kokoro Web Demo](https://voice-generator.pages.dev) 试听并创建自定义语音。
 
 ## 💾 针对不同硬件优化的模型
 
 你可以根据硬件条件选择合适模型：
 
-| Model ID | Optimization | Size | Ideal For |
-|----------|-------------|------|-----------|
+| 模型 ID | 优化方式 | 大小 | 适用场景 |
+| -------- | ------------- | ------ | ----------- |
 | model_q8f16 | 混合精度 | 86 MB | **推荐** - 平衡最佳 |
 | model_quantized | 8-bit | 92.4 MB | CPU 表现较好 |
 | model_uint8f16 | 混合精度 | 114 MB | 中端 CPU 上质量更好 |
@@ -101,15 +102,16 @@ Kokoro Web 支持 8 种语言，并为每种语言提供优化语音：
 
 ### 语音无法工作
 
-1. 确认 Kokoro Web 配置和 Open WebUI 设置中的 secret API key 一致
+1. 确认 Kokoro Web 配置和 Open WebUI 设置中的 secret API 密钥一致
 2. 直接测试 API：
-   ```bash
-   curl -X POST http://localhost:3000/api/v1/audio/speech \
-     -H "Authorization: Bearer your-api-key" \
-     -H "Content-Type: application/json" \
-     -d '{"input": "Hello world", "voice": "af_heart"}'
-   ```
 
-更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+    ```bash
+    curl -X POST http://localhost:3000/api/v1/audio/speech \
+      -H "Authorization: Bearer your-api-key" \
+      -H "Content-Type: application/json" \
+      -d '{"input": "Hello world", "voice": "af_heart"}'
+    ```
 
-**祝你在 OpenWebUI 对话中享受自然的 AI 语音体验！**
+更多排查建议请参阅 [音频故障排查指南](/troubleshooting/audio)。
+
+**祝你在 Open WebUI 对话中享受自然的 AI 语音体验！**

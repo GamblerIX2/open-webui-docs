@@ -11,13 +11,13 @@ title: "Mojeek"
 
 :::tip
 
-若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [环境配置文档](/reference/env-configuration#web-search)。
 
 :::
 
-:::tip Troubleshooting
+:::tip 故障排查
 
-如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
+如果你在 web search 上遇到问题，请查看 [Web Search 故障排查指南](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
@@ -25,8 +25,8 @@ title: "Mojeek"
 
 ### 设置
 
-1. 访问 [Mojeek Search API page](https://www.mojeek.com/services/search/web-search-api/) 获取 `API key`
-2. 拿到 `API key` 后，打开 `Open WebUI Admin panel`，点击 `Settings`，再进入 `Web Search`
+1. 访问 [Mojeek Search API 页面](https://www.mojeek.com/services/search/web-search-api/) 获取 `API key`
+2. 拿到 `API key` 后，打开 `Open WebUI 管理面板`，点击 `Settings`，再进入 `Web Search`
 3. 启用 `Web search`，并将 `Web Search Engine` 设为 `mojeek`
 4. 在 `Mojeek Search API Key` 中填写该 `API key`
 5. 点击 `Save`

@@ -17,15 +17,15 @@ title: "Apache Tika 提取"
 
 - Open WebUI 实例
 - 已在系统中安装 Docker
-- 已为 Open WebUI 准备 Docker network
+- 已为 Open WebUI 准备 Docker 网络
 
-# 集成步骤
+## 集成步骤
 
 ### 第 1 步：创建 Apache Tika 的 Docker Compose 文件，或直接运行 Docker 命令
 
 你有两种方式运行 Apache Tika：
 
-**方式 1：使用 Docker Compose**
+#### 方式 1：使用 Docker Compose
 
 在与你的 Open WebUI 实例相同目录下创建一个名为 `docker-compose.yml` 的新文件，并加入以下配置：
 
@@ -45,7 +45,7 @@ services:
 docker-compose up -d
 ```
 
-**方式 2：使用 Docker Run 命令**
+#### 方式 2：使用 Docker Run 命令
 
 你也可以直接运行以下命令启动 Apache Tika：
 
@@ -63,10 +63,10 @@ docker run -d --name tika \
 若要在 Open WebUI 中把 Apache Tika 作为上下文提取引擎，请按以下步骤操作：
 
 - 登录你的 Open WebUI 实例
-- 进入 `Admin Panel`
-- 点击 `Settings`
-- 打开 `Documents` 标签
-- 将 `Default` 内容提取引擎下拉框切换为 `Tika`
+- 进入 `管理面板`
+- 点击 `设置`
+- 打开 `文档` 标签
+- 将 `默认` 内容提取引擎下拉框切换为 `Tika`
 - 将上下文提取引擎 URL 更新为 `http://tika:9998`
 - 保存更改
 
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
 运行该脚本的说明如下：
 
-### 前提条件
+### 脚本运行前提条件
 
 - 系统中已安装 Python 3.x
 - 已安装 `requests` 库（可通过 `pip install requests` 安装）
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 ## 故障排查
 
 - 确保 Apache Tika 服务正在运行，并且 Open WebUI 实例可以访问它
-- 查看 Docker logs，确认 Apache Tika 服务没有报错
+- 查看 Docker 日志，确认 Apache Tika 服务没有报错
 - 确认 Open WebUI 中配置的上下文提取引擎 URL 正确无误
 
 ## 集成优势

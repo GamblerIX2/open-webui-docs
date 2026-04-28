@@ -1,23 +1,23 @@
 ---
 sidebar_position: 1510
-title: "直连连接"
+title: "直接连接"
 ---
 
 :::warning 实验性功能
 该功能当前仍处于**实验阶段**，未来版本中可能会发生变化，甚至被移除。
 :::
 
-**Direct Connections** 允许用户将自己的 Open WebUI 客户端直接连接到兼容 OpenAI 的 API endpoint，从而绕过 Open WebUI 后端发起推理请求。
+**直接连接** 允许用户将自己的 Open WebUI 客户端直接连接到兼容 OpenAI 的 API endpoint，从而绕过 Open WebUI 后端发起推理请求。
 
 ## 概览
 
 在标准部署中，Open WebUI 充当代理：浏览器把提示词发送给 Open WebUI 后端，再由后端转发给 LLM 提供商（如 Ollama、OpenAI 等）。
 
-而使用 **Direct Connections** 后，浏览器会直接与 API 提供商通信。
+而使用 **直接连接** 后，浏览器会直接与 API 提供商通信。
 
 ## 优势
 
-*   **隐私与控制**：用户可以使用自己的个人 API key，而不必把 key 存储在 Open WebUI 服务器上（这些 key 保存在浏览器的 local storage 中）
+*   **隐私与控制**：用户可以使用自己的个人 API key，而不必把 key 存储在 Open WebUI 服务器上（这些 key 保存在浏览器的本地存储中）
 *   **更低延迟**：去掉了 Open WebUI 后端这一“中间跳转”，理论上可加快响应速度
 *   **降低服务器负载**：将网络流量和连接管理从 Open WebUI 服务器转移到各个用户浏览器
 
@@ -29,8 +29,8 @@ title: "直连连接"
 2.  **CORS 配置**：由于请求是从浏览器发起的，API 提供商必须正确配置 **Cross-Origin Resource Sharing (CORS)**，允许来自你的 Open WebUI 域名的请求
     *   *注意：许多限制严格的提供商（如官方 OpenAI）可能会因 CORS 策略而拒绝浏览器直连请求。因此，这个功能通常更适合灵活的提供商或内部 API gateway。*
 
-:::warning 安全建议：限制 Provider Key 权限范围
-为 Direct Connections 使用最小权限原则的 provider 凭证。
+:::warning 安全建议：限制提供商 Key 权限范围
+为直接连接使用最小权限原则的提供商凭证。
 
 如果你的提供商支持 scoped keys，日常使用时请优先选择只具备 inference 权限的 key，不要把管理 / 主密钥用于日常用户流量。
 :::

@@ -13,29 +13,29 @@ title: "Mistral TTS 集成"
 
 ## 前置要求
 
-- 一个 Mistral API key
+- 一个 Mistral API 密钥
 - Open WebUI 已安装并正常运行
 
 ## 快速配置（UI）
 
 1. 点击你的**头像图标**（左下角）
-2. 选择 **Admin Panel**
-3. 点击 **Settings** -> **Audio** 标签
+2. 选择 **管理面板**
+3. 点击 **设置** -> **音频** 标签
 4. 按如下方式配置：
 
-| Setting | Value |
+| 设置 | 值 |
 |---------|-------|
-| **Text-to-Speech Engine** | `MistralAI` |
-| **API Base URL** | `https://api.mistral.ai/v1` |
-| **API Key** | 你的 Mistral API key |
-| **TTS Model** | `mistral-tts-latest`（或留空使用默认值） |
-| **TTS Voice** | 从可用语音中选择 |
+| **文本转语音引擎** | `MistralAI` |
+| **API 基础 URL** | `https://api.mistral.ai/v1` |
+| **API 密钥** | 你的 Mistral API 密钥 |
+| **TTS 模型** | `mistral-tts-latest`（或留空使用默认值） |
+| **TTS 语音** | 从可用语音中选择 |
 
 5. 点击 **Save**
 
 ## 可用模型
 
-| Model | Description |
+| 模型 | 说明 |
 |-------|-------------|
 | `mistral-tts-latest` | Mistral TTS 默认使用的模型 |
 
@@ -62,17 +62,17 @@ services:
 
 ### 全部 Mistral TTS 环境变量
 
-| Variable | Description | Default |
+| 变量 | 说明 | 默认值 |
 |----------|-------------|---------|
 | `AUDIO_TTS_ENGINE` | 设置为 `mistral` | empty（仅使用浏览器侧 TTS） |
-| `AUDIO_TTS_MISTRAL_API_KEY` | 你的 Mistral API key | empty |
-| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API Base URL | `https://api.mistral.ai/v1` |
+| `AUDIO_TTS_MISTRAL_API_KEY` | 你的 Mistral API 密钥 | empty |
+| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API 基础 URL | `https://api.mistral.ai/v1` |
 | `AUDIO_TTS_MODEL` | TTS 模型 | `mistral-tts-latest`（Mistral 引擎的有效默认值） |
-| `AUDIO_TTS_VOICE` | Voice ID | empty |
+| `AUDIO_TTS_VOICE` | 语音 ID | empty |
 
 ## 选择语音
 
-Open WebUI 会向已配置的 Mistral endpoint 请求可用语音列表，并在 **TTS Voice** 选择器中展示它们。
+Open WebUI 会向已配置的 Mistral 端点请求可用语音列表，并在 **TTS 语音** 选择器中展示它们。
 
 如果语音列表没有显示：
 - 确认 API key 有效
@@ -87,7 +87,7 @@ Open WebUI 会向已配置的 Mistral endpoint 请求可用语音列表，并在
 
 ## 故障排查
 
-### “Mistral API key is required for Mistral TTS”
+### “Mistral TTS 需要 API 密钥”
 
 1. 确认 `AUDIO_TTS_MISTRAL_API_KEY` 已设置（或已在 Admin Audio 设置中填写）
 2. 保存设置后重试
@@ -102,6 +102,6 @@ Open WebUI 会向已配置的 Mistral endpoint 请求可用语音列表，并在
 
 1. 确认 `AUDIO_TTS_ENGINE=mistral`
 2. 尝试将模型留空（会使用 `mistral-tts-latest`）
-3. 尝试切换为已获取列表中的其他 voice ID
+3. 尝试切换为已获取列表中的其他语音 ID
 
-更广泛的音频调试请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+更广泛的音频调试请参阅 [音频故障排查指南](/troubleshooting/audio)。

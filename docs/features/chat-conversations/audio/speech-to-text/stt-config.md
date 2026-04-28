@@ -5,15 +5,15 @@ title: "配置"
 
 Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 
-![alt text](/images/tutorials/stt/image.png)
+![STT 配置示意图](/images/tutorials/stt/image.png)
 
-![alt text](/images/tutorials/stt/stt-providers.png)
+![STT 提供商示意图](/images/tutorials/stt/stt-providers.png)
 
 ## 云端 / 远程语音转文本提供商
 
 当前支持以下语音转文本提供商：
 
-| Service | API Key Required | Guide |
+| 服务 | 是否需要 API 密钥 | 指南 |
 |---------|------------------|-------|
 | Local Whisper（默认） | ❌ | 内置支持，参见 [环境变量](/features/chat-conversations/audio/speech-to-text/env-variables) |
 | OpenAI（Whisper API） | ✅ | [OpenAI STT 指南](/features/chat-conversations/audio/speech-to-text/openai-stt-integration) |
@@ -21,26 +21,26 @@ Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 | Deepgram | ✅ | — |
 | Azure | ✅ | — |
 
-**Web API** 则通过浏览器内置语音识别提供 STT（无需 API key，在用户设置中配置）。
+**Web API** 则通过浏览器内置语音识别提供 STT（无需 API 密钥，在用户设置中配置）。
 
 ## 配置你的 STT 提供商
 
 要配置语音转文本提供商：
 
-- 进入管理员设置
-- 选择 Audio
-- 填入 API key，并从下拉框选择模型
+- 进入管理面板
+- 选择音频
+- 填入 API 密钥，并从下拉框选择模型
 
-![alt text](/images/tutorials/stt/stt-config.png)
+![STT 配置页面截图](/images/tutorials/stt/stt-config.png)
 
 ## 用户级设置
 
 除了在管理员面板中配置的实例级设置外，还有一些用户级设置可以提供额外功能。
 
-- **STT Settings：** 包含与 Speech-to-Text 相关的设置。
-- **Speech-to-Text Engine：** 决定使用哪种语音识别引擎（Default 或 Web API）。
+- **STT 设置：** 包含与语音转文本相关的设置。
+- **语音转文本引擎：** 决定使用哪种语音识别引擎（默认值或 Web API）。
 
-![alt text](/images/tutorials/stt/user-settings.png)
+![用户级音频设置截图](/images/tutorials/stt/user-settings.png)
 
 ## 使用 STT
 
@@ -48,11 +48,11 @@ Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 
 要使用 STT，只需点击麦克风图标：
 
-![alt text](/images/tutorials/stt/stt-operation.png)
+![点击麦克风开始 STT 的示意图](/images/tutorials/stt/stt-operation.png)
 
 出现实时音频波形后，说明语音已被成功采集：
 
-![alt text](/images/tutorials/stt/stt-in-progress.png)
+![正在进行中的 STT 录音波形截图](/images/tutorials/stt/stt-in-progress.png)
 
 ## STT 录音模式操作
 
@@ -61,7 +61,7 @@ Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 - 点击勾选图标保存录音（如果启用了完成后自动发送，就会自动发送；否则你也可以手动发送）
 - 如果想中止录音（例如想重新开始），可以点击 `x` 图标退出录音界面
 
-![alt text](/images/tutorials/stt/endstt.png)
+![结束 STT 录音的示意图](/images/tutorials/stt/endstt.png)
 
 ## 故障排查
 
@@ -97,4 +97,4 @@ Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 - **使用更大的 Whisper 模型** —— 可选：`tiny`、`base`、`small`、`medium`、`large`
 - 模型越大通常越准确，但速度也越慢
 
-更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
+更多排查信息请参阅 [音频故障排查指南](/troubleshooting/audio)。

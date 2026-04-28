@@ -130,7 +130,7 @@ open-webui serve
    ```
 2. **打开界面：** 访问 [http://localhost:3000](http://localhost:3000)，应看到登录页。
 3. **如果界面显示异常，** 清理浏览器缓存（`Ctrl+F5` / `Cmd+Shift+R`）。
-4. **如果日志里看到迁移错误，** 请查看[发布说明](https://github.com/open-webui/open-webui/releases)中的已知问题，以及[Connection Errors](/troubleshooting/connection-error) 故障排查页面。
+4. **如果日志里看到迁移错误，** 请查看[发布说明](https://github.com/open-webui/open-webui/releases)中的已知问题，以及[连接错误](/troubleshooting/connection-error) 故障排查页面。
 
 ---
 
@@ -178,7 +178,7 @@ open-webui serve
 </Tabs>
 
 :::caution 数据库迁移不可逆
-如果你更新到的版本执行了数据库迁移，仅回滚容器**并不会**撤销迁移。旧版本可能无法兼容新数据库结构。在这种情况下，你需要恢复**更新前**创建的备份。针对数据库级恢复，请参见 [Manual Database Migration](/troubleshooting/manual-database-migration)。
+如果你更新到的版本执行了数据库迁移，仅回滚容器**并不会**撤销迁移。旧版本可能无法兼容新数据库结构。在这种情况下，你需要恢复**更新前**创建的备份。针对数据库级恢复，请参见 [数据库迁移](/troubleshooting/manual-database-migration)。
 :::
 
 ---
@@ -295,13 +295,13 @@ docker start open-webui
 
 请将 `YYYYMMDD` 替换为实际备份文件日期。
 
-数据库级恢复请参见 [Manual Database Migration](/troubleshooting/manual-database-migration)。
+数据库级恢复请参见 [数据库迁移](/troubleshooting/manual-database-migration)。
 
 ---
 
 ## 相关指南
 
 - [扩展 Open WebUI](/getting-started/advanced-topics/scaling)：多 worker 与多实例部署
-- [Connection Errors](/troubleshooting/connection-error)：更新后连通性问题排查
+- [连接错误](/troubleshooting/connection-error)：更新后连通性问题排查
 - [环境变量参考](/reference/env-configuration)：包含 `WEBUI_SECRET_KEY` 在内的全部配置项
 - [发布说明](https://github.com/open-webui/open-webui/releases)：每个版本的变更日志
