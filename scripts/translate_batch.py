@@ -2,8 +2,9 @@
 """Batch translation script for Open WebUI docs"""
 import os
 import re
+import pathlib
 
-BASE = 'd:/Github/open-webui-docs/docs'
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 def translate_file(filepath, replacements):
     """Apply a list of (old, new) replacements to a file."""

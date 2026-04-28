@@ -1,70 +1,73 @@
 ---
 sidebar_position: 5
-title: "Autocomplete"
+title: "自动补全"
 ---
 
-# ✨ Autocomplete
+# ✨ 自动补全
 
-Open WebUI offers an **AI-powered Autocomplete** feature that suggests text completions in real-time as you type your prompt. It acts like a "Copilot" for your chat input, helping you craft prompts faster using your configured task model.
+Open WebUI 提供 **AI 驱动的自动补全** 功能，可在你输入提示词时实时给出文本续写建议。它就像聊天输入框里的 “Copilot”，利用你配置的任务模型帮助你更快组织提示词。
 
-## How It Works
+## 工作原理
 
-When enabled, Open WebUI monitors your input in the chat box. When you pause typing, it sends your current text to a lightweight **Task Model**. This model predicts the likely next words or sentences, which appear as "ghost text" overlaying your input.
+启用后，Open WebUI 会持续监测你在聊天框中的输入。当你暂停打字时，它会将当前文本发送给一个轻量级 **Task Model**。该模型会预测接下来最可能出现的词句，并以覆盖在输入框上的“幽灵文本”形式显示。
 
-- **Accept Suggestion**: Press `Tab` (or the `Right Arrow` key) to accept the suggestion.
-- **Reject/Ignore**: Simply keep typing to overwrite the suggestion.
+- **接受建议**：按 `Tab`（或 `Right Arrow` 键）接受建议
+- **拒绝 / 忽略**：继续输入即可覆盖该建议
 
 :::info
-**Performance Recommendation**
+**性能建议**
 
-Autocomplete functionality relies heavily on the response speed of your **Task Model**. We recommend using a small, fast, **non-reasoning** model to ensure suggestions appear instantly.
+自动补全高度依赖 **Task Model** 的响应速度。我们建议使用体积小、速度快、**非推理型** 的模型，以确保建议可以即时出现。
 
-**Recommended Models:**
-- **Llama 3.2** (1B or 3B)
-- **Qwen 3** (0.6B or 3B)
-- **Gemma 3** (1B or 4B)
-- **GPT-5 Nano** (Optimized for low latency)
+**推荐模型：**
+- **Llama 3.2**（1B 或 3B）
+- **Qwen 3**（0.6B 或 3B）
+- **Gemma 3**（1B 或 4B）
+- **GPT-5 Nano**（针对低延迟优化）
 
-Avoid using "Reasoning" models (e.g., o1, o3) or heavy Chain-of-Thought models for this feature, as the latency will make the autocomplete experience sluggish.
+不建议为该功能使用“推理型”模型（如 o1、o3）或较重的 Chain-of-Thought 模型，否则延迟会让自动补全体验变得迟钝。
 :::
 
-## Configuration
+## 配置
 
-The Autocomplete feature is controlled by a two-layer system: **Global** availability and **User** preference.
+自动补全功能采用两层控制：**全局可用性** 与 **用户偏好**。
 
-### 1. Global Configuration (Admin)
+### 1. 全局配置（管理员）
 
-Admins control whether the autocomplete feature is available on the server.
+管理员可控制服务器上是否开放自动补全功能。
 
-### 1. Configuring Autocomplete (Global)
+### 1. 配置自动补全（全局）
 
-**Admin Panel Settings:**
-Go to **Admin Settings > Interface > Task Model** and toggle **Autocomplete Generation**.
+**Admin Panel 设置：**  
+前往 **Admin Settings > Interface > Task Model**，切换 **Autocomplete Generation**。
 
-### 2. User Configuration (Personal)
+### 2. 用户配置（个人）
 
-Even if enabled globally, individual users can turn it off for themselves if they find it distracting.
+即使全局已启用，单个用户如果觉得干扰，也可以自行关闭。
 
-- Go to **Settings > Interface**.
-- Toggle **Autocomplete Generation**.
+- 前往 **Settings > Interface**
+- 切换 **Autocomplete Generation**
 
 :::note
-If the Admin has disabled Autocomplete globally, users will **not** be able to enable it in their personal settings.
+如果管理员已在全局关闭自动补全，用户将**无法**在个人设置中重新启用。
 :::
 
-## Performance & Troubleshooting
+## 性能与故障排查
 
-### Why aren't suggestions appearing?
-1. **Check Settings**: Ensure it is enabled in **both** Admin and User settings.
-2. **Task Model**: Go to **Admin Settings > Interface** and verify a **Task Model** is selected. If no model is selected, the feature cannot generate predictions.
-3. **Latency**: If your Task Model is large or running on slow hardware, predictions might arrive too late to be useful. Switch to a smaller model.
-4. **Reasoning Models**: Ensure you are **not** using a "Reasoning" model (like o1 or o3), as their internal thought process creates excessive latency that breaks real-time autocomplete.
+### 为什么没有出现建议？
 
-### Performance Impact
-Autocomplete sends a request to your LLM essentially every time you pause typing (debounced).
-- **Local Models**: This can consume significant GPU/CPU resources on the host machine.
-- **API Providers**: This will generate a high volume of API calls (though usually with very short token counts). Be mindful of your provider's **Rate Limits** (Requests Per Minute/RPM and Tokens Per Minute/TPM) to avoid interruptions.
+1. **检查设置**：确认它在管理员和用户两侧设置中都已启用
+2. **Task Model**：前往 **Admin Settings > Interface**，确认已选择 **Task Model**；如果没有选模型，功能就无法生成预测
+3. **延迟**：如果 Task Model 太大，或运行在较慢硬件上，预测结果可能到得太晚，不具备使用价值；请改用更小的模型
+4. **推理模型**：确认你**没有**使用“推理型”模型（如 o1 或 o3），因为它们的内部思考过程会引入额外延迟，破坏实时自动补全体验
+
+### 性能影响
+
+自动补全几乎会在你每次暂停输入时向 LLM 发送一次请求（带防抖）。
+
+- **本地模型**：这可能显著消耗宿主机的 GPU / CPU 资源
+- **API 提供商**：这会产生大量 API 调用（虽然通常 token 数很少）。请留意服务商的 **Rate Limits**（每分钟请求数 RPM、每分钟 token 数 TPM），避免被限流
 
 :::warning
-For multi-user instances running on limited local hardware, we recommend **disabling** Autocomplete to prioritize resources for actual chat generation.
+对于运行在有限本地硬件上的多用户实例，我们建议**关闭**自动补全，以优先保障实际聊天生成的资源。
 :::

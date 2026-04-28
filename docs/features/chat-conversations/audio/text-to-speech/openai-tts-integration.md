@@ -1,93 +1,93 @@
 ---
 sidebar_position: 0
-title: "OpenAI TTS Integration"
+title: "OpenAI TTS 集成"
 ---
 
-# Using OpenAI for Text-to-Speech
+# 使用 OpenAI 实现文本转语音
 
-This guide covers how to use OpenAI's official Text-to-Speech API with Open WebUI. This is the simplest setup if you already have an OpenAI API key.
+本指南介绍如何在 Open WebUI 中使用 OpenAI 官方 Text-to-Speech API。如果你已经拥有 OpenAI API key，这是最简单的配置方式。
 
-:::tip Looking for STT?
-See the companion guide: [Using OpenAI for Speech-to-Text](/features/chat-conversations/audio/speech-to-text/openai-stt-integration)
+:::tip 想配置 STT？
+请查看配套指南：[使用 OpenAI 实现语音转文本](/features/chat-conversations/audio/speech-to-text/openai-stt-integration)
 :::
 
-## Requirements
+## 前置要求
 
-- An OpenAI API key with access to the Audio API
-- Open WebUI installed and running
+- 拥有可访问 Audio API 的 OpenAI API key
+- Open WebUI 已安装并正常运行
 
-## Quick Setup (UI)
+## 快速配置（UI）
 
-1. Click your **profile icon** (bottom-left corner)
-2. Select **Admin Panel**
-3. Click **Settings** → **Audio** tab
-4. Configure the following:
+1. 点击你的**头像图标**（左下角）
+2. 选择 **Admin Panel**
+3. 点击 **Settings** → **Audio** 标签
+4. 按如下方式配置：
 
 | Setting | Value |
 |---------|-------|
 | **Text-to-Speech Engine** | `OpenAI` |
 | **API Base URL** | `https://api.openai.com/v1` |
-| **API Key** | Your OpenAI API key |
-| **TTS Model** | `tts-1` or `tts-1-hd` |
-| **TTS Voice** | Choose from available voices |
+| **API Key** | 你的 OpenAI API key |
+| **TTS Model** | `tts-1` 或 `tts-1-hd` |
+| **TTS Voice** | 从可用语音中选择 |
 
-5. Click **Save**
+5. 点击 **Save**
 
-## Available Models
+## 可用模型
 
 | Model | Description | Best For |
 |-------|-------------|----------|
-| `tts-1` | Standard quality, lower latency | Real-time applications, faster responses |
-| `tts-1-hd` | Higher quality audio | Pre-recorded content, premium audio quality |
+| `tts-1` | 标准音质、延迟更低 | 实时应用、更快响应 |
+| `tts-1-hd` | 更高音质 | 预录内容、高品质音频 |
 
-## Available Voices
+## 可用语音
 
-OpenAI provides 6 built-in voices:
+OpenAI 提供 6 种内置语音：
 
 | Voice | Description |
 |-------|-------------|
-| `alloy` | Neutral, balanced |
-| `echo` | Warm, conversational |
-| `fable` | Expressive, British accent |
-| `onyx` | Deep, authoritative |
-| `nova` | Friendly, upbeat |
-| `shimmer` | Soft, gentle |
+| `alloy` | 中性、均衡 |
+| `echo` | 温暖、偏对话风格 |
+| `fable` | 表现力更强、英式口音 |
+| `onyx` | 低沉、权威感强 |
+| `nova` | 友好、轻快 |
+| `shimmer` | 柔和、轻柔 |
 
 :::tip
-Try different voices to find the one that best suits your use case. You can preview voices in OpenAI's documentation.
+你可以多试几种语音，找到最适合自己场景的一种。也可以在 OpenAI 文档中预览相关语音。
 :::
 
-## Per-Model TTS Voice
+## 按模型设置 TTS Voice
 
-You can assign a specific TTS voice to individual models, allowing different AI personas to have distinct voices. This is configured in the Model Editor.
+你可以为单个模型指定专属 TTS Voice，让不同 AI persona 拥有不同声音。该设置位于 Model Editor 中。
 
-### Setting a Model-Specific Voice
+### 设置模型专属语音
 
-1. Go to **Workspace > Models**
-2. Click the **Edit** (pencil) icon on the model you want to configure
-3. Scroll down to find the **TTS Voice** field
-4. Enter the voice name (e.g., `alloy`, `echo`, `shimmer`, `onyx`, `nova`, `fable`)
-5. Click **Save**
+1. 前往 **Workspace > Models**
+2. 点击要配置模型上的 **Edit**（铅笔）图标
+3. 向下滚动找到 **TTS Voice** 字段
+4. 输入语音名称（例如 `alloy`、`echo`、`shimmer`、`onyx`、`nova`、`fable`）
+5. 点击 **Save**
 
-### Voice Priority
+### 语音优先级
 
-When playing TTS audio, Open WebUI uses the following priority:
+播放 TTS 音频时，Open WebUI 按以下优先级选择语音：
 
-1. **Model-specific TTS voice** (if set in Model Editor)
-2. **User's personal voice setting** (if configured in user settings)
-3. **System default voice** (configured by admin)
+1. **模型专属 TTS Voice**（如果在 Model Editor 中已设置）
+2. **用户个人语音设置**（如果已在用户设置中配置）
+3. **系统默认语音**（由管理员配置）
 
-This allows admins to give each AI persona a consistent voice while still letting users override with their personal preference when no model-specific voice is set.
+这样管理员就可以为每个 AI persona 设定稳定的声音，同时仍允许用户在没有模型专属语音时使用自己的偏好设置。
 
-### Use Cases
+### 使用场景
 
-- **Character personas**: Give a "British Butler" model the `fable` voice, while an "Energetic Assistant" uses `nova`
-- **Language learning**: Assign appropriate voices for different language tutors
-- **Accessibility**: Set clearer voices for models designed for accessibility use cases
+- **角色化 persona**：例如让 “British Butler” 模型使用 `fable`，而 “Energetic Assistant” 使用 `nova`
+- **语言学习**：为不同语言教师分配合适的声音
+- **无障碍场景**：为无障碍用途模型设置更清晰的语音
 
-## Environment Variables Setup
+## 环境变量配置
 
-If you prefer to configure via environment variables:
+如果你更倾向于通过环境变量配置：
 
 ```yaml
 services:
@@ -99,64 +99,64 @@ services:
       - AUDIO_TTS_OPENAI_API_KEY=sk-...
       - AUDIO_TTS_MODEL=tts-1
       - AUDIO_TTS_VOICE=alloy
-    # ... other configuration
+    # ... 其他配置
 ```
 
-### All TTS Environment Variables
+### 全部 TTS 环境变量
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_TTS_ENGINE` | Set to `openai` | empty |
-| `AUDIO_TTS_OPENAI_API_BASE_URL` | OpenAI API base URL | `https://api.openai.com/v1` |
-| `AUDIO_TTS_OPENAI_API_KEY` | Your OpenAI API key | empty |
-| `AUDIO_TTS_MODEL` | TTS model (`tts-1` or `tts-1-hd`) | `tts-1` |
-| `AUDIO_TTS_VOICE` | Voice to use | `alloy` |
+| `AUDIO_TTS_ENGINE` | 设置为 `openai` | empty |
+| `AUDIO_TTS_OPENAI_API_BASE_URL` | OpenAI API Base URL | `https://api.openai.com/v1` |
+| `AUDIO_TTS_OPENAI_API_KEY` | 你的 OpenAI API key | empty |
+| `AUDIO_TTS_MODEL` | TTS 模型（`tts-1` 或 `tts-1-hd`） | `tts-1` |
+| `AUDIO_TTS_VOICE` | 使用的语音 | `alloy` |
 
-## Testing TTS
+## 测试 TTS
 
-1. Start a new chat
-2. Send a message to any model
-3. Click the **speaker icon** on the AI response to hear it read aloud
+1. 新建一个聊天
+2. 向任意模型发送一条消息
+3. 点击 AI 回复上的**扬声器图标**，听它朗读内容
 
-## Response Splitting
+## 响应切分
 
-When reading long responses, Open WebUI can split text into chunks before sending them to the TTS engine. This is configured in **Admin Panel > Settings > Audio** under **Response Splitting**.
+朗读较长回复时，Open WebUI 可以在发送到 TTS 引擎前先把文本拆分成多个片段。该设置位于 **Admin Panel > Settings > Audio** 下的 **Response Splitting**。
 
 | Option | Description |
 |--------|-------------|
-| **Punctuation** (default) | Splits at sentence boundaries: periods (`.`), exclamation marks (`!`), question marks (`?`), and newlines. Best for natural pacing. |
-| **Paragraphs** | Splits only at paragraph breaks (double newlines). Results in longer audio chunks. |
-| **None** | Sends the entire response as one chunk. May cause delays before audio starts on long responses. |
+| **Punctuation**（默认） | 按句子边界切分：句号（`.`）、感叹号（`!`）、问号（`?`）和换行。自然感最佳。 |
+| **Paragraphs** | 仅按段落分隔（双换行）切分。生成的音频块更长。 |
+| **None** | 整段回复作为一个整体发送。长回复可能会导致音频启动延迟。 |
 
 :::tip
-**Punctuation** mode is recommended for most use cases. It provides the best balance of streaming performance (audio starts quickly) and natural speech pacing.
+大多数场景建议使用 **Punctuation** 模式。它在流式性能（更快开始播放）和自然语音节奏之间取得了最好平衡。
 :::
 
-## Troubleshooting
+## 故障排查
 
-### No Audio Plays
+### 没有音频播放
 
-1. Check your OpenAI API key is valid and has Audio API access
-2. Verify the API Base URL is correct (`https://api.openai.com/v1`)
-3. Check browser console (F12) for errors
+1. 检查 OpenAI API key 是否有效，并确认已开通 Audio API
+2. 确认 API Base URL 是否正确（`https://api.openai.com/v1`）
+3. 检查浏览器控制台（F12）是否有报错
 
-### Audio Quality Issues
+### 音质问题
 
-- Switch from `tts-1` to `tts-1-hd` for higher quality
-- Note: `tts-1-hd` has slightly higher latency
+- 将 `tts-1` 切换为 `tts-1-hd` 可获得更高音质
+- 注意：`tts-1-hd` 延迟会略高
 
-### Rate Limits
+### 速率限制
 
-OpenAI has rate limits on the Audio API. If you're hitting limits:
-- Consider caching common phrases
-- Use `tts-1` instead of `tts-1-hd` (uses fewer tokens)
+OpenAI Audio API 有速率限制。如果你经常触发限制：
+- 可考虑缓存常用短语
+- 使用 `tts-1` 代替 `tts-1-hd`（消耗更少 token）
 
-For more troubleshooting, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
 
-## Cost Considerations
+## 成本说明
 
-OpenAI charges per character for TTS. See [OpenAI Pricing](https://platform.openai.com/docs/pricing) for current rates. Note that `tts-1-hd` costs more than `tts-1`.
+OpenAI 的 TTS 按字符数计费。当前价格请查看 [OpenAI Pricing](https://platform.openai.com/docs/pricing)。注意 `tts-1-hd` 的价格高于 `tts-1`。
 
 :::info
-For a free alternative, consider [OpenAI Edge TTS](/features/chat-conversations/audio/text-to-speech/openai-edge-tts-integration) which uses Microsoft's free Edge browser TTS.
+如果你想要免费替代方案，可考虑 [OpenAI Edge TTS](/features/chat-conversations/audio/text-to-speech/openai-edge-tts-integration)，它利用微软 Edge 浏览器的免费 TTS 能力。
 :::

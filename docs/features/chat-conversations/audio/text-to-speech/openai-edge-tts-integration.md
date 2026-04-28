@@ -1,112 +1,112 @@
 ---
 sidebar_position: 1
-title: "Edge TTS Using Docker"
+title: "使用 Docker 部署 Edge TTS"
 ---
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
-# Integrating `openai-edge-tts` 🗣️ with Open WebUI
+# 将 `openai-edge-tts` 🗣️ 集成到 Open WebUI
 
-## What is `openai-edge-tts`?
+## 什么是 `openai-edge-tts`？
 
-[OpenAI Edge TTS](https://github.com/travisvn/openai-edge-tts) is a text-to-speech API that mimics the OpenAI API endpoint, allowing for a direct substitute in scenarios where you can define the endpoint URL, like with Open WebUI.
+[OpenAI Edge TTS](https://github.com/travisvn/openai-edge-tts) 是一个模拟 OpenAI API endpoint 的文本转语音 API。在像 Open WebUI 这样可自定义 endpoint URL 的场景中，它可以作为直接替代方案。
 
-It uses the [edge-tts](https://github.com/rany2/edge-tts) package, which leverages the Edge browser's free "Read Aloud" feature to emulate a request to Microsoft / Azure in order to receive very high quality text-to-speech for free.
+它基于 [edge-tts](https://github.com/rany2/edge-tts) 包实现，通过调用 Edge 浏览器免费的 “Read Aloud” 能力，模拟向 Microsoft / Azure 发起请求，从而免费获得高质量文本转语音。
 
-[Sample the voices](https://tts.travisvn.com)
+[试听语音样本](https://tts.travisvn.com)
 
 <!-- markdownlint-disable-next-line MD033 -->
 <details>
   <!-- markdownlint-disable-next-line MD033 -->
-<summary>How is it different from 'openedai-speech'?</summary>
+  <summary>它和 `openedai-speech` 有什么不同？</summary>
 
-Similar to [openedai-speech](https://github.com/matatonic/openedai-speech), [openai-edge-tts](https://github.com/travisvn/openai-edge-tts) is a text-to-speech API endpoint that mimics the OpenAI API endpoint, allowing for a direct substitute in scenarios where the OpenAI Speech endpoint is callable and the server endpoint URL can be configured.
+与 [openedai-speech](https://github.com/matatonic/openedai-speech) 类似，[openai-edge-tts](https://github.com/travisvn/openai-edge-tts) 也是一个模拟 OpenAI API endpoint 的文本转语音服务，因此在可配置 OpenAI Speech endpoint URL 的场景下，可以直接替代原接口。
 
-`openedai-speech` is a more comprehensive option that allows for entirely offline generation of speech with many modalities to choose from.
+`openedai-speech` 功能更全面，支持多种模态，并可完全离线生成语音。
 
-`openai-edge-tts` is a simpler option that uses a Python package called `edge-tts` to generate the audio.
+`openai-edge-tts` 则更轻量，它通过 Python 包 `edge-tts` 来生成音频。
 
 </details>
 
-## Requirements
+## 前置要求
 
-- Docker installed on your system
-- Open WebUI running
+- 系统已安装 Docker
+- Open WebUI 正在运行
 
-## ⚡️ Quick start
+## ⚡️ 快速开始
 
-The simplest way to get started without having to configure anything is to run the command below
+如果你想最快上手、无需额外配置，可直接运行下面命令：
 
 ```bash
 docker run -d -p 5050:5050 travisvn/openai-edge-tts:latest
 ```
 
-This will run the service at port 5050 with all the default configs
+这会以默认配置在 5050 端口启动服务。
 
-## Setting up Open WebUI to use `openai-edge-tts`
+## 配置 Open WebUI 使用 `openai-edge-tts`
 
-- Open the Admin Panel and go to `Settings` -> `Audio`
-- Set your TTS Settings to match the screenshot below
-- *Note: you can specify the TTS Voice here*
+- 打开 Admin Panel 并进入 `Settings` -> `Audio`
+- 按下图所示配置你的 TTS 设置
+- *注意：你也可以在这里指定 TTS Voice*
 
 ![Screenshot of Open WebUI Admin Settings for Audio adding the correct endpoints for this project](https://utfs.io/f/MMMHiQ1TQaBobmOhsMkrO6Tl2kxX39dbuFiQ8cAoNzysIt7f)
 
 :::info
 
-The default API key is the string `your_api_key_here`. You do not have to change that value if you do not need the added security.
+默认 API key 是字符串 `your_api_key_here`。如果你不需要额外安全控制，可以不修改这个值。
 
 :::
 
-**And that's it! You can end here**
+**到这里就已经能用了！**
 
-## Please ⭐️ star the repo on GitHub if you find [OpenAI Edge TTS](https://github.com/travisvn/openai-edge-tts) useful
+## 如果你觉得 [OpenAI Edge TTS](https://github.com/travisvn/openai-edge-tts) 有用，请在 GitHub 上点个 ⭐️
 
 <!-- markdownlint-disable-next-line MD033 -->
 <details>
   <!-- markdownlint-disable-next-line MD033 -->
-<summary>Running with Python</summary>
+  <summary>使用 Python 运行</summary>
 
-### 🐍 Running with Python
+### 🐍 使用 Python 运行
 
-If you prefer to run this project directly with Python, follow these steps to set up a virtual environment, install dependencies, and start the server.
+如果你更喜欢直接用 Python 运行项目，请按以下步骤创建虚拟环境、安装依赖并启动服务。
 
-#### 1. Clone the Repository
+#### 1. 克隆仓库
 
 ```bash
 git clone https://github.com/travisvn/openai-edge-tts.git
 cd openai-edge-tts
 ```
 
-#### 2. Set Up a Virtual Environment
+#### 2. 创建虚拟环境
 
-Create and activate a virtual environment to isolate dependencies:
+创建并激活虚拟环境，以隔离依赖：
 
 ```bash
 
-# For macOS/Linux
+# macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
 
-# For Windows
+# Windows
 python -m venv venv
 venv\Scripts\activate
 ```
 
-#### 3. Install Dependencies
+#### 3. 安装依赖
 
-Use `pip` to install the required packages listed in `requirements.txt`:
+使用 `pip` 安装 `requirements.txt` 中列出的依赖：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 4. Configure Environment Variables
+#### 4. 配置环境变量
 
-Create a `.env` file in the root directory and set the following variables:
+在项目根目录创建 `.env` 文件，并设置以下变量：
 
 ```plaintext
 API_KEY=your_api_key_here
@@ -123,49 +123,49 @@ REMOVE_FILTER=False
 EXPAND_API=True
 ```
 
-#### 5. Run the Server
+#### 5. 启动服务
 
-Once configured, start the server with:
+完成配置后，通过以下命令启动：
 
 ```bash
 python app/server.py
 ```
 
-The server will start running at `http://localhost:5050`.
+服务会运行在 `http://localhost:5050`。
 
-#### 6. Test the API
+#### 6. 测试 API
 
-You can now interact with the API at `http://localhost:5050/v1/audio/speech` and other available endpoints. See the Usage section for request examples.
+现在你可以访问 `http://localhost:5050/v1/audio/speech` 以及其他可用 endpoint。请求示例可参考下方 Usage 部分。
 
 </details>
 
 <!-- markdownlint-disable-next-line MD033 -->
 <details>
   <!-- markdownlint-disable-next-line MD033 -->
-<summary>Usage details</summary>
+  <summary>使用详情</summary>
 
-##### Endpoint: `/v1/audio/speech` (aliased with `/audio/speech`)
+##### Endpoint：`/v1/audio/speech`（也可使用 `/audio/speech`）
 
-Generates audio from the input text. Available parameters:
+该接口用于将输入文本转换为音频。支持以下参数：
 
-**Required Parameter:**
+**必填参数：**
 
-- **input** (string): The text to be converted to audio (up to 4096 characters).
+- **input**（string）：要转换成语音的文本（最长 4096 字符）。
 
-**Optional Parameters:**
+**可选参数：**
 
-- **model** (string): Set to "tts-1" or "tts-1-hd" (default: `"tts-1"`).
-- **voice** (string): One of the OpenAI-compatible voices (alloy, echo, fable, onyx, nova, shimmer) or any valid `edge-tts` voice (default: `"en-US-AvaNeural"`).
-- **response_format** (string): Audio format. Options: `mp3`, `opus`, `aac`, `flac`, `wav`, `pcm` (default: `mp3`).
-- **speed** (number): Playback speed (0.25 to 4.0). Default is `1.0`.
+- **model**（string）：设置为 `tts-1` 或 `tts-1-hd`（默认：`"tts-1"`）。
+- **voice**（string）：可使用 OpenAI 兼容语音（alloy、echo、fable、onyx、nova、shimmer），也可使用任意有效的 `edge-tts` 语音（默认：`"en-US-AvaNeural"`）。
+- **response_format**（string）：音频格式，可选 `mp3`、`opus`、`aac`、`flac`、`wav`、`pcm`（默认：`mp3`）。
+- **speed**（number）：播放速度（0.25 到 4.0，默认 `1.0`）。
 
 :::tip
 
-You can browse available voices and listen to sample previews at [tts.travisvn.com](https://tts.travisvn.com)
+你可以在 [tts.travisvn.com](https://tts.travisvn.com) 浏览可用语音并试听示例。
 
 :::
 
-Example request with `curl` and saving the output to an mp3 file:
+使用 `curl` 发送请求并保存为 mp3 文件的示例：
 
 ```bash
 curl -X POST http://localhost:5050/v1/audio/speech \
@@ -180,7 +180,7 @@ curl -X POST http://localhost:5050/v1/audio/speech \
   --output speech.mp3
 ```
 
-Or, to be in line with the OpenAI API endpoint parameters:
+或者使用更贴近 OpenAI API 参数形式的请求：
 
 ```bash
 curl -X POST http://localhost:5050/v1/audio/speech \
@@ -194,7 +194,7 @@ curl -X POST http://localhost:5050/v1/audio/speech \
   --output speech.mp3
 ```
 
-And an example of a language other than English:
+以下是非英语语言的示例：
 
 ```bash
 curl -X POST http://localhost:5050/v1/audio/speech \
@@ -208,27 +208,27 @@ curl -X POST http://localhost:5050/v1/audio/speech \
   --output speech.mp3
 ```
 
-##### Additional Endpoints
+##### 其他 Endpoints
 
-- **POST/GET /v1/models**: Lists available TTS models.
-- **POST/GET /v1/voices**: Lists `edge-tts` voices for a given language / locale.
-- **POST/GET /v1/voices/all**: Lists all `edge-tts` voices, with language support information.
+- **POST/GET /v1/models**：列出可用 TTS 模型。
+- **POST/GET /v1/voices**：列出指定语言 / locale 下的 `edge-tts` 语音。
+- **POST/GET /v1/voices/all**：列出全部 `edge-tts` 语音及其语言支持信息。
 
 :::info
 
-The `/v1` is now optional.
+现在 `/v1` 前缀是可选的。
 
-Additionally, there are endpoints for **Azure AI Speech** and **ElevenLabs** for potential future support if custom API endpoints are allowed for these options in Open WebUI.
+此外，项目还提供 **Azure AI Speech** 和 **ElevenLabs** 相关 endpoints，以便未来在 Open WebUI 支持这些自定义 API endpoint 时使用。
 
-These can be disabled by setting the environment variable `EXPAND_API=False`.
+你也可以通过设置环境变量 `EXPAND_API=False` 来关闭这些扩展接口。
 
 :::
 
 </details>
 
-## 🐳 Quick Config for Docker
+## 🐳 Docker 快速配置
 
-You can configure the environment variables in the command used to run the project
+你也可以直接在运行命令中配置环境变量：
 
 ```bash
 docker run -d -p 5050:5050 \
@@ -246,36 +246,36 @@ docker run -d -p 5050:5050 \
 
 :::note
 
-The markdown text is now put through a filter for enhanced readability and support.
+现在 Markdown 文本会经过一个过滤器，以提高可读性与支持效果。
 
-You can disable this by setting the environment variable `REMOVE_FILTER=True`.
+如果你不需要它，可设置环境变量 `REMOVE_FILTER=True` 关闭。
 
 :::
 
-## Additional Resources
+## 其他资源
 
-For more information on `openai-edge-tts`, you can visit the [GitHub repo](https://github.com/travisvn/openai-edge-tts)
+如需了解更多 `openai-edge-tts` 信息，可查看其 [GitHub repo](https://github.com/travisvn/openai-edge-tts)。
 
-For direct support, you can visit the [Voice AI & TTS Discord](https://tts.travisvn.com/discord)
+如需直接支持，可访问 [Voice AI & TTS Discord](https://tts.travisvn.com/discord)。
 
-## 🎙️ Voice Samples
+## 🎙️ 语音样本
 
-[Play voice samples and see all available Edge TTS voices](https://tts.travisvn.com/)
+[播放语音样本并查看全部可用 Edge TTS 语音](https://tts.travisvn.com/)
 
-## Troubleshooting
+## 故障排查
 
-### Connection Issues
+### 连接问题
 
-#### "localhost" Not Working from Docker
+#### Docker 中 `localhost` 不生效
 
-If Open WebUI runs in Docker and can't reach the TTS service at `localhost:5050`:
+如果 Open WebUI 运行在 Docker 中，且无法访问 `localhost:5050` 上的 TTS 服务：
 
-**Solutions:**
-- Use `host.docker.internal:5050` instead of `localhost:5050` (Docker Desktop on Windows/Mac)
-- On Linux, use the host's IP address, or add `--network host` to your Docker run command
-- If both services are in Docker Compose, use the container name: `http://openai-edge-tts:5050/v1`
+**解决方案：**
+- 使用 `host.docker.internal:5050` 代替 `localhost:5050`（Docker Desktop，Windows/Mac）
+- Linux 上请使用宿主机 IP，或在 Docker run 命令中添加 `--network host`
+- 如果两个服务都在 Docker Compose 中，使用容器名：`http://openai-edge-tts:5050/v1`
 
-**Example Docker Compose for both services on the same network:**
+**同一网络下同时运行两个服务的 Docker Compose 示例：**
 
 ```yaml
 services:
@@ -302,9 +302,9 @@ networks:
     driver: bridge
 ```
 
-#### Testing the TTS Service
+#### 测试 TTS 服务
 
-Verify the TTS service is working independently:
+先单独验证 TTS 服务是否工作：
 
 ```bash
 curl -X POST http://localhost:5050/v1/audio/speech \
@@ -314,13 +314,13 @@ curl -X POST http://localhost:5050/v1/audio/speech \
   --output test.mp3
 ```
 
-If this works but Open WebUI still can't connect, the issue is network-related between containers.
+如果这个请求成功，但 Open WebUI 仍然连接失败，那么问题通常出在容器间网络。
 
-### No Audio Output in Open WebUI
+### Open WebUI 中没有音频输出
 
-1. Check that the API Base URL ends with `/v1`
-2. Verify the API key matches between both services (or remove the requirement)
-3. Check Open WebUI container logs: `docker logs open-webui`
-4. Check openai-edge-tts logs: `docker logs openai-edge-tts` (or your container name)
+1. 检查 API Base URL 是否以 `/v1` 结尾
+2. 确认两个服务中的 API key 一致（或关闭其要求）
+3. 查看 Open WebUI 容器日志：`docker logs open-webui`
+4. 查看 openai-edge-tts 日志：`docker logs openai-edge-tts`（或你的容器名）
 
-For more troubleshooting tips, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查建议请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。

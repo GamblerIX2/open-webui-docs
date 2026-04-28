@@ -1,5 +1,7 @@
 import os
-filepath = 'd:/Github/open-webui-docs/docs/reference/monitoring/otel.md'
+import pathlib
+DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs"
+filepath = DOCS / "reference/monitoring/otel.md"
 with open(filepath, 'r', encoding='utf-8') as f:
     content = f.read()
 

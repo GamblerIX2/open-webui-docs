@@ -1,131 +1,131 @@
 ---
 sidebar_position: 4
-title: "Folders & Projects"
+title: "文件夹与项目"
 ---
 
-# Folders & Projects
+# 文件夹与项目
 
-Open WebUI provides powerful folder-based organization that turns simple chat containers into full-featured **project workspaces**. Folders allow you to not only group related conversations but also define specific contexts, system prompts, and knowledge bases that apply to all chats within them.
+Open WebUI 提供强大的基于文件夹的组织能力，可将简单的聊天容器升级为完整的**项目工作区**。文件夹不仅能分组相关对话，还能为其中所有聊天统一定义上下文、system prompt 和知识库。
 
-## Enabling Folders
+## 启用文件夹
 
-Folders are enabled by default. Administrators can control this feature via:
+文件夹默认启用。管理员可通过以下方式控制该功能：
 
-- **Admin Panel**: The folders feature is controlled globally alongside other features.
-- **Environment Variable**: [`ENABLE_FOLDERS`](/reference/env-configuration#enable_folders) - Set to `True` (default) to enable or `False` to disable.
+- **Admin Panel**：文件夹功能与其他功能一起进行全局控制
+- **环境变量**：[`ENABLE_FOLDERS`](/reference/env-configuration#enable_folders) - 设为 `True`（默认）启用，设为 `False` 禁用
 
-## Core Features
+## 核心功能
 
-### Creating Folders
+### 创建文件夹
 
-Create a new folder to organize your conversations:
+创建一个新文件夹来组织你的对话：
 
-1. In the **sidebar**, click the **+ button** next to "Chats" or right-click in the chat list.
-2. Select **"New Folder"**.
-3. Enter a name for your folder.
-4. Click **Save**.
+1. 在**侧边栏**中点击 “Chats” 旁边的 **+ 按钮**，或在聊天列表中右键
+2. 选择 **"New Folder"**
+3. 输入文件夹名称
+4. 点击 **Save**
 
-### Moving Conversations into Folders
+### 将对话移动到文件夹中
 
-Organize existing chats by moving them into folders:
+你可以把现有聊天整理到文件夹中：
 
-- **Drag and Drop**: Click and drag any conversation from the sidebar into a folder.
-- **Right-click Menu**: Right-click on a conversation and select "Move to Folder".
+- **拖拽**：在侧边栏中将任意对话拖入某个文件夹
+- **右键菜单**：右键某个对话并选择 "Move to Folder"
 
-### Nested Folders
+### 嵌套文件夹
 
-Folders can be nested within other folders to create hierarchical organization:
+文件夹可以嵌套在其他文件夹中，形成层级结构：
 
-- **Create subfolder from menu**: Right-click (or click the three-dot menu ⋯) on any folder and select **"Create Folder"** to create a new subfolder directly inside it.
-- **Drag and drop**: Drag a folder onto another folder to make it a subfolder.
-- **Move via context menu**: Right-click on a folder and use the move option to relocate it under a different parent.
-- Folders can be expanded or collapsed to show/hide their contents.
-- Subfolder names must be unique within the same parent folder. If a duplicate name is entered, a number is automatically appended (e.g., "Notes 1").
+- **从菜单创建子文件夹**：右键（或点击三点菜单 ⋯）任意文件夹，选择 **"Create Folder"**，即可直接在其中创建子文件夹
+- **拖拽**：把一个文件夹拖到另一个文件夹上，即可把它变成子文件夹
+- **通过上下文菜单移动**：右键某个文件夹并使用移动选项，将它迁移到另一个父文件夹下
+- 文件夹可展开或折叠，以显示 / 隐藏其内容
+- 同一父文件夹下，子文件夹名称必须唯一；若输入重复名称，系统会自动追加编号（例如 "Notes 1"）
 
-### Starting a Chat in a Folder
+### 在文件夹中开始聊天
 
-When you click on a folder in the sidebar, it becomes your **active workspace**:
+当你点击侧边栏中的某个文件夹时，它会成为你的**当前工作区**：
 
-1. Click on any folder in the sidebar to select it.
-2. The chat interface will show that folder is active.
-3. Any new chat you start will automatically be created inside this folder.
-4. New chats will **inherit the folder's settings** (system prompt and knowledge).
+1. 在侧边栏点击任意文件夹将其选中
+2. 聊天界面会显示该文件夹当前处于激活状态
+3. 此后你新建的任何聊天都会自动创建在该文件夹中
+4. 新聊天会**继承该文件夹的设置**（system prompt 与 knowledge）
 
-## Folder Settings (Project Configuration)
+## 文件夹设置（项目配置）
 
-Folders can be configured as full project workspaces with their own AI behavior and context. To edit folder settings:
+文件夹可以被配置为完整的项目工作区，拥有独立的 AI 行为和上下文。要编辑文件夹设置：
 
-1. Hover over a folder in the sidebar.
-2. Click the **three-dot menu** (⋯).
-3. Select **"Edit"** to open the folder settings modal.
+1. 将鼠标悬停在侧边栏中的某个文件夹上
+2. 点击**三点菜单**（⋯）
+3. 选择 **"Edit"** 打开文件夹设置弹窗
 
-### Folder Name
+### 文件夹名称
 
-Change the name of your folder to better reflect its purpose or project.
+你可以修改文件夹名称，使其更准确地反映用途或项目内容。
 
-### Folder Background Image
+### 文件夹背景图
 
-Customize the visual appearance of your folder by uploading a background image. This helps visually distinguish different projects in your workspace.
+你可以上传背景图来自定义文件夹的视觉外观，从而更直观地区分工作区中的不同项目。
 
 ### System Prompt
 
-Assign a dedicated **System Prompt** to the folder that automatically applies to all conversations within it:
+你可以为文件夹指定专属 **System Prompt**，它会自动应用到该文件夹中的所有对话：
 
-- The system prompt is **prepended to every new conversation** created in the folder.
-- This tailors the AI's behavior for specific tasks or personas.
-- System prompts are optional—you can use folders purely for organization without one.
+- 该 system prompt 会**预置到在此文件夹中新建的每个对话中**
+- 这可让 AI 针对特定任务或 persona 采取定制行为
+- System prompt 是可选的；即使不设置，文件夹仍可纯粹用于组织
 
 :::info
 
-The System Prompt field is only visible if you have permission to set system prompts (controlled by admin settings).
+只有当你拥有设置 system prompt 的权限时（由管理员设置控制），System Prompt 字段才会显示。
 
 :::
 
-### Attached Knowledge
+### 附加知识
 
-Link **knowledge bases and files** to your folder:
+你可以将**知识库和文件**关联到文件夹：
 
-- All attached files and knowledge bases are automatically included as **context** for every chat in the folder.
-- This enables RAG (Retrieval Augmented Generation) for all folder conversations.
-- Knowledge is optional—folders work for organization without any attached files.
+- 所有关联文件和知识库都会自动作为**上下文**注入该文件夹中的每次聊天
+- 这使得该文件夹中的所有对话都具备 RAG（Retrieval Augmented Generation）能力
+- Knowledge 也是可选的；即使不附加文件，文件夹依旧可仅用于组织
 
-## Example Use Case
+## 示例用例
 
-:::tip **Creating a "Python Expert" Project**
+:::tip **创建一个 “Python Expert” 项目**
 
-Imagine you're working on a Python development project:
+假设你正在进行一个 Python 开发项目：
 
-1. **Create a folder** named "Python Expert".
-2. **Edit the folder** and set the System Prompt:
+1. **创建一个文件夹**，命名为 "Python Expert"
+2. **编辑该文件夹**，并设置 System Prompt：
    ```
    You are an expert Python developer. You provide clean, efficient, and well-documented code. When asked for code, prioritize clarity and adherence to PEP 8 standards.
    ```
-3. **Attach Knowledge** by linking your project's technical specification PDF or library documentation.
-4. **Click on the folder** to select it as your active workspace.
-5. **Start chatting** — every new conversation will have:
-   - The expert Python persona
-   - Access to your project documents
-   - Automatic organization in the folder
+3. **附加知识**，例如关联你项目的技术规格 PDF 或库文档
+4. **点击该文件夹**，将其设为当前激活工作区
+5. **开始聊天** —— 每个新对话都会自动具备：
+   - Python 专家 persona
+   - 访问项目文档的能力
+   - 自动归档到该文件夹中
 
 :::
 
-## Tags (Complementary Organization)
+## 标签（补充性组织方式）
 
-In addition to folders, **tags** provide a flexible labeling system for conversations:
+除文件夹外，**标签**也提供了一种灵活的对话标记方式：
 
-- **Adding Tags**: Apply keyword labels to conversations based on content or purpose.
-- **Searching by Tags**: Filter conversations by tags using the search feature.
-- **Flexible Organization**: Tags can be added or removed at any time and don't affect folder structure.
+- **添加标签**：根据内容或用途，为对话添加关键词标签
+- **按标签搜索**：通过搜索功能按标签筛选对话
+- **灵活组织**：标签可随时添加或移除，且不会影响文件夹结构
 
-:::tip **Tagging by Topic**
+:::tip **按主题打标签**
 
-If you frequently discuss topics like "marketing" or "development," tag conversations with these terms. When you search for a specific tag, all relevant conversations are quickly accessible regardless of which folder they're in.
+如果你经常讨论“marketing”或“development”等主题，可以用这些词给对话打标签。这样当你搜索某个标签时，无论这些对话位于哪个文件夹，都能被快速找到。
 
 :::
 
-## Related Configuration
+## 相关配置
 
 | Setting | Description |
 |---------|-------------|
-| [`ENABLE_FOLDERS`](/reference/env-configuration#enable_folders) | Enable/disable the folders feature globally (Default: `True`) |
-| [`USER_PERMISSIONS_FEATURES_FOLDERS`](/reference/env-configuration#user_permissions_features_folders) | Control user-level access to the folders feature (Default: `True`) |
+| [`ENABLE_FOLDERS`](/reference/env-configuration#enable_folders) | 全局启用 / 禁用文件夹功能（默认：`True`） |
+| [`USER_PERMISSIONS_FEATURES_FOLDERS`](/reference/env-configuration#user_permissions_features_folders) | 控制用户层面对文件夹功能的访问权限（默认：`True`） |

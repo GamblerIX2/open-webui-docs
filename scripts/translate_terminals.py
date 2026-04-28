@@ -1,7 +1,10 @@
 import os
+import pathlib
+
+DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 # Docker.md
-filepath = 'd:/Github/open-webui-docs/docs/features/open-terminal/terminals/tab-deployment/Docker.md'
+filepath = DOCS / "features/open-terminal/terminals/tab-deployment/Docker.md"
 with open(filepath, 'r', encoding='utf-8') as f: content = f.read()
 replacements = [
     ('## Prerequisites', '## 前置条件'),
@@ -43,7 +46,7 @@ for old, new in replacements: content = content.replace(old, new)
 with open(filepath, 'w', encoding='utf-8') as f: f.write(content)
 
 # Kubernetes.md
-filepath = 'd:/Github/open-webui-docs/docs/features/open-terminal/terminals/tab-deployment/Kubernetes.md'
+filepath = DOCS / "features/open-terminal/terminals/tab-deployment/Kubernetes.md"
 with open(filepath, 'r', encoding='utf-8') as f: content = f.read()
 replacements = [
     ('## Prerequisites', '## 前置条件'),

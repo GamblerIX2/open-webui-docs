@@ -14,7 +14,7 @@ Open WebUI 提供了大量的环境变量，允许你定制和配置应用程序
 
 :::
 
-### 关于 `PersistentConfig` 环境变量的重要说明
+### 关于 `PersistentConfig` 环境变量的重要说明 {#important-note-on-persistentconfig-environment-variables}
 
 :::note
 
@@ -638,13 +638,13 @@ WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your message
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables gzip compression middleware for HTTP responses, reducing bandwidth usage and improving load times.
+- 描述：为 HTTP 响应启用 gzip 压缩中间件，从而减少带宽占用并提升加载速度。
 
 #### `DEFAULT_PROMPT_SUGGESTIONS`
 
 - 类型：`list` of `dict`
-- 默认值：`[]` (which means to use the built-in default prompt suggestions)
-- 描述：Sets global default prompt suggestions shown to users when starting a new chat. These apply when no model-specific prompt suggestions are configured. Prompt suggestions can also be configured per-model via the Model Editor (see [Prompt Suggestions](/features/workspace/models#prompt-suggestions)), or globally for all models using the [Global Model Defaults](/features/workspace/models#global-model-defaults-admin) feature. The format is:
+- 默认值：`[]`（表示使用内置的默认提示词建议）
+- 描述：设置用户在新建对话时看到的全局默认提示词建议。当没有配置模型级提示词建议时，会使用这里的值。提示词建议也可以在模型编辑器中按模型配置（见 [提示词建议](/features/workspace/models#prompt-suggestions)），或通过 [全局模型默认值](/features/workspace/models#global-model-defaults-admin) 功能对所有模型统一设置。格式如下：
 
 ```json
 [{"title": ["Title part 1", "Title part 2"], "content": "prompt"}]
@@ -652,20 +652,18 @@ WEBUI_BANNERS="[{\"id\": \"1\", \"type\": \"warning\", \"title\": \"Your message
 
 
 
-### AIOHTTP Client
+### AIOHTTP 客户端
 
 #### `AIOHTTP_CLIENT_TIMEOUT`
 
 - 类型：`int`
 - 默认值：`300`
-- 描述：Specifies the timeout duration in seconds for the AIOHTTP client. This impacts things
-such as connections to Ollama and OpenAI endpoints.
+- 描述：指定 AIOHTTP 客户端的超时时长（秒）。这会影响诸如连接 Ollama 和 OpenAI 端点之类的操作。
 
 :::info
 
-This is the maximum amount of time the client will wait for a response before timing out.
-If set to an empty string (' '), the timeout will be set to `None`, effectively disabling the timeout and
-allowing the client to wait indefinitely.
+这是客户端在超时前等待响应的最长时间。
+如果设置为空字符串（`''`），超时将被设为 `None`，等同于禁用超时，让客户端无限期等待。
 
 :::
 
@@ -673,29 +671,29 @@ allowing the client to wait indefinitely.
 
 - 类型：`int`
 - 默认值：`10`
-- 描述：Sets the timeout in seconds for fetching the model list from Ollama and OpenAI endpoints. This affects how long Open WebUI waits for each configured endpoint when loading available models.
+- 描述：设置从 Ollama 和 OpenAI 端点拉取模型列表时的超时时间（秒）。这会影响 Open WebUI 在加载可用模型时，对每个已配置端点的等待时长。
 
-:::note When to Adjust This Value
+:::note 何时调整此值
 
-**Lower the timeout** (e.g., `3`) if:
-- You have multiple endpoints configured and want faster failover when one is unreachable
-- You prefer the UI to load quickly even if some slow endpoints are skipped
+**适合降低超时时间**（例如 `3`）的情况：
+- 你配置了多个端点，并希望其中一个不可达时能更快切换
+- 你更希望 UI 快速加载，即使会跳过某些较慢端点
 
-**Increase the timeout** (e.g., `30`) if:
-- Your model servers are slow to respond (e.g., cold starts, large model loading)
-- You're connecting over high-latency networks
-- You're using providers like OpenRouter that may have variable response times
+**适合提高超时时间**（例如 `30`）的情况：
+- 你的模型服务器响应较慢（例如冷启动、加载大型模型）
+- 你通过高延迟网络进行连接
+- 你使用像 OpenRouter 这样响应时间波动较大的服务商
 
 :::
 
-:::warning Database Persistence
+:::warning 数据库持久化
 
-Connection URLs configured via the Admin Settings UI are **persisted in the database** and take precedence over environment variables. If you save an unreachable URL and the UI becomes unresponsive, you may need to use one of these recovery options:
+通过管理设置 UI 配置的连接 URL 会**持久化到数据库中**，并优先于环境变量生效。如果你保存了一个无法访问的 URL，导致 UI 失去响应，可以考虑以下恢复方式之一：
 
-- `RESET_CONFIG_ON_START=true` - Resets database config to environment variable values on next startup
-- `ENABLE_PERSISTENT_CONFIG=false` - Always use environment variables (UI changes won't persist)
+- `RESET_CONFIG_ON_START=true` —— 在下次启动时将数据库配置重置为环境变量中的值
+- `ENABLE_PERSISTENT_CONFIG=false` —— 始终使用环境变量（UI 更改不会持久保存）
 
-See the [Model List Loading Issues](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints) troubleshooting guide for detailed recovery steps.
+详细恢复步骤请参见[模型列表加载问题](/troubleshooting/connection-error#️-model-list-loading-issues-slow-ui--unreachable-endpoints)故障排查指南。
 
 :::
 
@@ -868,7 +866,7 @@ By default, audit logging uses **blacklist mode** — all paths are logged excep
 
 - 类型：`bool`
 - 默认值：`True`
-- 描述：Enables the use of Ollama APIs.
+- 描述：启用 Ollama API。
 - 持久化：这是一个 `PersistentConfig` 变量。
 
 #### `OLLAMA_BASE_URL` (`OLLAMA_API_BASE_URL` is deprecated) {#ollama_base_url}
@@ -2825,15 +2823,15 @@ Note: this configuration assumes that AWS credentials will be available to your 
 - 类型：`str`
 - 描述：Specifies the AWS region where the S3 Vector Bucket is hosted.
 
-## RAG (检索增强生成) 配置 Content Extraction Engine
+## RAG（检索增强生成）内容提取引擎配置
 
 #### `CONTENT_EXTRACTION_ENGINE`
 
 - 类型：`str`
-- Options:
-  - Leave empty to use default
-  - `external` - Use external loader
-  - `tika` - Use a local Apache Tika server
+- 可选值：
+  - 留空以使用默认值
+  - `external` - 使用外部加载器
+  - `tika` - 使用本地 Apache Tika 服务器
   - `docling` - Use Docling engine
   - `document_intelligence` - Use Document Intelligence engine
   - `mistral_ocr` - Use Mistral OCR engine
@@ -3327,7 +3325,7 @@ This variable was introduced alongside a fix for **uvicorn worker death during d
 - 描述：Sets the API version for Azure OpenAI Services when using Azure OpenAI for RAG embeddings. Common values include `2023-05-15`, `2023-12-01-preview`, or `2024-02-01`.
 - 持久化：这是一个 `PersistentConfig` 变量。
 
-#### Ollama 配置 Embeddings
+#### Ollama Embeddings 配置
 
 #### `RAG_OLLAMA_BASE_URL`
 
@@ -5874,7 +5872,7 @@ For API Key creation (and the API keys themselves):
 1. This setting controls API key creation permission for non-admin users (directly or via User Groups)
 2. API keys must also be globally enabled using `ENABLE_API_KEYS`
 
-**Note:** Administrators can generate API keys whenever `ENABLE_API_KEYS` is enabled, even without `features.api_keys`. See the [Authentication Setup for API Key](/reference/monitoring#authentication-setup-for-api-key-) guide for detailed setup instructions.
+**Note:** 当 `ENABLE_API_KEYS` 启用时，管理员即使没有 `features.api_keys` 权限也可以生成 API key。详细设置说明请参见[监控指南](/reference/monitoring)。
 
 :::
 

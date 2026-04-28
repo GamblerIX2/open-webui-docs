@@ -5,33 +5,33 @@ title: "You.com"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the [contributing tutorial](https://docs.openwebui.com/contributing).
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 [contributing tutorial](https://docs.openwebui.com/contributing)。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
 ## You.com YDC Index API
 
-[You.com](https://you.com/) provides the YDC Index API, a web search API that returns structured search results including titles, URLs, descriptions, and snippets.
+[You.com](https://you.com/) 提供 YDC Index API，这是一套会返回结构化搜索结果的 web search API，包括标题、URL、描述和 snippets。
 
-### Prerequisites
+### 前提条件
 
-- A You.com API key from [You.com API](https://you.com/api)
+- 拥有来自 [You.com API](https://you.com/api) 的 You.com API key
 
-### Docker Compose Setup
+### Docker Compose 设置
 
-Add the following environment variables to your Open WebUI `docker-compose.yaml` file:
+将以下环境变量加入你的 Open WebUI `docker-compose.yaml`：
 
 ```yaml
 services:
@@ -44,11 +44,11 @@ services:
       WEB_SEARCH_CONCURRENT_REQUESTS: 10
 ```
 
-### Admin Panel Setup
+### Admin Panel 设置
 
-1. Log in to Open WebUI with an admin account.
-2. Navigate to **Admin Panel** → **Settings** → **Web Search**.
-3. Enable **Web Search** by toggling it **On**.
-4. Select **youcom** from the **Web Search Engine** dropdown.
-5. Paste your You.com API key into the **You.com API Key** field.
-6. (Optional) Adjust the result count and concurrency settings as needed.
+1. 使用管理员账号登录 Open WebUI
+2. 前往 **Admin Panel** → **Settings** → **Web Search**
+3. 将 **Web Search** 切换为 **On**
+4. 在 **Web Search Engine** 下拉框中选择 **youcom**
+5. 将你的 You.com API key 粘贴到 **You.com API Key** 字段
+6. （可选）按需调整返回结果数量与并发设置

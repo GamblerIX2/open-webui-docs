@@ -1,7 +1,8 @@
 {
-	"label": "Text-to-Speech",
+	"label": "文本转语音",
 	"position": 5,
 	"link": {
-		"type": "generated-index"
+		"type": "generated-index",
+		"slug": "/category/text-to-speech"
 	}
 }

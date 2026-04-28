@@ -34,7 +34,7 @@ Open Terminal 开箱即用，提供合理的默认值。本页面涵盖所有可
 | **Execute Description** | — | `OPEN_TERMINAL_EXECUTE_DESCRIPTION` | 告知 AI 已安装工具的自定义文本 |
 | **Multi-User** | `false` | `OPEN_TERMINAL_MULTI_USER` | 启用[每用户隔离](./multi-user) |
 | **CORS Origins** | — | `OPEN_TERMINAL_CORS_ALLOWED_ORIGINS` | 允许的跨域来源 |
-| **Allowed Domains** | — | `OPEN_TERMINAL_ALLOWED_DOMAINS` | [出站防火墙](./security#出站流量过滤)：仅允许连接到这些域名 |
+| **Allowed Domains** | — | `OPEN_TERMINAL_ALLOWED_DOMAINS` | [出站防火墙](./security#egress-filtering)：仅允许连接到这些域名 |
 
 ---
 

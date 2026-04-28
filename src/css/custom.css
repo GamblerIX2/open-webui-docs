@@ -838,6 +838,7 @@ a.footer__link-item:hover {
 	color: #999;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 [data-theme="light"] .disclaimer-bar a {
 	color: #777;
 	text-decoration: underline;
@@ -848,6 +849,7 @@ a.footer__link-item:hover {
 	color: #555;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 [data-theme="dark"] .disclaimer-bar a {
 	color: #666;
 	text-decoration: underline;

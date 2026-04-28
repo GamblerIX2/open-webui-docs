@@ -1,29 +1,29 @@
 ---
 sidebar_position: 3
-title: "Docling Document Extraction"
+title: "Docling 文档提取"
 ---
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
-## 🐤 Docling Document Extraction
+## 🐤 Docling 文档提取
 
-This documentation provides a step-by-step guide to integrating Docling with Open WebUI. Docling is a document processing library designed to transform a wide range of file formats—including PDFs, Word documents, spreadsheets, HTML, and images—into structured data such as JSON or Markdown. With built-in support for layout detection, table parsing, and language-aware processing, Docling streamlines document preparation for AI applications like search, summarization, and retrieval-augmented generation, all through a unified and extensible interface.
+本文提供一个逐步指南，说明如何将 Docling 集成到 Open WebUI 中。Docling 是一个文档处理库，可将多种文件格式——包括 PDF、Word、电子表格、HTML 与图片——转换为 JSON 或 Markdown 等结构化数据。它内置版面检测、表格解析和语言感知处理能力，可通过统一且可扩展的接口，为搜索、总结与检索增强生成等 AI 场景简化文档准备流程。
 
-## Prerequisites
+## 前提条件
 
-- Open WebUI instance
-- Docker installed on your system
-- Docker network set up for Open WebUI
+- Open WebUI 实例
+- 已在系统中安装 Docker
+- 已为 Open WebUI 准备 Docker network
 
-## Integration Steps
+## 集成步骤
 
-### Step 1: Run Docling-Serve Container
+### 第 1 步：运行 Docling-Serve 容器
 
-**Basic CPU deployment:**
+**基础 CPU 部署：**
 
 ```bash
 docker run -p 5001:5001 \
@@ -31,7 +31,7 @@ docker run -p 5001:5001 \
   quay.io/docling-project/docling-serve
 ```
 
-**GPU deployment (NVIDIA CUDA):**
+**GPU 部署（NVIDIA CUDA）：**
 
 ```bash
 docker run --gpus all -p 5001:5001 \
@@ -39,7 +39,7 @@ docker run --gpus all -p 5001:5001 \
   quay.io/docling-project/docling-serve-cu128
 ```
 
-**Recommended production deployment with Docker Compose:**
+**推荐的生产环境 Docker Compose 部署：**
 
 ```yaml
 version: "3.8"
@@ -74,48 +74,48 @@ services:
               capabilities: [gpu]
 ```
 
-:::danger Important: UVICORN_WORKERS Setting
+:::danger 重要：UVICORN_WORKERS 设置
 
-When using `UVICORN_WORKERS` greater than 1 with the default `LocalOrchestrator`, you will encounter **"Task Not Found (404)"** errors. This happens because each worker maintains its own in-memory task store, making tasks created by one worker inaccessible to another.
+当默认 `LocalOrchestrator` 与 `UVICORN_WORKERS > 1` 一起使用时，你会遇到 **"Task Not Found (404)"** 错误。原因是每个 worker 都维护自己的内存任务存储，从而导致某个 worker 创建的任务无法被另一个 worker 访问。
 
-**Always use `UVICORN_WORKERS=1`** unless you have configured a shared state mechanism like Redis.
+**除非你已配置 Redis 等共享状态机制，否则始终使用 `UVICORN_WORKERS=1`。**
 
 :::
 
-### Step 2: Configure Open WebUI
+### 第 2 步：配置 Open WebUI
 
-1. Log in to your Open WebUI instance
-2. Navigate to **Admin Panel** → **Settings** → **Documents**
-3. Change the **Default** content extraction engine dropdown to **Docling**
-4. Set the extraction engine URL to `http://host.docker.internal:5001` (Docker) or `http://localhost:5001` (native)
-5. Save the changes
+1. 登录你的 Open WebUI 实例
+2. 前往 **Admin Panel** → **Settings** → **Documents**
+3. 将 **Default** 内容提取引擎下拉框切换为 **Docling**
+4. 将提取引擎 URL 设置为 `http://host.docker.internal:5001`（Docker）或 `http://localhost:5001`（原生部署）
+5. 保存更改
 
-### Step 3: Configure Picture Description (Optional)
+### 第 3 步：配置图片描述（可选）
 
-To enable AI-powered image description within documents:
+若要启用文档中的 AI 图片描述：
 
-1. In the **Documents** tab, activate **Describe Pictures in Documents**
-2. Choose a description mode: `local` or `API`
-   - **local**: Vision model runs within the Docling container itself
-   - **API**: Docling calls an external service (e.g., Ollama, OpenAI-compatible endpoint)
+1. 在 **Documents** 标签中启用 **Describe Pictures in Documents**
+2. 选择描述模式：`local` 或 `API`
+   - **local**：Vision 模型在 Docling 容器内部运行
+   - **API**：Docling 调用外部服务（如 Ollama 或兼容 OpenAI 的 endpoint）
 
-:::danger Required for API Mode
+:::danger API 模式的必要条件
 
-When using `API` mode (calling external services like Ollama), you **MUST** set the following environment variable on docling-serve:
+当使用 `API` 模式（即调用 Ollama 等外部服务）时，你**必须**在 docling-serve 上设置以下环境变量：
 
 ```bash
 DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true
 ```
 
-Without this, Docling will reject requests to external services with an `OperationNotAllowed` error.
+否则，Docling 会以 `OperationNotAllowed` 错误拒绝向外部服务发起请求。
 
 :::
 
-#### JSON Configuration Examples
+#### JSON 配置示例
 
-Make sure your configuration is **valid JSON**!
+请确保你的配置是**合法 JSON**！
 
-**Local Model Configuration:**
+**本地模型配置：**
 
 ```json
 {
@@ -128,7 +128,7 @@ Make sure your configuration is **valid JSON**!
 }
 ```
 
-**API Configuration (Ollama):**
+**API 配置（Ollama）：**
 
 ```json
 {
@@ -141,39 +141,39 @@ Make sure your configuration is **valid JSON**!
 }
 ```
 
-## Docling-Serve Environment Variables Reference
+## Docling-Serve 环境变量参考
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DOCLING_SERVE_ENABLE_UI` | `false` | Enable the web UI at `/ui` endpoint |
-| `DOCLING_SERVE_ENABLE_REMOTE_SERVICES` | `false` | **Required** for API-based picture description |
-| `DOCLING_SERVE_MAX_SYNC_WAIT` | `120` | Max seconds to wait for synchronous requests |
-| `DOCLING_SERVE_ENG_LOC_NUM_WORKERS` | `1` | Number of local engine workers |
-| `DOCLING_SERVE_ARTIFACTS_PATH` | `/app/data` | Path to store model artifacts |
-| `UVICORN_WORKERS` | `1` | Number of Uvicorn workers (**keep at 1!**) |
-| `OMP_NUM_THREADS` | `4` | OpenMP thread count for CPU processing |
-| `MKL_NUM_THREADS` | `4` | Intel MKL thread count |
+| `DOCLING_SERVE_ENABLE_UI` | `false` | 在 `/ui` endpoint 启用 Web UI |
+| `DOCLING_SERVE_ENABLE_REMOTE_SERVICES` | `false` | **API 模式图片描述所必需** |
+| `DOCLING_SERVE_MAX_SYNC_WAIT` | `120` | 同步请求最大等待秒数 |
+| `DOCLING_SERVE_ENG_LOC_NUM_WORKERS` | `1` | 本地引擎 worker 数量 |
+| `DOCLING_SERVE_ARTIFACTS_PATH` | `/app/data` | 模型 artifacts 存储路径 |
+| `UVICORN_WORKERS` | `1` | Uvicorn worker 数量（**务必保持为 1！**） |
+| `OMP_NUM_THREADS` | `4` | CPU 处理时的 OpenMP 线程数 |
+| `MKL_NUM_THREADS` | `4` | Intel MKL 线程数 |
 
-## Docling Parameters Reference (Open WebUI)
+## Docling 参数参考（Open WebUI）
 
-Configure via `DOCLING_PARAMS` JSON in **Admin Settings > Documents** or via environment variable.
+可通过 **Admin Settings > Documents** 中的 `DOCLING_PARAMS` JSON，或通过环境变量进行配置。
 
 | Parameter | Type | Description | Allowed Values |
 |-----------|------|-------------|----------------|
-| `pdf_backend` | `string` | PDF parsing engine | `dlparse_v1`, `dlparse_v2`, `dlparse_v4`, `pypdfium2` |
-| `table_mode` | `string` | Table extraction quality | `fast`, `accurate` |
-| `ocr_engine` | `string` | OCR library | `tesseract`, `easyocr`, `ocrmac`, `rapidocr` |
-| `do_ocr` | `bool` | Enable OCR | `true`, `false` |
-| `force_ocr` | `bool` | Force OCR on digital PDFs | `true`, `false` |
-| `pipeline` | `string` | Processing complexity | `standard`, `fast` |
-| `ocr_lang` | `list[string]` | OCR languages | See note below |
+| `pdf_backend` | `string` | PDF 解析引擎 | `dlparse_v1`, `dlparse_v2`, `dlparse_v4`, `pypdfium2` |
+| `table_mode` | `string` | 表格提取质量 | `fast`, `accurate` |
+| `ocr_engine` | `string` | OCR 库 | `tesseract`, `easyocr`, `ocrmac`, `rapidocr` |
+| `do_ocr` | `bool` | 是否启用 OCR | `true`, `false` |
+| `force_ocr` | `bool` | 是否对数字 PDF 强制 OCR | `true`, `false` |
+| `pipeline` | `string` | 处理复杂度 | `standard`, `fast` |
+| `ocr_lang` | `list[string]` | OCR 语言 | 见下方说明 |
 
-:::tip Language Codes
-- **Tesseract**: 3-letter ISO 639-2 (e.g., `eng`, `deu`, `fra`)
-- **EasyOCR**: 2-letter ISO 639-1 (e.g., `en`, `de`, `fr`)
+:::tip 语言代码
+- **Tesseract**：使用 3 位 ISO 639-2（例如 `eng`、`deu`、`fra`）
+- **EasyOCR**：使用 2 位 ISO 639-1（例如 `en`、`de`、`fr`）
 :::
 
-**Example Configuration:**
+**配置示例：**
 
 ```json
 {
@@ -185,60 +185,60 @@ Configure via `DOCLING_PARAMS` JSON in **Admin Settings > Documents** or via env
 }
 ```
 
-## Verifying the Integration
+## 验证集成
 
-1. Access the Docling UI at `http://127.0.0.1:5001/ui`
-2. Upload a test document and verify it returns markdown output
-3. In Open WebUI, upload a file to a knowledge base and confirm processing completes
+1. 访问 Docling UI：`http://127.0.0.1:5001/ui`
+2. 上传一个测试文档，确认它能返回 markdown 输出
+3. 在 Open WebUI 中向知识库上传一个文件，确认处理流程可成功完成
 
-## Troubleshooting
+## 故障排查
 
 ### "Task result not found. Please wait for a completion status."
 
-**Cause**: Multiple Uvicorn workers with in-memory task storage.
+**原因：** 使用了多个 Uvicorn worker，而任务存储又是内存级别。
 
-**Solution**: Set `UVICORN_WORKERS=1` in your docling-serve configuration.
+**解决方案：** 在 docling-serve 配置中将 `UVICORN_WORKERS=1`。
 
 ### "Connections to remote services is only allowed when set explicitly"
 
-**Cause**: Picture description API mode requires explicit opt-in.
+**原因：** Picture description 的 API 模式需要显式开启对外服务访问。
 
-**Solution**: Add `DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true` to your docling-serve environment.
+**解决方案：** 在 docling-serve 环境变量中加入 `DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true`。
 
-### 404 Not Found on `/v1alpha/convert/file`
+### `/v1alpha/convert/file` 返回 404 Not Found
 
-**Cause**: Using outdated docling-serve version or Open WebUI version.
+**原因：** 使用了过旧版本的 docling-serve 或 Open WebUI。
 
-**Solution**: 
-- Update Open WebUI to the latest version (uses `/v1/convert/file`)
-- Update docling-serve to v1.0+ (uses `/v1` API)
+**解决方案：**
+- 将 Open WebUI 更新到最新版（新版使用 `/v1/convert/file`）
+- 将 docling-serve 更新到 v1.0+（新版使用 `/v1` API）
 
-### Timeout errors on large documents
+### 大文档出现超时错误
 
-**Cause**: `DOCLING_SERVE_MAX_SYNC_WAIT` is too low for document processing time.
+**原因：** `DOCLING_SERVE_MAX_SYNC_WAIT` 对文档处理时间来说太低。
 
-**Solution**: Increase `DOCLING_SERVE_MAX_SYNC_WAIT` (e.g., `600` for 10 minutes).
+**解决方案：** 提高 `DOCLING_SERVE_MAX_SYNC_WAIT`（例如设为 `600`，即 10 分钟）。
 
-### OCR not working or incorrect language detection
+### OCR 不工作或语言识别错误
 
-**Cause**: Wrong `ocr_lang` format for the selected OCR engine.
+**原因：** 针对当前 OCR engine，`ocr_lang` 使用了错误格式。
 
-**Solution**: 
-- Tesseract uses 3-letter codes: `["eng", "deu"]`
-- EasyOCR uses 2-letter codes: `["en", "de"]`
+**解决方案：**
+- Tesseract 使用 3 位代码：`["eng", "deu"]`
+- EasyOCR 使用 2 位代码：`["en", "de"]`
 
-### "Error calling Docling" with no specific details
+### "Error calling Docling" 但没有具体细节
 
-**Steps to diagnose:**
-1. Check docling-serve logs: `docker logs docling-serve`
-2. Test Docling directly via the UI at `http://localhost:5001/ui`
-3. Verify network connectivity between Open WebUI and docling-serve containers
+**排查步骤：**
+1. 查看 docling-serve 日志：`docker logs docling-serve`
+2. 直接通过 `http://localhost:5001/ui` 测试 Docling
+3. 验证 Open WebUI 与 docling-serve 容器之间的网络连通性
 
-## Conclusion
+## 结论
 
-Integrating Docling with Open WebUI enhances document processing capabilities significantly. Key points to remember:
+将 Docling 集成到 Open WebUI 后，文档处理能力会明显增强。需要牢记的关键点包括：
 
-- **Always set `UVICORN_WORKERS=1`** to avoid task routing issues
-- **Enable `DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true`** when using API-based picture description
-- **Increase `DOCLING_SERVE_MAX_SYNC_WAIT`** for large documents
-- **Validate JSON syntax** in all configuration fields
+- **始终设置 `UVICORN_WORKERS=1`**，避免任务路由问题
+- 在使用 API 模式图片描述时，**务必开启 `DOCLING_SERVE_ENABLE_REMOTE_SERVICES=true`**
+- 对大文档，**适当提高 `DOCLING_SERVE_MAX_SYNC_WAIT`**
+- 在所有配置字段中，**务必校验 JSON 语法**

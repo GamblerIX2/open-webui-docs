@@ -5,6 +5,6 @@ import type { WrapperProps } from "@docusaurus/types";
 
 type Props = WrapperProps<typeof DocSidebarType>;
 
-export default function DocSidebarWrapper(props: Props): JSX.Element {
+export default function DocSidebarWrapper(props: Props): React.JSX.Element {
 	return <DocSidebar {...props} />;
 }

@@ -1,24 +1,24 @@
 ---
 sidebar_position: 2
-title: "Container Service"
+title: "容器服务"
 ---
 
-# Container Service
+# 容器服务
 
-Run the official `ghcr.io/open-webui/open-webui` image on a managed container platform such as AWS ECS/Fargate, Azure Container Apps, or Google Cloud Run.
+在 AWS ECS/Fargate、Azure Container Apps 或 Google Cloud Run 等托管容器平台上运行官方 `ghcr.io/open-webui/open-webui` 镜像。
 
-:::info Prerequisites
-Before proceeding, ensure you have configured the [shared infrastructure requirements](/enterprise/deployment#shared-infrastructure-requirements) — PostgreSQL, Redis, a vector database, shared storage, and content extraction.
+:::info 前置条件
+继续之前，请先确认你已经配置好了[共享基础设施要求](/enterprise/deployment#shared-infrastructure-requirements)——包括 PostgreSQL、Redis、向量数据库、共享存储和内容提取服务。
 :::
 
-## When to Choose This Pattern
+## 何时选择这种模式
 
-- You want container benefits (immutable images, versioned deployments, no OS management) without Kubernetes complexity
-- Your organization already uses a managed container platform
-- You need fast scaling with minimal operational overhead
-- You prefer managed infrastructure with platform-native auto-scaling
+- 你希望获得容器的优势（不可变镜像、版本化部署、无需管理操作系统），但不想引入 Kubernetes 复杂度
+- 你的组织已经在使用托管容器平台
+- 你需要以较低运维开销实现快速扩缩容
+- 你更偏好平台原生自动扩缩容的托管基础设施
 
-## Architecture
+## 架构
 
 ```mermaid
 flowchart TB
@@ -41,45 +41,45 @@ flowchart TB
     CS --> Backend
 ```
 
-## Image Selection
+## 镜像选择
 
-Use **versioned tags** for production stability:
+为保证生产稳定性，请使用**版本号 tag**：
 
 ```
 ghcr.io/open-webui/open-webui:v0.x.x
 ```
 
-Avoid the `:main` tag in production — it tracks the latest development build and can introduce breaking changes without warning. Check the [Open WebUI releases](https://github.com/open-webui/open-webui/releases) for the latest stable version.
+请避免在生产环境中使用 `:main` tag——它始终跟踪最新开发构建，可能在没有预警的情况下引入破坏性变更。最新稳定版本请查看 [Open WebUI releases](https://github.com/open-webui/open-webui/releases)。
 
-## Scaling Strategy
+## 扩展策略
 
-- **Platform-native auto-scaling**: Configure your container service to scale on CPU utilization, memory, or request count.
-- **Health checks**: Use the `/health` endpoint for both liveness and readiness probes.
-- **Task-level env vars**: Pass all shared infrastructure configuration as environment variables or secrets in your task definition.
-- **Session affinity**: Enable sticky sessions on your load balancer for WebSocket stability. While Redis handles cross-instance coordination, session affinity reduces unnecessary session handoffs.
+- **平台原生自动扩缩容**：按 CPU 利用率、内存或请求数配置扩缩容规则。
+- **健康检查**：使用 `/health` 端点作为 liveness 与 readiness 检查。
+- **任务级环境变量**：在任务定义中通过环境变量或密钥传入所有共享基础设施配置。
+- **会话亲和性**：在负载均衡器上启用 sticky sessions 以提升 WebSocket 稳定性。虽然 Redis 负责跨实例协调，但会话亲和性可减少不必要的会话切换。
 
-## Key Considerations
+## 关键注意事项
 
-| Consideration | Detail |
+| 注意事项 | 说明 |
 | :--- | :--- |
-| **Storage** | Use object storage (S3, GCS, Azure Blob) or a shared filesystem (such as EFS). Container-local storage is ephemeral and not shared across tasks. |
-| **Tika sidecar** | Run Tika as a sidecar container in the same task definition, or as a separate service. Sidecar pattern keeps extraction traffic local. |
-| **Secrets management** | Use your platform's secrets manager (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager) for `DATABASE_URL`, `REDIS_URL`, and `WEBUI_SECRET_KEY`. |
-| **Updates** | Perform a rolling deployment with a single task first — this task runs migrations (`ENABLE_DB_MIGRATIONS=true`). Once healthy, scale the remaining tasks with `ENABLE_DB_MIGRATIONS=false`. |
+| **存储** | 使用对象存储（S3、GCS、Azure Blob）或共享文件系统（例如 EFS）。容器本地存储是临时性的，且不会在任务间共享。 |
+| **Tika Sidecar** | 可将 Tika 作为同一任务定义中的 sidecar 容器运行，或作为独立服务运行。采用 sidecar 模式可让提取流量保持本地。 |
+| **密钥管理** | 对于 `DATABASE_URL`、`REDIS_URL` 和 `WEBUI_SECRET_KEY`，请使用平台提供的密钥管理器（AWS Secrets Manager、Azure Key Vault、GCP Secret Manager）。 |
+| **更新** | 先以单任务方式执行滚动部署——该任务负责运行迁移（`ENABLE_DB_MIGRATIONS=true`）。确认健康后，再将其余任务扩展起来，并设置 `ENABLE_DB_MIGRATIONS=false`。 |
 
-## Anti-Patterns to Avoid
+## 需要避免的反模式
 
-| Anti-Pattern | Impact | Fix |
+| 反模式 | 影响 | 修复方式 |
 | :--- | :--- | :--- |
-| Using local SQLite | Data loss on task restart, database locks with multiple tasks | Set `DATABASE_URL` to PostgreSQL |
-| Default ChromaDB | SQLite-backed vector DB crashes under multi-process access | Set `VECTOR_DB=pgvector` (or Milvus/Qdrant) |
-| Inconsistent `WEBUI_SECRET_KEY` | Login loops, 401 errors, sessions that don't persist across tasks | Set the same key on every task via secrets manager |
-| No Redis | WebSocket failures, config not syncing, "Model Not Found" errors | Set `REDIS_URL` and `WEBSOCKET_MANAGER=redis` |
+| 使用本地 SQLite | 任务重启即丢数据，多任务时会出现数据库锁 | 将 `DATABASE_URL` 设置为 PostgreSQL |
+| 使用默认 ChromaDB | 基于 SQLite 的向量数据库在多进程访问下容易崩溃 | 设置 `VECTOR_DB=pgvector`（或 Milvus/Qdrant） |
+| `WEBUI_SECRET_KEY` 不一致 | 登录循环、401 错误、会话无法跨任务保持 | 通过密钥管理器为所有任务设置同一密钥 |
+| 未配置 Redis | WebSocket 失败、配置不同步、“Model Not Found” 错误 | 设置 `REDIS_URL` 和 `WEBSOCKET_MANAGER=redis` |
 
-For container basics, see the [Quick Start guide](/getting-started/quick-start).
+容器基础部署可参考 [Quick Start guide](/getting-started/quick-start)。
 
 ---
 
-**Need help planning your enterprise deployment?** Our team works with organizations worldwide to design and implement production Open WebUI environments.
+**需要帮助规划企业部署？** 我们的团队正与全球组织合作，共同设计和落地生产级 Open WebUI 环境。
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

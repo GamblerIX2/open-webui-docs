@@ -5,34 +5,34 @@ title: "DDGS"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
-## DDGS (Dux Distributed Global Search)
+## DDGS（Dux Distributed Global Search）
 
-DDGS is a metasearch engine that allows you to search multiple providers through a single interface. 
+DDGS 是一个元搜索引擎，允许你通过统一接口搜索多个 provider。
 
-### Setup
+### 设置
 
-1.  Enable **Web Search** in the Admin Settings.
-2.  Select **DDGS** as the **Web Search Engine**.
-3.  Choose your desired **DDGS Backend** from the dropdown menu.
+1.  在管理员设置中启用 **Web Search**
+2.  将 **Web Search Engine** 设为 **DDGS**
+3.  从下拉菜单中选择你想使用的 **DDGS Backend**
 
-#### DDGS Backend Options
-- **Auto (Random)**: Randomly selects from available providers.
+#### DDGS Backend 选项
+- **Auto (Random)**：从可用 provider 中随机选择
 - **Bing**
 - **Brave**
 - **DuckDuckGo**
@@ -43,8 +43,9 @@ DDGS is a metasearch engine that allows you to search multiple providers through
 - **Yahoo**
 - **Yandex**
 
-#### Environment Variable
-You can also configure the backend using the `DDGS_BACKEND` environment variable.
+#### 环境变量
+
+你也可以通过 `DDGS_BACKEND` 环境变量配置 backend。
 
 ```bash
 DDGS_BACKEND="google"

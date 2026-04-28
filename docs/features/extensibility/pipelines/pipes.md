@@ -42,7 +42,7 @@ yield {"choices": [{"delta": {}, "finish_reason": "stop"}]}
 
 `finish_reason` 应**恰好出现一次**，在末尾，对于自行处理工具执行的 Pipeline，它应始终为 `"stop"` — 而不是 `"tool_calls"`（参见下一节）。
 
-## 自包含代理与 `delta.tool_calls`
+## 自包含代理与 `delta.tool_calls` {#self-contained-agents-and-deltatool_calls}
 
 这是构建代理 Pipeline（LangChain、LlamaIndex、自定义规划器，任何执行自己工具并流式返回结果的东西）时最大的陷阱。
 

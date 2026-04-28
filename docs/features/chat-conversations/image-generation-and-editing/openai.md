@@ -4,70 +4,70 @@ title: "OpenAI"
 ---
 
 :::warning
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 :::
 
-Open WebUI also supports image generation through the **OpenAI APIs**. This option includes a selector for choosing between DALL·E 2, DALL·E 3, and GPT-Image-1 each supporting different image sizes.
+Open WebUI 也支持通过 **OpenAI APIs** 进行图像生成。该方案可在 DALL·E 2、DALL·E 3 与 GPT-Image-1 之间选择，不同模型支持的图像尺寸也不同。
 
-### Initial Setup
+### 初始设置
 
-1. Obtain an [API key](https://platform.openai.com/api-keys) from OpenAI.
+1. 从 OpenAI 获取一个 [API key](https://platform.openai.com/api-keys)
 
-### Configuring Open WebUI
+### 配置 Open WebUI
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Open AI`.
-3. Enter your OpenAI API key.
-4. Choose the model you wish to use. Note that image size options will depend on the selected model:
-   - **DALL·E 2**: Supports `256x256`, `512x512`, or `1024x1024` images.
-   - **DALL·E 3**: Supports `1024x1024`, `1792x1024`, or `1024x1792` images.
-   - **GPT-Image-1**: Supports `auto`, `1024x1024`, `1536x1024`, or `1024x1536` images.
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Open AI`
+3. 输入你的 OpenAI API key
+4. 选择你要使用的模型。请注意，可用图像尺寸会随模型变化：
+   - **DALL·E 2**：支持 `256x256`、`512x512` 或 `1024x1024`
+   - **DALL·E 3**：支持 `1024x1024`、`1792x1024` 或 `1024x1792`
+   - **GPT-Image-1**：支持 `auto`、`1024x1024`、`1536x1024` 或 `1024x1536`
 
 ![Screenshot of the Open WebUI Images settings page with Open AI selected and the API key, model, and image size fields highlighted.](/images/image-generation-and-editing/openai-settings.png)
 
 ### Azure OpenAI
 
-Image generation with Azure OpenAI (DALL·E or GPT-Image) is supported. Configure the Image Generation as follows:
+Open WebUI 同样支持 Azure OpenAI（DALL·E 或 GPT-Image）图像生成。配置方法如下：
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Open AI` (Azure OpenAI uses the same syntax as OpenAI).
-3. Change the API endpoint URL to `https://<instance-id>.cognitiveservices.azure.com/openai/deployments/<model>/`. Set the instance and model id as you find it in the settings of the Azure AI Foundry.
-4. Configure the API version to the value you find in the settings of the Azure AI Foundry.
-5. Enter your Azure OpenAI API key.
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Open AI`（Azure OpenAI 使用与 OpenAI 相同的语法）
+3. 将 API endpoint URL 改为 `https://<instance-id>.cognitiveservices.azure.com/openai/deployments/<model>/`。其中实例 ID 和模型 ID 可在 Azure AI Foundry 设置中找到
+4. 将 API version 设置为你在 Azure AI Foundry 设置中看到的值
+5. 输入你的 Azure OpenAI API key
 
 ![Screenshot of the Open WebUI Images settings page with Open AI selected and the API endpoint URL, API version, and API key fields highlighted for Azure OpenAI configuration.](/images/image-generation-and-editing/azure-openai-settings.png)
 
-:::tip Azure GPT-Image-1.5 Configuration
-For Azure OpenAI **gpt-image-1.5**, use the following settings for successful generation:
-- **Model**: `gpt-image-1.5`
-- **Image Size**: `1024x1024`
-- **API Version**: `2025-04-01-preview`
-- **API Endpoint URL**: `https://<your-resource-name>.openai.azure.com/openai/deployments/<your-deployment-name>/` (ensure the trailing slash is included)
+:::tip Azure GPT-Image-1.5 配置
+若要在 Azure OpenAI 中成功使用 **gpt-image-1.5**，请使用以下设置：
+- **Model**：`gpt-image-1.5`
+- **Image Size**：`1024x1024`
+- **API Version**：`2025-04-01-preview`
+- **API Endpoint URL**：`https://<your-resource-name>.openai.azure.com/openai/deployments/<your-deployment-name>/`（请确保末尾保留 `/`）
 
-If you encounter the error `[ERROR: azure-openai error: Unknown parameter: 'response_format'.]`, double-check that your API Version is set to `2025-04-01-preview` or later.
+如果你遇到 `[ERROR: azure-openai error: Unknown parameter: 'response_format'.]` 报错，请再次确认 API Version 是否为 `2025-04-01-preview` 或更高版本。
 :::
 
 :::tip
-Alternative API endpoint URL tutorial: `https://<endpoint name>.openai.azure.com/openai/deployments/<model name>/` - you can find your endpoint name on https://ai.azure.com/resource/overview, and model name on https://ai.azure.com/resource/deployments.
-You can also copy Target URI from your deployment detailed page, but remember to delete strings after model name.
-For example, if your Target URI is `https://test.openai.azure.com/openai/deployments/gpt-image-1/images/generations?api-version=2025-04-01-preview`, the API endpoint URL in Open WebUI should be `https://test.openai.azure.com/openai/deployments/gpt-image-1/`.
+另一种 API endpoint URL 写法是：`https://<endpoint name>.openai.azure.com/openai/deployments/<model name>/` —— 其中 endpoint name 可在 https://ai.azure.com/resource/overview 找到，model name 可在 https://ai.azure.com/resource/deployments 找到。
+你也可以直接复制部署详情页中的 Target URI，但记得删除模型名称后面的多余字符串。
+例如，如果你的 Target URI 是 `https://test.openai.azure.com/openai/deployments/gpt-image-1/images/generations?api-version=2025-04-01-preview`，那么 Open WebUI 中应填写的 API endpoint URL 为 `https://test.openai.azure.com/openai/deployments/gpt-image-1/`。
 :::
 
-### LiteLLM Proxy with OpenAI Endpoints
+### 使用 OpenAI Endpoint 的 LiteLLM Proxy
 
-Image generation with a LiteLLM proxy using OpenAI endpoints is supported with Open WebUI. Configure the Image Generation as follows:
+Open WebUI 支持通过使用 OpenAI endpoints 的 LiteLLM proxy 进行图像生成。配置方法如下：
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Open AI`.
-3. Change the API endpoint URL to `https://<your-litellm-url>:<port>/v1`.
-4. Enter your LiteLLM API key.
-5. The API version can be left blank.
-6. Enter the image model name as it appears in your LiteLLM configuration.
-7. Set the image size to one of the available sizes for the selected model.
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Open AI`
+3. 将 API endpoint URL 改为 `https://<your-litellm-url>:<port>/v1`
+4. 输入你的 LiteLLM API key
+5. API version 可留空
+6. 输入你在 LiteLLM 配置中使用的图像模型名称
+7. 将图像尺寸设置为该模型支持的尺寸之一
 
 :::tip
 
-To find your LiteLLM connection information, navigate to the **Admin Panel** > **Settings** > **Connections** menu.
-Your connection information will be listed under the OpenAI API connection.
+若要查看 LiteLLM 连接信息，请前往 **Admin Panel** > **Settings** > **Connections**。
+你的连接信息会显示在 OpenAI API connection 下方。
 
 :::

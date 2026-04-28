@@ -1,65 +1,65 @@
 ---
 sidebar_position: 1
-title: "Architecture & High Availability"
+title: "架构与高可用性"
 ---
 
-### Built for Mission-Critical Reliability
+### 为关键任务级可靠性而构建
 
-When AI becomes central to your organization's operations, downtime isn't just inconvenient, it's costly. Open WebUI is architected from the ground up to support enterprise-scale deployments where reliability isn't optional.
+当 AI 成为组织运营的核心组成部分，停机就不只是“不方便”，而是真正的成本。Open WebUI 从底层开始就以支持企业级部署为目标，在这里，可靠性不是可选项。
 
-Whether you're supporting a pilot team of 15 or a global workforce of thousands of users, Open WebUI's architecture scales with you, without requiring a complete rebuild as your needs grow.
+无论你是在支持一个 15 人的试点团队，还是服务覆盖全球、拥有数千名用户的组织，Open WebUI 的架构都能随你的需求一起扩展，而无需在规模增长后推倒重来。
 
-### Architecture Overview
+### 架构概览
 
-#### Stateless, Container-First Design
+#### 无状态、容器优先的设计
 
-Open WebUI follows a **stateless, container-first architecture**, meaning you are not limited to a single server. This design philosophy enables:
+Open WebUI 采用**无状态、容器优先架构**，这意味着你不会被限制在单台服务器上。这样的设计理念带来了：
 
-* **Horizontal Scaling:** Add more instances as demand grows, rather than upgrading to larger (and more expensive) hardware.
-* **Flexible Deployment:** Run on-premise, in private clouds, or hybrid environments without architectural changes.
-* **Container Orchestration Compatibility:** Full support for Kubernetes, Docker Swarm, and other orchestration platforms.
+* **横向扩展：** 随着需求增长，直接增加实例，而不是不断升级更大、也更昂贵的硬件。
+* **灵活部署：** 可在本地、私有云或混合环境中运行，而无需更改架构。
+* **容器编排兼容性：** 完整支持 Kubernetes、Docker Swarm 及其他编排平台。
 
-For decision-makers, this means your initial investment in Open WebUI doesn't become technical debt. The same architecture that supports your proof-of-concept can scale to support your entire organization.
+对于决策者来说，这意味着你在 Open WebUI 上的前期投入不会演变成技术债。支撑 PoC 的同一套架构，也可以继续扩展到支撑整个组织。
 
-### High Availability Configuration
+### 高可用配置
 
-For organizations with demanding uptime requirements, Open WebUI supports production-grade high availability configurations:
+对于对可用性要求较高的组织，Open WebUI 支持生产级高可用配置：
 
-| Component | Capability |
+| 组件 | 能力 |
 | :--- | :--- |
-| **Load Balancing** | Multiple container instances behind a load balancer for resilience and optimal performance. |
-| **External Databases** | PostgreSQL for the main database (SQLite is not supported for multi-instance). |
-| **External Vector Database** | A client-server vector database (PGVector, Milvus, Qdrant) or ChromaDB in HTTP server mode. The default ChromaDB local mode uses SQLite which is not safe for multi-process access. |
-| **Redis** | Required for session management, WebSocket coordination, and configuration sync across instances. |
-| **Persistent Storage** | Flexible storage backends to meet your data residency and performance requirements. |
-| **Observability** | Integration with modern logging and metrics tools for proactive monitoring. |
+| **负载均衡** | 在负载均衡器后运行多个容器实例，以获得更强韧性和更优性能。 |
+| **外部数据库** | 主数据库使用 PostgreSQL（SQLite 不支持多实例场景）。 |
+| **外部向量数据库** | 使用客户端-服务器型向量数据库（PGVector、Milvus、Qdrant），或 HTTP Server 模式的 ChromaDB。默认的 ChromaDB 本地模式基于 SQLite，不适合多进程访问。 |
+| **Redis** | 用于会话管理、WebSocket 协调以及实例间配置同步。 |
+| **持久化存储** | 提供灵活的存储后端，以满足你的数据驻留与性能需求。 |
+| **可观测性** | 可集成现代日志与指标工具，支持主动监控。 |
 
-When properly configured, Open WebUI is designed to support high availability suitable for enterprise environments.
+在正确配置后，Open WebUI 可以提供适合企业环境的高可用能力。
 
-### Scalability in Practice
+### 现实中的可扩展性
 
-Open WebUI isn't theoretically scalable, it's **deployed at scale**. The platform is already trusted in deployments supporting extremely high user counts, including:
+Open WebUI 并不是“理论上可扩展”，而是已经**在大规模场景中落地运行**。平台已被用于支持超高用户量的部署，例如：
 
-* 🎓 **Universities** managing institution-wide AI access.
-* 🏢 **Multinational Enterprises** deploying across regions and business units.
-* 🏛️ **Major Organizations** requiring consistent performance under heavy load.
+* 🎓 **高校**：为全校范围提供 AI 访问能力。
+* 🏢 **跨国企业**：横跨多个区域和业务单元进行部署。
+* 🏛️ **大型组织**：在高负载下仍要求稳定一致的性能。
 
-With the right infrastructure configuration, Open WebUI scales from pilot projects to mission-critical worldwide rollouts.
+在合适的基础设施配置下，Open WebUI 可以从试点项目扩展到全球范围的关键任务级上线。
 
-### What This Means for Your Organization
+### 这对你的组织意味着什么
 
-#### For IT Leadership
+#### 对 IT 管理层
 
-You are not adopting a tool that will need to be replaced as you grow. Open WebUI's architecture supports your long-term AI strategy without forced migrations or re-platforming.
+你采用的不是一个随着规模增长就不得不被替换的工具。Open WebUI 的架构能够支撑你的长期 AI 战略，而无需被迫迁移或重新选型。
 
-#### For Security & Compliance Teams
+#### 对安全与合规团队
 
-Stateless architecture and flexible deployment options mean you can meet data residency requirements and maintain control over where your AI infrastructure lives.
+无状态架构与灵活部署选项意味着，你可以满足数据驻留要求，并始终掌控 AI 基础设施的实际部署位置。
 
-#### For Finance & Procurement
+#### 对财务与采购团队
 
-Horizontal scaling means you pay for capacity as you need it. No over-provisioning of expensive hardware "just in case."
+横向扩展意味着你只需按需购买容量，而不必为了“以防万一”提前过度配置昂贵硬件。
 
 --- 
 
-[**Contact Enterprise Sales → sales@openwebui.com**](mailto:sales@openwebui.com)
+[**联系企业销售 → sales@openwebui.com**](mailto:sales@openwebui.com)

@@ -5,84 +5,80 @@ title: "Valves"
 
 ## Valves
 
-Valves 和 UserValves 用于允许用户提供动态详情，如 API 密钥或配置选项。这些将在给定函数的 GUI 菜单中创建可填写字段或布尔开关。它们始终是可选的，但**强烈建议**使用。
+Valves 和 UserValves 用于让用户提供动态信息，例如 API key 或配置选项。它们会在对应函数的 GUI 菜单中生成可填写字段或布尔开关。它们始终是可选的，但**强烈建议**使用。
 
-因此，Valves 和 UserValves 类可以在 `Pipe`、`Pipeline`、`Filter` 或 `Tools` 类中定义。
+因此，`Valves` 和 `UserValves` 类可以定义在 `Pipe`、`Pipeline`、`Filter` 或 `Tools` 类中。
 
-Valves 只能由管理员通过 Tools 或 Functions 菜单进行配置。而 UserValves 可以由任何用户直接从对话会话中配置。
+Valves 只能由管理员在 Tools 或 Functions 菜单中配置；而 UserValves 则可由任意用户直接在聊天会话中配置。
 
 <details>
-<summary>Commented example</summary>
+<summary>带注释的示例</summary>
 
 ```python
 
 from pydantic import BaseModel, Field
 from typing import Literal
 
-# Define and Valves
+# 定义 Valves
 class Filter:
-   # Notice the current indentation: Valves and UserValves must be declared as
-   # attributes of a Tools, Filter or Pipe class. Here we take the
-   # example of a Filter.
+   # 注意这里的缩进：Valves 和 UserValves 必须声明为
+   # Tools、Filter 或 Pipe 类的属性。这里以 Filter 为例。
     class Valves(BaseModel):
-       # Valves and UserValves inherit from pydantic's BaseModel. This
-       # enables complex use cases like model validators etc.
-       test_valve: int = Field(  # Notice the type hint: it is used to
-           # choose the kind of UI element to show the user (buttons,
-           # texts, etc).
+       # Valves 与 UserValves 继承自 pydantic 的 BaseModel。
+       # 这使得 model validators 等高级能力也可使用。
+       test_valve: int = Field(  # 注意类型标注：它会决定 UI 中展示的控件类型
+           # 例如按钮、文本框等
            default=4,
-           description="A valve controlling a numberical value"
-           # required=False,  # you can enforce fields using True
+           description="一个用于控制数值的 valve"
+           # required=False,  # 若设为 True 可强制要求填写
        )
-       # To give the user the choice between multiple strings, you can use Literal from typing:
+       # 若想让用户在多个字符串中二选一或多选一，可使用 typing.Literal：
        choice_option: Literal["choiceA", "choiceB"] = Field(
            default="choiceA",
-           description="An example of a multi choice valve",
+           description="一个多选 valve 示例",
        )
        priority: int = Field(
            default=0,
-           description="Priority level for the filter operations. Lower values are passed through first"
+           description="Filter 的优先级。值越小越先执行"
        )
-       # The priority field is optional but if present will be used to
-       # order the Filters.
+       # priority 字段不是必需的，但如果存在，就会被用于
+       # 排序 Filters。
        pass
-       # Note that this 'pass' helps for parsing and is recommended.
+       # 这个 pass 有助于解析，建议保留。
 
-   # UserValves are defined the same way.
+   # UserValves 的定义方式完全相同。
     class UserValves(BaseModel):
         test_user_valve: bool = Field(
-            default=False, description="A user valve controlling a True/False (on/off) switch"
+            default=False, description="一个控制开/关的用户 valve"
        )
        pass
 
    def __init__(self):
        self.valves = self.Valves()
-       # Because they are set by the admin, they are accessible directly
-       # upon code execution.
+       # 由于这些值由管理员设置，因此代码执行时可直接访问
        pass
 
-   # The inlet method is only used for Filter but the __user__ handling is the same
+   # inlet 方法这里只是以 Filter 为例，__user__ 的处理逻辑相同
    def inlet(self, body: dict, __user__: dict):
-       # Because UserValves are defined per user they are only available
-       # on use.
-       # Note that although __user__ is a dict, __user__["valves"] is a
-       # UserValves object. Hence you can access values like that:
+       # 因为 UserValves 是按用户定义的，所以只有在使用时才可访问
+       # 注意：虽然 __user__ 是 dict，但 __user__["valves"] 实际是
+       # 一个 UserValves 对象，因此可以这样访问：
        test_user_valve = __user__["valves"].test_user_valve
-       # Or:
+       # 或者：
        test_user_valve = dict(__user__["valves"])["test_user_valve"]
-       # But this will return the default value instead of the actual value:
-       # test_user_valve = __user__["valves"]["test_user_valve"]  # Do not do that!
+       # 但下面这种方式会返回默认值，而不是真实值：
+       # test_user_valve = __user__["valves"]["test_user_valve"]  # 不要这样做！
 ```
 
 </details>
 
 ## 输入类型
 
-Valves support special input types that change how fields are rendered in the UI. You can configure these using `json_schema_extra` with the `input` key in your Pydantic `Field` definitions.
+Valves 支持一些特殊输入类型，它们会影响字段在 UI 中的渲染方式。你可以在 Pydantic `Field` 中通过 `json_schema_extra` 的 `input` 键进行配置。
 
-### Password Input (Masked Fields)
+### Password Input（掩码输入）
 
-For sensitive fields like passwords, API keys, or secrets, you can use the password input type to mask the value in the UI. This prevents the password from being visible on screen (protecting against shoulder surfing).
+对于密码、API key、secret 等敏感字段，你可以使用 password 输入类型，让其在 UI 中以掩码方式显示，从而避免明文暴露在屏幕上。
 
 ```python
 from pydantic import BaseModel, Field
@@ -91,24 +87,24 @@ class Tools:
     class UserValves(BaseModel):
         service_password: str = Field(
             default="",
-            description="Your service password",
+            description="你的服务密码",
             json_schema_extra={"input": {"type": "password"}}
         )
 ```
 
-When rendered, this field will appear as a masked input (dots instead of characters) with a toggle to reveal the value if needed, using Open WebUI's `SensitiveInput` component.
+渲染后，这个字段会以掩码输入框显示（字符显示为圆点），并带有显示 / 隐藏切换，底层使用的是 Open WebUI 的 `SensitiveInput` 组件。
 
 :::tip
-Use password input types for any credential or secret that users configure in their Valves or UserValves. This is especially important for UserValves since they are configurable by end users directly from the chat interface.
+任何凭证或 secret 类型的用户配置项，都建议使用 password 输入类型。对于 UserValves 尤其重要，因为它们允许终端用户直接在聊天界面中配置。
 :::
 
 ### Select Dropdown Input
 
-For fields where users should choose from a predefined list of options, use the select input type to render a dropdown menu. Options can be either static (hardcoded list) or dynamic (generated at runtime by a method).
+对于用户应从预定义选项中选择的字段，可以使用 select 输入类型把它渲染为下拉菜单。选项既可以是静态列表，也可以是运行时动态生成的内容。
 
-#### Static Options
+#### 静态选项
 
-Use a list directly for options that don't change:
+对于不会变化的选项，直接使用列表即可：
 
 ```python
 from pydantic import BaseModel, Field
@@ -117,7 +113,7 @@ class Tools:
     class Valves(BaseModel):
         priority: str = Field(
             default="medium",
-            description="Processing priority level",
+            description="处理优先级",
             json_schema_extra={
                 "input": {
                     "type": "select",
@@ -127,7 +123,7 @@ class Tools:
         )
 ```
 
-You can also use label/value pairs for more descriptive options:
+你也可以使用 label / value 对，使选项说明更清晰：
 
 ```python
 from pydantic import BaseModel, Field
@@ -136,24 +132,24 @@ class Tools:
     class Valves(BaseModel):
         log_level: str = Field(
             default="info",
-            description="Logging verbosity",
+            description="日志详细程度",
             json_schema_extra={
                 "input": {
                     "type": "select",
                     "options": [
-                        {"value": "debug", "label": "Debug (Verbose)"},
-                        {"value": "info", "label": "Info (Standard)"},
-                        {"value": "warn", "label": "Warning (Minimal)"},
-                        {"value": "error", "label": "Error (Critical Only)"}
+                        {"value": "debug", "label": "Debug（详细）"},
+                        {"value": "info", "label": "Info（标准）"},
+                        {"value": "warn", "label": "Warning（最少）"},
+                        {"value": "error", "label": "Error（仅关键）"}
                     ]
                 }
             }
         )
 ```
 
-#### Dynamic Options
+#### 动态选项
 
-For options that need to be generated at runtime (e.g., fetching available models, databases, or user-specific resources), specify a method name as a string. The method will be called when the configuration UI is rendered:
+如果选项需要在运行时生成（例如获取可用模型、数据库、用户资源等），可以把方法名作为字符串传入。该方法会在配置 UI 渲染时被调用：
 
 ```python
 from pydantic import BaseModel, Field
@@ -162,11 +158,11 @@ class Tools:
     class Valves(BaseModel):
         selected_model: str = Field(
             default="",
-            description="Choose a model to use",
+            description="选择要使用的模型",
             json_schema_extra={
                 "input": {
                     "type": "select",
-                    "options": "get_model_options"  # Method name as string
+                    "options": "get_model_options"  # 方法名字符串
                 }
             }
         )
@@ -174,10 +170,10 @@ class Tools:
         @classmethod
         def get_model_options(cls, __user__=None) -> list[dict]:
             """
-            Dynamically fetch available models.
-            Called when the Valves configuration UI is opened.
+            动态获取可用模型。
+            当 Valves 配置 UI 打开时会调用该方法。
             """
-            # Example: Return options based on runtime state
+            # 示例：基于运行时状态返回可选项
             return [
                 {"value": "gpt-4", "label": "GPT-4"},
                 {"value": "gpt-3.5-turbo", "label": "GPT-3.5 Turbo"},
@@ -185,7 +181,7 @@ class Tools:
             ]
 ```
 
-The method can accept an optional `__user__` parameter to generate user-specific options:
+该方法还可以接受可选的 `__user__` 参数，以生成用户级别的动态选项：
 
 ```python
 from pydantic import BaseModel, Field
@@ -194,7 +190,7 @@ class Tools:
     class UserValves(BaseModel):
         workspace: str = Field(
             default="",
-            description="Select your workspace",
+            description="选择你的工作区",
             json_schema_extra={
                 "input": {
                     "type": "select",
@@ -206,14 +202,14 @@ class Tools:
         @classmethod
         def get_user_workspaces(cls, __user__=None) -> list[dict]:
             """
-            Return workspaces available to the current user.
-            __user__ contains the user's information as a dict.
+            返回当前用户可用的工作区。
+            __user__ 是一个包含用户信息的 dict。
             """
             if not __user__:
                 return []
 
             user_id = __user__.get("id")
-            # Fetch user-specific workspaces from your data source
+            # 从你的数据源中获取该用户的工作区
             return [
                 {"value": "ws-1", "label": "Personal Workspace"},
                 {"value": "ws-2", "label": "Team Workspace"}
@@ -221,10 +217,9 @@ class Tools:
 ```
 
 :::tip
-Dynamic options are particularly useful for:
-- Fetching available API models from connected providers
-- Loading database or file options based on current system state
-- Presenting user-specific resources like projects or workspaces
-- Any scenario where options change based on runtime context
+动态选项尤其适用于以下场景：
+- 从已连接 provider 中获取可用模型
+- 根据当前系统状态加载数据库或文件选项
+- 展示用户专属资源，例如项目或工作区
+- 任何需要根据运行时上下文变化的选项
 :::
-

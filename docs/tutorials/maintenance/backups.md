@@ -401,7 +401,7 @@ exit 0
 | 主题 | 描述 |
 |---|---|
 | SQLite 内置备份 | 考虑使用 SQLite 的 `.backup` 命令实现一致的数据库备份方案。 |
-| 加密 | 修改备份脚本以加入静态加密。有关数据库级加密，请参阅 [使用 SQLCipher 进行数据库加密](/reference/database-schema#database-encryption-with-sqlcipher)。 |
+| 加密 | 修改备份脚本以加入静态加密。有关数据库级加密，请参阅 [数据库 Schema 文档](/reference/database-schema)。 |
 | 灾难恢复与测试 | 制定灾难恢复计划，并定期测试备份和恢复流程。 |
 | 其他备份工具 | 探索其他命令行备份工具，如 `borgbackup` 或 `restic`，以获得更高级的功能。 |
 | 邮件通知与 Webhook | 实现邮件通知或 webhook，以监控备份成功或失败的情况。 |

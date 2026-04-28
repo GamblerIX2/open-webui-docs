@@ -1,66 +1,66 @@
 ---
 sidebar_position: 1000
-title: "Channels"
+title: "频道"
 ---
 
-# 💬 Channels
+# 💬 频道
 
-**Where your team and AI think together, in real time.**
+**让你的团队与 AI 在同一时间线里实时协作思考。**
 
-Channels are persistent, shared spaces where humans and AI models participate in the same conversation. Unlike standard chats, which are personal and isolated, Channels let multiple users and multiple models interact in a single timeline. Every exchange, whether human or AI, becomes shared context that the whole team can build on.
+频道是持久化的共享空间，人类与 AI 模型会在同一段对话中共同参与。与个人且相互隔离的普通聊天不同，频道允许多位用户和多个模型在一条统一时间线中互动。无论是人类消息还是 AI 回复，每一次交流都会沉淀为整个团队都能继续利用的共享上下文。
 
-Open WebUI is where knowledge is found, created, and shared. Channels make that collaborative.
-
----
-
-## Why Channels?
-
-### AI as a participant, not a separate tool
-
-Tag `@gpt-4o` to draft a plan, then tag `@claude` to critique it. Your whole team sees both responses in the same timeline with full context. No tab-switching, no copy-pasting between tools.
-
-### Persistent shared context
-
-Every message becomes part of the record. When someone asks a question next week, the AI can draw on everything discussed before. Channels are living knowledge bases, not disposable threads.
-
-### Multiple models, one conversation
-
-Use one model for code review, another for writing, a third for data analysis, all in the same channel. Chain them together for richer answers than any single model could produce.
-
-### Real-time collaboration
-
-Instant updates, emoji reactions, threaded replies, pinned messages, and unread indicators.
+Open WebUI 让知识被发现、创建与共享，而频道则让这一切真正协作起来。
 
 ---
 
-## Key Features
+## 为什么使用频道？
+
+### 让 AI 成为参与者，而不是独立工具
+
+先用 `@gpt-4o` 起草计划，再用 `@claude` 进行审阅。整个团队都能在同一条时间线中看到完整上下文下的两次回复，无需切换标签页，也无需在不同工具之间复制粘贴。
+
+### 持久共享上下文
+
+每条消息都会成为记录的一部分。当有人在下周继续提问时，AI 可以基于之前讨论过的全部内容作答。频道是持续演进的知识库，而不是一次性线程。
+
+### 多个模型，同一段对话
+
+你可以在同一个频道里使用一个模型做代码审查、另一个做写作、第三个做数据分析。把它们串联起来，就能获得任何单一模型都难以给出的更丰富结果。
+
+### 实时协作
+
+即时更新、表情回应、线程回复、消息置顶以及未读提示一应俱全。
+
+---
+
+## 核心特性
 
 | | |
 | :--- | :--- |
-| 🤖 **`@model` tagging** | Summon any AI model into the conversation on demand |
-| 👥 **Shared context** | Every message, human or AI, builds the collective knowledge |
-| 🧵 **Threads & reactions** | Keep discussions organized with replies, pins, and emoji reactions |
-| 📎 **File sharing** | Drop images, documents, and code. AI can see and process them |
-| 🔒 **Access control** | Public, private, group-based, and direct message channels |
-| 🧠 **AI channel awareness** | Models can search and synthesize across channels autonomously |
+| 🤖 **`@model` 标签** | 按需把任意 AI 模型召唤进当前对话 |
+| 👥 **共享上下文** | 无论人类还是 AI，每条消息都会累积团队知识 |
+| 🧵 **线程与互动** | 通过回复、置顶和表情反应保持讨论有序 |
+| 📎 **文件共享** | 可直接投放图像、文档和代码，AI 可读取并处理 |
+| 🔒 **访问控制** | 支持公开、私有、基于群组和私信频道 |
+| 🧠 **AI 频道感知** | 模型可自主跨频道搜索并综合信息 |
 
 ---
 
-## Channel Types
+## 频道类型
 
-| Type | Best for |
+| 类型 | 适用场景 |
 |------|----------|
-| **Standard** | Topic-based rooms (`#engineering`, `#marketing-strategy`), public or private |
-| **Group** | Team-scoped spaces with explicit membership and user-group sync |
-| **Direct Message** | Private 1:1 or small-group conversations with online/offline status |
+| **标准频道** | 按主题组织的房间（如 `#engineering`、`#marketing-strategy`），可公开或私有 |
+| **群组频道** | 团队范围的空间，支持显式成员列表与用户组同步 |
+| **私信频道** | 私密的一对一或小组对话，并显示在线/离线状态 |
 
 ---
 
-## How It Works
+## 工作方式
 
-### Talking to AI
+### 与 AI 对话
 
-Channels are **passive by default**. AI doesn't jump into every conversation. When you need input from a model, just tag it:
+频道**默认是被动式的**。AI 不会主动插入每一段讨论。当你需要某个模型参与时，只需 @ 它：
 
 > **You:** `@gpt-4o` Here's our Q3 revenue data. What trends stand out?
 >
@@ -68,72 +68,72 @@ Channels are **passive by default**. AI doesn't jump into every conversation. Wh
 >
 > **You:** `@claude` Do you agree with that analysis? What's missing?
 
-This means your team can discuss freely without AI interrupting, and call on exactly the right model when it's needed.
+这样一来，团队可以先自由讨论而不被 AI 打断，并在真正需要时调用最合适的模型。
 
-### Tagging people and linking channels
+### @ 同事与链接频道
 
-Use `@username` to notify teammates. Use `#channel-name` to create clickable cross-references between conversations.
+使用 `@username` 通知队友，使用 `#channel-name` 在不同对话之间建立可点击的交叉引用。
 
-### Message interactions
+### 消息互动
 
-Hover any message to react with emoji, pin it for reference, reply inline, or start a threaded side conversation.
+将鼠标悬停到任意消息上，即可添加表情反应、置顶以便引用、直接回复，或发起一个线程式旁支讨论。
 
 ---
 
-## AI Channel Awareness
+## AI 的频道感知能力
 
-With [**native function calling**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) enabled, models can navigate your channels autonomously:
+启用 [**原生函数调用**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native) 后，模型可以自主浏览你的频道：
 
-- **Search channels** by name or description
-- **Search messages** across all accessible channels
-- **Read threads** to understand full discussion context
+- **搜索频道**：按名称或描述查找
+- **搜索消息**：在所有可访问频道中检索
+- **读取线程**：理解完整讨论上下文
 
 > **You:** What was decided in `#dev-team` about the migration timeline?
 >
 > *(The AI searches the channel, reads the relevant thread, and gives you a synthesized answer, all without you leaving your current chat.)*
 
-This removes the need to manually bridge information between private chats and shared channels. The AI does it for you.
+这样就不再需要你手动在私聊与共享频道之间搬运信息，AI 会替你完成这件事。
 
-:::tip Community action: Forward to Channel
-If you want a one-click path from a chat message into a channel, the community **[Forward to Channel](https://openwebui.com/posts/b60c1f03-e29c-47c0-862c-3741a382616e)** action adds a button to each assistant message that posts the reply (or a selection) into a channel of your choice. Useful for promoting good answers from private chats into team-visible spaces without copy-paste.
+:::tip 社区 Action：Forward to Channel
+如果你希望把聊天消息一键转发到频道，社区提供的 **[Forward to Channel](https://openwebui.com/posts/b60c1f03-e29c-47c0-862c-3741a382616e)** Action 会为每条助手消息增加一个按钮，可将整条回复或选定内容发送到你选择的频道。它非常适合把私聊里的优质答案提升到团队可见空间，而无需手动复制粘贴。
 :::
 
 ---
 
-## Getting Started
+## 开始使用
 
-:::info Beta Feature
-Channels is currently in **Beta** and must be enabled by an administrator.
+:::info Beta 功能
+频道目前仍处于 **Beta** 阶段，必须由管理员启用。
 :::
 
-1. Navigate to **Admin Panel > Settings > General**
-2. Toggle **Channels (Beta)** on and save
-3. Channels appear in the sidebar. Click **(+)** to create your first one
+1. 前往 **管理面板 > 设置 > 通用**
+2. 打开 **Channels（Beta）** 开关并保存
+3. 侧边栏会出现频道入口，点击 **(+)** 创建你的第一个频道
 
-Channel creation is restricted to administrators by default. Channels support granular permissions including read-only access, write access, and feature-level toggles via environment variables or group permissions.
-
----
-
-## Use Cases
-
-### Team knowledge hub (`#engineering`)
-
-Your team discusses architecture decisions throughout the week. Someone tags `@claude` to evaluate tradeoffs. The AI's analysis becomes part of the permanent record: searchable, referenceable, and available to every future conversation in that channel.
-
-### Multi-model war room (`#incident-response`)
-
-Paste logs and error traces. Tag `@gpt-4o` to analyze the stack trace. Tag `@deepseek-coder` to suggest a fix. Tag `@claude` to draft the postmortem. Three models, one shared context, one timeline.
-
-### Project strategy (`#product-launch`)
-
-Twenty messages of human brainstorming. Then: `@gpt-4o` Read the conversation above and create a prioritized action plan with owners and deadlines. The AI synthesizes everything discussed into a structured deliverable.
-
-### Creative collaboration (`#story-mode`)
-
-Long-running narrative projects where multiple "character" models interact in the same timeline. Switch between personas without losing context.
+默认情况下，只有管理员可以创建频道。频道支持细粒度权限控制，包括只读、可写，以及通过环境变量或群组权限启用/禁用具体功能。
 
 ---
 
-:::warning Privacy
-Public channels are visible to all users on your instance. Do not share API keys, passwords, or sensitive data in public channels.
+## 使用场景
+
+### 团队知识中心（`#engineering`）
+
+团队在一周内持续讨论架构决策。有人 @ `@claude` 来评估不同方案的取舍，AI 的分析随之成为永久记录：可搜索、可引用，并能在该频道未来的每次对话中继续被利用。
+
+### 多模型作战室（`#incident-response`）
+
+粘贴日志和错误堆栈后，先 @ `@gpt-4o` 分析堆栈，再 @ `@deepseek-coder` 给出修复建议，最后 @ `@claude` 起草复盘。三个模型，共用一个上下文，共处一条时间线。
+
+### 项目策略（`#product-launch`）
+
+在二十多条人类头脑风暴消息之后，再让 `@gpt-4o` 阅读上方对话并产出带负责人和截止日期的优先级行动计划。AI 会把全部讨论综合成结构化交付物。
+
+### 创意协作（`#story-mode`）
+
+适合长周期叙事项目，让多个“角色型”模型在同一时间线中互动，并在不丢失上下文的情况下切换不同人格。
+
+---
+
+:::warning 隐私
+公开频道对你实例中的所有用户可见。请勿在公开频道中分享 API key、密码或敏感数据。
 :::

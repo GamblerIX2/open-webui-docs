@@ -1,100 +1,100 @@
 ---
 sidebar_position: 1
-title: "Configuration"
+title: "配置"
 ---
 
-Open WebUI supports both local, browser, and remote speech to text.
+Open WebUI 同时支持本地、浏览器内置和远程语音转文本。
 
 ![alt text](/images/tutorials/stt/image.png)
 
 ![alt text](/images/tutorials/stt/stt-providers.png)
 
-## Cloud / Remote Speech To Text Providers
+## 云端 / 远程语音转文本提供商
 
-The following speech-to-text providers are supported:
+当前支持以下语音转文本提供商：
 
 | Service | API Key Required | Guide |
 |---------|------------------|-------|
-| Local Whisper (default) | ❌ | Built-in, see [Environment Variables](/features/chat-conversations/audio/speech-to-text/env-variables) |
-| OpenAI (Whisper API) | ✅ | [OpenAI STT Guide](/features/chat-conversations/audio/speech-to-text/openai-stt-integration) |
-| Mistral (Voxtral) | ✅ | [Mistral Voxtral Guide](/features/chat-conversations/audio/speech-to-text/mistral-voxtral-integration) |
+| Local Whisper（默认） | ❌ | 内置支持，参见 [环境变量](/features/chat-conversations/audio/speech-to-text/env-variables) |
+| OpenAI（Whisper API） | ✅ | [OpenAI STT 指南](/features/chat-conversations/audio/speech-to-text/openai-stt-integration) |
+| Mistral（Voxtral） | ✅ | [Mistral Voxtral 指南](/features/chat-conversations/audio/speech-to-text/mistral-voxtral-integration) |
 | Deepgram | ✅ | — |
 | Azure | ✅ | — |
 
-**Web API** provides STT via the browser's built-in speech recognition (no API key needed, configured in user settings).
+**Web API** 则通过浏览器内置语音识别提供 STT（无需 API key，在用户设置中配置）。
 
-## Configuring Your STT Provider
+## 配置你的 STT 提供商
 
-To configure a speech to text provider:
+要配置语音转文本提供商：
 
-- Navigate to the admin settings
-- Choose Audio
-- Provider an API key and choose a model from the dropdown
+- 进入管理员设置
+- 选择 Audio
+- 填入 API key，并从下拉框选择模型
 
 ![alt text](/images/tutorials/stt/stt-config.png)
 
-## User-Level Settings
+## 用户级设置
 
-In addition the instance settings provisioned in the admin panel, there are also a couple of user-level settings that can provide additional functionality.
+除了在管理员面板中配置的实例级设置外，还有一些用户级设置可以提供额外功能。
 
-- **STT Settings:** Contains settings related to Speech-to-Text functionality.
-- **Speech-to-Text Engine:** Determines the engine used for speech recognition (Default or Web API).
+- **STT Settings：** 包含与 Speech-to-Text 相关的设置。
+- **Speech-to-Text Engine：** 决定使用哪种语音识别引擎（Default 或 Web API）。
 
 ![alt text](/images/tutorials/stt/user-settings.png)
 
-## Using STT
+## 使用 STT
 
-Speech to text provides a highly efficient way of "writing" prompts using your voice and it performs robustly from both desktop and mobile devices.
+语音转文本是一种高效“书写”提示词的方式；无论桌面端还是移动端，都有不错的使用体验。
 
-To use STT, simply click on the microphone icon:
+要使用 STT，只需点击麦克风图标：
 
 ![alt text](/images/tutorials/stt/stt-operation.png)
 
-A live audio waveform will indicate successful voice capture:
+出现实时音频波形后，说明语音已被成功采集：
 
 ![alt text](/images/tutorials/stt/stt-in-progress.png)
 
-## STT Mode Operation
+## STT 录音模式操作
 
-Once your recording has begun you can:
+开始录音后，你可以：
 
-- Click on the tick icon to save the recording (if auto send after completion is enabled it will send for completion; otherwise you can manually send)
-- If you wish to abort the recording (for example, you wish to start a fresh recording) you can click on the 'x' icon to scape the recording interface
+- 点击勾选图标保存录音（如果启用了完成后自动发送，就会自动发送；否则你也可以手动发送）
+- 如果想中止录音（例如想重新开始），可以点击 `x` 图标退出录音界面
 
 ![alt text](/images/tutorials/stt/endstt.png)
 
-## Troubleshooting
+## 故障排查
 
-### Common Issues
+### 常见问题
 
-#### "int8 compute type not supported" Error
+#### “int8 compute type not supported” 错误
 
-If you see an error like `Error transcribing chunk: Requested int8 compute type, but the target device or backend do not support efficient int8 computation`, this usually means your GPU doesn't support the requested `int8` compute operations.
+如果你看到类似 `Error transcribing chunk: Requested int8 compute type, but the target device or backend do not support efficient int8 computation` 的报错，通常表示你的 GPU 不支持所请求的 `int8` 计算。
 
-**Solutions:**
-- **Upgrade to the latest version** — persistent configuration for compute type has been improved in recent updates to resolve known issues with CUDA compatibility.
-- **Switch to the standard Docker image** instead of the `:cuda` image — older GPUs (Maxwell architecture, ~2014-2016) may not be supported by modern CUDA accelerated libraries.
-- **Change the compute type** using the `WHISPER_COMPUTE_TYPE` environment variable:
+**解决方案：**
+- **升级到最新版本** —— 近期更新已改进 compute type 的持久化配置，以解决已知 CUDA 兼容性问题。
+- **改用标准 Docker 镜像** 而不是 `:cuda` 镜像 —— 较旧 GPU（Maxwell 架构，约 2014-2016 年）可能不受现代 CUDA 加速库支持。
+- 使用 `WHISPER_COMPUTE_TYPE` 环境变量调整计算类型：
   ```yaml
   environment:
-    - WHISPER_COMPUTE_TYPE=float16  # or float32
+    - WHISPER_COMPUTE_TYPE=float16  # 或 float32
   ```
 
 :::tip
-For smaller models like Whisper, CPU mode often provides comparable performance without GPU compatibility issues. The `:cuda` image primarily accelerates RAG embeddings and won't significantly impact STT speed for most users.
+对于 Whisper 这类较小模型，CPU 模式通常也能提供相近的体验，同时避免 GPU 兼容性问题。` :cuda ` 镜像主要加速的是 RAG embedding，对大多数用户的 STT 速度提升并不明显。
 :::
 
-#### Microphone Not Working
+#### 麦克风无法工作
 
-1. **Check browser permissions** — ensure your browser has microphone access
-2. **Use HTTPS** — some browsers require secure connections for microphone access
-3. **Try another browser** — Chrome typically has the best support for web audio APIs
+1. **检查浏览器权限** —— 确保浏览器已获得麦克风权限
+2. **使用 HTTPS** —— 某些浏览器要求安全连接才允许麦克风访问
+3. **尝试其他浏览器** —— Chrome 通常对 Web Audio API 支持最好
 
-#### Poor Recognition Accuracy
+#### 识别准确率较差
 
-- **Set the language explicitly** using `WHISPER_LANGUAGE=en` (uses ISO 639-1 codes)
-- **Toggles multilingual support** — Use `WHISPER_MULTILINGUAL=true` if you need to support languages other than English. When disabled (default), only the English-only variant of the model is used for better performance in English tasks.
-- **Use a larger Whisper model** — options: `tiny`, `base`, `small`, `medium`, `large`
-- Larger models are more accurate but slower
+- 使用 `WHISPER_LANGUAGE=en` **显式设置语言**（使用 ISO 639-1 代码）
+- **切换多语言支持** —— 如果需要支持英语以外的语言，可设置 `WHISPER_MULTILINGUAL=true`。关闭时（默认值）会使用仅英语版本模型，以获得更好的英文任务性能。
+- **使用更大的 Whisper 模型** —— 可选：`tiny`、`base`、`small`、`medium`、`large`
+- 模型越大通常越准确，但速度也越慢
 
-For more detailed troubleshooting, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。

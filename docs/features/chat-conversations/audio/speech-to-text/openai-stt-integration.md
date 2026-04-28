@@ -1,51 +1,51 @@
 ---
 sidebar_position: 0
-title: "OpenAI STT Integration"
+title: "OpenAI STT 集成"
 ---
 
-# Using OpenAI for Speech-to-Text
+# 使用 OpenAI 实现语音转文本
 
-This guide covers how to use OpenAI's Whisper API for Speech-to-Text with Open WebUI. This provides cloud-based transcription without needing local GPU resources.
+本指南介绍如何在 Open WebUI 中使用 OpenAI Whisper API 进行 Speech-to-Text。这种方式提供云端转录能力，无需本地 GPU 资源。
 
-:::tip Looking for TTS?
-See the companion guide: [Using OpenAI for Text-to-Speech](/features/chat-conversations/audio/text-to-speech/openai-tts-integration)
+:::tip 想配置 TTS？
+请查看配套指南：[使用 OpenAI 实现文本转语音](/features/chat-conversations/audio/text-to-speech/openai-tts-integration)
 :::
 
-## Requirements
+## 前置要求
 
-- An OpenAI API key with access to the Audio API
-- Open WebUI installed and running
+- 拥有可访问 Audio API 的 OpenAI API key
+- Open WebUI 已安装并正常运行
 
-## Quick Setup (UI)
+## 快速配置（UI）
 
-1. Click your **profile icon** (bottom-left corner)
-2. Select **Admin Panel**
-3. Click **Settings** → **Audio** tab
-4. Configure the following:
+1. 点击你的**头像图标**（左下角）
+2. 选择 **Admin Panel**
+3. 点击 **Settings** → **Audio** 标签
+4. 按如下方式配置：
 
 | Setting | Value |
 |---------|-------|
 | **Speech-to-Text Engine** | `OpenAI` |
 | **API Base URL** | `https://api.openai.com/v1` |
-| **API Key** | Your OpenAI API key |
+| **API Key** | 你的 OpenAI API key |
 | **STT Model** | `whisper-1` |
-| **Supported Content Types** | Leave empty for defaults, or set `audio/wav,audio/mpeg,audio/webm` |
+| **Supported Content Types** | 可留空使用默认值，或设置为 `audio/wav,audio/mpeg,audio/webm` |
 
-5. Click **Save**
+5. 点击 **Save**
 
-## Available Models
+## 可用模型
 
 | Model | Description |
 |-------|-------------|
-| `whisper-1` | OpenAI's Whisper large-v2 model, hosted in the cloud |
+| `whisper-1` | OpenAI 在云端托管的 Whisper large-v2 模型 |
 
 :::info
-OpenAI currently only offers `whisper-1`. For more model options, use Local Whisper (built into Open WebUI) or other providers like Deepgram.
+OpenAI 当前仅提供 `whisper-1`。如果你需要更多模型选择，可使用 Local Whisper（Open WebUI 内置）或 Deepgram 等其他提供商。
 :::
 
-## Environment Variables Setup
+## 环境变量配置
 
-If you prefer to configure via environment variables:
+如果你更倾向于使用环境变量：
 
 ```yaml
 services:
@@ -56,81 +56,81 @@ services:
       - AUDIO_STT_OPENAI_API_BASE_URL=https://api.openai.com/v1
       - AUDIO_STT_OPENAI_API_KEY=sk-...
       - AUDIO_STT_MODEL=whisper-1
-    # ... other configuration
+    # ... 其他配置
 ```
 
-### All STT Environment Variables (OpenAI)
+### 全部 STT 环境变量（OpenAI）
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_STT_ENGINE` | Set to `openai` | empty (uses local Whisper) |
-| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI API base URL | `https://api.openai.com/v1` |
-| `AUDIO_STT_OPENAI_API_KEY` | Your OpenAI API key | empty |
-| `AUDIO_STT_MODEL` | STT model | `whisper-1` |
-| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | Allowed audio MIME types | `audio/*,video/webm` |
+| `AUDIO_STT_ENGINE` | 设置为 `openai` | empty（使用本地 Whisper） |
+| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI API Base URL | `https://api.openai.com/v1` |
+| `AUDIO_STT_OPENAI_API_KEY` | 你的 OpenAI API key | empty |
+| `AUDIO_STT_MODEL` | STT 模型 | `whisper-1` |
+| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | 允许的音频 MIME type | `audio/*,video/webm` |
 
-### Supported Audio Formats
+### 支持的音频格式
 
-By default, Open WebUI accepts `audio/*` and `video/webm` for transcription. If you need to restrict or expand supported formats, set `AUDIO_STT_SUPPORTED_CONTENT_TYPES`:
+默认情况下，Open WebUI 接受 `audio/*` 和 `video/webm` 进行转录。如果你想限制或扩展支持格式，可设置 `AUDIO_STT_SUPPORTED_CONTENT_TYPES`：
 
 ```yaml
 environment:
   - AUDIO_STT_SUPPORTED_CONTENT_TYPES=audio/wav,audio/mpeg,audio/webm
 ```
 
-OpenAI's Whisper API supports: `mp3`, `mp4`, `mpeg`, `mpga`, `m4a`, `wav`, `webm`
+OpenAI Whisper API 支持：`mp3`、`mp4`、`mpeg`、`mpga`、`m4a`、`wav`、`webm`
 
-## Using STT
+## 使用 STT
 
-1. Click the **microphone icon** in the chat input
-2. Speak your message
-3. Click the microphone again or wait for silence detection
-4. Your speech will be transcribed and appear in the input box
+1. 点击聊天输入框中的**麦克风图标**
+2. 说出你的内容
+3. 再次点击麦克风，或等待静音检测结束
+4. 你的语音会被转录并显示在输入框中
 
-## OpenAI vs Local Whisper
+## OpenAI 与 Local Whisper 对比
 
 | Feature | OpenAI Whisper API | Local Whisper |
 |---------|-------------------|---------------|
-| **Latency** | Network dependent | Faster for short clips |
-| **Cost** | Per-minute pricing | Free (uses your hardware) |
-| **Privacy** | Audio sent to OpenAI | Audio stays local |
-| **GPU Required** | No | Recommended for speed |
-| **Model Options** | `whisper-1` only | tiny, base, small, medium, large |
+| **Latency** | 取决于网络 | 短音频通常更快 |
+| **Cost** | 按分钟计费 | 免费（使用你的硬件） |
+| **Privacy** | 音频发送到 OpenAI | 音频留在本地 |
+| **GPU Required** | 否 | 为了速度建议使用 |
+| **Model Options** | 仅 `whisper-1` | tiny、base、small、medium、large |
 
-Choose **OpenAI** if:
-- You don't have a GPU
-- You want consistent performance
-- Privacy isn't a concern
+在以下情况下推荐选择 **OpenAI**：
+- 你没有 GPU
+- 你希望获得稳定一致的表现
+- 隐私不是首要顾虑
 
-Choose **Local Whisper** if:
-- You want free transcription
-- You need audio to stay private
-- You have a GPU for acceleration
+在以下情况下推荐选择 **Local Whisper**：
+- 你想要免费转录
+- 你需要音频保留在本地
+- 你拥有可用于加速的 GPU
 
-## Troubleshooting
+## 故障排查
 
-### Microphone Not Working
+### 麦克风无法工作
 
-1. Ensure you're using HTTPS or localhost
-2. Check browser microphone permissions
-3. See [Microphone Access Issues](/troubleshooting/audio#microphone-access-issues)
+1. 确保你正在使用 HTTPS 或 localhost
+2. 检查浏览器麦克风权限
+3. 查看 [Microphone Access Issues](/troubleshooting/audio#microphone-access-issues)
 
-### Transcription Errors
+### 转录报错
 
-1. Check your OpenAI API key is valid
-2. Verify the API Base URL is correct
-3. Check container logs for error messages
+1. 检查 OpenAI API key 是否有效
+2. 确认 API Base URL 是否正确
+3. 查看容器日志中的报错信息
 
-### Language Issues
+### 语言识别问题
 
-OpenAI's Whisper API automatically detects language. If you need to force a specific language, consider using Local Whisper with the `WHISPER_LANGUAGE` environment variable.
+OpenAI Whisper API 会自动检测语言。如果你需要强制指定语言，请考虑改用 Local Whisper，并设置 `WHISPER_LANGUAGE` 环境变量。
 
-For more troubleshooting, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+更多排查信息请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。
 
-## Cost Considerations
+## 成本说明
 
-OpenAI charges per minute of audio for STT. See [OpenAI Pricing](https://platform.openai.com/docs/pricing) for current rates.
+OpenAI 的 STT 按音频分钟数计费。当前价格请参阅 [OpenAI Pricing](https://platform.openai.com/docs/pricing)。
 
 :::tip
-For free STT, use **Local Whisper** (the default) or the browser's **Web API** for basic transcription.
+如果想使用免费 STT，可选择 **Local Whisper**（默认方案）或浏览器 **Web API** 进行基础转录。
 :::

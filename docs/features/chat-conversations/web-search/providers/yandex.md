@@ -5,29 +5,29 @@ title: "Yandex"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
-## Yandex Search API 
+## Yandex Search API
 
-Support for Yandex Web Search is integrated via the [Yandex Cloud Search API](https://yandex.cloud/en/docs/search-api/api-ref/WebSearch/search).
+Yandex Web Search 通过 [Yandex Cloud Search API](https://yandex.cloud/en/docs/search-api/api-ref/WebSearch/search) 集成到 Open WebUI 中。
 
-### Docker Compose Setup
+### Docker Compose 设置
 
-Add the following environment variables to your Open WebUI `docker-compose.yaml` file:
+将以下环境变量加入你的 Open WebUI `docker-compose.yaml`：
 
 ```yaml
 services:
@@ -42,8 +42,8 @@ services:
       # YANDEX_WEB_SEARCH_CONFIG: '{"query": {"searchType": "SEARCH_TYPE_RU"}}'
 ```
 
-### Configuration Options
+### 配置项说明
 
-*   **YANDEX_WEB_SEARCH_URL**: The endpoint for the Yandex Search API. Defaults to `https://searchapi.api.cloud.yandex.net/v2/web/search`.
-*   **YANDEX_WEB_SEARCH_API_KEY**: Your Yandex Cloud API Key.
-*   **YANDEX_WEB_SEARCH_CONFIG**: An optional JSON string to customize the search request. This allows you to set any parameters supported by the Yandex Search API.
+*   **YANDEX_WEB_SEARCH_URL**：Yandex Search API endpoint，默认值为 `https://searchapi.api.cloud.yandex.net/v2/web/search`
+*   **YANDEX_WEB_SEARCH_API_KEY**：你的 Yandex Cloud API Key
+*   **YANDEX_WEB_SEARCH_CONFIG**：一个可选 JSON 字符串，用于自定义搜索请求。你可以通过它设置 Yandex Search API 支持的任意参数

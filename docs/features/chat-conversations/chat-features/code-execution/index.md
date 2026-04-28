@@ -1,114 +1,114 @@
 ---
 sidebar_position: 1
-title: "Code Execution"
+title: "代码执行"
 ---
 
-Open WebUI offers powerful code execution capabilities directly within your chat interface, enabling you to transform ideas into actionable results without leaving the platform.
+Open WebUI 直接在聊天界面中提供强大的代码执行能力，让你无需离开平台，就能把想法转化为可执行结果。
 
-## Key Features
+## 主要特性
 
-- **Code Interpreter Capability**: Enable models to autonomously write and execute Python code as part of their responses. Runs via the `execute_code` tool in Native (Agentic) Mode — the only supported tool-calling mode. An older XML-based integration exists for legacy Default Mode but is unsupported; new deployments should use Native Mode.
+- **Code Interpreter Capability**：允许模型在回复过程中自主编写并执行 Python 代码。通过 Native（Agentic）Mode 下的 `execute_code` 工具运行——这是唯一受支持的工具调用模式。旧版 Default Mode 仍保留基于 XML 的历史集成，但已不再支持；新部署应使用 Native Mode。
 
-- **Python Code Execution**: Run Python scripts directly in your browser using Pyodide, or on a server using Jupyter. Supports popular libraries like pandas and matplotlib with no setup required.
+- **Python 代码执行**：可在浏览器中通过 Pyodide，或在服务器上通过 Jupyter，直接运行 Python 脚本。支持 pandas、matplotlib 等常用库，几乎无需额外配置。
 
-- **MermaidJS Rendering**: Create and visualize flowcharts, diagrams, and other visual representations with MermaidJS syntax that automatically renders in your chat.
+- **MermaidJS 渲染**：使用 MermaidJS 语法创建并可视化流程图、图表及其他视觉内容，系统会在聊天中自动渲染。
 
-- **Interactive Artifacts**: Generate and interact with rich content like HTML websites, SVG graphics, and JavaScript visualizations directly within your conversations.
+- **交互式 Artifacts**：可在对话中直接生成并交互 HTML 网站、SVG 图形、JavaScript 可视化等富内容。
 
-- **Open Terminal**: Connect a remote shell execution API as a tool for full OS-level access — run any command, install packages, and manage files inside an isolated Docker container.
+- **Open Terminal**：将远程 shell 执行 API 作为工具接入，获得完整操作系统级访问——可在隔离 Docker 容器中执行任意命令、安装软件包和管理文件。
 
-These execution capabilities bridge the gap between conversation and implementation, allowing you to explore ideas, analyze data, and create visual content seamlessly while chatting with AI models.
+这些执行能力连接了“对话”和“实现”之间的鸿沟，让你可以在与 AI 模型聊天时无缝探索思路、分析数据并创建可视内容。
 
-## Choosing a Code Execution Backend
+## 如何选择代码执行后端
 
-Open WebUI supports multiple code execution backends, each suited to different use cases. The right choice depends on what you need — lightweight browser-based execution, a full Python environment, or unrestricted shell access.
+Open WebUI 支持多种代码执行后端，适用于不同场景。选择哪一种，取决于你是需要轻量的浏览器端执行、完整 Python 环境，还是不受限制的 shell 访问。
 
-### Pyodide (Default)
+### Pyodide（默认）
 
-Pyodide runs Python in the browser via WebAssembly. It is sandboxed and safe for multi-user environments, but comes with some constraints:
+Pyodide 通过 WebAssembly 在浏览器中运行 Python。它具备沙箱隔离，适合多用户环境，但也存在一些限制：
 
-- **Persistent file storage** — the virtual filesystem at `/mnt/uploads/` is backed by IndexedDB (IDBFS). Files persist across code executions within the same session and survive page reloads.
-- **Built-in file browser** — when Code Interpreter is enabled, a file browser panel appears in the chat controls sidebar. You can browse, preview, upload, download, and delete files in the Pyodide filesystem — no terminal needed.
-- **User file access** — files attached to messages are automatically placed in `/mnt/uploads/` before code execution, so the model (and your code) can read them directly.
-- **Limited library support** — only a subset of Python packages are available. Libraries that rely on C extensions or system calls may not work.
-- **No shell access** — cannot run shell commands, install packages, or interact with the OS.
+- **持久化文件存储** —— `/mnt/uploads/` 虚拟文件系统由 IndexedDB（IDBFS）支持；同一会话中多次代码执行之间、甚至页面刷新后，文件仍然保留
+- **内置文件浏览器** —— 启用 Code Interpreter 后，聊天控制侧边栏会出现文件浏览器面板。你可以浏览、预览、上传、下载和删除 Pyodide 文件系统中的文件，无需终端
+- **用户文件访问** —— 附加到消息的文件会在执行前自动放入 `/mnt/uploads/`，因此模型和你的代码都可以直接读取
+- **库支持有限** —— 仅有部分 Python 包可用。依赖 C 扩展或系统调用的库通常无法使用
+- **无 shell 访问** —— 不能执行 shell 命令、安装软件包或直接与操作系统交互
 
 :::tip
-Pyodide works well for **text analysis, hash computation, chart generation, file processing**, and other self-contained tasks. Chart libraries like matplotlib produce base64-encoded images that Open WebUI automatically captures, uploads as files, and injects direct image links into the output — so models can display charts directly in chat without any extra setup.
+Pyodide 很适合 **文本分析、哈希计算、图表生成、文件处理** 等自包含任务。像 matplotlib 这样的图表库会输出 base64 编码图像，Open WebUI 会自动捕获它们、上传为文件，并将图像链接注入输出中——因此模型无需额外配置即可直接在聊天中显示图表。
 :::
 
-:::warning Best for basic analysis only
-Pyodide runs Python via WebAssembly inside the browser. The AI **cannot install additional libraries** beyond the small fixed set listed below — any code that imports an unsupported package will fail. Execution is also **significantly slower** than native Python, and large datasets or CPU-intensive tasks may hit browser memory limits. Pyodide is best suited for **basic file analysis, simple calculations, text processing, and chart generation**. For anything more demanding, use **Open Terminal** instead, which provides full native performance and unrestricted package access inside a Docker container.
+:::warning 仅适合基础分析
+Pyodide 通过 WebAssembly 在浏览器内运行 Python。AI **无法安装额外库**，只能使用下方列出的固定小集合；任何导入不受支持包的代码都会失败。执行速度也**明显慢于原生 Python**，大数据集或高 CPU 负载任务可能会触发浏览器内存上限。Pyodide 最适合 **基础文件分析、简单计算、文本处理和图表生成**。若需要更重型的任务，请改用 **Open Terminal**，它能在 Docker 容器中提供原生性能和不受限制的软件包访问。
 
-Available libraries: micropip, requests, beautifulsoup4, numpy, pandas, matplotlib, seaborn, scikit-learn, scipy, regex, sympy, tiktoken, pytz, and the Python standard library. **Nothing else can be installed at runtime.**
+可用库包括：micropip、requests、beautifulsoup4、numpy、pandas、matplotlib、seaborn、scikit-learn、scipy、regex、sympy、tiktoken、pytz 以及 Python 标准库。**除此之外的库都不能在运行时安装。**
 :::
 
-:::note Mutually exclusive with Open Terminal
-The Code Interpreter toggle and the Open Terminal toggle cannot be active at the same time. Activating one will deactivate the other — they serve similar purposes but use different execution backends.
+:::note 与 Open Terminal 互斥
+Code Interpreter 开关与 Open Terminal 开关不能同时启用。启用其中一个会自动关闭另一个——它们目的相近，但后端不同。
 :::
 
-### Jupyter (Legacy)
+### Jupyter（旧版）
 
-:::caution Legacy Engine
-Jupyter is now considered a **legacy** code execution engine. The Pyodide engine is recommended for most use cases, and Open Terminal is recommended when you need full server-side execution. Jupyter support may be deprecated in a future release.
+:::caution 旧版引擎
+Jupyter 现在被视为**旧版**代码执行引擎。大多数场景推荐使用 Pyodide；若需要完整服务端执行能力，则推荐 Open Terminal。未来版本中，Jupyter 支持可能会被弃用。
 :::
 
-Jupyter provides a full Python environment and can handle virtually any task — file creation, package installation, and complex library usage. However, it has significant drawbacks in shared deployments:
+Jupyter 提供完整 Python 环境，几乎能处理任何任务——创建文件、安装软件包、使用复杂库等。但在共享部署中，它也有明显缺点：
 
-- **Shared environment** — all users share the same Python runtime and filesystem.
-- **Not sandboxed by default** — without careful configuration, users can access system resources or read other users' data.
-- **Not designed for multi-tenant use** — Jupyter was built for single-user workflows.
+- **共享环境** —— 所有用户共享同一个 Python 运行时和文件系统
+- **默认不隔离** —— 若未仔细配置，用户可能访问系统资源或读取其他用户数据
+- **并非为多租户设计** —— Jupyter 最初是为单用户工作流构建的
 
 :::warning
-If you are running a multi-user or organizational deployment, **Jupyter is not recommended** as the code execution backend. Open WebUI's Jupyter integration connects to a single shared instance with no per-user isolation. Jupyter is best suited for **single-user, development, or trusted-user setups** only.
+如果你运行的是多用户或组织级部署，**不推荐**使用 Jupyter 作为代码执行后端。Open WebUI 的 Jupyter 集成连接的是一个共享实例，没有按用户隔离。Jupyter 更适合**单用户、开发环境或可信用户环境**。
 :::
 
-### Open Terminal
+### Open Terminal {#open-terminal}
 
-[Open Terminal](https://github.com/open-webui/open-terminal) is a lightweight API for running shell commands remotely inside a Docker container. It provides full OS-level access — any language, any tool, any shell command — with container-level isolation.
+[Open Terminal](https://github.com/open-webui/open-terminal) 是一个轻量级 API，用于在 Docker 容器中远程执行 shell 命令。它提供完整的操作系统级访问——任意语言、任意工具、任意 shell 命令——并通过容器实现隔离。
 
-- **Full shell access** — models can install packages, run scripts in any language, use system tools like ffmpeg, git, curl, etc.
-- **Container isolation** — runs in its own Docker container, separate from Open WebUI and other services.
-- **Rich pre-installed toolset** — the Docker image comes with Python 3.12, data science libraries, build tools, networking utilities, and more.
-- **Built-in file browser** — browse, preview, create, delete, upload, and download files directly from the chat controls panel.
-- **Built-in multi-user mode** — a single container can serve multiple users with per-user Linux account isolation (good for small teams, not for large-scale deployments).
+- **完整 shell 访问** —— 模型可安装软件包、运行任意语言脚本、使用 ffmpeg、git、curl 等系统工具
+- **容器级隔离** —— 运行在独立 Docker 容器中，与 Open WebUI 和其他服务分离
+- **预装丰富工具集** —— 镜像默认包含 Python 3.12、数据科学库、构建工具、网络工具等
+- **内置文件浏览器** —— 可直接从聊天控制面板中浏览、预览、创建、删除、上传和下载文件
+- **内置多用户模式** —— 单个容器可服务多个用户，并通过 Linux 账号实现按用户隔离（适合小团队，不适合大规模部署）
 
-For full documentation, see the [Open Terminal integration guide](/features/open-terminal).
+完整文档请参阅 [Open Terminal integration guide](/features/open-terminal)。
 
-### Terminals (Multi-Tenant Orchestrator)
+### Terminals（多租户编排器）
 
-[Terminals](https://github.com/open-webui/terminals) is a multi-tenant orchestrator that provisions and manages **isolated Open Terminal containers per user**. Where Open Terminal is a single instance, Terminals is the scaling layer on top that handles the full lifecycle: provisioning, routing, idle cleanup, and teardown. It requires an [enterprise license](/enterprise).
+[Terminals](https://github.com/open-webui/terminals) 是一个多租户编排层，可为**每个用户**动态创建并管理独立的 Open Terminal 容器。Open Terminal 是单实例工具，而 Terminals 则是其上层扩展，负责完整生命周期：创建、路由、空闲清理和销毁。它需要 [enterprise license](/enterprise)。
 
-- **One container per user** — each user gets their own isolated Open Terminal container with its own filesystem, processes, and resources. No shared kernel or process space between users.
-- **Automatic lifecycle management** — containers are provisioned on first request, stopped after configurable idle timeout, and cleaned up automatically.
-- **Multiple backends** — Docker (one container per user), Kubernetes (Pod + PVC + Service per user), Kubernetes Operator (CRD-based), local (subprocess for dev), or static (proxy to a single instance).
-- **Transparent routing** — all Open Terminal API endpoints are available under `/terminals/`. Terminals routes requests to the correct user's container based on the `X-User-Id` header.
-- **Enterprise-ready** — supports PostgreSQL for tenant state, JWT authentication against Open WebUI, audit logging, SIEM webhook integration, and encrypted API key storage.
-- **Admin dashboard** — built-in frontend for managing tenants and monitoring instances.
+- **每用户一个容器** —— 每个用户都有独立的 Open Terminal 容器，拥有自己的文件系统、进程和资源；用户之间不共享 kernel 或进程空间
+- **自动生命周期管理** —— 首次请求时自动创建容器，空闲超时后自动停止，并自动清理
+- **支持多种后端** —— Docker（每用户一个容器）、Kubernetes（每用户一个 Pod + PVC + Service）、Kubernetes Operator（基于 CRD）、local（开发用 subprocess）或 static（代理到单一实例）
+- **透明路由** —— 所有 Open Terminal API endpoint 都可通过 `/terminals/` 访问；Terminals 会根据 `X-User-Id` 将请求路由到对应用户容器
+- **企业就绪** —— 支持使用 PostgreSQL 存储租户状态、对接 Open WebUI 的 JWT 身份验证、审计日志、SIEM webhook 集成和加密 API key 存储
+- **管理员面板** —— 内置前端用于管理租户和监控实例
 
-:::warning Alpha Software
-Terminals is under active development and not yet ready for production use. APIs, configuration, and features may change without notice.
+:::warning Alpha 软件
+Terminals 仍在积极开发中，尚未准备好用于生产环境。API、配置和功能都可能随时变更。
 :::
 
 :::note License
-Terminals is licensed under the [Open WebUI Enterprise License](/enterprise), not MIT.
+Terminals 使用 [Open WebUI Enterprise License](/enterprise) 授权，而不是 MIT。
 :::
 
-### Comparison
+### 对比
 
 | Consideration | Pyodide | Jupyter (Legacy) | Open Terminal | Terminals |
 | :--- | :--- | :--- | :--- | :--- |
-| **Runs in** | Browser (WebAssembly) | Server (Python kernel) | Server (Docker container) | Server (orchestrated containers) |
-| **Library support** | Limited subset | Full Python ecosystem | Full OS — any language, any tool | Full OS — any language, any tool |
-| **Shell access** | ❌ None | ⚠️ Limited | ✅ Full shell | ✅ Full shell |
-| **File persistence** | ✅ IDBFS (persists across executions & reloads) | ✅ Shared filesystem | ✅ Container filesystem (until removal) | ✅ Persistent volumes per user |
-| **File browser** | ✅ Built-in sidebar panel | ❌ None | ✅ Built-in sidebar panel | ✅ Built-in sidebar panel |
-| **User file access** | ✅ Attached files placed in `/mnt/uploads/` | ❌ Manual | ✅ Attached files available | ✅ Attached files available |
-| **Isolation** | ✅ Browser sandbox | ❌ Shared environment | ✅ Container-level (when using Docker) | ✅ Full container-per-user isolation |
-| **Multi-user safety** | ✅ Per-user by design | ⚠️ Not isolated | ℹ️ Built-in multi-user mode (small teams) | ✅ Container-per-user with lifecycle management |
-| **File generation** | ✅ Write to `/mnt/uploads/`, download via file browser | ✅ Full support | ✅ Full support with upload/download | ✅ Full support with upload/download |
-| **Setup** | None (built-in) | Admin configures globally | Native integration via Settings → Integrations | Separate service + Docker socket or K8s cluster |
-| **Recommended for orgs** | ✅ Safe default | ❌ Not without isolation | ℹ️ Best for small teams | ✅ Designed for multi-tenant orgs |
-| **Enterprise scalability** | ✅ Client-side, no server load | ❌ Single shared instance | ℹ️ Single container, shared resources | ✅ Horizontally scalable (Docker or Kubernetes) |
-| **Idle management** | N/A | N/A | N/A (always running) | ✅ Auto-stop after configurable timeout |
+| **Runs in** | 浏览器（WebAssembly） | 服务器（Python kernel） | 服务器（Docker 容器） | 服务器（编排容器） |
+| **Library support** | 有限子集 | 完整 Python 生态 | 完整 OS —— 任意语言、任意工具 | 完整 OS —— 任意语言、任意工具 |
+| **Shell access** | ❌ 无 | ⚠️ 有限 | ✅ 完整 shell | ✅ 完整 shell |
+| **File persistence** | ✅ IDBFS（跨执行与刷新持久） | ✅ 共享文件系统 | ✅ 容器文件系统（直到被移除） | ✅ 每用户持久卷 |
+| **File browser** | ✅ 内置侧边栏面板 | ❌ 无 | ✅ 内置侧边栏面板 | ✅ 内置侧边栏面板 |
+| **User file access** | ✅ 附件自动放入 `/mnt/uploads/` | ❌ 手动 | ✅ 可直接访问附件文件 | ✅ 可直接访问附件文件 |
+| **Isolation** | ✅ 浏览器沙箱 | ❌ 共享环境 | ✅ 容器级隔离（Docker） | ✅ 完整每用户容器隔离 |
+| **Multi-user safety** | ✅ 天然按用户隔离 | ⚠️ 无隔离 | ℹ️ 内置多用户模式（适合小团队） | ✅ 每用户容器并带生命周期管理 |
+| **File generation** | ✅ 写入 `/mnt/uploads/`，通过文件浏览器下载 | ✅ 完整支持 | ✅ 完整支持上传 / 下载 | ✅ 完整支持上传 / 下载 |
+| **Setup** | 无（内置） | 管理员全局配置 | 通过 Settings → Integrations 原生集成 | 独立服务 + Docker socket 或 K8s 集群 |
+| **Recommended for orgs** | ✅ 安全默认值 | ❌ 无隔离时不推荐 | ℹ️ 适合小团队 | ✅ 为多租户组织设计 |
+| **Enterprise scalability** | ✅ 客户端运行，无服务器负载 | ❌ 单一共享实例 | ℹ️ 单容器，共享资源 | ✅ 横向扩展（Docker 或 Kubernetes） |
+| **Idle management** | N/A | N/A | N/A（始终运行） | ✅ 可配置超时后自动停止 |
 | **License** | MIT | MIT | MIT | [Enterprise](/enterprise) |

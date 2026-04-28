@@ -1,70 +1,70 @@
 ---
 sidebar_position: 2
-title: "Environment Variables"
+title: "环境变量"
 ---
 
-## Environment Variables List
+## 环境变量清单
 
 :::info
 
-For a complete list of all Open WebUI environment variables, see the [Environment Variable Configuration](https://docs.openwebui.com/reference/env-configuration) page.
+如需查看 Open WebUI 全部环境变量，请参阅 [Environment Variable Configuration](https://docs.openwebui.com/reference/env-configuration) 页面。
 
 :::
 
-The following is a summary of the environment variables for speech to text (STT) and text to speech (TTS).
+下文汇总了语音转文本（STT）和文本转语音（TTS）相关的环境变量。
 
-:::tip UI Configuration
-Most of these settings can also be configured in the **Admin Panel → Settings → Audio** tab. Environment variables take precedence on startup but can be overridden in the UI.
+:::tip UI 配置
+其中大多数设置也可以在 **Admin Panel → Settings → Audio** 中配置。环境变量会在启动时优先生效，但之后仍可在 UI 中覆盖。
 :::
 
-## Speech To Text (STT) Environment Variables
+## 语音转文本（STT）环境变量
 
-### Preprocessing
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `BYPASS_PYDUB_PREPROCESSING` | Skip pydub-based preprocessing (MP3 conversion, compression, chunk splitting) before sending audio to the STT engine. Applies to all engines. Useful when the upstream provider already handles these steps, or when ffmpeg is unavailable on the host. | `false` |
-
-### Local Whisper
+### 预处理
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `WHISPER_MODEL` | Whisper model size | `base` |
-| `WHISPER_MODEL_DIR` | Directory to store Whisper model files | `{CACHE_DIR}/whisper/models` |
-| `WHISPER_COMPUTE_TYPE` | Compute type for inference (see note below) | `int8` |
-| `WHISPER_LANGUAGE` | ISO 639-1 language code (empty = auto-detect) | empty |
-| `WHISPER_MULTILINGUAL` | Use the multilingual Whisper model | `false` |
-| `WHISPER_MODEL_AUTO_UPDATE` | Auto-download model updates | `false` |
-| `WHISPER_VAD_FILTER` | Enable Voice Activity Detection filter | `false` |
+| `BYPASS_PYDUB_PREPROCESSING` | 在将音频发送到 STT 引擎前，跳过基于 pydub 的预处理（MP3 转换、压缩、分块切分）。适用于所有引擎。当上游提供商已处理这些步骤，或主机上没有 ffmpeg 时很有用。 | `false` |
 
-:::info WHISPER_COMPUTE_TYPE Options
-- `int8` — CPU default, fastest but may not work on older GPUs
-- `float16` — **Recommended for CUDA/GPU**
-- `int8_float16` — Hybrid mode (int8 weights, float16 computation)
-- `float32` — Maximum compatibility, slowest
+### 本地 Whisper
 
-If using the `:cuda` Docker image with an older GPU, set `WHISPER_COMPUTE_TYPE=float16` to avoid errors.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `WHISPER_MODEL` | Whisper 模型大小 | `base` |
+| `WHISPER_MODEL_DIR` | Whisper 模型文件的存储目录 | `{CACHE_DIR}/whisper/models` |
+| `WHISPER_COMPUTE_TYPE` | 推理使用的计算类型（见下方说明） | `int8` |
+| `WHISPER_LANGUAGE` | ISO 639-1 语言代码（留空 = 自动检测） | empty |
+| `WHISPER_MULTILINGUAL` | 使用多语言 Whisper 模型 | `false` |
+| `WHISPER_MODEL_AUTO_UPDATE` | 自动下载模型更新 | `false` |
+| `WHISPER_VAD_FILTER` | 启用语音活动检测过滤器 | `false` |
+
+:::info WHISPER_COMPUTE_TYPE 选项
+- `int8` —— CPU 默认值，速度最快，但在较老的 GPU 上可能不可用
+- `float16` —— **CUDA / GPU 推荐值**
+- `int8_float16` —— 混合模式（int8 权重，float16 计算）
+- `float32` —— 兼容性最高，但最慢
+
+如果你使用 `:cuda` Docker 镜像且 GPU 较旧，请设置 `WHISPER_COMPUTE_TYPE=float16` 以避免报错。
 :::
 
-### OpenAI-Compatible STT
+### OpenAI 兼容 STT
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_STT_ENGINE` | STT engine: empty (local Whisper), `openai`, `azure`, `deepgram`, `mistral` | empty |
-| `AUDIO_STT_MODEL` | STT model for external providers | empty |
-| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI-compatible API base URL | `https://api.openai.com/v1` |
+| `AUDIO_STT_ENGINE` | STT 引擎：留空（本地 Whisper）、`openai`、`azure`、`deepgram`、`mistral` | empty |
+| `AUDIO_STT_MODEL` | 外部提供商使用的 STT 模型 | empty |
+| `AUDIO_STT_OPENAI_API_BASE_URL` | OpenAI 兼容 API Base URL | `https://api.openai.com/v1` |
 | `AUDIO_STT_OPENAI_API_KEY` | OpenAI API key | empty |
-| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | Comma-separated list of supported audio MIME types | empty |
+| `AUDIO_STT_SUPPORTED_CONTENT_TYPES` | 支持的音频 MIME type，逗号分隔 | empty |
 
 ### Azure STT
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `AUDIO_STT_AZURE_API_KEY` | Azure Cognitive Services API key | empty |
-| `AUDIO_STT_AZURE_REGION` | Azure region | `eastus` |
-| `AUDIO_STT_AZURE_LOCALES` | Comma-separated locales (e.g., `en-US,de-DE`) | auto |
-| `AUDIO_STT_AZURE_BASE_URL` | Custom Azure base URL (optional) | empty |
-| `AUDIO_STT_AZURE_MAX_SPEAKERS` | Max speakers for diarization | `3` |
+| `AUDIO_STT_AZURE_REGION` | Azure 区域 | `eastus` |
+| `AUDIO_STT_AZURE_LOCALES` | 地区列表，逗号分隔（例如 `en-US,de-DE`） | auto |
+| `AUDIO_STT_AZURE_BASE_URL` | 自定义 Azure Base URL（可选） | empty |
+| `AUDIO_STT_AZURE_MAX_SPEAKERS` | 说话人数上限（用于 diarization） | `3` |
 
 ### Deepgram STT
 
@@ -77,61 +77,61 @@ If using the `:cuda` Docker image with an older GPU, set `WHISPER_COMPUTE_TYPE=f
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `AUDIO_STT_MISTRAL_API_KEY` | Mistral API key | empty |
-| `AUDIO_STT_MISTRAL_API_BASE_URL` | Mistral API base URL | `https://api.mistral.ai/v1` |
-| `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS` | Use chat completions endpoint | `false` |
+| `AUDIO_STT_MISTRAL_API_BASE_URL` | Mistral API Base URL | `https://api.mistral.ai/v1` |
+| `AUDIO_STT_MISTRAL_USE_CHAT_COMPLETIONS` | 使用 chat completions endpoint | `false` |
 
-## Text To Speech (TTS) Environment Variables
+## 文本转语音（TTS）环境变量
 
-### General TTS
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `AUDIO_TTS_ENGINE` | TTS engine: empty (disabled), `openai`, `mistral`, `elevenlabs`, `azure`, `transformers` | empty |
-| `AUDIO_TTS_MODEL` | TTS model | `tts-1` |
-| `AUDIO_TTS_VOICE` | Default voice | `alloy` |
-| `AUDIO_TTS_SPLIT_ON` | Split text on: `punctuation`, `paragraphs`, or `none` | `punctuation` |
-| `AUDIO_TTS_API_KEY` | API key for ElevenLabs or Azure TTS | empty |
-
-### OpenAI-Compatible TTS
+### 通用 TTS
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_TTS_OPENAI_API_BASE_URL` | OpenAI-compatible TTS API base URL | `https://api.openai.com/v1` |
+| `AUDIO_TTS_ENGINE` | TTS 引擎：留空（禁用）、`openai`、`mistral`、`elevenlabs`、`azure`、`transformers` | empty |
+| `AUDIO_TTS_MODEL` | TTS 模型 | `tts-1` |
+| `AUDIO_TTS_VOICE` | 默认语音 | `alloy` |
+| `AUDIO_TTS_SPLIT_ON` | 文本切分方式：`punctuation`、`paragraphs` 或 `none` | `punctuation` |
+| `AUDIO_TTS_API_KEY` | ElevenLabs 或 Azure TTS 使用的 API key | empty |
+
+### OpenAI 兼容 TTS
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AUDIO_TTS_OPENAI_API_BASE_URL` | OpenAI 兼容 TTS API Base URL | `https://api.openai.com/v1` |
 | `AUDIO_TTS_OPENAI_API_KEY` | OpenAI TTS API key | empty |
-| `AUDIO_TTS_OPENAI_PARAMS` | Additional JSON params for OpenAI TTS | empty |
+| `AUDIO_TTS_OPENAI_PARAMS` | OpenAI TTS 附加 JSON 参数 | empty |
 
 ### Mistral TTS
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `AUDIO_TTS_MISTRAL_API_KEY` | Mistral TTS API key | empty |
-| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API base URL | `https://api.mistral.ai/v1` |
+| `AUDIO_TTS_MISTRAL_API_BASE_URL` | Mistral API Base URL | `https://api.mistral.ai/v1` |
 
 :::info
-When `AUDIO_TTS_ENGINE=mistral`, Open WebUI uses `mistral-tts-latest` when `AUDIO_TTS_MODEL` is empty.
+当 `AUDIO_TTS_ENGINE=mistral` 且 `AUDIO_TTS_MODEL` 为空时，Open WebUI 会默认使用 `mistral-tts-latest`。
 :::
 
 ### Azure TTS
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AUDIO_TTS_AZURE_SPEECH_REGION` | Azure Speech region | `eastus` |
-| `AUDIO_TTS_AZURE_SPEECH_BASE_URL` | Custom Azure Speech base URL (optional) | empty |
-| `AUDIO_TTS_AZURE_SPEECH_OUTPUT_FORMAT` | Audio output format | `audio-24khz-160kbitrate-mono-mp3` |
+| `AUDIO_TTS_AZURE_SPEECH_REGION` | Azure Speech 区域 | `eastus` |
+| `AUDIO_TTS_AZURE_SPEECH_BASE_URL` | 自定义 Azure Speech Base URL（可选） | empty |
+| `AUDIO_TTS_AZURE_SPEECH_OUTPUT_FORMAT` | 音频输出格式 | `audio-24khz-160kbitrate-mono-mp3` |
 
-## Tips for Configuring Audio
+## 音频配置提示
 
-### Using Local Whisper STT
+### 使用本地 Whisper STT
 
-For GPU acceleration issues or older GPUs, try setting:
+如果你遇到 GPU 加速问题或使用较旧 GPU，可以尝试设置：
 ```yaml
 environment:
   - WHISPER_COMPUTE_TYPE=float16
 ```
 
-### Using External TTS Services
+### 使用外部 TTS 服务
 
-When running Open WebUI in Docker with an external TTS service:
+如果你在 Docker 中运行 Open WebUI 并接入外部 TTS 服务：
 
 ```yaml
 environment:
@@ -141,7 +141,7 @@ environment:
 ```
 
 :::tip
-Use `host.docker.internal` on Docker Desktop (Windows/Mac) to access services on the host. On Linux, use the host IP or container networking.
+在 Docker Desktop（Windows / Mac）中可使用 `host.docker.internal` 访问宿主机服务；Linux 上请使用宿主机 IP 或容器网络。
 :::
 
-For troubleshooting audio issues, see the [Audio Troubleshooting Guide](/troubleshooting/audio).
+如需排查音频问题，请参阅 [Audio Troubleshooting Guide](/troubleshooting/audio)。

@@ -1,126 +1,126 @@
 ---
 sidebar_position: 11
-title: "Automations"
+title: "自动化"
 ---
 
-# Automations
+# 自动化
 
-Automations let you schedule prompts to run automatically at recurring times. Each run creates a chat and executes through the normal chat completion pipeline, so model defaults, tools, filters, and other pipeline behavior still apply.
+Automations 允许你按周期自动执行提示词。每次执行都会创建一个聊天，并走完整的聊天完成流程，因此模型默认值、工具、过滤器以及其他 pipeline 行为仍然全部生效。
 
-Automations can be enabled or disabled globally by an administrator via the [`ENABLE_AUTOMATIONS`](/reference/env-configuration#enable_automations) environment variable or the **Admin Panel > Settings > General** toggle. When disabled, the automation worker stops processing, API endpoints return `403`, and the sidebar entry is hidden.
+管理员可通过 [`ENABLE_AUTOMATIONS`](/reference/env-configuration#enable_automations) 环境变量，或 **Admin Panel > Settings > General** 中的开关，在全局启用或禁用 Automations。禁用后，自动化 worker 会停止处理任务，API endpoint 会返回 `403`，侧边栏入口也会隐藏。
 
-## What You Can Automate
+## 你可以自动化什么
 
-- Run a prompt on a schedule (hourly, daily, weekly, monthly, custom RRULE)
-- Trigger a run manually with **Run Now**
-- Pause/resume automations without deleting them
-- Review execution history for each automation
-- Optionally attach a terminal server and working directory for runs that need terminal context
+- 按计划执行提示词（每小时、每天、每周、每月或自定义 RRULE）
+- 通过 **Run Now** 手动触发一次执行
+- 在不删除的情况下暂停 / 恢复自动化任务
+- 查看每个自动化任务的执行历史
+- 可选地为任务附加 terminal server 和工作目录，以便执行需要终端上下文的任务
 
-## Access Control
+## 访问控制
 
-Automations are permission-gated for non-admin users.
+对于非管理员用户，Automations 受权限控制。
 
-- **Admins**: always have access to Automations
-- **Users**: require the **Features > Automations** permission
+- **Admins**：始终拥有 Automations 访问权限
+- **Users**：需要具备 **Features > Automations** 权限
 
-See [RBAC Permissions](/features/authentication-access/rbac/permissions#4-features-permissions) for the permission category.
+权限分类请参阅 [RBAC Permissions](/features/authentication-access/rbac/permissions#4-features-permissions)。
 
-To grant user access:
+若要授予用户访问权限：
 
-1. Open **Admin Panel > Users > Groups**
-2. Edit **Default permissions** or a specific group
-3. Enable **Features > Automations**
+1. 打开 **Admin Panel > Users > Groups**
+2. 编辑 **Default permissions** 或某个具体用户组
+3. 启用 **Features > Automations**
 
-You can also set this default via [`USER_PERMISSIONS_FEATURES_AUTOMATIONS`](/reference/env-configuration#user_permissions_features_automations).
+你也可以通过 [`USER_PERMISSIONS_FEATURES_AUTOMATIONS`](/reference/env-configuration#user_permissions_features_automations) 设置默认值。
 
-:::tip Quick Access
-Hold **Shift** in the User Menu to reveal pin/unpin buttons. Pinning Automations adds a shortcut icon to the sidebar rail for one-click access.
+:::tip 快速访问
+在 User Menu 中按住 **Shift** 可显示固定 / 取消固定按钮。将 Automations 固定后，会在侧边栏栏位中显示快捷图标，便于一键进入。
 :::
 
-## Admin Limits
+## 管理员限制
 
-Administrators can set global limits on automation usage for non-admin users. These are configured via environment variables. **Admins bypass all limits.**
+管理员可以为非管理员用户设置全局自动化使用限制。这些限制通过环境变量配置。**管理员不会受到这些限制。**
 
 | Setting | Effect | Env Variable |
 |---------|--------|--------------|
-| **Max Automation Count** | Caps the number of automations a user can create | [`AUTOMATION_MAX_COUNT`](/reference/env-configuration#automation_max_count) |
-| **Min Recurrence Interval** | Rejects schedules that run more frequently than the configured interval (in seconds) | [`AUTOMATION_MIN_INTERVAL`](/reference/env-configuration#automation_min_interval) |
+| **Max Automation Count** | 限制用户可创建的自动化数量 | [`AUTOMATION_MAX_COUNT`](/reference/env-configuration#automation_max_count) |
+| **Min Recurrence Interval** | 拒绝执行频率高于设定间隔（秒）的计划 | [`AUTOMATION_MIN_INTERVAL`](/reference/env-configuration#automation_min_interval) |
 
-- **Max count** is checked only on creation. Existing automations are not deleted if the limit is lowered.
-- **Min interval** is checked on both creation and update. One-time automations (`COUNT=1`) are exempt.
-- Both default to empty (no limit). Set to a positive integer to enforce.
+- **Max count** 仅在创建时检查；若后续下调限制，不会删除现有自动化任务
+- **Min interval** 会在创建和更新时都进行检查；一次性自动化（`COUNT=1`）不受此限制
+- 两者默认都为空（即不限制）；如需强制执行，请设置为正整数
 
-## Create an Automation
+## 创建一个自动化任务
 
-1. Open **User Menu > Automations**
-2. Click **New Automation**
-3. Set:
+1. 打开 **User Menu > Automations**
+2. 点击 **New Automation**
+3. 设置：
    - **Title**
-   - **Instructions** (prompt)
+   - **Instructions**（提示词）
    - **Model**
    - **Schedule**
-4. (Optional) Select a **Terminal** server and **Working Directory**
-5. Click **Create**
+4. （可选）选择 **Terminal** server 和 **Working Directory**
+5. 点击 **Create**
 
-After creation, Open WebUI opens the dedicated automation editor page at `/automations/{id}`.
+创建后，Open WebUI 会自动打开该自动化任务的专属编辑页：`/automations/{id}`。
 
-## Edit and Manage
+## 编辑与管理
 
-From the Automations list, click an automation to open its dedicated editor page.
+在 Automations 列表中点击某个任务，即可进入其专属编辑页。
 
-On the editor page, you can:
+在编辑页中，你可以：
 
-- Update title, instructions, model, schedule, and terminal settings
-- Save changes
-- Run immediately with **Run now**
-- Pause/resume automation state
-- Delete the automation
-- Review execution logs and open run chats
+- 更新标题、说明、模型、计划和 terminal 设置
+- 保存变更
+- 通过 **Run now** 立即执行
+- 暂停 / 恢复自动化状态
+- 删除自动化任务
+- 查看执行日志并打开对应运行聊天
 
-Execution logs are paginated with infinite scroll in the editor, so large run histories load incrementally.
+编辑页中的执行日志采用无限滚动分页，因此即使运行历史很长，也会按需逐步加载。
 
-## Scheduling
+## 调度方式
 
-Supported schedule modes:
+支持的计划模式包括：
 
 - **Once**
 - **Hourly**
 - **Daily**
 - **Weekly**
 - **Monthly**
-- **Custom** (`RRULE`)
+- **Custom**（`RRULE`）
 
-Custom schedules accept standard RRULE syntax. Invalid or exhausted rules are rejected.
+自定义计划支持标准 RRULE 语法。无效或已耗尽的规则会被拒绝。
 
-## Notes
+## 说明
 
-- Automations run in the background worker loop on a polling interval.
-- Every run records a status (`success` or `error`) and optional error details.
-- Deleting an automation also removes its run history.
+- 自动化任务在后台 worker loop 中按轮询间隔执行
+- 每次执行都会记录状态（`success` 或 `error`）以及可选错误详情
+- 删除自动化任务时，也会同时删除其运行历史
 
-## Managing Automations from Chat
+## 在聊天中管理 Automations
 
-When using **Native Function Calling Mode** with a capable model, automations can also be created and managed directly from within a chat conversation using builtin tools. This allows you to say things like *"Schedule a daily summary report at 9am"* and the model will create the automation for you.
+当你使用支持 **Native Function Calling Mode** 的模型时，也可以通过内置工具，直接在聊天里创建和管理自动化任务。比如你可以直接说：*"Schedule a daily summary report at 9am"*，模型就会替你创建相应自动化任务。
 
-### Available tools
+### 可用工具
 
 | Tool | What it does |
 |------|-------------|
-| `create_automation` | Create a new scheduled automation with a name, prompt, and RRULE schedule. Uses the current chat model. |
-| `update_automation` | Update an existing automation's name, prompt, schedule, or model |
-| `list_automations` | List your scheduled automations with status, schedule, and next runs |
-| `toggle_automation` | Pause or resume a scheduled automation |
-| `delete_automation` | Delete a scheduled automation and all its run history |
+| `create_automation` | 使用名称、提示词和 RRULE 计划创建一个新的自动化任务；使用当前聊天模型 |
+| `update_automation` | 更新现有自动化任务的名称、提示词、计划或模型 |
+| `list_automations` | 列出你当前的自动化任务，包括状态、计划和下次运行时间 |
+| `toggle_automation` | 暂停或恢复某个自动化任务 |
+| `delete_automation` | 删除自动化任务及其全部运行历史 |
 
-### Requirements
+### 使用要求
 
-For chat-based automation tools to be available:
+若想在聊天中使用自动化工具，需要满足以下条件：
 
-1. **Native Function Calling** must be enabled for the model
-2. **Builtin Tools** capability must be enabled for the model
-3. **Automations** category must be enabled in the model's Builtin Tools settings (enabled by default)
-4. **`ENABLE_AUTOMATIONS`** must be enabled globally (enabled by default)
-5. The user must have the **Features > Automations** permission (admins always pass)
+1. 该模型必须启用 **Native Function Calling**
+2. 该模型必须启用 **Builtin Tools** 能力
+3. 模型的 Builtin Tools 设置中必须启用 **Automations** 分类（默认开启）
+4. 全局必须启用 **`ENABLE_AUTOMATIONS`**（默认开启）
+5. 当前用户必须具备 **Features > Automations** 权限（管理员始终通过）
 
-See the [Builtin Tools reference](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode) for full details on all builtin tools.
+有关所有 builtin tools 的完整说明，请参阅 [Builtin Tools reference](/features/extensibility/plugin/tools#built-in-system-tools-nativeagentic-mode)。

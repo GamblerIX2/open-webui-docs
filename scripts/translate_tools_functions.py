@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import pathlib
 """Translate plugin/tools/index.mdx and plugin/functions/index.mdx"""
 
 def translate(filepath, pairs):
@@ -21,7 +22,7 @@ def translate(filepath, pairs):
     for s in not_found:
         print(f'  NOT FOUND: {s}')
 
-BASE = 'd:/Github/open-webui-docs/docs'
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 # ============================================================
 # plugin/tools/index.mdx

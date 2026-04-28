@@ -1,75 +1,71 @@
 ---
 sidebar_position: 1
-title: "Usage"
+title: "使用方式"
 ---
 
-Before you can use image generation, you must ensure that the **Image Generation** toggle is enabled in the **Admin Panel** > **Settings** > **Images** menu.
+在使用图像生成功能前，请先确保已在 **Admin Panel** > **Settings** > **Images** 中启用 **Image Generation** 开关。
 
-## Using Image Generation
+## 使用图像生成
 
-1. Toggle the `Image Generation` switch to on.
-2. Enter your image generation prompt.
-3. Click `Send`.
+1. 打开 `Image Generation` 开关
+2. 输入你的图像生成提示词
+3. 点击 `Send`
 
 ![Image Generation Tutorial](/images/tutorial_image_generation_2.png)
 
-## Native Tool-Based Generation (Agentic)
+## 基于原生工具的生成（Agentic）
 
-If your model is configured with **Native Function Calling** (see the [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)), it can invoke image generation directly as a tool.
+如果你的模型配置了 **Native Function Calling**（参见 [**Central Tool Calling Guide**](/features/extensibility/plugin/tools#tool-calling-modes-default-vs-native)），它就可以直接把图像生成功能当作工具调用。
 
-### How it works:
-- **Requirements**: 
-  - **Image Generation** must be enabled globally in **Admin Panel → Settings → Images**
-  - The model must have the **Image Generation** capability enabled
-- **No Chat Toggle Needed**: With Native Mode, the `generate_image` tool is automatically included when the model has the `image_generation` capability. You don't need to manually toggle it on per chat.
-- **Natural Language**: You can simply ask the model: *"Generate an image of a cybernetic forest."*
-- **Action**: If **Native Mode** is active and the model has the capability, it will invoke the `generate_image` tool.
-- **Display**: The generated image is displayed directly in the chat interface.
-- **Editing**: This also supports **Image Editing** (inpainting) via the `edit_image` tool (e.g., *"Make the sky in this image red"*).
+### 工作方式：
+- **要求：** 
+  - 必须已在 **Admin Panel → Settings → Images** 中全局启用 **Image Generation**
+  - 模型必须启用了 **Image Generation** capability
+- **无需聊天内开关**：在 Native Mode 下，只要模型具备 `image_generation` capability，`generate_image` 工具就会自动加入；无需为每个聊天手动打开
+- **自然语言调用**：你可以直接告诉模型：*"Generate an image of a cybernetic forest."*
+- **执行方式**：若 **Native Mode** 已启用且模型具备该能力，模型会调用 `generate_image` 工具
+- **显示方式**：生成后的图像会直接显示在聊天界面中
+- **编辑支持**：同样支持通过 `edit_image` 工具进行 **Image Editing**（修复 / 局部编辑），例如：*"Make the sky in this image red"*
 
-This approach allows the model to "reason" about the prompt before generating, or even generate multiple images as part of a complex request.
-
-
+这种方式允许模型先“推理”提示词，再执行生成，甚至能在复杂请求中一次生成多张图像。
 
 :::tip
 
-You can also edit the LLM's response and enter your image generation prompt as the message to send off for image generation instead of using the actual response provided by the LLM.
-
+你也可以先编辑 LLM 的回复，把真正的图像提示词改成你想发送的消息，然后再用于图像生成，而不必直接使用模型原始回复内容。
 
 :::
 
 :::info
-**Legacy "Generate Image" Button:**
-As of Open WebUI v0.7.0, the native "Generate Image" button (which allowed generating an image directly from a message's content) was removed. If you wish to restore this functionality, you can use the community-built **[Generate Image Action](https://openwebui.com/posts/3fadc3ca-c955-4c9e-9582-7438f0911b62)**.
+**旧版 “Generate Image” 按钮：**  
+自 Open WebUI v0.7.0 起，原生的 “Generate Image” 按钮（允许直接从消息内容生成图像）已被移除。如果你想恢复该功能，可以使用社区构建的 **[Generate Image Action](https://openwebui.com/posts/3fadc3ca-c955-4c9e-9582-7438f0911b62)**。
 :::
 
-## Restoring the "Generate Image" Button
+## 恢复 “Generate Image” 按钮
 
-If you prefer the workflow where you can click a button on any message to generate an image from its content, you can easily restore it:
+如果你更喜欢“点击任意消息上的按钮，就从该消息内容生成图像”的工作流，可以轻松恢复：
 
-1. Visit the **[Generate Image Action](https://openwebui.com/posts/3fadc3ca-c955-4c9e-9582-7438f0911b62)** on the Open WebUI Community site.
-2. Click **Get** to import it into your local instance (or copy the code and paste it into your local instance).
-3. Once imported, go to **Workspace** > **Functions** and ensure the **Generate Image** action is enabled.
+1. 访问 Open WebUI Community 上的 **[Generate Image Action](https://openwebui.com/posts/3fadc3ca-c955-4c9e-9582-7438f0911b62)**
+2. 点击 **Get** 将其导入到你的本地实例（或复制代码后粘贴到本地实例中）
+3. 导入后，前往 **Workspace** > **Functions**，确认 **Generate Image** action 已启用
 
-This action adds a "Generate Image" icon to the message action bar, allowing you to generate images directly from LLM responses - which is helpful if you want the assistant to first iterate on the image prompt and generate it once you are satisfied.
-
+该 action 会在消息操作栏中加入一个 “Generate Image” 图标，让你可以直接根据 LLM 回复生成图像——这在你希望先让助手迭代优化提示词、满意后再执行生成时会很有帮助。
 
 :::info
-**Requirement:** To use **Image Editing** or **Image+Image Generation**, you must have an **Image Generation Model** configured in the Admin Settings that supports these features (e.g., OpenAI DALL-E, or a ComfyUI/Automatic1111 model with appropriate inpainting/img2img capabilities).
+**要求：** 若要使用 **Image Editing** 或 **Image+Image Generation**，你必须在管理员设置中配置一个支持这些能力的 **Image Generation Model**（例如 OpenAI DALL-E，或具备相应 inpainting / img2img 能力的 ComfyUI / Automatic1111 模型）。
 :::
 
-## Image Editing (Inpainting)
+## 图像编辑（Inpainting）
 
-You can edit an image by providing the image and a text prompt directly in the chat.
+你可以在聊天中直接通过“图像 + 文本提示词”的方式编辑图片。
 
-1. **Upload an image** to the chat.
-2. **Enter a prompt** describing the change you want to make (e.g., "Change the background to a sunset" or "Add a hat").
-3. The model will generate a new version of the image based on your prompt.
+1. **上传一张图片** 到聊天中
+2. **输入提示词** 描述你想要的改动（例如 “Change the background to a sunset” 或 “Add a hat”）
+3. 模型会根据你的提示词生成该图片的新版本
 
-## Image Compositing (Multi-Image Fusion)
+## 图像合成（多图融合）
 
-Seamlessly combine multiple images into a single cohesive scene—a process professionally known as **Image Compositing** or **Multi-Image Fusion**. This allows you to merge elements from different sources (e.g., placing a subject from one image into the background of another) while harmonizing lighting, perspective, and style.
+你可以将多张图片无缝融合成一个统一场景——这在专业上通常称为 **Image Compositing** 或 **Multi-Image Fusion**。你可以把不同来源中的元素（例如一张图中的主体和另一张图中的背景）组合起来，同时协调光照、透视和风格。
 
-1. **Upload images** to the chat (e.g., upload an image of a subject and an image of a background).
-2. **Enter a prompt** describing the desired composition (e.g., "Combine these images to show the cat sitting on the park bench, ensuring consistent lighting").
-3. The model will generate a new composite image that fuses the elements according to your instructions.
+1. **上传多张图片** 到聊天中（例如上传一张主体图和一张背景图）
+2. **输入提示词** 描述你想要的合成效果（例如 “Combine these images to show the cat sitting on the park bench, ensuring consistent lighting”）
+3. 模型会根据你的说明生成一张新的合成图像

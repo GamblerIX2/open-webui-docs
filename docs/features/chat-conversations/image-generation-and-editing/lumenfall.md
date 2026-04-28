@@ -4,37 +4,37 @@ title: "Lumenfall"
 ---
 
 :::warning
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 :::
 
-Open WebUI also supports image generation through [Lumenfall](https://lumenfall.ai), an AI media gateway that unifies all popular image models on many different providers into an OpenAI-compatible API. Free models are available.
+Open WebUI 还支持通过 [Lumenfall](https://lumenfall.ai) 进行图像生成。Lumenfall 是一个 AI 媒体网关，可将多个提供商上的主流图像模型统一为兼容 OpenAI 的 API，并提供免费模型可用。
 
-### Initial Setup
+### 初始设置
 
-1. Create a free account at [lumenfall.ai](https://lumenfall.ai).
-2. Generate an API key from your [dashboard](https://lumenfall.ai/app/api_keys).
+1. 在 [lumenfall.ai](https://lumenfall.ai) 注册一个免费账号
+2. 在你的 [dashboard](https://lumenfall.ai/app/api_keys) 中生成 API key
 
-### Configuring Image Generation
+### 配置图像生成
 
-1. In Open WebUI, navigate to the **Admin Panel** > **Settings** > **Images** menu.
-2. Set the `Image Generation Engine` field to `Open AI` (Lumenfall uses the same syntax as OpenAI).
-3. Change the API endpoint URL to `https://api.lumenfall.ai/openai/v1`.
-4. Enter your Lumenfall API key.
-5. The API version can be left blank.
-6. Enter the model you wish to use. For example: `gemini-3-pro-image`, `gpt-image-1.5`, or `flux.2-max`. See all available models at [lumenfall.ai/models](https://lumenfall.ai/models).
-7. Set the image size (e.g. `1024x1024`). Supported sizes depend on the model - if unsure, `1024x1024` works with most models.
+1. 在 Open WebUI 中前往 **Admin Panel** > **Settings** > **Images**
+2. 将 `Image Generation Engine` 设置为 `Open AI`（Lumenfall 使用与 OpenAI 相同的语法）
+3. 将 API endpoint URL 改为 `https://api.lumenfall.ai/openai/v1`
+4. 输入你的 Lumenfall API key
+5. API version 可留空
+6. 输入你想使用的模型，例如：`gemini-3-pro-image`、`gpt-image-1.5` 或 `flux.2-max`。完整模型列表请参阅 [lumenfall.ai/models](https://lumenfall.ai/models)
+7. 设置图像尺寸（例如 `1024x1024`）。支持的尺寸取决于模型；如果不确定，`1024x1024` 对大多数模型都可用
 
 ![Screenshot of the Open WebUI Images settings page configured with Lumenfall.](/images/image-generation-and-editing/lumenfall-settings.png)
 
-### Configuring Image Editing
+### 配置图像编辑
 
-Lumenfall also supports image editing through the same API:
+Lumenfall 也通过同一套 API 支持图像编辑：
 
-1. On the same **Images** settings page, scroll to the **Edit Image** section.
-2. Toggle **Image Edit** to on.
-3. Set the `Image Edit Engine` to `Open AI`.
-4. Enter the same API endpoint URL: `https://api.lumenfall.ai/openai/v1`.
-5. Enter your Lumenfall API key.
-6. Choose a model that supports editing (e.g. `gpt-image-1.5`).
+1. 在同一 **Images** 设置页中，向下滚动到 **Edit Image** 部分
+2. 打开 **Image Edit** 开关
+3. 将 `Image Edit Engine` 设置为 `Open AI`
+4. 输入相同的 API endpoint URL：`https://api.lumenfall.ai/openai/v1`
+5. 输入你的 Lumenfall API key
+6. 选择一个支持编辑的模型（例如 `gpt-image-1.5`）
 
-For more details, see the [Lumenfall documentation](https://docs.lumenfall.ai/integrations/openwebui).
+更多说明请参阅 [Lumenfall documentation](https://docs.lumenfall.ai/integrations/openwebui)。

@@ -5,19 +5,19 @@ title: "Perplexity Search"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
@@ -25,31 +25,31 @@ Having issues with web search? Check out the [Web Search Troubleshooting Guide](
 
 :::info
 
-Perplexity Search API is just a search engine, as opposed to the Perplexity integration, which is using Perplexity's models (in combination with their websearch).
+Perplexity Search API 只是一个搜索引擎接口，而 Perplexity 集成则是直接使用 Perplexity 的模型（并结合其网页搜索能力）。
 
 :::
 
-### Setup
+### 设置
 
-1. Navigate to: `Admin Panel` -> `Settings` -> `Web Search`
-2. Toggle `Enable Web Search`
-3. Set `Web Search Engine` from dropdown menu to `perplexity_search`
-4. Enter your Perplexity API key from [Perplexity API Key management](https://www.perplexity.ai/account/api/keys).
-5. Press save
+1. 前往：`Admin Panel` -> `Settings` -> `Web Search`
+2. 打开 `Enable Web Search`
+3. 将 `Web Search Engine` 从下拉框中设为 `perplexity_search`
+4. 输入你在 [Perplexity API Key management](https://www.perplexity.ai/account/api/keys) 中获取的 API key
+5. 点击保存
 
-### Using LiteLLM for Search
+### 使用 LiteLLM 作为搜索后端
 
-You can use a [LiteLLM](https://docs.litellm.ai/) proxy instance as your search provider instead of connecting directly to Perplexity. LiteLLM's `/search` endpoint is compatible with the Perplexity Search API style used by Open WebUI.
+你也可以使用 [LiteLLM](https://docs.litellm.ai/) proxy 实例来作为搜索 provider，而不是直接连接 Perplexity。LiteLLM 的 `/search` endpoint 与 Open WebUI 使用的 Perplexity Search API 风格兼容。
 
-To configure this:
+配置方式如下：
 
-1. Follow the setup steps above, selecting `perplexity_search` as the engine.
-2. Under the **Perplexity Search API Base URL** field, replace the default URL with your LiteLLM endpoint.
-3. The URL must follow this specific format: `http://<your-litellm-url>/search/<your-search-provider-name>` - Ensurethe search provider name matches the provider name you configured in your LiteLLM setup.
+1. 按照上面的步骤操作，并将引擎设为 `perplexity_search`
+2. 在 **Perplexity Search API Base URL** 中，把默认 URL 替换为你的 LiteLLM endpoint
+3. URL 必须遵循以下格式：`http://<your-litellm-url>/search/<your-search-provider-name>` —— 请确保其中的 provider name 与你在 LiteLLM 配置中定义的 provider 名完全一致
 
-**Example:**
+**示例：**
 
-If your LiteLLM instance is running on localhost and you want to use the `perplexity-search` provider defined in your LiteLLM config:
+如果你的 LiteLLM 运行在 localhost，并且你想使用名为 `perplexity-search` 的 provider：
 
 ```
 http://localhost:4000/search/perplexity-search

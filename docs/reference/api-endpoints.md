@@ -337,6 +337,7 @@ curl -X POST http://localhost:3000/ollama/v1/responses \
 
 这非常适合使用 Ollama 模型在 Open WebUI 后端构建搜索索引、检索系统或自定义流水线。
 
+<a id="-retrieval-augmented-generation-rag"></a>
 ### 🧩 检索增强生成（RAG）
 
 检索增强生成（RAG）功能允许你将外部数据源内容融入到响应中。以下介绍如何通过 API 管理文件和知识库集合，以及如何在聊天补全中有效使用它们。
@@ -357,14 +358,15 @@ curl -X POST http://localhost:3000/ollama/v1/responses \
   ```
 
 - **Python 示例**:
-      url = 'http://localhost:3000/api/v1/files/'
-      headers = {
-          'Authorization': f'Bearer {token}',
-          'Accept': 'application/json'
-      }
-      files = {'file': open(file_path, 'rb')}
-      response = requests.post(url, headers=headers, files=files)
-      return response.json()
+  ```python
+  url = 'http://localhost:3000/api/v1/files/'
+  headers = {
+      'Authorization': f'Bearer {token}',
+      'Accept': 'application/json'
+  }
+  files = {'file': open(file_path, 'rb')}
+  response = requests.post(url, headers=headers, files=files)
+  return response.json()
   ```
 
 :::warning 异步处理与竞争条件
@@ -377,11 +379,11 @@ curl -X POST http://localhost:3000/ollama/v1/responses \
 The content provided is empty. Please ensure that there is text or data present before proceeding.
 ```
 
-**在将文件添加到知识库之前，必须等待文件处理完成。** 详见下方[检查文件处理状态](#检查文件处理状态)部分。
+**在将文件添加到知识库之前，必须等待文件处理完成。** 详见下方[检查文件处理状态](#checking-file-processing-status)部分。
 
 :::
 
-#### 检查文件处理状态
+#### 检查文件处理状态 {#checking-file-processing-status}
 
 将文件添加到知识库之前，请通过状态接口验证处理已完成。
 

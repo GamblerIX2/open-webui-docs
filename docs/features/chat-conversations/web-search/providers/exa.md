@@ -5,70 +5,70 @@ title: "Exa AI"
 
 :::warning
 
-This tutorial is a community contribution and is not supported by the Open WebUI team. It serves only as a demonstration on how to customize Open WebUI for your specific use case. Want to contribute? Check out the contributing tutorial.
+本教程来自社区贡献，并非 Open WebUI 官方支持内容。它仅作为演示，说明如何按你的具体场景自定义 Open WebUI。欢迎贡献更多内容，可查看 contributing 教程。
 
 :::
 
 :::tip
 
-For a comprehensive list of all environment variables related to Web Search (including concurrency settings, result counts, and more), please refer to the [Environment Configuration documentation](/reference/env-configuration#web-search).
+若要查看所有与 Web Search 相关的环境变量（包括并发设置、结果数量等），请参阅 [Environment Configuration documentation](/reference/env-configuration#web-search)。
 
 :::
 
 :::tip Troubleshooting
 
-Having issues with web search? Check out the [Web Search Troubleshooting Guide](/troubleshooting/web-search) for solutions to common problems like proxy configuration, connection timeouts, and empty content.
+如果你在 web search 上遇到问题，请查看 [Web Search Troubleshooting Guide](/troubleshooting/web-search)，其中涵盖了代理配置、连接超时、内容为空等常见问题。
 
 :::
 
-# Exa AI Web Search Integration
+# Exa AI Web Search 集成
 
-This guide provides instructions on how to integrate [Exa AI](https://exa.ai/), a modern AI-powered search engine, with Open WebUI for web search capabilities.
+本指南说明如何将 [Exa AI](https://exa.ai/)——一个现代化、AI 驱动的搜索引擎——集成到 Open WebUI 中，以提供 web search 能力。
 
-## Overview
+## 概览
 
-Exa AI is a search engine designed for AI applications, providing a suite of tools through its API, including web search, website crawling, and deep research functionalities. By integrating Exa AI with Open WebUI, you can leverage its powerful search capabilities directly within your chat interface.
+Exa AI 是一个面向 AI 应用设计的搜索引擎，它通过 API 提供一整套能力，包括网页搜索、网站抓取与深度研究等。将 Exa AI 集成到 Open WebUI 后，你就可以直接在聊天界面中利用其强大的搜索能力。
 
-## Pricing Model
+## 计费模式
 
-Exa AI operates on a credit-based, pay-as-you-go pricing model. It is not a permanently free service, but it offers a trial for new users to evaluate the API.
+Exa AI 采用按 credit 计费、按量付费模式。它不是永久免费服务，但会为新用户提供试用额度以便评估 API。
 
-- **Initial Free Credits:** New users receive an initial grant of $10 worth of credits to test the API.
-- **Pay-as-you-go:** Once the initial credits are depleted, you must move to a paid plan to continue using the service. The free tier is intended for evaluation purposes only and does not include a fixed monthly allowance.
+- **初始免费额度：** 新用户会获得价值 10 美元的初始 credits，用于测试 API
+- **按量付费：** 初始 credits 用完后，你需要升级到付费计划才能继续使用。免费额度仅用于评估，不包含固定的每月免费配额
 
-For detailed and up-to-date pricing information, please visit the [Exa AI pricing page](https://exa.ai/pricing).
+有关最新且详细的价格信息，请参阅 [Exa AI pricing page](https://exa.ai/pricing)。
 
-## Configuration Steps
+## 配置步骤
 
-### 1. Obtain an Exa AI API Key
+### 1. 获取 Exa AI API Key
 
-First, you need to sign up for an Exa AI account and get an API key.
+首先，你需要注册一个 Exa AI 账号并获取 API key。
 
-1.  **Sign Up:** Go to the [Exa AI website](https://exa.ai/) and create a new account.
-2.  **Navigate to API Keys:** Once you have signed up and logged in, navigate to the **API Keys** page in your user dashboard.
-3.  **Copy Your API Key:** On the API Keys page, you will find your unique API key. Copy this key to your clipboard, as you will need it to configure Open WebUI.
+1.  **注册：** 前往 [Exa AI website](https://exa.ai/) 并创建一个新账号
+2.  **进入 API Keys 页面：** 注册并登录后，在用户 dashboard 中进入 **API Keys** 页面
+3.  **复制你的 API Key：** 在 API Keys 页面中，你会看到自己的专属 API key。复制它，稍后配置 Open WebUI 时会用到
 
-### 2. Configure Open WebUI
+### 2. 配置 Open WebUI
 
-Next, you need to configure the Exa AI integration in the Open WebUI admin settings.
+接下来，在 Open WebUI 的管理员设置中配置 Exa AI 集成。
 
-1.  **Log in as an Administrator:** Access your Open WebUI instance and log in with an administrator account.
-2.  **Navigate to Web Search Settings:** Go to the **Admin Panel**, then click on **Settings** > **Web Search**.
-3.  **Select Exa as the Search Engine:** In the "Web Search Engine" dropdown menu, select **Exa**.
-4.  **Enter Your API Key:** In the **Exa API Key** input field that appears, paste the API key you copied from the Exa AI dashboard.
-5.  **Save Changes:** Scroll down and click the **Save** button to apply the changes.
+1.  **使用管理员账号登录：** 进入你的 Open WebUI 实例，并以管理员账号登录
+2.  **进入 Web Search 设置：** 前往 **Admin Panel**，然后点击 **Settings** > **Web Search**
+3.  **将搜索引擎设为 Exa：** 在 “Web Search Engine” 下拉菜单中选择 **Exa**
+4.  **填写 API Key：** 在出现的 **Exa API Key** 输入框中，粘贴你从 Exa AI dashboard 复制的 API key
+5.  **保存更改：** 向下滚动并点击 **Save**
 
-### 3. (Optional) Environment Variable Configuration
+### 3.（可选）使用环境变量配置
 
-Alternatively, you can configure the Exa AI integration using an environment variable. This is particularly useful for Docker-based deployments.
+你也可以使用环境变量配置 Exa AI 集成。这在 Docker 部署中尤其方便。
 
-Set the following environment variable for your Open WebUI instance:
+为你的 Open WebUI 实例设置以下环境变量：
 
-- `EXA_API_KEY`: Your Exa AI API key.
+- `EXA_API_KEY`：你的 Exa AI API key
 
-When this environment variable is set, the "Exa API Key" field in the admin settings will be automatically populated.
+设置后，管理员设置中的 “Exa API Key” 字段会自动填充。
 
-**Example Docker `run` command:**
+**示例 Docker `run` 命令：**
 
 ```bash
 docker run -d \\
@@ -78,6 +78,6 @@ docker run -d \\
   ghcr.io/open-webui/open-webui:main
 ```
 
-## Verify the Integration
+## 验证集成
 
-Once you have configured the API key, you can test the integration by enabling the web search feature in a chat and asking a question that requires up-to-date information from the web. If the integration is successful, Open WebUI will use Exa AI to fetch search results and provide an informed response.
+配置好 API key 后，你可以在聊天中启用 web search，并提出一个需要最新网页信息的问题来测试。如果集成成功，Open WebUI 就会使用 Exa AI 获取搜索结果，并据此返回更有依据的回答。

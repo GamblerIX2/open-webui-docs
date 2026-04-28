@@ -2,7 +2,7 @@
 """批量写入翻译后的 auth 文件（LDAP、SCIM、SSO、Keycloak）"""
 import pathlib
 
-BASE = pathlib.Path("d:/Github/open-webui-docs/docs")
+BASE = pathlib.Path(__file__).resolve().parents[1] / "docs"
 
 def w(rel, content):
     p = BASE / rel
