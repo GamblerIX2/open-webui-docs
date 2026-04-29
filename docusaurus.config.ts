@@ -138,14 +138,6 @@ const config: Config = {
 							label: "GitHub Discussions",
 							href: "https://github.com/open-webui/open-webui/discussions",
 						},
-						{
-							label: "Reddit",
-							href: "https://www.reddit.com/r/OpenWebUI/",
-						},
-						{
-							label: "𝕏",
-							href: "https://x.com/OpenWebUI",
-						},
 					],
 				},
 				{
